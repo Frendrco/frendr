@@ -31,6 +31,8 @@ model User {
   comments       Comment[]
   commentVotes   CommentVote[]
   jobs           Job[]
+  followers      Follow[] @relation("UserFollowers")
+  following      Follow[] @relation("UserFollowing")
 }
 
 model Video {
@@ -40,6 +42,7 @@ model Video {
   streamId      String?
   thumbnailUrl  String?
   tags          String[]
+  featured      Boolean  @default(false)
   userId        String
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt     DateTime @default(now())
@@ -99,6 +102,17 @@ model CommentVote {
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, commentId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  follower    User     @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
 }
 
 model Job {

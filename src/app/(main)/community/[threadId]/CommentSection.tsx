@@ -14,26 +14,31 @@ interface CommentUser {
   avatarUrl: string | null
 }
 
-interface CommentData {
+interface ReplyData {
   id: string
   body: string
+  userId: string
   voteCount: number
   createdAt: string | Date
   user: CommentUser
   userVote: 1 | -1 | 0
-  replies: Array<{
-    id: string
-    body: string
-    voteCount: number
-    createdAt: string | Date
-    user: CommentUser
-    userVote: 1 | -1 | 0
-  }>
+}
+
+interface CommentData {
+  id: string
+  body: string
+  userId: string
+  voteCount: number
+  createdAt: string | Date
+  user: CommentUser
+  userVote: 1 | -1 | 0
+  replies: ReplyData[]
 }
 
 interface Props {
   threadId: string
   initialComments: CommentData[]
+  currentUserId?: string
 }
 
 function Avatar({ user, size }: { user: CommentUser; size: number }) {
@@ -111,10 +116,50 @@ function CommentForm({ threadId, parentCommentId, onSubmit, onCancel }: {
   )
 }
 
-export function CommentSection({ threadId, initialComments }: Props) {
+function InlineEditForm({ initialBody, onSave, onCancel }: {
+  initialBody: string
+  onSave: (newBody: string) => void
+  onCancel: () => void
+}) {
+  const [body, setBody] = useState(initialBody)
+  const [saving, setSaving] = useState(false)
+
+  async function handleSave() {
+    if (!body.trim() || saving) return
+    setSaving(true)
+    onSave(body.trim())
+  }
+
+  return (
+    <div className="flex flex-col gap-2 mt-1.5">
+      <textarea
+        rows={3}
+        autoFocus
+        className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+        value={body}
+        onChange={e => setBody(e.target.value)}
+      />
+      <div className="flex items-center gap-2 justify-end">
+        <button onClick={onCancel} className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors">
+          Cancel
+        </button>
+        <button
+          onClick={handleSave}
+          disabled={!body.trim() || saving || body.trim() === initialBody.trim()}
+          className="h-8 rounded-full bg-core-black px-4 font-sans font-medium text-xs text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
+        >
+          {saving ? "Saving…" : "Save"}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export function CommentSection({ threadId, initialComments, currentUserId }: Props) {
   const { isSignedIn } = useAuth()
   const [comments, setComments] = useState<CommentData[]>(initialComments)
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  const [editingComment, setEditingComment] = useState<string | null>(null)
 
   function addTopLevelComment(comment: CommentData) {
     setComments(prev => [comment, ...prev])
@@ -127,13 +172,45 @@ export function CommentSection({ threadId, initialComments }: Props) {
     setReplyingTo(null)
   }
 
+  async function saveCommentEdit(commentId: string, newBody: string, isReply: boolean, parentId?: string) {
+    const res = await fetch(`/api/comments/${commentId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ body: newBody }),
+    })
+    if (!res.ok) return
+    setEditingComment(null)
+    if (isReply && parentId) {
+      setComments(prev => prev.map(c =>
+        c.id === parentId
+          ? { ...c, replies: c.replies.map(r => r.id === commentId ? { ...r, body: newBody } : r) }
+          : c
+      ))
+    } else {
+      setComments(prev => prev.map(c => c.id === commentId ? { ...c, body: newBody } : c))
+    }
+  }
+
+  async function deleteComment(commentId: string, isReply: boolean, parentId?: string) {
+    const res = await fetch(`/api/comments/${commentId}`, { method: "DELETE" })
+    if (!res.ok) return
+    if (isReply && parentId) {
+      setComments(prev => prev.map(c =>
+        c.id === parentId
+          ? { ...c, replies: c.replies.filter(r => r.id !== commentId) }
+          : c
+      ))
+    } else {
+      setComments(prev => prev.filter(c => c.id !== commentId))
+    }
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <h2 className="font-sans font-semibold text-sm text-core-black">
         {comments.length} {comments.length === 1 ? "comment" : "comments"}
       </h2>
 
-      {/* Top-level comment form */}
       {isSignedIn ? (
         <CommentForm threadId={threadId} onSubmit={addTopLevelComment} />
       ) : (
@@ -142,7 +219,6 @@ export function CommentSection({ threadId, initialComments }: Props) {
         </p>
       )}
 
-      {/* Comment list */}
       <div className="flex flex-col divide-y divide-border">
         {comments.map(comment => (
           <div key={comment.id} className="py-5">
@@ -155,9 +231,19 @@ export function CommentSection({ threadId, initialComments }: Props) {
                   </Link>
                   <span className="font-sans text-xs text-foreground/30">{timeAgo(comment.createdAt)}</span>
                 </div>
-                <p className="mt-1.5 font-sans text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
-                  {comment.body}
-                </p>
+
+                {editingComment === comment.id ? (
+                  <InlineEditForm
+                    initialBody={comment.body}
+                    onSave={newBody => saveCommentEdit(comment.id, newBody, false)}
+                    onCancel={() => setEditingComment(null)}
+                  />
+                ) : (
+                  <p className="mt-1.5 font-sans text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                    {comment.body}
+                  </p>
+                )}
+
                 <div className="mt-2 flex items-center gap-3">
                   <VoteButtons
                     commentId={comment.id}
@@ -175,9 +261,24 @@ export function CommentSection({ threadId, initialComments }: Props) {
                       Reply
                     </button>
                   )}
+                  {currentUserId && comment.userId === currentUserId && editingComment !== comment.id && (
+                    <>
+                      <button
+                        onClick={() => setEditingComment(comment.id)}
+                        className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteComment(comment.id, false)}
+                        className="font-sans text-xs text-foreground/40 hover:text-red-500 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </div>
 
-                {/* Reply form */}
                 {replyingTo === comment.id && (
                   <div className="mt-3">
                     <CommentForm
@@ -189,7 +290,6 @@ export function CommentSection({ threadId, initialComments }: Props) {
                   </div>
                 )}
 
-                {/* Replies */}
                 {comment.replies.length > 0 && (
                   <div className="mt-4 flex flex-col gap-4 border-l-2 border-border pl-4">
                     {comment.replies.map(reply => (
@@ -202,15 +302,41 @@ export function CommentSection({ threadId, initialComments }: Props) {
                             </Link>
                             <span className="font-sans text-xs text-foreground/30">{timeAgo(reply.createdAt)}</span>
                           </div>
-                          <p className="mt-1 font-sans text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
-                            {reply.body}
-                          </p>
-                          <div className="mt-1.5">
+
+                          {editingComment === reply.id ? (
+                            <InlineEditForm
+                              initialBody={reply.body}
+                              onSave={newBody => saveCommentEdit(reply.id, newBody, true, comment.id)}
+                              onCancel={() => setEditingComment(null)}
+                            />
+                          ) : (
+                            <p className="mt-1 font-sans text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                              {reply.body}
+                            </p>
+                          )}
+
+                          <div className="mt-1.5 flex items-center gap-3">
                             <VoteButtons
                               commentId={reply.id}
                               initialCount={reply.voteCount}
                               initialVote={reply.userVote}
                             />
+                            {currentUserId && reply.userId === currentUserId && editingComment !== reply.id && (
+                              <>
+                                <button
+                                  onClick={() => setEditingComment(reply.id)}
+                                  className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => deleteComment(reply.id, true, comment.id)}
+                                  className="font-sans text-xs text-foreground/40 hover:text-red-500 transition-colors"
+                                >
+                                  Delete
+                                </button>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>

@@ -79,8 +79,9 @@ export default async function HomePage() {
           {/* Category filter pills */}
           <div className="mb-8 flex flex-wrap gap-2">
             {FILTER_PILLS.map((pill, i) => (
-              <button
+              <Link
                 key={pill}
+                href={i === 0 ? "/search" : `/search?tag=${encodeURIComponent(pill)}`}
                 className={
                   i === 0
                     ? "h-8 rounded-full bg-core-black px-4 font-sans text-xs font-medium text-white"
@@ -88,7 +89,7 @@ export default async function HomePage() {
                 }
               >
                 {pill}
-              </button>
+              </Link>
             ))}
           </div>
 

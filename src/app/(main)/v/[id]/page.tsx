@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import { auth } from "@clerk/nextjs/server"
 import { Eye, Heart, Bookmark, Share2, MoreHorizontal } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { VideoPlayer } from "./VideoPlayer"
+import { FeatureButton } from "./FeatureButton"
 import type { Metadata } from "next"
 
 async function getStreamReady(streamId: string): Promise<boolean> {
@@ -36,12 +38,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function VideoPage({ params }: Props) {
   const { id } = await params
-  const video = await prisma.video.findUnique({
-    where: { id },
-    include: { user: true },
-  })
+  const { userId: clerkId } = await auth()
+
+  const [video, currentUser] = await Promise.all([
+    prisma.video.findUnique({ where: { id }, include: { user: true } }),
+    clerkId ? prisma.user.findUnique({ where: { clerkId }, select: { role: true } }) : null,
+  ])
 
   if (!video) notFound()
+
+  const isAdmin = currentUser?.role === "admin"
 
   const streamReady = video.streamId ? await getStreamReady(video.streamId) : false
 
@@ -74,6 +80,9 @@ export default async function VideoPage({ params }: Props) {
 
               {/* Action buttons */}
               <div className="flex shrink-0 items-center gap-1">
+                {isAdmin && (
+                  <FeatureButton videoId={video.id} initialFeatured={video.featured} />
+                )}
                 {[
                   { icon: <Heart size={15} />,          label: "Like"  },
                   { icon: <Bookmark size={15} />,       label: "Save"  },

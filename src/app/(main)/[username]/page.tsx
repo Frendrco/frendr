@@ -5,6 +5,7 @@ import Link from "next/link"
 import { MapPin, Globe, Upload } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { AvailableForWork } from "@/components/common/AvailableForWork"
+import { FollowButton } from "@/components/common/FollowButton"
 import type { Metadata } from "next"
 
 const PLACEHOLDER_CARDS = [
@@ -31,7 +32,10 @@ export default async function ProfilePage({ params }: Props) {
 
   const user = await prisma.user.findUnique({
     where: { username },
-    include: { videos: { orderBy: { createdAt: "desc" } } },
+    include: {
+      videos: { orderBy: { createdAt: "desc" } },
+      _count: { select: { followers: true, following: true } },
+    },
   })
 
   if (!user) notFound()
@@ -50,11 +54,21 @@ export default async function ProfilePage({ params }: Props) {
     .join("")
     .toUpperCase()
 
+  // Is the current visitor following this profile?
+  const currentDbUser = !isOwn && clerkId
+    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    : null
+  const isFollowing = currentDbUser
+    ? !!(await prisma.follow.findUnique({
+        where: { followerId_followingId: { followerId: currentDbUser.id, followingId: user.id } },
+      }))
+    : false
+
   const stats = [
-    { label: "Views",     value: "0" },
-    { label: "Likes",     value: "0" },
-    { label: "Followers", value: "0" },
-    { label: "Following", value: "0" },
+    { label: "Views",     value: "0",                           href: null },
+    { label: "Likes",     value: "0",                           href: null },
+    { label: "Followers", value: String(user._count.followers), href: `/${username}/followers` },
+    { label: "Following", value: String(user._count.following), href: `/${username}/following` },
   ]
 
   const socials = [
@@ -91,10 +105,16 @@ export default async function ProfilePage({ params }: Props) {
 
             {/* Stats */}
             <div className="mb-4 w-full">
-              {stats.map(({ label, value }) => (
+              {stats.map(({ label, value, href }) => (
                 <div key={label} className="flex items-center justify-between border-b border-border/50 py-1.5 last:border-0">
                   <span className="font-sans text-xs text-foreground/50">{label}</span>
-                  <span className="font-sans text-xs font-semibold text-core-black">{value}</span>
+                  {href ? (
+                    <Link href={href} className="font-sans text-xs font-semibold text-core-black hover:underline">
+                      {value}
+                    </Link>
+                  ) : (
+                    <span className="font-sans text-xs font-semibold text-core-black">{value}</span>
+                  )}
                 </div>
               ))}
             </div>
@@ -161,9 +181,11 @@ export default async function ProfilePage({ params }: Props) {
 
             {/* Follow button (visitors only) */}
             {!isOwn && (
-              <button className="w-full h-9 rounded-full bg-spring-green font-sans font-medium text-sm text-core-black transition-colors hover:bg-spring-green/90">
-                Follow
-              </button>
+              <FollowButton
+                username={username}
+                initialIsFollowing={isFollowing}
+                size="md"
+              />
             )}
           </aside>
 

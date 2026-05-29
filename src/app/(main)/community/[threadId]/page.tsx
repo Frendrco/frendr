@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { timeAgo } from "@/lib/utils"
 import { VoteButtons } from "../VoteButtons"
+import { ThreadActions } from "./ThreadActions"
 import { CommentSection } from "./CommentSection"
 import { ThreadEmbeds } from "./ThreadEmbeds"
 import { MarkdownBody } from "./MarkdownBody"
@@ -27,6 +28,8 @@ export default async function ThreadPage({ params }: Props) {
   const currentUser = clerkId
     ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
     : null
+
+  const isOwner = currentUser?.id === thread.userId
 
   const [threadVote, comments] = await Promise.all([
     currentUser
@@ -79,6 +82,12 @@ export default async function ThreadPage({ params }: Props) {
       <div className="mb-10">
         <h2 className="font-sans font-bold text-xl text-core-black leading-snug">{thread.title}</h2>
 
+        {isOwner && (
+          <div className="mt-2">
+            <ThreadActions threadId={thread.id} />
+          </div>
+        )}
+
         <div className="mt-3 flex items-center gap-3">
           <Link href={`/${thread.user.username}`} className="flex items-center gap-2 hover:opacity-70 transition-opacity">
             <div className="h-6 w-6 overflow-hidden rounded-full bg-spring-green flex items-center justify-center shrink-0">
@@ -119,7 +128,7 @@ export default async function ThreadPage({ params }: Props) {
       </div>
 
       <div className="border-t border-border pt-8">
-        <CommentSection threadId={threadId} initialComments={commentsWithVotes} />
+        <CommentSection threadId={threadId} initialComments={commentsWithVotes} currentUserId={currentUser?.id} />
       </div>
     </div>
   )
