@@ -1,14 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
+import { clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
-
-// Floating blobs in hero
-const BLOBS = [
-  { id: 1, bg: "bg-bloom-lavender", style: { top: "12%",    left:  "6%",  width: 192, height: 192 } },
-  { id: 2, bg: "bg-sky-blue",       style: { top:  "6%",    right: "9%",  width: 152, height: 152 } },
-  { id: 3, bg: "bg-sunny-yellow",   style: { bottom: "18%", left:  "11%", width: 112, height: 112 } },
-  { id: 4, bg: "bg-winter-green",   style: { bottom: "10%", right: "6%",  width: 208, height: 208 } },
-]
+import { HeroSection } from "./HeroSection"
 
 // Placeholder cards shown until real videos exist
 const PLACEHOLDER_COLOURS = [
@@ -40,41 +34,27 @@ export default async function HomePage() {
     },
   })
 
+  // Backfill avatarUrl for any users that are missing it
+  const missing = videos.map((v) => v.user).filter((u) => !u.avatarUrl)
+  if (missing.length > 0) {
+    const clerk = await clerkClient()
+    await Promise.all(
+      missing.map(async (u) => {
+        const clerkUser = await clerk.users.getUser(u.clerkId)
+        if (clerkUser.imageUrl) {
+          await prisma.user.update({
+            where: { clerkId: u.clerkId },
+            data: { avatarUrl: clerkUser.imageUrl },
+          })
+          u.avatarUrl = clerkUser.imageUrl
+        }
+      })
+    )
+  }
+
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="relative -mt-16 min-h-screen flex flex-col items-center justify-center overflow-hidden bg-white pt-16">
-
-        {/* Floating blobs */}
-        {BLOBS.map((b) => (
-          <div key={b.id} className={`absolute rounded-full ${b.bg} hidden sm:block`} style={b.style} />
-        ))}
-
-        {/* Centre stack */}
-        <div className="relative z-10 flex flex-col items-center text-center px-4 gap-0">
-          <h1 className="display-md text-core-black">
-            Designed for creativity.<br />Built for belonging.
-          </h1>
-
-          <div className="-mt-4 w-[280px] sm:w-[380px] md:w-[460px] lg:w-[520px]">
-            <Image
-              src="/images/logo-3d.png"
-              alt="frendr"
-              width={520}
-              height={260}
-              className="w-full h-auto drop-shadow-sm"
-              priority
-            />
-          </div>
-
-          <Link
-            href="/sign-up"
-            className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-colors hover:bg-spring-green/90"
-          >
-            Join Free
-          </Link>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* ── Discover feed ────────────────────────────────── */}
       <section className="bg-white pb-24">

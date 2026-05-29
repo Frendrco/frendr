@@ -1,11 +1,26 @@
 import { notFound } from "next/navigation"
-import { auth, clerkClient } from "@clerk/nextjs/server"
-import Image from "next/image"
 import Link from "next/link"
 import { Eye, Heart, Bookmark, Share2, MoreHorizontal } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { VideoPlayer } from "./VideoPlayer"
 import type { Metadata } from "next"
+
+async function getStreamReady(streamId: string): Promise<boolean> {
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
+  const token = process.env.CLOUDFLARE_STREAM_API_TOKEN
+  if (!accountId || !token) return false
+  try {
+    const res = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}`,
+      { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 0 } }
+    )
+    if (!res.ok) return false
+    const { result } = await res.json() as { result: { status: { state: string } } }
+    return result?.status?.state === "ready"
+  } catch {
+    return false
+  }
+}
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -21,8 +36,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function VideoPage({ params }: Props) {
   const { id } = await params
-  const { userId: clerkId } = await auth()
-
   const video = await prisma.video.findUnique({
     where: { id },
     include: { user: true },
@@ -30,20 +43,7 @@ export default async function VideoPage({ params }: Props) {
 
   if (!video) notFound()
 
-  const isOwn = clerkId === video.user.clerkId
-
-  const [moreVideos, clerkUser] = await Promise.all([
-    prisma.video.findMany({
-      where: { userId: video.userId, id: { not: video.id } },
-      orderBy: { createdAt: "desc" },
-      take: 4,
-    }),
-    clerkClient().then((c) => c.users.getUser(video.user.clerkId)),
-  ])
-
-  const avatarUrl = clerkUser.imageUrl
-  const initials  = video.user.displayName
-    .split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
+  const streamReady = video.streamId ? await getStreamReady(video.streamId) : false
 
   const formattedDate = new Date(video.createdAt).toLocaleDateString("en-US", {
     month: "long", day: "numeric", year: "numeric",
@@ -55,7 +55,7 @@ export default async function VideoPage({ params }: Props) {
       {/* ── Player ─────────────────────────────────────────── */}
       <div className="bg-core-black w-full">
         <div className="mx-auto max-w-screen-xl">
-          <VideoPlayer streamId={video.streamId} title={video.title} />
+          <VideoPlayer streamId={video.streamId} title={video.title} streamReady={streamReady} />
         </div>
       </div>
 
@@ -75,10 +75,10 @@ export default async function VideoPage({ params }: Props) {
               {/* Action buttons */}
               <div className="flex shrink-0 items-center gap-1">
                 {[
-                  { icon: <Heart size={15} />,         label: "Like"     },
-                  { icon: <Bookmark size={15} />,      label: "Save"     },
-                  { icon: <Share2 size={15} />,        label: "Share"    },
-                  { icon: <MoreHorizontal size={15} />,label: "More"     },
+                  { icon: <Heart size={15} />,          label: "Like"  },
+                  { icon: <Bookmark size={15} />,       label: "Save"  },
+                  { icon: <Share2 size={15} />,         label: "Share" },
+                  { icon: <MoreHorizontal size={15} />, label: "More"  },
                 ].map(({ icon, label }) => (
                   <button
                     key={label}
@@ -131,110 +131,6 @@ export default async function VideoPage({ params }: Props) {
             </div>
           </div>
 
-          {/* ── Sidebar ── */}
-          <aside className="w-full lg:w-64 xl:w-72 shrink-0 flex flex-col gap-6">
-
-            {/* Creator card */}
-            <div className="rounded-2xl border border-border p-5">
-
-              <Link href={`/${video.user.username}`} className="group flex items-center gap-3">
-                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-spring-green ring-2 ring-green-500 ring-offset-2 flex items-center justify-center">
-                  {avatarUrl ? (
-                    <Image
-                      src={avatarUrl}
-                      alt={video.user.displayName}
-                      width={48}
-                      height={48}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <span className="font-sans font-bold text-sm text-core-black">{initials}</span>
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate font-sans font-bold text-sm text-core-black group-hover:underline">
-                    {video.user.displayName}
-                  </p>
-                  {video.user.role && (
-                    <p className="truncate font-sans text-xs text-foreground/40">{video.user.role}</p>
-                  )}
-                </div>
-              </Link>
-
-              {video.user.bio && (
-                <p className="mt-3 font-sans text-xs leading-relaxed text-foreground/60 line-clamp-3">
-                  {video.user.bio}
-                </p>
-              )}
-
-              {/* Skills */}
-              {video.user.tags.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-1">
-                  {video.user.tags.slice(0, 3).map((tag) => (
-                    <span key={tag} className="rounded-full border border-border px-2 py-0.5 font-sans text-[10px] text-foreground/40">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-4">
-                {isOwn ? (
-                  <Link
-                    href="/dashboard/settings"
-                    className="flex h-9 w-full items-center justify-center rounded-full border border-border font-sans font-medium text-sm text-core-black transition-colors hover:bg-foreground/5"
-                  >
-                    Edit Profile
-                  </Link>
-                ) : (
-                  <button className="h-9 w-full rounded-full bg-spring-green font-sans font-medium text-sm text-core-black transition-colors hover:bg-spring-green/90">
-                    Follow
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* More from creator */}
-            {moreVideos.length > 0 && (
-              <div>
-                <div className="mb-3 flex items-center justify-between">
-                  <p className="font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/40">
-                    More from {video.user.displayName.split(" ")[0]}
-                  </p>
-                  <Link
-                    href={`/${video.user.username}`}
-                    className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors"
-                  >
-                    See all
-                  </Link>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  {moreVideos.map((v) => (
-                    <Link key={v.id} href={`/v/${v.id}`} className="group flex items-center gap-3">
-                      <div className="h-14 w-24 shrink-0 overflow-hidden rounded-lg bg-mist-grey">
-                        {v.thumbnailUrl ? (
-                          <Image
-                            src={v.thumbnailUrl}
-                            alt={v.title}
-                            width={96}
-                            height={56}
-                            className="h-full w-full object-cover transition-opacity group-hover:opacity-80"
-                          />
-                        ) : (
-                          <div className="h-full w-full bg-mist-grey" />
-                        )}
-                      </div>
-                      <p className="flex-1 font-sans text-xs font-medium text-core-black line-clamp-2 leading-snug group-hover:underline">
-                        {v.title}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          </aside>
         </div>
       </div>
     </div>

@@ -24,7 +24,13 @@ model User {
   tags        String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  videos      Video[]
+
+  videos         Video[]
+  threads        Thread[]
+  threadVotes    ThreadVote[]
+  comments       Comment[]
+  commentVotes   CommentVote[]
+  jobs           Job[]
 }
 
 model Video {
@@ -38,4 +44,73 @@ model Video {
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model Thread {
+  id         String       @id @default(cuid())
+  title      String
+  body       String
+  tags       String[]
+  videoUrl   String?
+  imageUrls  String[]
+  riveUrls   String[]
+  voteCount  Int          @default(0)
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments   Comment[]
+  votes      ThreadVote[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model ThreadVote {
+  id        String  @id @default(cuid())
+  value     Int     // 1 = upvote, -1 = downvote
+  userId    String
+  threadId  String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  thread    Thread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, threadId])
+}
+
+model Comment {
+  id              String        @id @default(cuid())
+  body            String
+  voteCount       Int           @default(0)
+  userId          String
+  threadId        String
+  parentCommentId String?
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  thread          Thread        @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  parentComment   Comment?      @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies         Comment[]     @relation("CommentReplies")
+  votes           CommentVote[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model CommentVote {
+  id        String  @id @default(cuid())
+  value     Int     // 1 = upvote, -1 = downvote
+  userId    String
+  commentId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String?
+  type        String   // full-time, part-time, contract, freelance, internship
+  description String
+  applyEmail  String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

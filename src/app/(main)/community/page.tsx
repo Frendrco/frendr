@@ -1,0 +1,120 @@
+import Link from "next/link"
+import Image from "next/image"
+import { auth } from "@clerk/nextjs/server"
+import { MessageSquare } from "lucide-react"
+import { prisma } from "@/lib/prisma"
+import { timeAgo } from "@/lib/utils"
+import { VoteButtons } from "./VoteButtons"
+
+type Props = { searchParams: Promise<{ sort?: string }> }
+
+export default async function CommunityPage({ searchParams }: Props) {
+  const { sort = "recent" } = await searchParams
+  const { userId: clerkId } = await auth()
+
+  const currentUser = clerkId
+    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    : null
+
+  const threads = await prisma.thread.findMany({
+    orderBy: sort === "top" ? { voteCount: "desc" } : { createdAt: "desc" },
+    include: {
+      user: { select: { username: true, displayName: true, avatarUrl: true } },
+      _count: { select: { comments: true } },
+    },
+  })
+
+  const userVotes = currentUser
+    ? await prisma.threadVote.findMany({
+        where: { userId: currentUser.id, threadId: { in: threads.map(t => t.id) } },
+      })
+    : []
+  const voteMap = new Map(userVotes.map(v => [v.threadId, v.value as 1 | -1]))
+
+  return (
+    <div className="flex flex-col gap-0">
+      {/* Sort tabs */}
+      <div className="mb-6 flex gap-1">
+        {(["recent", "top"] as const).map(s => (
+          <Link
+            key={s}
+            href={`/community?sort=${s}`}
+            className={[
+              "inline-flex h-8 items-center rounded-full px-4 font-sans text-xs font-medium capitalize transition-colors",
+              sort === s
+                ? "bg-core-black text-white"
+                : "border border-border text-foreground/50 hover:border-foreground/30 hover:text-foreground",
+            ].join(" ")}
+          >
+            {s === "recent" ? "New" : "Top"}
+          </Link>
+        ))}
+      </div>
+
+      {threads.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 py-24 text-center">
+          <p className="font-sans font-medium text-sm text-core-black">No threads yet</p>
+          <p className="font-sans text-sm text-foreground/40">Be the first to start a discussion.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col divide-y divide-border">
+          {threads.map(thread => (
+            <div key={thread.id} className="flex items-start gap-4 py-5">
+              {/* Vote */}
+              <div className="mt-0.5 shrink-0">
+                <VoteButtons
+                  threadId={thread.id}
+                  initialCount={thread.voteCount}
+                  initialVote={voteMap.get(thread.id) ?? 0}
+                />
+              </div>
+
+              {/* Content */}
+              <div className="min-w-0 flex-1">
+                <Link href={`/community/${thread.id}`} className="group">
+                  <p className="font-sans font-semibold text-sm text-core-black group-hover:underline leading-snug">
+                    {thread.title}
+                  </p>
+                </Link>
+
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {/* Author */}
+                  <Link href={`/${thread.user.username}`} className="flex items-center gap-1.5 hover:opacity-70 transition-opacity">
+                    <div className="h-4 w-4 overflow-hidden rounded-full bg-spring-green shrink-0 flex items-center justify-center">
+                      {thread.user.avatarUrl ? (
+                        <Image src={thread.user.avatarUrl} alt={thread.user.displayName} width={16} height={16} className="h-full w-full object-cover" />
+                      ) : (
+                        <span className="font-sans font-bold text-[6px] text-core-black">
+                          {thread.user.displayName.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-sans text-xs text-foreground/50">{thread.user.displayName}</span>
+                  </Link>
+
+                  <span className="font-sans text-xs text-foreground/30">{timeAgo(thread.createdAt)}</span>
+
+                  <Link href={`/community/${thread.id}`} className="flex items-center gap-1 text-foreground/30 hover:text-foreground/60 transition-colors">
+                    <MessageSquare size={11} />
+                    <span className="font-sans text-xs">{thread._count.comments}</span>
+                  </Link>
+                </div>
+
+                {/* Tags */}
+                {thread.tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {thread.tags.map(tag => (
+                      <span key={tag} className="rounded-full border border-border px-2 py-0.5 font-sans text-[10px] text-foreground/40">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}

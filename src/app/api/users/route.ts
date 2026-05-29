@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server"
+import { auth, clerkClient } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import slugify from "slugify"
 import { prisma } from "@/lib/prisma"
@@ -12,14 +12,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "displayName is required" }, { status: 400 })
   }
 
+  const clerk = await clerkClient()
+  const clerkUser = await clerk.users.getUser(userId)
+  const avatarUrl = clerkUser.imageUrl ?? null
+
   const base = slugify(displayName, { lower: true, strict: true })
   const suffix = Math.floor(1000 + Math.random() * 9000)
   const username = `${base}${suffix}`
 
   const user = await prisma.user.upsert({
     where: { clerkId: userId },
-    update: { displayName, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
-    create: { clerkId: userId, username, displayName, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
+    update: { displayName, avatarUrl, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
+    create: { clerkId: userId, username, displayName, avatarUrl, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
   })
 
   return NextResponse.json(user)
@@ -31,9 +35,14 @@ export async function PATCH(req: Request) {
 
   const { displayName, location, age, bio, website, role, instagram, linkedin, twitter, tags, openToWork } = await req.json()
 
+  const clerk = await clerkClient()
+  const clerkUser = await clerk.users.getUser(userId)
+  const avatarUrl = clerkUser.imageUrl ?? null
+
   const user = await prisma.user.update({
     where: { clerkId: userId },
     data: {
+      avatarUrl,
       ...(displayName && { displayName }),
       location: location ?? null,
       age: age ? Number(age) : null,
