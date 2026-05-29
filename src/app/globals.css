@@ -1,26 +1,313 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─────────────────────────────────────────────────────────
+ * FONT FACES
+ * ───────────────────────────────────────────────────────── */
+
+/* Louize — Display / Titles (205TF) */
+@font-face {
+  font-family: "Louize";
+  src: url("/fonts/205TF-Louize-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
+@font-face {
+  font-family: "Louize";
+  src: url("/fonts/205TF-Louize-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Louize";
+  src: url("/fonts/205TF-Louize-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Louize";
+  src: url("/fonts/205TF-Louize-BoldItalic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* PP Neue Montreal — Body / UI (Pangram Pangram) */
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("/fonts/PPNeueMontreal-Book.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("/fonts/PPNeueMontreal-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("/fonts/PPNeueMontreal-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * ─────────────────────────────────────────────────────────
+ * FRENDR DESIGN SYSTEM — Color Tokens v1
+ * ─────────────────────────────────────────────────────────
+ * PRIMARY
+ *   Spring Green   #5CE65C
+ *   Core Black     #000000
+ *   Mist Grey      #F1ECE9
+ *   White          #FFFFFF
+ *
+ * SECONDARY
+ *   Winter Green   #B9FFB2
+ *   Bloom Lavender #EDC1F6
+ *   Sky Blue       #ADD8F6
+ *   Sunny Yellow   #FFDC7C
+ *   Hyper Blue     #619EF1
+ *   Dream Lilac    #DCE0FA
+ * ─────────────────────────────────────────────────────────
+ */
 
 @theme inline {
+  /* ── Fonts ── */
+  --font-sans:    "PP Neue Montreal", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Louize", ui-serif, Georgia, serif;
+  --font-mono:    ui-monospace, "Cascadia Code", monospace;
+
+  /* ── Type scale (from brand guide) ── */
+  /* Display Large  — Louize Regular,  96px, leading 95%, tracking -5% */
+  /* Display Poster — Louize Bold,     96px, leading 57%, tracking -5% */
+  /* Display Medium — Louize Bold,     64px, leading 95%, tracking -5% */
+  /* Display Small  — Louize Bold,     40px, leading 95%, tracking -2% */
+  /* Body           — PP Neue Montreal Medium, sentence case            */
+  --font-size-display-lg:  6rem;        /* 96px */
+  --font-size-display-md:  4rem;        /* 64px */
+  --font-size-display-sm:  2.5rem;      /* 40px */
+
+  /* ── Semantic tokens (used by shadcn components) ── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-display);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* ── Frendr brand palette (direct Tailwind classes) ──── */
+  /* bg-spring-green  text-core-black  bg-mist-grey  etc.  */
+
+  /* Primary */
+  --color-spring-green:    #5CE65C;
+  --color-core-black:      #000000;
+  --color-mist-grey:       #F1ECE9;
+  --color-white:           #FFFFFF;
+
+  /* Secondary */
+  --color-winter-green:    #B9FFB2;
+  --color-bloom-lavender:  #EDC1F6;
+  --color-sky-blue:        #ADD8F6;
+  --color-sunny-yellow:    #FFDC7C;
+  --color-hyper-blue:      #619EF1;
+  --color-dream-lilac:     #DCE0FA;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ─────────────────────────────────────────────────────────
+ * LIGHT MODE
+ * Mist Grey background · Core Black text · Spring Green primary
+ * ───────────────────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --background:           #F1ECE9;   /* Mist Grey */
+  --foreground:           #000000;   /* Core Black */
+  --card:                 #FFFFFF;   /* White */
+  --card-foreground:      #000000;
+  --popover:              #FFFFFF;
+  --popover-foreground:   #000000;
+
+  /* Primary — Spring Green */
+  --primary:              #5CE65C;
+  --primary-foreground:   #000000;   /* black text on green */
+
+  /* Secondary — Winter Green */
+  --secondary:            #B9FFB2;
+  --secondary-foreground: #000000;
+
+  /* Muted surfaces */
+  --muted:                #E4DFDb;
+  --muted-foreground:     #5C5C5C;
+
+  /* Accent — Sunny Yellow */
+  --accent:               #FFDC7C;
+  --accent-foreground:    #000000;
+
+  /* Destructive */
+  --destructive:          oklch(0.577 0.245 27.325);
+
+  /* Borders & inputs */
+  --border:               #D8D3CF;
+  --input:                #D8D3CF;
+  --ring:                 #5CE65C;   /* focus ring = Spring Green */
+
+  /* Radius */
+  --radius:               0.5rem;
+
+  /* Charts — full brand palette */
+  --chart-1:              #5CE65C;   /* Spring Green */
+  --chart-2:              #619EF1;   /* Hyper Blue */
+  --chart-3:              #FFDC7C;   /* Sunny Yellow */
+  --chart-4:              #EDC1F6;   /* Bloom Lavender */
+  --chart-5:              #DCE0FA;   /* Dream Lilac */
+
+  /* Sidebar */
+  --sidebar:                    #E8E3E0;
+  --sidebar-foreground:         #000000;
+  --sidebar-primary:            #5CE65C;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent:             #E4DFDb;
+  --sidebar-accent-foreground:  #000000;
+  --sidebar-border:             #D8D3CF;
+  --sidebar-ring:               #5CE65C;
+}
+
+/* ─────────────────────────────────────────────────────────
+ * DARK MODE
+ * Core Black background · Mist Grey text · Spring Green primary
+ * ───────────────────────────────────────────────────────── */
+.dark {
+  /* Surfaces */
+  --background:           #000000;   /* Core Black */
+  --foreground:           #F1ECE9;   /* Mist Grey */
+  --card:                 #111111;
+  --card-foreground:      #F1ECE9;
+  --popover:              #1A1A1A;
+  --popover-foreground:   #F1ECE9;
+
+  /* Primary — Spring Green (same in dark) */
+  --primary:              #5CE65C;
+  --primary-foreground:   #000000;
+
+  /* Secondary — dark elevated surface */
+  --secondary:            #1C1C1C;
+  --secondary-foreground: #F1ECE9;
+
+  /* Muted surfaces */
+  --muted:                #1A1A1A;
+  --muted-foreground:     #888888;
+
+  /* Accent — dark elevated */
+  --accent:               #242424;
+  --accent-foreground:    #F1ECE9;
+
+  /* Destructive */
+  --destructive:          oklch(0.704 0.191 22.216);
+
+  /* Borders & inputs */
+  --border:               rgba(255, 255, 255, 0.10);
+  --input:                rgba(255, 255, 255, 0.12);
+  --ring:                 #5CE65C;
+
+  /* Charts */
+  --chart-1:              #5CE65C;
+  --chart-2:              #619EF1;
+  --chart-3:              #FFDC7C;
+  --chart-4:              #EDC1F6;
+  --chart-5:              #DCE0FA;
+
+  /* Sidebar */
+  --sidebar:                    #0A0A0A;
+  --sidebar-foreground:         #F1ECE9;
+  --sidebar-primary:            #5CE65C;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent:             #1A1A1A;
+  --sidebar-accent-foreground:  #F1ECE9;
+  --sidebar-border:             rgba(255, 255, 255, 0.08);
+  --sidebar-ring:               #5CE65C;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
+  body {
+    @apply bg-background text-foreground font-sans font-medium antialiased;
+  }
+  html {
+    @apply font-sans;
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* ── Display type helpers ─────────────────────────────── */
+  /* Usage: <h1 className="display-lg">Real craft.</h1>     */
+  .display-lg {
+    font-family: "Louize", ui-serif, serif;
+    font-size: 6rem;          /* 96px */
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+  }
+  .display-lg-bold {
+    font-family: "Louize", ui-serif, serif;
+    font-size: 6rem;          /* 96px — poster/social */
+    font-weight: 700;
+    line-height: 0.57;
+    letter-spacing: -0.05em;
+  }
+  .display-md {
+    font-family: "Louize", ui-serif, serif;
+    font-size: 4rem;          /* 64px */
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+  }
+  .display-sm {
+    font-family: "Louize", ui-serif, serif;
+    font-size: 2.5rem;        /* 40px */
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
 }
