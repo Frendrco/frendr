@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useClerk, useUser } from "@clerk/nextjs"
-import { Settings, Video, ListVideo, LogOut } from "lucide-react"
+import { Settings, Video, ListVideo, LogOut, Menu, Mail } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,7 +40,10 @@ export function UserMenuDropdown({ username, displayName }: Props) {
         className="h-full w-full object-cover"
       />
     ) : (
-      <div className="flex h-full w-full items-center justify-center bg-spring-green font-sans font-bold text-core-black" style={{ fontSize: size * 0.35 }}>
+      <div
+        className="flex h-full w-full items-center justify-center bg-spring-green font-sans font-bold text-core-black"
+        style={{ fontSize: size * 0.35 }}
+      >
         {initials}
       </div>
     )
@@ -48,61 +51,68 @@ export function UserMenuDropdown({ username, displayName }: Props) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="h-8 w-8 overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spring-green focus-visible:ring-offset-2">
-        <Avatar size={32} />
+      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border border-border bg-white px-2 py-1 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spring-green focus-visible:ring-offset-2">
+        <Menu size={16} className="text-foreground/60" />
+        <div className="h-7 w-7 overflow-hidden rounded-full">
+          <Avatar size={28} />
+        </div>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent
-        align="end"
-        sideOffset={8}
-        className="min-w-[200px] w-52 p-1.5"
-      >
-        {/* Identity block */}
-        <div className="flex flex-col items-center gap-2 px-2 py-3">
-          <div className="h-10 w-10 overflow-hidden rounded-full">
-            <Avatar size={40} />
-          </div>
-          <span className="font-sans font-semibold text-sm text-core-black">
-            {displayName}
-          </span>
-        </div>
-
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="end" sideOffset={8} className="w-48 p-1">
 
         <DropdownMenuItem
-          className="gap-2.5 px-2 py-2 font-sans text-sm cursor-pointer"
+          className="justify-between px-3 py-1.5 cursor-pointer"
+          onClick={() => router.push(username ? `/${username}` : "/onboarding")}
+        >
+          <span className="font-sans text-sm">View Profile</span>
+          <div className="h-5 w-5 overflow-hidden rounded-full">
+            <Avatar size={20} />
+          </div>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className="justify-between px-3 py-1.5 cursor-pointer"
           onClick={() => router.push("/dashboard/settings")}
         >
-          <Settings size={14} className="shrink-0 text-foreground/40" />
-          Settings
+          <span className="font-sans text-sm">Settings</span>
+          <Settings size={16} strokeWidth={1.5} className="text-foreground/40" />
         </DropdownMenuItem>
 
         <DropdownMenuItem
-          className="gap-2.5 px-2 py-2 font-sans text-sm cursor-pointer"
+          className="justify-between px-3 py-1.5 cursor-pointer"
           onClick={() => router.push(`/${username}`)}
         >
-          <Video size={14} className="shrink-0 text-foreground/40" />
-          My Videos
+          <span className="font-sans text-sm">My Videos</span>
+          <Video size={16} strokeWidth={1.5} className="text-foreground/40" />
         </DropdownMenuItem>
 
         <DropdownMenuItem
-          className="gap-2.5 px-2 py-2 font-sans text-sm cursor-pointer"
+          className="justify-between px-3 py-1.5 cursor-pointer"
           onClick={() => router.push(`/${username}/playlists`)}
         >
-          <ListVideo size={14} className="shrink-0 text-foreground/40" />
-          My Playlists
+          <span className="font-sans text-sm">My Playlists</span>
+          <ListVideo size={16} strokeWidth={1.5} className="text-foreground/40" />
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className="justify-between px-3 py-1.5 cursor-pointer"
+          onClick={() => router.push("/contact")}
+        >
+          <span className="font-sans text-sm">Contact Us</span>
+          <Mail size={16} strokeWidth={1.5} className="text-foreground/40" />
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
           variant="destructive"
-          className="gap-2.5 px-2 py-2 font-sans text-sm cursor-pointer"
+          className="justify-between px-3 py-1.5 cursor-pointer"
           onClick={() => signOut(() => router.push("/"))}
         >
-          <LogOut size={14} className="shrink-0" />
-          Log out
+          <span className="font-sans text-sm">Log Out</span>
+          <LogOut size={16} strokeWidth={1.5} />
         </DropdownMenuItem>
+
       </DropdownMenuContent>
     </DropdownMenu>
   )
