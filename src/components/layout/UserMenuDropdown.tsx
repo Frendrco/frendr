@@ -51,7 +51,7 @@ export function UserMenuDropdown({ username, displayName }: Props) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border border-border bg-white px-2 py-1 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spring-green focus-visible:ring-offset-2">
+      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur px-2 py-1 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spring-green focus-visible:ring-offset-2">
         <Menu size={16} className="text-foreground/60" />
         <div className="h-7 w-7 overflow-hidden rounded-full">
           <Avatar size={28} />

@@ -40,8 +40,10 @@ function NavLink({ href, label }: { href: string; label: string }) {
 
 export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
   const { isSignedIn } = useAuth()
+  const pathname = usePathname()
+  const isHome = pathname === "/"
   return (
-    <header className="sticky top-0 z-50 w-full bg-white">
+    <header className={cn("sticky top-0 z-50 w-full", isHome ? "bg-transparent" : "bg-white")}>
       <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between gap-4 px-4 md:px-6">
 
         {/* ── Left: Symbol pill + Nav pill ── */}
@@ -50,13 +52,13 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
           {/* Symbol — standalone circle pill */}
           <Link
             href="/"
-            className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm"
+            className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur"
           >
             <Logo variant="symbol" height={22} colour="auto" priority />
           </Link>
 
           {/* Nav links pill */}
-          <nav className="hidden md:flex items-center gap-6 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm px-5 h-10">
+          <nav className="hidden md:flex items-center gap-6 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur px-5 h-10">
             {NAV_LINKS.map((link) => {
               if (link.requiresAuth && !isSignedIn) return null
               return <NavLink key={link.href} href={link.href} label={link.label} />
@@ -68,7 +70,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
         {/* ── Center: Search pill ── */}
         <Link
           href="/search"
-          className="hidden md:flex flex-1 max-w-xs items-center gap-2 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm h-10 px-4 text-sm text-foreground/40 hover:text-foreground/60 hover:border-black/20 dark:hover:border-white/20 transition-colors"
+          className="hidden md:flex flex-1 max-w-xs items-center gap-2 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur h-10 px-4 text-sm text-foreground/40 hover:text-foreground/60 hover:border-black/20 dark:hover:border-white/20 transition-colors"
         >
           <Search size={15} className="shrink-0" />
           <span className="font-sans font-medium">Search creators…</span>
@@ -82,7 +84,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
               {/* Messages */}
               <Link
                 href="/messages"
-                className="hidden md:flex h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm text-foreground/50 hover:text-foreground transition-colors"
+                className="hidden md:flex h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur text-foreground/50 hover:text-foreground transition-colors"
                 aria-label="Messages"
               >
                 <MessageCircle size={17} />
@@ -91,7 +93,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
               {/* Notifications */}
               <Link
                 href="/notifications"
-                className="hidden md:flex h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm text-foreground/50 hover:text-foreground transition-colors"
+                className="hidden md:flex h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur text-foreground/50 hover:text-foreground transition-colors"
                 aria-label="Notifications"
               >
                 <Bell size={17} />
@@ -104,7 +106,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
             <div className="hidden md:flex items-center gap-2">
               <Link
                 href="/sign-in"
-                className="h-9 inline-flex items-center px-4 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm font-sans font-medium text-sm text-foreground hover:border-black/20 dark:hover:border-white/20 transition-colors"
+                className="h-9 inline-flex items-center px-4 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur font-sans font-medium text-sm text-foreground hover:border-black/20 dark:hover:border-white/20 transition-colors"
               >
                 Login
               </Link>
@@ -125,7 +127,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
           {/* ── Mobile menu ── */}
           <Sheet>
             <SheetTrigger
-              className="flex md:hidden h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur shadow-sm text-foreground/60 hover:text-foreground transition-colors"
+              className="flex md:hidden h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur text-foreground/60 hover:text-foreground transition-colors"
               aria-label="Open menu"
             >
               <Menu size={20} />
