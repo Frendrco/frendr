@@ -5,6 +5,7 @@ import { MessageSquare } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { timeAgo } from "@/lib/utils"
 import { VoteButtons } from "./VoteButtons"
+import { SaveThreadButton } from "./SaveThreadButton"
 
 type Props = { searchParams: Promise<{ sort?: string }> }
 
@@ -24,12 +25,17 @@ export default async function CommunityPage({ searchParams }: Props) {
     },
   })
 
-  const userVotes = currentUser
-    ? await prisma.threadVote.findMany({
-        where: { userId: currentUser.id, threadId: { in: threads.map(t => t.id) } },
-      })
-    : []
+  const threadIds = threads.map(t => t.id)
+  const [userVotes, savedThreads] = await Promise.all([
+    currentUser
+      ? prisma.threadVote.findMany({ where: { userId: currentUser.id, threadId: { in: threadIds } } })
+      : [],
+    currentUser
+      ? prisma.savedThread.findMany({ where: { userId: currentUser.id, threadId: { in: threadIds } }, select: { threadId: true } })
+      : [],
+  ])
   const voteMap = new Map(userVotes.map(v => [v.threadId, v.value as 1 | -1]))
+  const savedSet = new Set(savedThreads.map(s => s.threadId))
 
   return (
     <div className="flex flex-col gap-0">
@@ -98,6 +104,9 @@ export default async function CommunityPage({ searchParams }: Props) {
                     <MessageSquare size={13} />
                     <span className="font-sans text-sm">{thread._count.comments}</span>
                   </Link>
+                  {currentUser && (
+                    <SaveThreadButton threadId={thread.id} initialSaved={savedSet.has(thread.id)} />
+                  )}
                 </div>
 
                 {/* Tags */}

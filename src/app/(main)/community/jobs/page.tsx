@@ -4,6 +4,7 @@ import { MapPin } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { timeAgo, cn } from "@/lib/utils"
 import { JobActions } from "./JobActions"
+import { SaveJobButton } from "./SaveJobButton"
 
 const TYPE_LABELS: Record<string, string> = {
   "full-time":  "Full-time",
@@ -29,6 +30,11 @@ export default async function JobsPage({ searchParams }: Props) {
     }),
     clerkId ? prisma.user.findUnique({ where: { clerkId }, select: { id: true } }) : null,
   ])
+
+  const savedJobIds = currentUser
+    ? (await prisma.savedJob.findMany({ where: { userId: currentUser.id, jobId: { in: jobs.map(j => j.id) } }, select: { jobId: true } })).map(s => s.jobId)
+    : []
+  const savedJobSet = new Set(savedJobIds)
 
   return (
     <div>
@@ -89,14 +95,19 @@ export default async function JobsPage({ searchParams }: Props) {
                   </div>
 
                   <div className="flex shrink-0 flex-col items-end gap-2">
-                    {job.applyEmail && (
-                      <a
-                        href={`mailto:${job.applyEmail}`}
-                        className="inline-flex h-8 items-center rounded-full bg-spring-green px-4 font-sans font-medium text-xs text-core-black transition-colors hover:bg-spring-green/90"
-                      >
-                        Apply
-                      </a>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {currentUser && (
+                        <SaveJobButton jobId={job.id} initialSaved={savedJobSet.has(job.id)} />
+                      )}
+                      {job.applyEmail && (
+                        <a
+                          href={`mailto:${job.applyEmail}`}
+                          className="inline-flex h-8 items-center rounded-full bg-spring-green px-4 font-sans font-medium text-xs text-core-black transition-colors hover:bg-spring-green/90"
+                        >
+                          Apply
+                        </a>
+                      )}
+                    </div>
                     {isOwner && <JobActions jobId={job.id} />}
                   </div>
                 </div>

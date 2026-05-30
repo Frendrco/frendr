@@ -30,7 +30,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
           )}
         </div>
 
-        <CommunityNav />
+        <CommunityNav isSignedIn={!!userId} />
 
         <div className="py-8">{children}</div>
 

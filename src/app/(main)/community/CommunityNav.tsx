@@ -4,18 +4,30 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-const TABS = [
+const BASE_TABS = [
   { label: "Discussions", href: "/community" },
   { label: "Jobs",        href: "/community/jobs" },
 ]
 
-export function CommunityNav() {
+type Props = { isSignedIn?: boolean }
+
+export function CommunityNav({ isSignedIn = false }: Props) {
   const pathname = usePathname()
+
+  const tabs = isSignedIn
+    ? [...BASE_TABS, { label: "Saved", href: "/community/saved" }]
+    : BASE_TABS
 
   return (
     <div className="flex gap-1 border-b border-border">
-      {TABS.map(({ label, href }) => {
-        const active = href === "/community" ? pathname === "/community" || (pathname.startsWith("/community/") && !pathname.startsWith("/community/jobs")) : pathname.startsWith(href)
+      {tabs.map(({ label, href }) => {
+        const active =
+          href === "/community"
+            ? pathname === "/community" ||
+              (pathname.startsWith("/community/") &&
+                !pathname.startsWith("/community/jobs") &&
+                !pathname.startsWith("/community/saved"))
+            : pathname.startsWith(href)
         return (
           <Link
             key={href}
