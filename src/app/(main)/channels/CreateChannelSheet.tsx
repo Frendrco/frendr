@@ -3,7 +3,7 @@
 import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Globe, Lock, Loader2, X, Search, ChevronRight, ChevronLeft } from "lucide-react"
+import { Globe, Lock, Loader2, X, Search, ChevronRight, ChevronLeft, ImagePlus, Sparkles } from "lucide-react"
 import {
   Sheet,
   SheetContent,
@@ -11,36 +11,33 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 
-const COLORS = [
-  { name: "bloom-lavender", bg: "bg-bloom-lavender", label: "Lavender" },
-  { name: "sky-blue",       bg: "bg-sky-blue",       label: "Sky" },
-  { name: "spring-green",   bg: "bg-spring-green",   label: "Green" },
-  { name: "winter-green",   bg: "bg-winter-green",   label: "Mint" },
-  { name: "sunny-yellow",   bg: "bg-sunny-yellow",   label: "Yellow" },
-  { name: "hyper-blue",     bg: "bg-hyper-blue",     label: "Blue" },
-  { name: "dream-lilac",    bg: "bg-dream-lilac",    label: "Lilac" },
-]
-
 type UserResult = { id: string; username: string; displayName: string; avatarUrl: string | null }
 
 type Props = {
   open: boolean
   onOpenChange: (open: boolean) => void
+  isAdmin?: boolean
 }
 
-export function CreateChannelSheet({ open, onOpenChange }: Props) {
+export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Props) {
   const router = useRouter()
   const [step, setStep] = useState(1)
 
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [color, setColor] = useState(COLORS[0].name)
   const [isPublic, setIsPublic] = useState(true)
+  const [isFrendrPick, setIsFrendrPick] = useState(false)
   const [adminSearch, setAdminSearch] = useState("")
   const [searchResults, setSearchResults] = useState<UserResult[]>([])
   const [selectedAdmins, setSelectedAdmins] = useState<UserResult[]>([])
   const [searching, setSearching] = useState(false)
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const [coverPreview, setCoverPreview] = useState<string | null>(null)
+  const [coverUrl, setCoverUrl] = useState<string | null>(null)
+  const [coverUploading, setCoverUploading] = useState(false)
+  const [coverError, setCoverError] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -49,11 +46,15 @@ export function CreateChannelSheet({ open, onOpenChange }: Props) {
     setStep(1)
     setName("")
     setDescription("")
-    setColor(COLORS[0].name)
     setIsPublic(true)
+    setIsFrendrPick(false)
     setAdminSearch("")
     setSearchResults([])
     setSelectedAdmins([])
+    setCoverPreview(null)
+    setCoverUrl(null)
+    setCoverUploading(false)
+    setCoverError("")
     setError("")
   }
 
@@ -90,6 +91,41 @@ export function CreateChannelSheet({ open, onOpenChange }: Props) {
     setSelectedAdmins((prev) => prev.filter((u) => u.id !== id))
   }
 
+  async function handleCoverSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setCoverError("")
+    setCoverPreview(URL.createObjectURL(file))
+    setCoverUploading(true)
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const res = await fetch("/api/channels/upload-cover", {
+        method: "POST",
+        body: formData,
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? "Upload failed")
+      setCoverUrl(data.coverUrl)
+    } catch (err) {
+      setCoverError(err instanceof Error ? err.message : "Upload failed. Please try again.")
+      setCoverPreview(null)
+    } finally {
+      setCoverUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
+  function clearCover() {
+    setCoverPreview(null)
+    setCoverUrl(null)
+    setCoverError("")
+    if (fileInputRef.current) fileInputRef.current.value = ""
+  }
+
   async function submit() {
     if (!name.trim()) return
     setLoading(true)
@@ -102,7 +138,8 @@ export function CreateChannelSheet({ open, onOpenChange }: Props) {
           name: name.trim(),
           description: description.trim() || undefined,
           isPublic,
-          color,
+          type: isFrendrPick ? "admin" : "user",
+          coverUrl: coverUrl ?? undefined,
           admins: selectedAdmins.map((u) => u.id),
         }),
       })
@@ -145,9 +182,32 @@ export function CreateChannelSheet({ open, onOpenChange }: Props) {
         {/* Step content */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
 
-          {/* Step 1 — Basics + Color */}
+          {/* Step 1 — Basics + Cover */}
           {step === 1 && (
             <div className="flex flex-col gap-5">
+
+              {/* Admin-only Frendr Picks toggle */}
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setIsFrendrPick((v) => !v)}
+                  className={`flex items-start gap-3 rounded-xl border p-4 text-left transition-colors ${
+                    isFrendrPick ? "border-spring-green bg-spring-green/10" : "border-border hover:border-foreground/30"
+                  }`}
+                >
+                  <Sparkles size={16} className={`mt-0.5 shrink-0 ${isFrendrPick ? "text-core-black" : "text-foreground/40"}`} />
+                  <div>
+                    <p className="font-sans font-medium text-sm text-core-black">Mark as Frendr Pick</p>
+                    <p className="font-sans text-xs text-foreground/50 mt-0.5">
+                      Appears in the editorial Frendr Picks tab
+                    </p>
+                  </div>
+                  <div className={`ml-auto mt-0.5 h-4 w-4 rounded-full border-2 shrink-0 ${
+                    isFrendrPick ? "border-spring-green bg-spring-green" : "border-foreground/30"
+                  }`} />
+                </button>
+              )}
+
               <div className="flex flex-col gap-1.5">
                 <label className="font-sans text-xs font-medium text-core-black">Channel name</label>
                 <input
@@ -174,28 +234,58 @@ export function CreateChannelSheet({ open, onOpenChange }: Props) {
                 />
               </div>
 
+              {/* Cover image upload */}
               <div className="flex flex-col gap-2">
-                <label className="font-sans text-xs font-medium text-core-black">Channel colour</label>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {COLORS.map((c) => (
-                    <button
-                      key={c.name}
-                      type="button"
-                      title={c.label}
-                      onClick={() => setColor(c.name)}
-                      className={`h-8 w-8 rounded-full ${c.bg} transition-all ${
-                        color === c.name
-                          ? "ring-2 ring-offset-2 ring-core-black scale-110"
-                          : "hover:scale-105"
-                      }`}
+                <label className="font-sans text-xs font-medium text-core-black">
+                  Cover image <span className="font-normal text-foreground/40">(optional)</span>
+                </label>
+
+                <input
+                  ref={fileInputRef}
+                  id="cover-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="sr-only"
+                  onChange={handleCoverSelect}
+                />
+
+                {coverPreview ? (
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden">
+                    <Image
+                      src={coverPreview}
+                      alt="Cover preview"
+                      fill
+                      className="object-cover"
                     />
-                  ))}
-                </div>
-                <div className={`mt-1 h-20 w-full rounded-xl ${COLORS.find((c) => c.name === color)?.bg ?? ""} flex items-end p-3`}>
-                  <span className="font-sans font-semibold text-sm text-core-black/70 truncate">
-                    {name || "Channel preview"}
-                  </span>
-                </div>
+                    {coverUploading && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <Loader2 size={20} className="animate-spin text-white" />
+                      </div>
+                    )}
+                    {!coverUploading && (
+                      <button
+                        type="button"
+                        onClick={clearCover}
+                        className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/60 flex items-center justify-center hover:bg-black/80 transition-colors"
+                      >
+                        <X size={12} className="text-white" />
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <label
+                    htmlFor="cover-upload"
+                    className="flex flex-col items-center justify-center gap-2 aspect-video w-full rounded-xl border border-dashed border-border hover:border-foreground/30 transition-colors cursor-pointer"
+                  >
+                    <ImagePlus size={20} className="text-foreground/30" />
+                    <span className="font-sans text-xs text-foreground/40">Click to upload</span>
+                    <span className="font-sans text-[10px] text-foreground/30">JPG, PNG or WebP</span>
+                  </label>
+                )}
+
+                {coverError && (
+                  <p className="font-sans text-xs text-red-500">{coverError}</p>
+                )}
               </div>
             </div>
           )}
@@ -366,7 +456,7 @@ export function CreateChannelSheet({ open, onOpenChange }: Props) {
               <button
                 type="button"
                 onClick={submit}
-                disabled={loading}
+                disabled={loading || coverUploading}
                 className="inline-flex items-center gap-2 h-9 px-5 rounded-full bg-spring-green font-sans font-medium text-sm text-core-black disabled:opacity-40 transition-opacity"
               >
                 {loading && <Loader2 size={14} className="animate-spin" />}

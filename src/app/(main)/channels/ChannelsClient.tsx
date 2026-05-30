@@ -38,14 +38,15 @@ type Props = {
   adminChannels: ChannelData[]
   userChannels: ChannelData[]
   isSignedIn: boolean
+  isAdmin?: boolean
 }
 
-export function ChannelsClient({ adminChannels, userChannels, isSignedIn }: Props) {
+export function ChannelsClient({ adminChannels, userChannels, isSignedIn, isAdmin = false }: Props) {
   const [sheetOpen, setSheetOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-background">
-      <CreateChannelSheet open={sheetOpen} onOpenChange={setSheetOpen} />
+      <CreateChannelSheet open={sheetOpen} onOpenChange={setSheetOpen} isAdmin={isAdmin} />
 
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-12">
 

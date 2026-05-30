@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { VideoCard } from "@/components/common/VideoCard"
 import { ChannelFollowButton } from "./ChannelFollowButton"
 import { AddVideoToChannelButton } from "./AddVideoToChannelButton"
+import { ChannelSettings } from "./ChannelSettings"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -121,6 +122,18 @@ export default async function ChannelPage({ params }: Props) {
           </div>
 
           <div className="flex items-center gap-2">
+            {isOwner && (
+              <ChannelSettings
+                channel={{
+                  id: channel.id,
+                  name: channel.name,
+                  description: channel.description,
+                  coverUrl: channel.coverUrl,
+                  isPublic: channel.isPublic,
+                }}
+                canDelete={isOwner || isSiteAdmin}
+              />
+            )}
             {canManage && <AddVideoToChannelButton channelId={channel.id} />}
             {currentUser && (
               <ChannelFollowButton

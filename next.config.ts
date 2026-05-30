@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       { hostname: "img.clerk.com"          },
       { hostname: "videodelivery.net"      },
       { hostname: "imagedelivery.net"      },
+      { hostname: "*.r2.dev"               },
     ],
   },
 };
