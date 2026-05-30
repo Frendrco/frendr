@@ -4,22 +4,16 @@ import React, { useState, useRef } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@clerk/nextjs"
-import { Search, Bell, MessageCircle, Menu } from "lucide-react"
+import { Search, Bell, MessageCircle, Upload } from "lucide-react"
 
 import { Logo } from "@/components/common/Logo"
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetClose,
-} from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
-  { label: "Discover", href: "/search", requiresAuth: false },
-  { label: "Channels", href: "/channels", requiresAuth: false },
-  { label: "Community", href: "/community", requiresAuth: false },
-  { label: "Following", href: "/feed", requiresAuth: true },
+  { label: "Discover",   href: "/search",    requiresAuth: false },
+  { label: "Channels",   href: "/channels",  requiresAuth: false },
+  { label: "Community",  href: "/community", requiresAuth: false },
+  { label: "Following",  href: "/feed",      requiresAuth: true  },
 ]
 
 function NavLink({ href, label }: { href: string; label: string }) {
@@ -55,6 +49,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
     const q = searchQuery.trim()
     router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/search")
   }
+
   return (
     <header className={cn("sticky top-0 z-50 w-full", isHome ? "bg-transparent" : "bg-white")}>
       <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between gap-4 px-4 md:px-6">
@@ -85,17 +80,13 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
           onSubmit={handleSearch}
           className="hidden md:flex relative flex-1 max-w-xs rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur h-10 hover:border-black/20 dark:hover:border-white/20 transition-colors"
         >
-          {/* Centered icon + label — visible when empty and unfocused */}
           {!searchActive && (
-            <div
-              className="absolute inset-0 flex items-center justify-center gap-2 text-foreground/40 cursor-text pointer-events-none"
-            >
+            <div className="absolute inset-0 flex items-center justify-center gap-2 text-foreground/40 cursor-text pointer-events-none">
               <Search size={15} className="shrink-0" />
               <span className="font-sans font-medium text-sm">Search creators & videos…</span>
             </div>
           )}
 
-          {/* Icon anchored left — visible when active */}
           {searchActive && (
             <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           )}
@@ -120,6 +111,15 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
 
           {isSignedIn ? (
             <>
+              {/* Upload */}
+              <Link
+                href="/dashboard/upload"
+                className="hidden md:inline-flex h-9 items-center gap-1.5 px-4 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm hover:bg-spring-green/90 transition-colors"
+              >
+                <Upload size={14} />
+                Upload
+              </Link>
+
               {/* Messages */}
               <Link
                 href="/messages"
@@ -138,7 +138,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
                 <Bell size={17} />
               </Link>
 
-              {/* User avatar */}
+              {/* Avatar / user menu */}
               {userMenu}
             </>
           ) : (
@@ -163,93 +163,6 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
             </div>
           )}
 
-          {/* ── Mobile menu ── */}
-          <Sheet>
-            <SheetTrigger
-              className="flex md:hidden h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur text-foreground/60 hover:text-foreground transition-colors"
-              aria-label="Open menu"
-            >
-              <Menu size={20} />
-            </SheetTrigger>
-            <SheetContent side="right" className="w-72 flex flex-col gap-0 p-0">
-
-              {/* Sheet header */}
-              <div className="flex items-center border-b border-border px-6 py-4">
-                <Logo variant="wordmark" height={24} colour="auto" />
-              </div>
-
-              {/* Sheet nav links */}
-              <nav className="flex flex-col gap-1 px-4 py-4">
-                {NAV_LINKS.map((link) => {
-                  if (link.requiresAuth && !isSignedIn) return null
-                  return (
-                    <SheetClose key={link.href}>
-                      <Link
-                        href={link.href}
-                        className="flex h-10 w-full items-center rounded-lg px-3 font-sans font-medium text-sm text-foreground/70 hover:bg-muted hover:text-foreground transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    </SheetClose>
-                  )
-                })}
-                <SheetClose>
-                  <Link
-                    href="/search"
-                    className="flex h-10 w-full items-center gap-2 rounded-lg px-3 font-sans font-medium text-sm text-foreground/70 hover:bg-muted hover:text-foreground transition-colors"
-                  >
-                    <Search size={16} />
-                    Search
-                  </Link>
-                </SheetClose>
-              </nav>
-
-              {/* Sheet auth */}
-              <div className="mt-auto border-t border-border px-4 py-4 flex flex-col gap-2">
-                {isSignedIn ? (
-                  <>
-                    <SheetClose>
-                      <Link
-                        href="/messages"
-                        className="flex h-10 w-full items-center gap-3 rounded-lg px-3 font-sans font-medium text-sm text-foreground/70 hover:bg-muted hover:text-foreground transition-colors"
-                      >
-                        <MessageCircle size={16} />
-                        Messages
-                      </Link>
-                    </SheetClose>
-                    <SheetClose>
-                      <Link
-                        href="/notifications"
-                        className="flex h-10 w-full items-center gap-3 rounded-lg px-3 font-sans font-medium text-sm text-foreground/70 hover:bg-muted hover:text-foreground transition-colors"
-                      >
-                        <Bell size={16} />
-                        Notifications
-                      </Link>
-                    </SheetClose>
-                  </>
-                ) : (
-                  <>
-                    <SheetClose>
-                      <Link
-                        href="/sign-up"
-                        className="flex h-10 w-full items-center justify-center rounded-full bg-core-black text-white font-sans font-medium text-sm transition-colors hover:bg-core-black/80"
-                      >
-                        Sign up
-                      </Link>
-                    </SheetClose>
-                    <SheetClose>
-                      <Link
-                        href="/sign-in"
-                        className="flex h-10 w-full items-center justify-center rounded-full border border-border font-sans font-medium text-sm transition-colors hover:bg-muted"
-                      >
-                        Login
-                      </Link>
-                    </SheetClose>
-                  </>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
     </header>

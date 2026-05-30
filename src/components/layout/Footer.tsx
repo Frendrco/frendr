@@ -4,7 +4,7 @@ import { Logo } from "@/components/common/Logo"
 
 const SOCIAL_LINKS = [
   { label: "Instagram", href: "https://instagram.com/frendr" },
-  { label: "Second Hold", href: "https://www.secondhold.com" },
+  { label: "Contact Us", href: "/contact" },
 ]
 
 const LEGAL_LINKS = [

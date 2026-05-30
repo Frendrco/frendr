@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useClerk, useUser } from "@clerk/nextjs"
-import { Settings, Video, ListVideo, Tv2, LogOut, Menu, Mail } from "lucide-react"
+import { Settings, Video, ListVideo, Tv2, LogOut, Mail, Compass, Users, Rss } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,14 +51,42 @@ export function UserMenuDropdown({ username, displayName }: Props) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur px-2 py-1 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spring-green focus-visible:ring-offset-2">
-        <Menu size={16} className="text-foreground/60" />
-        <div className="h-7 w-7 overflow-hidden rounded-full">
-          <Avatar size={28} />
-        </div>
+      <DropdownMenuTrigger className="flex items-center justify-center h-9 w-9 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur overflow-hidden transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spring-green focus-visible:ring-offset-2">
+        <Avatar size={36} />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" sideOffset={8} className="w-48 p-1">
+
+        {/* Nav — primarily for mobile */}
+        <DropdownMenuItem
+          className="justify-between px-3 py-1.5 cursor-pointer md:hidden"
+          onClick={() => router.push("/search")}
+        >
+          <span className="font-sans text-sm">Discover</span>
+          <Compass size={16} strokeWidth={1.5} className="text-foreground/40" />
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="justify-between px-3 py-1.5 cursor-pointer md:hidden"
+          onClick={() => router.push("/channels")}
+        >
+          <span className="font-sans text-sm">Channels</span>
+          <Tv2 size={16} strokeWidth={1.5} className="text-foreground/40" />
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="justify-between px-3 py-1.5 cursor-pointer md:hidden"
+          onClick={() => router.push("/community")}
+        >
+          <span className="font-sans text-sm">Community</span>
+          <Users size={16} strokeWidth={1.5} className="text-foreground/40" />
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="justify-between px-3 py-1.5 cursor-pointer md:hidden"
+          onClick={() => router.push("/feed")}
+        >
+          <span className="font-sans text-sm">Following</span>
+          <Rss size={16} strokeWidth={1.5} className="text-foreground/40" />
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="md:hidden" />
 
         <DropdownMenuItem
           className="justify-between px-3 py-1.5 cursor-pointer"
