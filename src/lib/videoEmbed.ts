@@ -26,15 +26,15 @@ export function getVideoEmbedUrl(url: string): string {
     const u = new URL(url)
     if (u.hostname.includes("youtube.com")) {
       const v = u.searchParams.get("v")
-      if (v) return `https://www.youtube.com/embed/${v}`
+      if (v) return `https://www.youtube.com/embed/${v}?vq=hd1080`
     }
     if (u.hostname === "youtu.be") {
       const v = u.pathname.slice(1).split("?")[0]
-      if (v) return `https://www.youtube.com/embed/${v}`
+      if (v) return `https://www.youtube.com/embed/${v}?vq=hd1080`
     }
     if (u.hostname.includes("vimeo.com")) {
       const v = u.pathname.split("/").filter(Boolean)[0]
-      if (v) return `https://player.vimeo.com/video/${v}`
+      if (v) return `https://player.vimeo.com/video/${v}?quality=1080p`
     }
     if (u.hostname.includes("framerate.tv")) {
       const parts = u.pathname.split("/").filter(Boolean)

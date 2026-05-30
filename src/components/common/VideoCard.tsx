@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Play } from "lucide-react"
 import { timeAgo } from "@/lib/utils"
-import { detectProvider, getProviderLabel } from "@/lib/videoEmbed"
+import { detectProvider, getProviderLabel, type Provider } from "@/lib/videoEmbed"
 import { AddToPlaylistButton } from "./AddToPlaylistButton"
 
 export type VideoCardData = {
@@ -26,6 +26,28 @@ type Props = {
   video: VideoCardData
   showTimestamp?: boolean
   roundedSize?: "xl" | "2xl"
+}
+
+function ProviderIcon({ provider }: { provider: Provider }) {
+  if (provider === "youtube") return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <rect width="24" height="24" rx="5" fill="#FF0000"/>
+      <polygon points="9.5,7 9.5,17 17,12" fill="white"/>
+    </svg>
+  )
+  if (provider === "vimeo") return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <rect width="24" height="24" rx="5" fill="#1AB7EA"/>
+      <polyline points="5,7 12,17 19,7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+  if (provider === "framerate") return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <rect width="24" height="24" rx="5" fill="#333"/>
+      <text x="12" y="16" textAnchor="middle" fill="white" fontSize="10" fontFamily="sans-serif" fontWeight="700">F</text>
+    </svg>
+  )
+  return null
 }
 
 export function VideoCard({ video, showTimestamp = false, roundedSize = "xl" }: Props) {
@@ -51,10 +73,8 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl" }: 
 
         {/* Provider badge for external videos */}
         {video.externalUrl && (
-          <div className="absolute bottom-2 left-2 z-10 rounded-full bg-black/60 px-2 py-0.5 backdrop-blur">
-            <span className="font-sans text-[9px] font-medium text-white">
-              {getProviderLabel(detectProvider(video.externalUrl))}
-            </span>
+          <div className="absolute bottom-2 left-2 z-10 rounded-lg overflow-hidden shadow-sm">
+            <ProviderIcon provider={detectProvider(video.externalUrl)} />
           </div>
         )}
 

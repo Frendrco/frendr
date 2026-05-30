@@ -4,26 +4,29 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getVideoEmbedUrl, detectProvider } from "@/lib/videoEmbed"
 
+type StreamStatus = "ready" | "processing" | "error" | "unknown"
+
 interface Props {
-  streamId:    string | null
-  externalUrl: string | null
-  title:       string
-  streamReady: boolean
+  streamId:     string | null
+  externalUrl:  string | null
+  title:        string
+  streamStatus?: StreamStatus
 }
 
-export function VideoPlayer({ streamId, externalUrl, title, streamReady }: Props) {
+export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unknown" }: Props) {
   const router = useRouter()
 
+  // Poll for readiness while the video is processing
   useEffect(() => {
-    if (streamReady || !streamId || externalUrl) return
+    if (streamStatus !== "processing" || !streamId) return
     const id = setInterval(() => router.refresh(), 5000)
     return () => clearInterval(id)
-  }, [streamReady, streamId, externalUrl, router])
+  }, [streamStatus, streamId, router])
 
   // External video (YouTube, Vimeo, Framerate)
   if (externalUrl) {
-    const provider  = detectProvider(externalUrl)
-    const embedUrl  = getVideoEmbedUrl(externalUrl)
+    const provider    = detectProvider(externalUrl)
+    const embedUrl    = getVideoEmbedUrl(externalUrl)
     const isFramerate = provider === "framerate"
 
     return (
@@ -32,7 +35,7 @@ export function VideoPlayer({ streamId, externalUrl, title, streamReady }: Props
           <iframe
             src={embedUrl}
             title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
             allowFullScreen
             className="absolute inset-0 h-full w-full border-0"
           />
@@ -53,8 +56,17 @@ export function VideoPlayer({ streamId, externalUrl, title, streamReady }: Props
     )
   }
 
-  // Native Cloudflare upload — processing
-  if (!streamId || !streamReady) {
+  // No streamId at all — shouldn't normally happen
+  if (!streamId) {
+    return (
+      <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
+        <p className="font-sans text-sm text-white/40">No video source found.</p>
+      </div>
+    )
+  }
+
+  // Cloudflare says video is still processing → show spinner and poll
+  if (streamStatus === "processing") {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-white/70" />
@@ -63,12 +75,22 @@ export function VideoPlayer({ streamId, externalUrl, title, streamReady }: Props
     )
   }
 
+  // Cloudflare returned an error state
+  if (streamStatus === "error") {
+    return (
+      <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
+        <p className="font-sans text-sm text-white/40">There was a problem processing this video.</p>
+      </div>
+    )
+  }
+
+  // ready or unknown — always try the player
   return (
     <div className="relative aspect-video w-full">
       <iframe
         src={`https://iframe.videodelivery.net/${streamId}?autoplay=false&controls=true&muted=false`}
         title={title}
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowFullScreen
         className="absolute inset-0 h-full w-full border-0"
       />

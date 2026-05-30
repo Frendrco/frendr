@@ -748,7 +748,11 @@ export function UploadClient({ username }: { username: string }) {
                   <span className="font-sans text-xs text-foreground/30">{progress}%</span>
                 </div>
                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                  <div className="h-full rounded-full bg-spring-green transition-all duration-300" style={{ width: `${progress}%` }} />
+                  {progress === 0 ? (
+                    <div className="h-full w-full rounded-full bg-spring-green/50 animate-pulse" />
+                  ) : (
+                    <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
+                  )}
                 </div>
               </div>
             )}

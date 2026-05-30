@@ -1,31 +1,9 @@
+import { getVideoEmbedUrl } from "@/lib/videoEmbed"
+
 interface Props {
   videoUrl:  string | null
   imageUrls: string[]
   riveUrls:  string[]
-}
-
-function getVideoEmbedUrl(url: string): string {
-  try {
-    const u = new URL(url)
-    // YouTube
-    if (u.hostname.includes("youtube.com")) {
-      const v = u.searchParams.get("v")
-      if (v) return `https://www.youtube.com/embed/${v}`
-    }
-    if (u.hostname === "youtu.be") {
-      const v = u.pathname.slice(1).split("?")[0]
-      if (v) return `https://www.youtube.com/embed/${v}`
-    }
-    // Vimeo
-    if (u.hostname.includes("vimeo.com")) {
-      const v = u.pathname.split("/").filter(Boolean)[0]
-      if (v) return `https://player.vimeo.com/video/${v}`
-    }
-    // Framer, Instagram, or any direct embed URL — use as-is
-    return url
-  } catch {
-    return url
-  }
 }
 
 export function ThreadEmbeds({ videoUrl, imageUrls, riveUrls }: Props) {

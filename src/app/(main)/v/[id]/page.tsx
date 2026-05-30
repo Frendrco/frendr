@@ -7,20 +7,25 @@ import { VideoPlayer } from "./VideoPlayer"
 import { FeatureButton } from "./FeatureButton"
 import type { Metadata } from "next"
 
-async function getStreamReady(streamId: string): Promise<boolean> {
+type StreamStatus = "ready" | "processing" | "error" | "unknown"
+
+async function getStreamStatus(streamId: string): Promise<StreamStatus> {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
-  const token = process.env.CLOUDFLARE_STREAM_API_TOKEN
-  if (!accountId || !token) return false
+  const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
+  if (!accountId || !token) return "unknown"
   try {
     const res = await fetch(
       `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}`,
       { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 0 } }
     )
-    if (!res.ok) return false
+    if (!res.ok) return "unknown"
     const { result } = await res.json() as { result: { status: { state: string } } }
-    return result?.status?.state === "ready"
+    const state = result?.status?.state
+    if (state === "ready") return "ready"
+    if (state === "error") return "error"
+    return "processing"
   } catch {
-    return false
+    return "unknown"
   }
 }
 
@@ -49,7 +54,9 @@ export default async function VideoPage({ params }: Props) {
 
   const isAdmin = currentUser?.role === "admin"
 
-  const streamReady = (!video.externalUrl && video.streamId) ? await getStreamReady(video.streamId) : false
+  const streamStatus = (!video.externalUrl && video.streamId)
+    ? await getStreamStatus(video.streamId)
+    : "unknown"
 
   const formattedDate = new Date(video.createdAt).toLocaleDateString("en-US", {
     month: "long", day: "numeric", year: "numeric",
@@ -61,7 +68,7 @@ export default async function VideoPage({ params }: Props) {
       {/* ── Player ─────────────────────────────────────────── */}
       <div className="bg-core-black w-full">
         <div className="mx-auto max-w-screen-xl">
-          <VideoPlayer streamId={video.streamId} externalUrl={video.externalUrl} title={video.title} streamReady={streamReady} />
+          <VideoPlayer streamId={video.streamId} externalUrl={video.externalUrl} title={video.title} streamStatus={streamStatus} />
         </div>
       </div>
 
