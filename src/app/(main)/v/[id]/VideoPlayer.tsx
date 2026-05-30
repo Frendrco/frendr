@@ -2,23 +2,58 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { getVideoEmbedUrl, detectProvider } from "@/lib/videoEmbed"
 
 interface Props {
-  streamId: string | null
-  title: string
+  streamId:    string | null
+  externalUrl: string | null
+  title:       string
   streamReady: boolean
 }
 
-export function VideoPlayer({ streamId, title, streamReady }: Props) {
+export function VideoPlayer({ streamId, externalUrl, title, streamReady }: Props) {
   const router = useRouter()
 
-  // Poll by refreshing the server component until the stream is ready
   useEffect(() => {
-    if (streamReady || !streamId) return
+    if (streamReady || !streamId || externalUrl) return
     const id = setInterval(() => router.refresh(), 5000)
     return () => clearInterval(id)
-  }, [streamReady, streamId, router])
+  }, [streamReady, streamId, externalUrl, router])
 
+  // External video (YouTube, Vimeo, Framerate)
+  if (externalUrl) {
+    const provider  = detectProvider(externalUrl)
+    const embedUrl  = getVideoEmbedUrl(externalUrl)
+    const isFramerate = provider === "framerate"
+
+    return (
+      <div className="flex flex-col">
+        <div className="relative aspect-video w-full">
+          <iframe
+            src={embedUrl}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 h-full w-full border-0"
+          />
+        </div>
+        {isFramerate && (
+          <div className="flex justify-end bg-core-black px-4 py-2">
+            <a
+              href={externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-xs text-white/40 hover:text-white transition-colors"
+            >
+              View on Framerate →
+            </a>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Native Cloudflare upload — processing
   if (!streamId || !streamReady) {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">

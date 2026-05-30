@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { getVideoThumbnail } from "@/lib/videoEmbed"
 
-// Saves a completed video record after the client finishes uploading to Cloudflare.
 export async function POST(req: Request) {
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -10,34 +10,42 @@ export async function POST(req: Request) {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
-  const {
-    streamId,
-    title,
-    description,
-    tags,
-    isPublic,
-  } = await req.json() as {
-    streamId: string
-    title: string
+  const body = await req.json() as {
+    streamId?:    string
+    externalUrl?: string
+    title:        string
     description?: string
-    tags?: string[]
-    isPublic?: boolean
+    tags?:        string[]
+    isPublic?:    boolean
+    thumbnailUrl?: string
   }
 
-  if (!streamId || !title) {
-    return NextResponse.json({ error: "streamId and title are required" }, { status: 400 })
+  const { streamId, externalUrl, title, description, tags, thumbnailUrl } = body
+
+  if (!title) return NextResponse.json({ error: "title is required" }, { status: 400 })
+  if (!streamId && !externalUrl) {
+    return NextResponse.json({ error: "streamId or externalUrl is required" }, { status: 400 })
   }
 
-  const video = await prisma.video.create({
-    data: {
-      streamId,
-      title,
-      description:  description  ?? null,
-      tags:         tags          ?? [],
-      thumbnailUrl: `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg`,
-      userId:       user.id,
-    },
-  })
+  const resolvedThumbnail = thumbnailUrl
+    ?? (streamId     ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg` : null)
+    ?? (externalUrl  ? getVideoThumbnail(externalUrl) : null)
 
-  return NextResponse.json(video, { status: 201 })
+  try {
+    const video = await prisma.video.create({
+      data: {
+        streamId:    streamId    ?? null,
+        externalUrl: externalUrl ?? null,
+        title,
+        description: description ?? null,
+        tags:        tags        ?? [],
+        thumbnailUrl: resolvedThumbnail ?? null,
+        userId: user.id,
+      },
+    })
+    return NextResponse.json(video, { status: 201 })
+  } catch (err) {
+    console.error("[POST /api/videos]", err)
+    return NextResponse.json({ error: "Failed to save video" }, { status: 500 })
+  }
 }

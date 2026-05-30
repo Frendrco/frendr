@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Play } from "lucide-react"
 import { timeAgo } from "@/lib/utils"
+import { detectProvider, getProviderLabel } from "@/lib/videoEmbed"
 import { AddToPlaylistButton } from "./AddToPlaylistButton"
 
 export type VideoCardData = {
@@ -11,6 +12,7 @@ export type VideoCardData = {
   title: string
   thumbnailUrl: string | null
   streamId?: string | null
+  externalUrl?: string | null
   tags: string[]
   createdAt: Date | string
   user: {
@@ -45,6 +47,15 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl" }: 
           />
         ) : (
           <div className="h-full w-full bg-mist-grey" />
+        )}
+
+        {/* Provider badge for external videos */}
+        {video.externalUrl && (
+          <div className="absolute bottom-2 left-2 z-10 rounded-full bg-black/60 px-2 py-0.5 backdrop-blur">
+            <span className="font-sans text-[9px] font-medium text-white">
+              {getProviderLabel(detectProvider(video.externalUrl))}
+            </span>
+          </div>
         )}
 
         {/* Hover overlay */}

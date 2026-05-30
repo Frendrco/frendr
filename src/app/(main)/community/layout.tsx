@@ -15,9 +15,9 @@ export default async function CommunityLayout({ children }: { children: React.Re
 
         <div className="flex items-end justify-between py-10">
           <div>
-            <h1 className="display-lg text-core-black" style={{ fontSize: "85px" }}>Frend Zone</h1>
-            <p className="mt-3 font-sans text-lg text-foreground/50">
-              Connect with animators and motion designers from around the world.
+            <h1 className="display-sm text-core-black">Frend Zone</h1>
+            <p className="mt-1 font-sans text-sm text-foreground/40">
+              Talk shop, share work, find opportunities. Leave your ego at the door.
             </p>
           </div>
           {userId && (

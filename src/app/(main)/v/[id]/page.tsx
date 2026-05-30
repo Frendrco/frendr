@@ -49,7 +49,7 @@ export default async function VideoPage({ params }: Props) {
 
   const isAdmin = currentUser?.role === "admin"
 
-  const streamReady = video.streamId ? await getStreamReady(video.streamId) : false
+  const streamReady = (!video.externalUrl && video.streamId) ? await getStreamReady(video.streamId) : false
 
   const formattedDate = new Date(video.createdAt).toLocaleDateString("en-US", {
     month: "long", day: "numeric", year: "numeric",
@@ -61,7 +61,7 @@ export default async function VideoPage({ params }: Props) {
       {/* ── Player ─────────────────────────────────────────── */}
       <div className="bg-core-black w-full">
         <div className="mx-auto max-w-screen-xl">
-          <VideoPlayer streamId={video.streamId} title={video.title} streamReady={streamReady} />
+          <VideoPlayer streamId={video.streamId} externalUrl={video.externalUrl} title={video.title} streamReady={streamReady} />
         </div>
       </div>
 

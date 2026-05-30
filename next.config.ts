@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
       { hostname: "videodelivery.net"      },
       { hostname: "imagedelivery.net"      },
       { hostname: "*.r2.dev"               },
+      { hostname: "img.youtube.com"        },
+      { hostname: "i.vimeocdn.com"         },
     ],
   },
 };

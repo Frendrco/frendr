@@ -47,6 +47,7 @@ model Video {
   title         String
   description   String?
   streamId      String?
+  externalUrl   String?
   thumbnailUrl  String?
   tags          String[]
   featured      Boolean        @default(false)
