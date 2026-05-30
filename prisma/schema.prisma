@@ -37,6 +37,7 @@ model User {
   channels            Channel[]
   channelFollows      ChannelFollow[]
   channelVideosAdded  ChannelVideo[]  @relation("ChannelVideoAddedBy")
+  channelAdmins       ChannelAdmin[]
 }
 
 model Video {
@@ -166,12 +167,14 @@ model Channel {
   slug        String          @unique
   description String?
   coverUrl    String?
+  color       String?
   isPublic    Boolean         @default(true)
   type        String          @default("user")
   userId      String?
   user        User?           @relation(fields: [userId], references: [id])
   videos      ChannelVideo[]
   followers   ChannelFollow[]
+  admins      ChannelAdmin[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 }
@@ -196,6 +199,17 @@ model ChannelFollow {
   followedAt DateTime @default(now())
   channel    Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([channelId, userId])
+}
+
+model ChannelAdmin {
+  id        String   @id @default(cuid())
+  channelId String
+  userId    String
+  createdAt DateTime @default(now())
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([channelId, userId])
 }

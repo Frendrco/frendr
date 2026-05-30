@@ -10,8 +10,11 @@ async function getAuthorizedChannel(clerkId: string, channelId: string) {
   if (!channel) return null
 
   const isOwner = channel.userId === user.id
-  const isAdmin = user.role === "admin"
-  if (!isOwner && !isAdmin) return null
+  const isSiteAdmin = user.role === "admin"
+  const isChannelAdmin = !isOwner && !isSiteAdmin
+    ? !!(await prisma.channelAdmin.findUnique({ where: { channelId_userId: { channelId, userId: user.id } } }))
+    : false
+  if (!isOwner && !isSiteAdmin && !isChannelAdmin) return null
 
   return { user, channel }
 }

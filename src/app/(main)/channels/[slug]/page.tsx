@@ -48,8 +48,13 @@ export default async function ChannelPage({ params }: Props) {
     : false
 
   const isOwner = currentUser?.id === channel.userId
-  const isAdmin = currentUser?.role === "admin"
-  const canManage = isOwner || isAdmin
+  const isSiteAdmin = currentUser?.role === "admin"
+  const isChannelAdmin = currentUser && !isOwner && !isSiteAdmin
+    ? !!(await prisma.channelAdmin.findUnique({
+        where: { channelId_userId: { channelId: channel.id, userId: currentUser.id } },
+      }))
+    : false
+  const canManage = isOwner || isSiteAdmin || isChannelAdmin
 
   const videos = channel.videos.map((cv) => cv.video)
 
@@ -57,12 +62,26 @@ export default async function ChannelPage({ params }: Props) {
     <div className="min-h-screen bg-background">
 
       {/* Cover */}
-      <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-bloom-lavender to-sky-blue md:h-64">
-        {channel.coverUrl && (
-          <Image src={channel.coverUrl} alt={channel.name} fill className="object-cover" />
-        )}
-        <div className="absolute inset-0 bg-black/20" />
-      </div>
+      {(() => {
+        const COLOR_MAP: Record<string, string> = {
+          "spring-green":   "bg-spring-green/60",
+          "winter-green":   "bg-winter-green",
+          "bloom-lavender": "bg-bloom-lavender",
+          "sky-blue":       "bg-sky-blue",
+          "sunny-yellow":   "bg-sunny-yellow",
+          "hyper-blue":     "bg-hyper-blue/50",
+          "dream-lilac":    "bg-dream-lilac",
+        }
+        const colorClass = channel.color ? (COLOR_MAP[channel.color] ?? "bg-bloom-lavender") : "bg-bloom-lavender"
+        return (
+          <div className={`relative h-48 w-full overflow-hidden md:h-64 ${!channel.coverUrl ? colorClass : ""}`}>
+            {channel.coverUrl && (
+              <Image src={channel.coverUrl} alt={channel.name} fill className="object-cover" />
+            )}
+            <div className="absolute inset-0 bg-black/20" />
+          </div>
+        )
+      })()}
 
       <div className="mx-auto max-w-screen-xl px-4 md:px-6">
 
