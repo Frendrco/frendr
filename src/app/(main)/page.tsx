@@ -1,8 +1,8 @@
-import Image from "next/image"
 import Link from "next/link"
 import { clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { HeroSection } from "./HeroSection"
+import { VideoCard } from "@/components/common/VideoCard"
 
 // Placeholder cards shown until real videos exist
 const PLACEHOLDER_COLOURS = [
@@ -84,8 +84,8 @@ export default async function HomePage() {
                 href={i === 0 ? "/search" : `/search?tag=${encodeURIComponent(pill)}`}
                 className={
                   i === 0
-                    ? "h-8 rounded-full bg-core-black px-4 font-sans text-xs font-medium text-white"
-                    : "h-8 rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
+                    ? "inline-flex h-8 items-center rounded-full bg-spring-green px-4 font-sans text-xs font-medium text-core-black"
+                    : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
                 }
               >
                 {pill}
@@ -104,65 +104,10 @@ export default async function HomePage() {
             </div>
           )}
 
+
         </div>
       </section>
     </>
-  )
-}
-
-// ── Real video card ───────────────────────────────────────
-
-type VideoWithUser = Awaited<ReturnType<typeof prisma.video.findMany>>[number] & {
-  user: { username: string; displayName: string; avatarUrl: string | null; clerkId: string }
-}
-
-function VideoCard({ video }: { video: VideoWithUser }) {
-  const initials = video.user.displayName
-    .split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
-
-  return (
-    <Link href={`/v/${video.id}`} className="group flex flex-col gap-2">
-      {/* Thumbnail */}
-      <div className="relative aspect-video overflow-hidden rounded-xl bg-mist-grey">
-        {video.thumbnailUrl ? (
-          <Image
-            src={video.thumbnailUrl}
-            alt={video.title}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-          />
-        ) : (
-          <div className="h-full w-full bg-mist-grey" />
-        )}
-      </div>
-
-      {/* Meta */}
-      <div className="flex items-start gap-2">
-        {/* Creator avatar */}
-        <div className="mt-0.5 h-6 w-6 shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
-          {video.user.avatarUrl ? (
-            <Image src={video.user.avatarUrl} alt={video.user.displayName} width={24} height={24} className="h-full w-full object-cover" />
-          ) : (
-            <span className="font-sans font-bold text-[9px] text-core-black">{initials}</span>
-          )}
-        </div>
-        <div className="min-w-0">
-          <p className="truncate font-sans font-medium text-sm text-core-black leading-snug">{video.title}</p>
-          <p className="font-sans text-xs text-foreground/40">{video.user.displayName}</p>
-        </div>
-      </div>
-
-      {/* Tags */}
-      {video.tags.length > 0 && (
-        <div className="flex gap-1">
-          {video.tags.slice(0, 2).map((tag) => (
-            <span key={tag} className="rounded-full border border-border px-2 py-0.5 font-sans text-[10px] text-foreground/40">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-    </Link>
   )
 }
 

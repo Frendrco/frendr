@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useClerk, useUser } from "@clerk/nextjs"
-import { Settings, Video, ListVideo, LogOut, Menu, Mail } from "lucide-react"
+import { Settings, Video, ListVideo, Tv2, LogOut, Menu, Mail } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -92,6 +92,14 @@ export function UserMenuDropdown({ username, displayName }: Props) {
         >
           <span className="font-sans text-sm">My Playlists</span>
           <ListVideo size={16} strokeWidth={1.5} className="text-foreground/40" />
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className="justify-between px-3 py-1.5 cursor-pointer"
+          onClick={() => router.push("/dashboard/channels")}
+        >
+          <span className="font-sans text-sm">My Channels</span>
+          <Tv2 size={16} strokeWidth={1.5} className="text-foreground/40" />
         </DropdownMenuItem>
 
         <DropdownMenuItem

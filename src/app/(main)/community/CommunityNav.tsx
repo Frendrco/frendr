@@ -21,7 +21,7 @@ export function CommunityNav() {
             key={href}
             href={href}
             className={cn(
-              "pb-3 font-sans font-medium text-sm border-b-2 -mb-px transition-colors mr-6",
+              "pb-4 font-sans font-medium text-base border-b-2 -mb-px transition-colors mr-8",
               active
                 ? "border-core-black text-core-black"
                 : "border-transparent text-foreground/40 hover:text-foreground/70"

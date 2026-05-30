@@ -25,28 +25,34 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  videos         Video[]
-  threads        Thread[]
-  threadVotes    ThreadVote[]
-  comments       Comment[]
-  commentVotes   CommentVote[]
-  jobs           Job[]
-  followers      Follow[] @relation("UserFollowers")
-  following      Follow[] @relation("UserFollowing")
+  videos              Video[]
+  threads             Thread[]
+  threadVotes         ThreadVote[]
+  comments            Comment[]
+  commentVotes        CommentVote[]
+  jobs                Job[]
+  followers           Follow[]        @relation("UserFollowers")
+  following           Follow[]        @relation("UserFollowing")
+  playlists           Playlist[]
+  channels            Channel[]
+  channelFollows      ChannelFollow[]
+  channelVideosAdded  ChannelVideo[]  @relation("ChannelVideoAddedBy")
 }
 
 model Video {
-  id            String   @id @default(cuid())
+  id            String         @id @default(cuid())
   title         String
   description   String?
   streamId      String?
   thumbnailUrl  String?
   tags          String[]
-  featured      Boolean  @default(false)
+  featured      Boolean        @default(false)
   userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playlists     PlaylistVideo[]
+  channels      ChannelVideo[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Thread {
@@ -127,4 +133,69 @@ model Job {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Playlist {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  isPublic    Boolean         @default(true)
+  isDefault   Boolean         @default(false)
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videos      PlaylistVideo[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model PlaylistVideo {
+  id         String   @id @default(cuid())
+  playlistId String
+  videoId    String
+  position   Int      @default(0)
+  addedAt    DateTime @default(now())
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  video      Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, videoId])
+}
+
+model Channel {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  description String?
+  coverUrl    String?
+  isPublic    Boolean         @default(true)
+  type        String          @default("user")
+  userId      String?
+  user        User?           @relation(fields: [userId], references: [id])
+  videos      ChannelVideo[]
+  followers   ChannelFollow[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model ChannelVideo {
+  id        String   @id @default(cuid())
+  channelId String
+  videoId   String
+  addedBy   String
+  addedAt   DateTime @default(now())
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  curator   User     @relation("ChannelVideoAddedBy", fields: [addedBy], references: [id])
+
+  @@unique([channelId, videoId])
+}
+
+model ChannelFollow {
+  id         String   @id @default(cuid())
+  channelId  String
+  userId     String
+  followedAt DateTime @default(now())
+  channel    Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([channelId, userId])
 }

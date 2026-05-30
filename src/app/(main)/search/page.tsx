@@ -1,8 +1,22 @@
 import Image from "next/image"
 import Link from "next/link"
+import { Sparkles } from "lucide-react"
+import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
-import { timeAgo, cn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { FrendrSelectsMarquee } from "./FrendrSelectsMarquee"
+import { VideoCard } from "@/components/common/VideoCard"
+import { ExploreSort } from "./ExploreSort"
+
+const FEATURED_CHANNELS = [
+  { name: "Best of Cavalry",       slug: "best-of-cavalry",        bg: "bg-bloom-lavender",    descriptor: "Studio picks" },
+  { name: "Good Type",             slug: "good-type",               bg: "bg-sky-blue",           descriptor: "Typography in motion" },
+  { name: "Best of Motion Design", slug: "best-of-motion-design",   bg: "bg-sunny-yellow",       descriptor: "Community favourites" },
+  { name: "Tutorials",             slug: "tutorials",               bg: "bg-winter-green",       descriptor: "Learn from the best" },
+  { name: "Best of Blendr",        slug: "best-of-blendr",          bg: "bg-dream-lilac",        descriptor: "3D & beyond" },
+  { name: "AI that isn't slop",    slug: "ai-that-isnt-slop",       bg: "bg-hyper-blue/50",      descriptor: "Thoughtful AI work" },
+  { name: "Frendr Picks",          slug: "frendr-picks",            bg: "bg-spring-green/60",    descriptor: "Curated by the team", isAdmin: true },
+]
 
 const TAGS = [
   "All", "Motion Design", "Animation", "3D", "Typography",
@@ -15,13 +29,29 @@ const PLACEHOLDER_COLOURS = [
   "bg-dream-lilac", "bg-hyper-blue/50", "bg-spring-green/40", "bg-bloom-lavender/60",
 ]
 
-type Props = { searchParams: Promise<{ q?: string; tag?: string }> }
+type SortValue = "newest" | "trending" | "following"
+
+type Props = { searchParams: Promise<{ q?: string; tag?: string; sort?: string }> }
 
 export default async function SearchPage({ searchParams }: Props) {
-  const { q = "", tag = "" } = await searchParams
+  const { q = "", tag = "", sort = "newest" } = await searchParams
   const query = q.trim()
   const activeTag = tag || "All"
   const isSearching = query.length > 0
+  const activeSort = (["newest", "trending", "following"].includes(sort) ? sort : "newest") as SortValue
+
+  // For "following" sort, look up who the current user follows
+  let followingIds: string[] = []
+  if (!isSearching && activeSort === "following") {
+    const { userId: clerkId } = await auth()
+    if (clerkId) {
+      const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+      if (user) {
+        const follows = await prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
+        followingIds = follows.map(f => f.followingId)
+      }
+    }
+  }
 
   const videoWhere = isSearching
     ? {
@@ -30,14 +60,21 @@ export default async function SearchPage({ searchParams }: Props) {
           { description: { contains: query, mode: "insensitive" as const } },
         ],
       }
+    : activeSort === "following"
+    ? { userId: { in: followingIds }, ...(activeTag !== "All" ? { tags: { has: activeTag } } : {}) }
     : activeTag !== "All"
     ? { tags: { has: activeTag } }
     : undefined
 
+  const videoOrderBy =
+    activeSort === "trending"
+      ? [{ featured: "desc" as const }, { createdAt: "desc" as const }]
+      : { createdAt: "desc" as const }
+
   const [videos, creators, featuredVideos] = await Promise.all([
     prisma.video.findMany({
       where: videoWhere,
-      orderBy: { createdAt: "desc" },
+      orderBy: videoOrderBy,
       take: 24,
       include: {
         user: { select: { username: true, displayName: true, avatarUrl: true } },
@@ -154,74 +191,81 @@ export default async function SearchPage({ searchParams }: Props) {
           </section>
         )}
 
+        {/* ── Featured Channels (browse only) ── */}
+        {!isSearching && (
+          <section>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-sans font-bold text-base text-core-black">Featured Channels</h2>
+              <Link
+                href="/channels"
+                className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
+              >
+                See all →
+              </Link>
+            </div>
+            <div className="flex gap-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-4 px-4 md:-mx-6 md:px-6 scroll-smooth snap-x snap-mandatory pb-1">
+              {FEATURED_CHANNELS.map((ch) => (
+                <Link
+                  key={ch.slug}
+                  href={`/channels/${ch.slug}`}
+                  className="group shrink-0 w-60 snap-start"
+                >
+                  {/* Colour card — 16:9 to match video cards */}
+                  <div className={`relative aspect-video overflow-hidden rounded-xl ${ch.bg} transition-transform duration-300 group-hover:scale-[1.02]`}>
+                    {ch.isAdmin && (
+                      <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-white/80 px-2 py-0.5 backdrop-blur-sm">
+                        <Sparkles size={9} className="text-core-black" />
+                        <span className="font-sans font-medium text-[9px] text-core-black">Frendr</span>
+                      </div>
+                    )}
+                  </div>
+                  {/* Meta */}
+                  <div className="mt-2">
+                    <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1">{ch.name}</p>
+                    <p className="font-sans text-xs text-foreground/40">{ch.descriptor}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── Video results / Explore grid ── */}
         {!noResults && (
           <section>
-            <h2 className="mb-4 font-sans font-bold text-base text-core-black">
-              {isSearching ? (
-                <>
-                  Videos
-                  {videos.length > 0 && (
-                    <span className="ml-2 font-normal text-foreground/40">({videos.length})</span>
-                  )}
-                </>
-              ) : activeTag === "All" ? "Explore Video" : activeTag}
-            </h2>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-sans font-bold text-base text-core-black">
+                {isSearching ? (
+                  <>
+                    Videos
+                    {videos.length > 0 && (
+                      <span className="ml-2 font-normal text-foreground/40">({videos.length})</span>
+                    )}
+                  </>
+                ) : activeTag === "All" ? "Explore Video" : activeTag}
+              </h2>
+              {!isSearching && <ExploreSort current={activeSort} />}
+            </div>
 
             {videos.length === 0 ? (
               isSearching ? (
                 <p className="font-sans text-sm text-foreground/40">No videos match this search.</p>
+              ) : activeSort === "following" ? (
+                <div className="flex flex-col items-center gap-3 py-20 text-center">
+                  <p className="font-sans font-semibold text-sm text-core-black">Nothing here yet</p>
+                  <p className="font-sans text-sm text-foreground/40">
+                    Follow some creators to see their work here, or{" "}
+                    <a href="/search" className="underline underline-offset-2">browse all videos</a>.
+                  </p>
+                </div>
               ) : (
                 <PlaceholderGrid />
               )
             ) : (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                {videos.map(video => {
-                  const initials = video.user.displayName
-                    .split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase()
-                  return (
-                    <Link key={video.id} href={`/v/${video.id}`} className="group flex flex-col gap-2">
-                      <div className="relative aspect-video overflow-hidden rounded-xl bg-mist-grey">
-                        {video.thumbnailUrl ? (
-                          <Image
-                            src={video.thumbnailUrl}
-                            alt={video.title}
-                            fill
-                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                          />
-                        ) : (
-                          <div className="h-full w-full bg-mist-grey" />
-                        )}
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <div className="mt-0.5 h-6 w-6 shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
-                          {video.user.avatarUrl ? (
-                            <Image src={video.user.avatarUrl} alt={video.user.displayName} width={24} height={24} className="h-full w-full object-cover" />
-                          ) : (
-                            <span className="font-sans font-bold text-[9px] text-core-black">{initials}</span>
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="truncate font-sans font-medium text-sm text-core-black leading-snug">
-                            {video.title}
-                          </p>
-                          <p className="font-sans text-xs text-foreground/40">
-                            {video.user.displayName} · {timeAgo(video.createdAt)}
-                          </p>
-                        </div>
-                      </div>
-                      {video.tags.length > 0 && (
-                        <div className="flex gap-1 flex-wrap">
-                          {video.tags.slice(0, 2).map(tag => (
-                            <span key={tag} className="rounded-full border border-border px-2 py-0.5 font-sans text-[10px] text-foreground/40">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </Link>
-                  )
-                })}
+                {videos.map(video => (
+                  <VideoCard key={video.id} video={video} showTimestamp />
+                ))}
               </div>
             )}
           </section>

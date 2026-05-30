@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
   { label: "Discover", href: "/search", requiresAuth: false },
+  { label: "Channels", href: "/channels", requiresAuth: false },
   { label: "Community", href: "/community", requiresAuth: false },
   { label: "Following", href: "/feed", requiresAuth: true },
 ]

@@ -1,0 +1,85 @@
+import { redirect } from "next/navigation"
+import Link from "next/link"
+import { auth } from "@clerk/nextjs/server"
+import { prisma } from "@/lib/prisma"
+import { Globe, Lock, Pencil, Trash2 } from "lucide-react"
+import { CreateChannelForm } from "./CreateChannelForm"
+
+export default async function DashboardChannelsPage() {
+  const { userId: clerkId } = await auth()
+  if (!clerkId) redirect("/sign-in")
+
+  const user = await prisma.user.findUnique({
+    where: { clerkId },
+    select: { id: true, displayName: true },
+  })
+  if (!user) redirect("/sign-in")
+
+  const channels = await prisma.channel.findMany({
+    where: { userId: user.id, type: "user" },
+    orderBy: { createdAt: "desc" },
+    include: { _count: { select: { videos: true, followers: true } } },
+  })
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
+
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="font-sans font-bold text-2xl text-core-black">Your Channels</h1>
+            <p className="mt-1 font-sans text-sm text-foreground/40">
+              Curate videos from anywhere on Frendr into themed collections
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+
+          {/* Channel list */}
+          <div className="flex flex-col gap-3">
+            {channels.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
+                <p className="font-sans font-semibold text-sm text-core-black">No channels yet</p>
+                <p className="font-sans text-xs text-foreground/40">Create your first channel to start curating</p>
+              </div>
+            ) : (
+              channels.map((ch) => (
+                <div key={ch.id} className="flex items-center gap-4 rounded-xl border border-border bg-white p-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-sans font-semibold text-sm text-core-black">{ch.name}</p>
+                      {ch.isPublic ? (
+                        <Globe size={11} className="text-foreground/30" />
+                      ) : (
+                        <Lock size={11} className="text-foreground/30" />
+                      )}
+                    </div>
+                    <p className="font-sans text-xs text-foreground/40">
+                      {ch._count.videos} {ch._count.videos === 1 ? "video" : "videos"} · {ch._count.followers} {ch._count.followers === 1 ? "follower" : "followers"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/channels/${ch.slug}`}
+                      className="inline-flex h-8 items-center rounded-full border border-border px-3 font-sans text-xs text-foreground/60 hover:text-foreground hover:border-foreground/30 transition-colors"
+                    >
+                      View
+                    </Link>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Create channel form */}
+          <div className="rounded-2xl border border-border bg-white p-5">
+            <h2 className="mb-4 font-sans font-semibold text-sm text-core-black">Create a Channel</h2>
+            <CreateChannelForm />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  )
+}

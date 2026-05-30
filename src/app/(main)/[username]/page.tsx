@@ -6,6 +6,7 @@ import { MapPin, Globe, Upload } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { AvailableForWork } from "@/components/common/AvailableForWork"
 import { FollowButton } from "@/components/common/FollowButton"
+import { VideoCard } from "@/components/common/VideoCard"
 import type { Metadata } from "next"
 
 const PLACEHOLDER_CARDS = [
@@ -195,18 +196,21 @@ export default async function ProfilePage({ params }: Props) {
             {/* Tab bar + upload */}
             <div className="mb-6 flex items-center justify-between border-b border-border pb-0">
               <div className="flex gap-6">
-                {["Videos", "Playlists", "Activity"].map((t, i) => (
-                  <button
-                    key={t}
-                    className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
-                      i === 0
-                        ? "border-core-black text-core-black"
-                        : "border-transparent text-foreground/40 hover:text-foreground/70"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
+                <Link
+                  href={`/${username}`}
+                  className="pb-3 font-sans font-medium text-sm border-b-2 border-core-black text-core-black"
+                >
+                  Videos
+                </Link>
+                <Link
+                  href={`/${username}/playlists`}
+                  className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/40 hover:text-foreground/70 transition-colors"
+                >
+                  Playlists
+                </Link>
+                <span className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/25 cursor-not-allowed">
+                  Activity
+                </span>
               </div>
               {isOwn && (
                 <Link
@@ -243,19 +247,7 @@ export default async function ProfilePage({ params }: Props) {
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
                 {user.videos.map((video) => (
-                  <Link key={video.id} href={`/v/${video.id}`} className="group">
-                    <div className="mb-2 aspect-video overflow-hidden rounded-xl bg-mist-grey transition-opacity group-hover:opacity-90">
-                      {video.thumbnailUrl ? (
-                        <Image src={video.thumbnailUrl} alt={video.title} width={400} height={225} className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="h-full w-full bg-mist-grey" />
-                      )}
-                    </div>
-                    <p className="font-sans font-medium text-sm text-foreground leading-snug">{video.title}</p>
-                    {video.tags.length > 0 && (
-                      <p className="mt-0.5 font-sans text-xs text-foreground/40">{video.tags[0]}</p>
-                    )}
-                  </Link>
+                  <VideoCard key={video.id} video={{ ...video, user: { username: user.username, displayName: user.displayName, avatarUrl: user.avatarUrl } }} />
                 ))}
               </div>
             )}

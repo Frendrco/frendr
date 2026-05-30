@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion, useScroll, useTransform } from "framer-motion"
+import { useAuth } from "@clerk/nextjs"
 
 const BLOBS = [
   { id: 1, bg: "bg-bloom-lavender", style: { top: "12%",    left:  "6%",  width: 192, height: 192 } },
@@ -12,6 +13,7 @@ const BLOBS = [
 ]
 
 export function HeroSection() {
+  const { isSignedIn } = useAuth()
   const { scrollY } = useScroll()
 
   // Blobs — larger = faster, more exaggerated movement
@@ -62,14 +64,16 @@ export function HeroSection() {
           />
         </motion.div>
 
-        <motion.div style={{ y: headlineY }}>
-          <Link
-            href="/sign-up"
-            className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-colors hover:bg-spring-green/90"
-          >
-            Join Free
-          </Link>
-        </motion.div>
+        {!isSignedIn && (
+          <motion.div style={{ y: headlineY }}>
+            <Link
+              href="/sign-up"
+              className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-colors hover:bg-spring-green/90"
+            >
+              Join Free
+            </Link>
+          </motion.div>
+        )}
 
       </div>
     </section>

@@ -11,12 +11,12 @@ export default async function CommunityLayout({ children }: { children: React.Re
       {/* Hero banner */}
       <div className="w-full h-52 md:h-72 bg-gradient-to-br from-bloom-lavender via-sky-blue to-winter-green" />
 
-      <div className="mx-auto max-w-screen-md px-4 md:px-6">
+      <div className="mx-auto max-w-screen-lg px-4 md:px-6">
 
         <div className="flex items-end justify-between py-10">
           <div>
-            <h1 className="display-sm text-core-black">Frend Zone</h1>
-            <p className="mt-1 font-sans text-sm text-foreground/50">
+            <h1 className="display-lg text-core-black" style={{ fontSize: "85px" }}>Frend Zone</h1>
+            <p className="mt-3 font-sans text-lg text-foreground/50">
               Connect with animators and motion designers from around the world.
             </p>
           </div>

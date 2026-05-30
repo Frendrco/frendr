@@ -167,7 +167,7 @@
  * ───────────────────────────────────────────────────────── */
 :root {
   /* Surfaces */
-  --background:           #F1ECE9;   /* Mist Grey */
+  --background:           #FFFFFF;   /* White */
   --foreground:           #000000;   /* Core Black */
   --card:                 #FFFFFF;   /* White */
   --card-foreground:      #000000;
