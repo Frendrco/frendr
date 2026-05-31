@@ -2,8 +2,9 @@ import { notFound } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import Image from "next/image"
 import Link from "next/link"
-import { Lock, Globe, Upload } from "lucide-react"
+import { Lock, Globe } from "lucide-react"
 import { prisma } from "@/lib/prisma"
+import { PlaylistCardActions } from "./PlaylistCardActions"
 
 type Props = { params: Promise<{ username: string }> }
 
@@ -39,7 +40,7 @@ export default async function PlaylistsPage({ params }: Props) {
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
 
-        {/* Profile tab header (mirrors profile page) */}
+        {/* Profile tab header */}
         <div className="mb-8 flex items-center justify-between border-b border-border pb-0">
           <div className="flex gap-6">
             <Link
@@ -58,15 +59,6 @@ export default async function PlaylistsPage({ params }: Props) {
               Activity
             </span>
           </div>
-          {isOwn && (
-            <Link
-              href="/dashboard/upload"
-              className="mb-3 inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-white px-4 font-sans font-medium text-xs text-core-black hover:bg-foreground/5 transition-colors"
-            >
-              <Upload size={12} />
-              Upload Video
-            </Link>
-          )}
         </div>
 
         <div className="mb-6">
@@ -88,9 +80,10 @@ export default async function PlaylistsPage({ params }: Props) {
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {playlists.map((pl) => (
-              <Link key={pl.id} href={`/${username}/playlists/${pl.id}`} className="group flex flex-col gap-2">
-                {/* Mosaic thumbnail */}
-                <div className="relative aspect-video overflow-hidden rounded-xl bg-mist-grey">
+              <div key={pl.id} className="group relative flex flex-col gap-2">
+
+                {/* Thumbnail — links to detail page */}
+                <Link href={`/${username}/playlists/${pl.id}`} className="relative block aspect-video overflow-hidden rounded-xl bg-mist-grey">
                   {pl.videos.length === 0 ? (
                     <div className="h-full w-full bg-mist-grey" />
                   ) : pl.videos.length === 1 ? (
@@ -107,12 +100,7 @@ export default async function PlaylistsPage({ params }: Props) {
                       {pl.videos.slice(0, 4).map((pv, i) => (
                         <div key={i} className="relative overflow-hidden">
                           {pv.video.thumbnailUrl ? (
-                            <Image
-                              src={pv.video.thumbnailUrl}
-                              alt=""
-                              fill
-                              className="object-cover"
-                            />
+                            <Image src={pv.video.thumbnailUrl} alt="" fill className="object-cover" />
                           ) : (
                             <div className="h-full w-full bg-mist-grey" />
                           )}
@@ -127,10 +115,27 @@ export default async function PlaylistsPage({ params }: Props) {
                       <span className="font-sans text-[9px] text-white">Private</span>
                     </div>
                   )}
-                </div>
+                </Link>
 
+                {/* 3-dot actions overlay (owner only) */}
+                {isOwn && (
+                  <PlaylistCardActions
+                    playlist={{
+                      id: pl.id,
+                      name: pl.name,
+                      description: pl.description,
+                      isPublic: pl.isPublic,
+                      isDefault: pl.isDefault,
+                    }}
+                    username={username}
+                  />
+                )}
+
+                {/* Meta */}
                 <div>
-                  <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1">{pl.name}</p>
+                  <Link href={`/${username}/playlists/${pl.id}`}>
+                    <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1 hover:underline">{pl.name}</p>
+                  </Link>
                   <p className="font-sans text-xs text-foreground/40">
                     {pl._count.videos} {pl._count.videos === 1 ? "video" : "videos"}
                     {pl.isPublic ? (
@@ -140,7 +145,8 @@ export default async function PlaylistsPage({ params }: Props) {
                     )}
                   </p>
                 </div>
-              </Link>
+
+              </div>
             ))}
           </div>
         )}

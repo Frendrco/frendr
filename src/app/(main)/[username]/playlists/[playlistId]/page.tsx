@@ -4,6 +4,7 @@ import Link from "next/link"
 import { ChevronLeft, Lock, Globe } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { VideoCard } from "@/components/common/VideoCard"
+import { PlaylistDetailActions } from "./PlaylistDetailActions"
 
 type Props = { params: Promise<{ username: string; playlistId: string }> }
 
@@ -54,21 +55,35 @@ export default async function PlaylistDetailPage({ params }: Props) {
         </Link>
 
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="font-sans font-bold text-2xl text-core-black">{playlist.name}</h1>
-            {playlist.isPublic ? (
-              <Globe size={14} className="text-foreground/30" />
-            ) : (
-              <Lock size={14} className="text-foreground/30" />
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="font-sans font-bold text-2xl text-core-black">{playlist.name}</h1>
+              {playlist.isPublic ? (
+                <Globe size={14} className="text-foreground/30" />
+              ) : (
+                <Lock size={14} className="text-foreground/30" />
+              )}
+            </div>
+            {playlist.description && (
+              <p className="font-sans text-sm text-foreground/50">{playlist.description}</p>
             )}
+            <p className="mt-1 font-sans text-xs text-foreground/40">
+              {videos.length} {videos.length === 1 ? "video" : "videos"}
+            </p>
           </div>
-          {playlist.description && (
-            <p className="font-sans text-sm text-foreground/50">{playlist.description}</p>
+
+          {isOwn && (
+            <PlaylistDetailActions
+              playlist={{
+                id: playlist.id,
+                name: playlist.name,
+                description: playlist.description,
+                isPublic: playlist.isPublic,
+              }}
+              username={username}
+            />
           )}
-          <p className="mt-1 font-sans text-xs text-foreground/40">
-            {videos.length} {videos.length === 1 ? "video" : "videos"}
-          </p>
         </div>
 
         {/* Videos */}
