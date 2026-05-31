@@ -60,7 +60,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
           {/* Symbol — standalone circle pill */}
           <Link
             href="/"
-            className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur"
+            className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur hover:bg-spring-green hover:border-spring-green transition-colors duration-200"
           >
             <Logo variant="symbol" height={22} colour="auto" priority />
           </Link>
@@ -114,7 +114,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
               {/* Upload */}
               <Link
                 href="/dashboard/upload"
-                className="hidden md:inline-flex h-9 items-center gap-1.5 px-4 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm hover:bg-spring-green/90 transition-colors"
+                className="hidden md:inline-flex h-9 items-center gap-1.5 px-4 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm hover:bg-core-black hover:text-white transition-colors duration-200"
               >
                 <Upload size={14} />
                 Upload

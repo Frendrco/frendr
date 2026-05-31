@@ -315,4 +315,30 @@
     line-height: 0.95;
     letter-spacing: -0.02em;
   }
+
+  /* ── Legal / long-form prose ─────────────────────────────── */
+  .prose-frendr h2 {
+    font-family: "PP Neue Montreal", ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;     /* 13px */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: oklch(var(--foreground) / 0.35);
+    margin-bottom: 0.75rem;
+  }
+  .prose-frendr p,
+  .prose-frendr li {
+    font-family: "PP Neue Montreal", ui-sans-serif, sans-serif;
+    font-size: 0.9375rem;     /* 15px */
+    line-height: 1.7;
+    color: oklch(var(--foreground) / 0.7);
+  }
+  .prose-frendr ul {
+    padding-left: 1.25rem;
+    list-style-type: disc;
+  }
+  .prose-frendr strong {
+    font-weight: 600;
+    color: oklch(var(--foreground));
+  }
 }

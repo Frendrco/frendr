@@ -3,14 +3,14 @@ import Link from "next/link"
 import { Logo } from "@/components/common/Logo"
 
 const SOCIAL_LINKS = [
-  { label: "Instagram", href: "https://instagram.com/frendr" },
+  { label: "Instagram", href: "https://www.instagram.com/frendr.co" },
   { label: "Discord",   href: "https://discord.gg/REPLACE_ME" },
 ]
 
 const LEGAL_LINKS = [
-  { label: "Terms",      href: "/terms"   },
-  { label: "Privacy",    href: "/privacy" },
-  { label: "Contact",    href: "/contact" },
+  { label: "Terms",      href: "/terms"                  },
+  { label: "Privacy",    href: "/privacy"                },
+  { label: "Contact",    href: "mailto:ryan@frendr.co"   },
 ]
 
 export function Footer() {
@@ -34,9 +34,9 @@ export function Footer() {
         </div>
 
         {/* Symbol — absolutely centered so it's independent of side widths */}
-        <div className="absolute left-1/2 -translate-x-1/2">
+        <Link href="/" className="absolute left-1/2 -translate-x-1/2 hover:scale-125 transition-transform duration-200">
           <Logo variant="symbol" height={22} colour="black" />
-        </div>
+        </Link>
 
         {/* Legal links */}
         <div className="flex items-center gap-6">
