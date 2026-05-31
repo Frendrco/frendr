@@ -18,6 +18,9 @@ interface ProfileData {
   instagram: string | null
   linkedin: string | null
   twitter: string | null
+  patreon:  string | null
+  substack: string | null
+  playlist: string | null
   tags: string[]
 }
 
@@ -54,6 +57,9 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   const [instagram, setInstagram] = useState(profile.instagram ?? "")
   const [linkedin,  setLinkedin]  = useState(profile.linkedin ?? "")
   const [twitter,   setTwitter]   = useState(profile.twitter ?? "")
+  const [patreon,   setPatreon]   = useState(profile.patreon ?? "")
+  const [substack,  setSubstack]  = useState(profile.substack ?? "")
+  const [playlist,  setPlaylist]  = useState(profile.playlist ?? "")
   const [tags,      setTags]      = useState<string[]>(profile.tags)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -96,6 +102,9 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
           instagram: instagram || null,
           linkedin:  linkedin  || null,
           twitter:   twitter   || null,
+          patreon:   patreon   || null,
+          substack:  substack  || null,
+          playlist:  playlist  || null,
           tags,
         }),
       })
@@ -267,9 +276,12 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
                   <label className="font-sans text-xs font-medium text-foreground/50">Social Media</label>
 
                   {([
-                    { key: "instagram", label: "IG", value: instagram, set: setInstagram, placeholder: "www.instagram.com/handle" },
-                    { key: "linkedin",  label: "in", value: linkedin,  set: setLinkedin,  placeholder: "www.linkedin.com/in/handle" },
-                    { key: "twitter",   label: "X",  value: twitter,   set: setTwitter,   placeholder: "x.com/handle" },
+                    { key: "instagram", label: "IG",  value: instagram, set: setInstagram, placeholder: "www.instagram.com/handle" },
+                    { key: "linkedin",  label: "in",  value: linkedin,  set: setLinkedin,  placeholder: "www.linkedin.com/in/handle" },
+                    { key: "twitter",   label: "X",   value: twitter,   set: setTwitter,   placeholder: "x.com/handle" },
+                    { key: "patreon",   label: "Pa",  value: patreon,   set: setPatreon,   placeholder: "www.patreon.com/handle" },
+                    { key: "substack",  label: "SS",  value: substack,  set: setSubstack,  placeholder: "yourname.substack.com" },
+                    { key: "playlist",  label: "♫",   value: playlist,  set: setPlaylist,  placeholder: "open.spotify.com/playlist/…" },
                   ] as const).map(({ key, label, value, set, placeholder }) => (
                     <div key={key} className="flex items-center gap-3">
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white font-sans font-bold text-xs text-foreground/40">

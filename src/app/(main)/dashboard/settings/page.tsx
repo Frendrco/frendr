@@ -23,6 +23,9 @@ export default async function SettingsPage() {
       instagram:   true,
       linkedin:    true,
       twitter:     true,
+      patreon:     true,
+      substack:    true,
+      playlist:    true,
       tags:        true,
     },
   })

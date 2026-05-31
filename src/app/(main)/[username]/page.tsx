@@ -76,9 +76,12 @@ export default async function ProfilePage({ params }: Props) {
   ]
 
   const socials = [
-    { key: "instagram", href: user.instagram, label: "IG" },
-    { key: "linkedin",  href: user.linkedin,  label: "in" },
-    { key: "twitter",   href: user.twitter,   label: "X"  },
+    { key: "instagram", href: user.instagram, label: "IG"     },
+    { key: "linkedin",  href: user.linkedin,  label: "in"     },
+    { key: "twitter",   href: user.twitter,   label: "X"      },
+    { key: "patreon",   href: user.patreon,   label: "Pa"     },
+    { key: "substack",  href: user.substack,  label: "Sub"    },
+    { key: "playlist",  href: user.playlist,  label: "♫"      },
   ].filter((s): s is { key: string; href: string; label: string } => Boolean(s.href))
 
   const pinnedVideo = user.pinnedVideoId
@@ -209,6 +212,9 @@ export default async function ProfilePage({ params }: Props) {
                   instagram:   user.instagram,
                   linkedin:    user.linkedin,
                   twitter:     user.twitter,
+                  patreon:     user.patreon,
+                  substack:    user.substack,
+                  playlist:    user.playlist,
                   tags:        user.tags,
                 }}
               />
