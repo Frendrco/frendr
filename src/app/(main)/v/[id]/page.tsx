@@ -206,16 +206,13 @@ export default async function VideoPage({ params }: Props) {
 
             {/* Collaborators */}
             {video.collaborators.length > 0 && (
-              <div className="mt-1.5 flex flex-col gap-0.5">
+              <div className="mt-1 flex flex-col gap-1">
                 {video.collaborators.map(({ user: collab, role }) => (
                   <Link
                     key={collab.username}
                     href={`/${collab.username}`}
                     className="inline-flex items-center gap-1.5 hover:opacity-70 transition-opacity"
                   >
-                    <span className="font-sans text-xs text-foreground/40 w-24 shrink-0 text-right">
-                      {role || "with"}
-                    </span>
                     <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
                       {collab.avatarUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -225,6 +222,9 @@ export default async function VideoPage({ params }: Props) {
                       )}
                     </div>
                     <span className="font-sans text-sm text-foreground/60">{collab.displayName}</span>
+                    {role && (
+                      <span className="font-sans text-xs text-foreground/35">· {role}</span>
+                    )}
                   </Link>
                 ))}
               </div>

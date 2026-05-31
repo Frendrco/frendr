@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Check, Copy, Image as ImageIcon, MoreHorizontal, Pencil, Play, Search, Upload, X } from "lucide-react"
+import { Image as ImageIcon, MoreHorizontal, Pencil, Play, Search, Upload, X } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +25,7 @@ const FRAME_PERCENTS = ["5%", "20%", "35%", "50%", "65%", "85%"]
 const field =
   "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
-type EditTab = "basics" | "credits" | "embed"
+type EditTab = "basics" | "credits"
 
 interface CollabEntry {
   userId: string
@@ -83,10 +83,6 @@ export function VideoOwnerActions({
   const [collabResults, setCollabResults] = useState<Omit<CollabEntry, "role">[]>([])
   const [collabLoading, setCollabLoading] = useState(false)
   const collabDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // Embed tab state
-  const [copiedEmbed, setCopiedEmbed] = useState(false)
-  const [copiedLink,  setCopiedLink]  = useState(false)
 
   // Re-sync credits when modal opens (in case initial data changed)
   useEffect(() => {
@@ -175,15 +171,7 @@ export function VideoOwnerActions({
     router.push(`/${username}`)
   }
 
-  function copyText(text: string, setter: (v: boolean) => void) {
-    navigator.clipboard.writeText(text)
-    setter(true)
-    setTimeout(() => setter(false), 2000)
-  }
-
   const currentThumb = thumbnailUrl.trim() || null
-  const embedCode = `<iframe\n  src="https://frendr.com/embed/${videoId}"\n  width="640" height="360"\n  frameborder="0"\n  allowfullscreen\n></iframe>`
-  const directLink = `https://frendr.com/v/${videoId}`
 
   return (
     <>
@@ -228,7 +216,7 @@ export function VideoOwnerActions({
             </div>
             {/* Tab strip */}
             <div className="flex gap-6 px-4">
-              {(["basics", "credits", "embed"] as EditTab[]).map((t) => (
+              {(["basics", "credits"] as EditTab[]).map((t) => (
                 <button
                   key={t}
                   type="button"
@@ -468,45 +456,6 @@ export function VideoOwnerActions({
                         ))}
                     </div>
                   )}
-                </div>
-              </div>
-            )}
-
-            {/* ── Embed tab ── */}
-            {tab === "embed" && (
-              <div className="flex flex-col gap-6">
-                {/* Embed code */}
-                <div className="flex flex-col gap-2">
-                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Embed code</p>
-                  <div className="relative">
-                    <pre className="w-full overflow-x-auto rounded-xl border border-border bg-foreground/[0.02] px-4 py-4 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre">
-                      {embedCode}
-                    </pre>
-                    <button
-                      type="button"
-                      onClick={() => copyText(embedCode, setCopiedEmbed)}
-                      className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
-                    >
-                      {copiedEmbed ? <Check size={12} className="text-spring-green" /> : <Copy size={12} />}
-                      {copiedEmbed ? "Copied!" : "Copy"}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Direct link */}
-                <div className="flex flex-col gap-2">
-                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Direct link</p>
-                  <div className="flex items-center gap-2 rounded-xl border border-border bg-foreground/[0.02] px-4 py-3">
-                    <span className="flex-1 font-mono text-xs text-foreground/50 truncate">{directLink}</span>
-                    <button
-                      type="button"
-                      onClick={() => copyText(directLink, setCopiedLink)}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors shrink-0"
-                    >
-                      {copiedLink ? <Check size={12} className="text-spring-green" /> : <Copy size={12} />}
-                      {copiedLink ? "Copied!" : "Copy"}
-                    </button>
-                  </div>
                 </div>
               </div>
             )}

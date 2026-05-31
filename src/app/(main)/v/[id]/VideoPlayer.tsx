@@ -1,20 +1,32 @@
 "use client"
 
-import { useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
+import Script from "next/script"
 import { getVideoEmbedUrl, detectProvider } from "@/lib/videoEmbed"
+
+declare global {
+  interface Window {
+    Stream: (el: HTMLIFrameElement) => {
+      muted:               boolean
+      volume:              number
+      addEventListener:    (event: string, cb: () => void) => void
+    }
+  }
+}
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
 
 interface Props {
-  streamId:     string | null
-  externalUrl:  string | null
-  title:        string
+  streamId:      string | null
+  externalUrl:   string | null
+  title:         string
   streamStatus?: StreamStatus
 }
 
 export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unknown" }: Props) {
-  const router = useRouter()
+  const router    = useRouter()
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   // Poll for readiness while the video is processing
   useEffect(() => {
@@ -22,6 +34,21 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
     const id = setInterval(() => router.refresh(), 5000)
     return () => clearInterval(id)
   }, [streamStatus, streamId, router])
+
+  // Override any cached muted preference via the Stream SDK
+  const applyUnmuted = useCallback(() => {
+    if (!iframeRef.current || !window.Stream) return
+    const player = window.Stream(iframeRef.current)
+    player.addEventListener("loadedmetadata", () => {
+      player.muted  = false
+      player.volume = 1
+    })
+  }, [])
+
+  // Re-run when streamId changes (script already loaded on subsequent navigations)
+  useEffect(() => {
+    applyUnmuted()
+  }, [streamId, applyUnmuted])
 
   // External video (YouTube, Vimeo, Framerate)
   if (externalUrl) {
@@ -86,14 +113,22 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
 
   // ready or unknown — always try the player
   return (
-    <div className="relative aspect-video w-full">
-      <iframe
-        src={`https://iframe.videodelivery.net/${streamId}?autoplay=false&controls=true&muted=false`}
-        title={title}
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-        allowFullScreen
-        className="absolute inset-0 h-full w-full border-0"
+    <>
+      <Script
+        src="https://embed.cloudflarestream.com/embed/sdk.latest.js"
+        strategy="afterInteractive"
+        onLoad={applyUnmuted}
       />
-    </div>
+      <div className="relative aspect-video w-full">
+        <iframe
+          ref={iframeRef}
+          src={`https://iframe.videodelivery.net/${streamId}?autoplay=false&controls=true`}
+          title={title}
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+          allowFullScreen
+          className="absolute inset-0 h-full w-full border-0"
+        />
+      </div>
+    </>
   )
 }
