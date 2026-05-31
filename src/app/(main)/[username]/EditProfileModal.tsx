@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
@@ -56,6 +56,23 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
   const [linkedin,  setLinkedin]  = useState(profile.linkedin  ?? "")
   const [twitter,   setTwitter]   = useState(profile.twitter   ?? "")
   const [tags,      setTags]      = useState<string[]>(profile.tags)
+
+  // Re-sync state from latest server props each time the modal opens,
+  // so stale initial state can't overwrite real DB values on save.
+  useEffect(() => {
+    if (!open) return
+    setFirstName(profile.displayName.split(" ")[0] ?? "")
+    setLastName(profile.displayName.split(" ").slice(1).join(" ") ?? "")
+    setLocation(profile.location  ?? "")
+    setRole(profile.role      ?? "")
+    setWebsite(profile.website   ?? "")
+    setBio(profile.bio       ?? "")
+    setInstagram(profile.instagram ?? "")
+    setLinkedin(profile.linkedin  ?? "")
+    setTwitter(profile.twitter   ?? "")
+    setTags([...profile.tags])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
 
   const avatarUrl   = user?.imageUrl
   const displayName = [firstName, lastName].filter(Boolean).join(" ") || "User"
