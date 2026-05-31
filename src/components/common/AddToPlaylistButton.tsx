@@ -20,9 +20,11 @@ type Playlist = {
 
 type Props = {
   videoId: string
+  triggerClassName?: string
+  initialSaved?: boolean
 }
 
-export function AddToPlaylistButton({ videoId }: Props) {
+export function AddToPlaylistButton({ videoId, triggerClassName, initialSaved }: Props) {
   const { isSignedIn } = useAuth()
   const [open, setOpen] = useState(false)
   const [playlists, setPlaylists] = useState<Playlist[]>([])
@@ -106,15 +108,16 @@ export function AddToPlaylistButton({ videoId }: Props) {
 
   const watchLaterPlaylist = playlists.find(p => p.isDefault)
   const regularPlaylists = playlists.filter(p => !p.isDefault)
+  const isSaved = watchLaterPlaylist?.hasVideo ?? initialSaved ?? false
 
   return (
     <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors"
+          className={triggerClassName ?? "flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors"}
           title="Save to playlist"
         >
-          <Bookmark size={14} />
+          <Bookmark size={14} className={isSaved ? "fill-current" : ""} />
         </PopoverTrigger>
         <PopoverContent
           className="w-64 p-0 overflow-hidden"

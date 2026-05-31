@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { VideoPlayer } from "./VideoPlayer"
 import { FeatureButton } from "./FeatureButton"
 import { UpvoteButton } from "./UpvoteButton"
-import { SaveButton } from "./SaveButton"
+import { AddToPlaylistButton } from "@/components/common/AddToPlaylistButton"
 import { ShareButton } from "./ShareButton"
 import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
 import { VideoCommentSection, type VideoCommentData } from "./VideoCommentSection"
@@ -152,8 +152,12 @@ export default async function VideoPage({ params }: Props) {
                   initialUpvoted={!!upvoteData}
                   initialCount={video._count.likes}
                 />
-                <SaveButton videoId={video.id} initialSaved={!!savedData} />
-                <ShareButton />
+                <AddToPlaylistButton
+                  videoId={video.id}
+                  initialSaved={!!savedData}
+                  triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
+                />
+                <ShareButton title={video.title} />
                 {isOwner ? (
                   <VideoOwnerActions
                     videoId={video.id}
