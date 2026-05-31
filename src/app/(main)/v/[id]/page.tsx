@@ -5,6 +5,7 @@ import { Eye, Heart, Bookmark, Share2, MoreHorizontal } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { VideoPlayer } from "./VideoPlayer"
 import { FeatureButton } from "./FeatureButton"
+import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
 import type { Metadata } from "next"
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
@@ -52,7 +53,8 @@ export default async function VideoPage({ params }: Props) {
 
   if (!video) notFound()
 
-  const isAdmin = currentUser?.role === "admin"
+  const isAdmin   = currentUser?.role === "admin"
+  const isOwner   = clerkId != null && video.user.clerkId === clerkId
 
   const streamStatus = (!video.externalUrl && video.streamId)
     ? await getStreamStatus(video.streamId)
@@ -91,10 +93,9 @@ export default async function VideoPage({ params }: Props) {
                   <FeatureButton videoId={video.id} initialFeatured={video.featured} />
                 )}
                 {[
-                  { icon: <Heart size={15} />,          label: "Like"  },
-                  { icon: <Bookmark size={15} />,       label: "Save"  },
-                  { icon: <Share2 size={15} />,         label: "Share" },
-                  { icon: <MoreHorizontal size={15} />, label: "More"  },
+                  { icon: <Heart size={15} />,    label: "Like"  },
+                  { icon: <Bookmark size={15} />, label: "Save"  },
+                  { icon: <Share2 size={15} />,   label: "Share" },
                 ].map(({ icon, label }) => (
                   <button
                     key={label}
@@ -104,6 +105,25 @@ export default async function VideoPage({ params }: Props) {
                     {icon}
                   </button>
                 ))}
+                {isOwner ? (
+                  <VideoOwnerActions
+                    videoId={video.id}
+                    username={video.user.username}
+                    streamId={video.streamId}
+                    initialTitle={video.title}
+                    initialDescription={video.description ?? ""}
+                    initialTags={video.tags}
+                    initialThumbnailUrl={video.thumbnailUrl}
+                    initialIsPublic={video.isPublic}
+                  />
+                ) : (
+                  <button
+                    aria-label="More"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
+                  >
+                    <MoreHorizontal size={15} />
+                  </button>
+                )}
               </div>
             </div>
 

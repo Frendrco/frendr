@@ -77,10 +77,14 @@ async function extractVideoFrames(videoFile: File): Promise<string[]> {
     }
 
     video.addEventListener("seeked", () => {
+      const nativeW = video.videoWidth
+      const nativeH = video.videoHeight
+      const maxDim = 640
+      const scale = Math.min(maxDim / nativeW, maxDim / nativeH, 1)
       const canvas = document.createElement("canvas")
-      canvas.width = 320
-      canvas.height = 180
-      canvas.getContext("2d")!.drawImage(video, 0, 0, 320, 180)
+      canvas.width  = Math.round(nativeW * scale)
+      canvas.height = Math.round(nativeH * scale)
+      canvas.getContext("2d")!.drawImage(video, 0, 0, canvas.width, canvas.height)
       frames.push(canvas.toDataURL("image/jpeg", 0.85))
       index++
       seekNext()
@@ -400,7 +404,7 @@ export function UploadClient({ username }: { username: string }) {
                 {thumbnail ? (
                   <div className="relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={thumbnail} alt="Thumbnail preview" className="w-full aspect-video object-cover rounded-lg" />
+                    <img src={thumbnail} alt="Thumbnail preview" className="max-h-64 w-full object-contain rounded-lg bg-black" />
                     <button type="button"
                       onClick={() => thumbInputRef.current?.click()}
                       className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-black/50 px-3 py-1.5 font-sans text-xs text-white backdrop-blur hover:bg-black/70 transition-colors"
@@ -425,7 +429,7 @@ export function UploadClient({ username }: { username: string }) {
                         ? "Auto-filled from YouTube — click to replace"
                         : "Drop an image or click to browse"}
                     </p>
-                    <p className="font-sans text-[11px] text-foreground/25">JPG, PNG, WebP · 16:9 recommended</p>
+                    <p className="font-sans text-[11px] text-foreground/25">JPG, PNG, WebP · any aspect ratio</p>
                   </div>
                 )}
               </>
@@ -443,12 +447,12 @@ export function UploadClient({ username }: { username: string }) {
                   </div>
                 ) : videoFrames.length > 0 ? (
                   <>
-                    <div className="relative overflow-hidden rounded-lg bg-foreground/[0.02]">
+                    <div className="relative overflow-hidden rounded-lg bg-black flex items-center justify-center min-h-[120px]">
                       {selectedFrame !== null ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={videoFrames[selectedFrame]} alt="Selected frame" className="w-full aspect-video object-cover" />
+                        <img src={videoFrames[selectedFrame]} alt="Selected frame" className="max-h-72 w-full object-contain" />
                       ) : (
-                        <div className="flex aspect-video items-center justify-center">
+                        <div className="flex min-h-[120px] items-center justify-center">
                           <p className="font-sans text-xs text-foreground/30">Select a frame below</p>
                         </div>
                       )}
@@ -457,12 +461,12 @@ export function UploadClient({ username }: { username: string }) {
                       {videoFrames.map((src, i) => (
                         <button key={i} type="button" onClick={() => selectFrame(i)}
                           className={cn(
-                            "relative overflow-hidden rounded-md border-2 transition-colors",
+                            "relative overflow-hidden rounded-md border-2 transition-colors bg-black",
                             selectedFrame === i ? "border-core-black" : "border-transparent hover:border-foreground/30"
                           )}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={src} alt={`Frame ${i + 1}`} className="aspect-video w-full object-cover" />
+                          <img src={src} alt={`Frame ${i + 1}`} className="w-full object-contain" />
                         </button>
                       ))}
                     </div>
