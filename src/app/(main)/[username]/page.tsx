@@ -2,11 +2,15 @@ import { notFound } from "next/navigation"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import Image from "next/image"
 import Link from "next/link"
-import { MapPin, Globe, Upload } from "lucide-react"
+import { MapPin, Globe } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { AvailableForWork } from "@/components/common/AvailableForWork"
 import { FollowButton } from "@/components/common/FollowButton"
 import { VideoCard } from "@/components/common/VideoCard"
+import { CoverImage } from "./CoverImage"
+import { PinnedVideo } from "./PinnedVideo"
+import { PinButton } from "./PinButton"
+import { EditProfileModal } from "./EditProfileModal"
 import type { Metadata } from "next"
 
 const PLACEHOLDER_CARDS = [
@@ -66,8 +70,6 @@ export default async function ProfilePage({ params }: Props) {
     : false
 
   const stats = [
-    { label: "Views",     value: "0",                           href: null },
-    { label: "Likes",     value: "0",                           href: null },
     { label: "Followers", value: String(user._count.followers), href: `/${username}/followers` },
     { label: "Following", value: String(user._count.following), href: `/${username}/following` },
   ]
@@ -78,44 +80,58 @@ export default async function ProfilePage({ params }: Props) {
     { key: "twitter",   href: user.twitter,   label: "X"  },
   ].filter((s): s is { key: string; href: string; label: string } => Boolean(s.href))
 
+  const pinnedVideo = user.pinnedVideoId
+    ? (user.videos.find((v) => v.id === user.pinnedVideoId) ?? null)
+    : null
+
+  const gridVideos = pinnedVideo
+    ? user.videos.filter((v) => v.id !== user.pinnedVideoId)
+    : user.videos
+
   return (
     <div className="min-h-screen bg-white">
-      <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
+
+      {/* ── Cover image ──────────────────────────────────────── */}
+      <CoverImage initialCoverUrl={user.coverImageUrl} isOwn={isOwn} />
+
+      <div className="mx-auto max-w-screen-xl px-4 md:px-6 pb-10">
+
+        {/* ── Avatar (overlaps cover bottom edge) ─────────────── */}
+        <div className="-mt-9 mb-5 flex relative z-10">
+          {/* ring-4 must be on an element WITHOUT overflow-hidden, otherwise box-shadow is clipped */}
+          <div className="h-[72px] w-[72px] rounded-full ring-4 ring-white">
+            <div className="h-full w-full overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
+              {avatarUrl ? (
+                <Image src={avatarUrl} alt={user.displayName} width={72} height={72} className="h-full w-full object-cover" />
+              ) : (
+                <span className="font-sans font-bold text-xl text-core-black">{initials}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-10 md:flex-row md:gap-12 lg:gap-16">
 
           {/* ── Sidebar ─────────────────────────────────────── */}
           <aside className="shrink-0 md:w-52 lg:w-56">
 
-            {/* Avatar + name */}
-            <div className="mb-4 flex flex-col items-start gap-2">
-              <div className="h-[72px] w-[72px] overflow-hidden rounded-full bg-spring-green flex items-center justify-center ring-2 ring-offset-2 ring-green-500">
-                {avatarUrl ? (
-                  <Image src={avatarUrl} alt={user.displayName} width={72} height={72} className="h-full w-full object-cover" />
-                ) : (
-                  <span className="font-sans font-bold text-xl text-core-black">{initials}</span>
-                )}
-              </div>
-              <div className="flex flex-col gap-1">
-                <h1 className="font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
-                {user.role && (
-                  <p className="font-sans text-xs text-foreground/50">{user.role}</p>
-                )}
-                <AvailableForWork initial={user.openToWork} isOwn={isOwn} />
-              </div>
+            {/* Name + role */}
+            <div className="mb-4 flex flex-col gap-1">
+              <h1 className="font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
+              {user.role && (
+                <p className="font-sans text-xs text-foreground/50">{user.role}</p>
+              )}
+              <AvailableForWork initial={user.openToWork} isOwn={isOwn} />
             </div>
 
-            {/* Stats */}
+            {/* Stats — followers + following only */}
             <div className="mb-4 w-full">
               {stats.map(({ label, value, href }) => (
                 <div key={label} className="flex items-center justify-between border-b border-border/50 py-1.5 last:border-0">
                   <span className="font-sans text-xs text-foreground/50">{label}</span>
-                  {href ? (
-                    <Link href={href} className="font-sans text-xs font-semibold text-core-black hover:underline">
-                      {value}
-                    </Link>
-                  ) : (
-                    <span className="font-sans text-xs font-semibold text-core-black">{value}</span>
-                  )}
+                  <Link href={href} className="font-sans text-xs font-semibold text-core-black hover:underline">
+                    {value}
+                  </Link>
                 </div>
               ))}
             </div>
@@ -180,8 +196,22 @@ export default async function ProfilePage({ params }: Props) {
               </div>
             )}
 
-            {/* Follow button (visitors only) */}
-            {!isOwn && (
+            {/* Edit profile (owner) / Follow button (visitors) */}
+            {isOwn ? (
+              <EditProfileModal
+                profile={{
+                  displayName: user.displayName,
+                  location:    user.location,
+                  bio:         user.bio,
+                  website:     user.website,
+                  role:        user.role,
+                  instagram:   user.instagram,
+                  linkedin:    user.linkedin,
+                  twitter:     user.twitter,
+                  tags:        user.tags,
+                }}
+              />
+            ) : (
               <FollowButton
                 username={username}
                 initialIsFollowing={isFollowing}
@@ -193,8 +223,8 @@ export default async function ProfilePage({ params }: Props) {
           {/* ── Main content ────────────────────────────────── */}
           <main className="min-w-0 flex-1">
 
-            {/* Tab bar + upload */}
-            <div className="mb-6 flex items-center justify-between border-b border-border pb-0">
+            {/* Tab bar */}
+            <div className="mb-6 border-b border-border pb-0">
               <div className="flex gap-6">
                 <Link
                   href={`/${username}`}
@@ -212,29 +242,31 @@ export default async function ProfilePage({ params }: Props) {
                   Activity
                 </span>
               </div>
-              {isOwn && (
-                <Link
-                  href="/dashboard/upload"
-                  className="mb-3 inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-white px-4 font-sans font-medium text-xs text-core-black hover:bg-foreground/5 transition-colors"
-                >
-                  <Upload size={12} />
-                  Upload Video
-                </Link>
-              )}
             </div>
+
+            {/* Pinned video slot */}
+            {pinnedVideo ? (
+              <PinnedVideo video={pinnedVideo} isOwn={isOwn} />
+            ) : isOwn && user.videos.length > 0 ? (
+              <div className="mb-6 flex items-center gap-2 rounded-xl border border-dashed border-border px-4 py-3">
+                <p className="font-sans text-xs text-foreground/40">
+                  Hover any video and click the pin icon to feature it here.
+                </p>
+              </div>
+            ) : null}
 
             {/* All videos heading */}
             <div className="mb-4">
               <h2 className="font-sans font-bold text-sm text-core-black">
                 All Videos
-                {user.videos.length > 0 && (
-                  <span className="ml-2 font-normal text-foreground/40">({user.videos.length})</span>
+                {gridVideos.length > 0 && (
+                  <span className="ml-2 font-normal text-foreground/40">({gridVideos.length})</span>
                 )}
               </h2>
             </div>
 
             {/* Video grid or colour placeholders */}
-            {user.videos.length === 0 ? (
+            {gridVideos.length === 0 && !pinnedVideo ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
                 {PLACEHOLDER_CARDS.map((card) => (
                   <div key={card.id}>
@@ -246,8 +278,19 @@ export default async function ProfilePage({ params }: Props) {
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
-                {user.videos.map((video) => (
-                  <VideoCard key={video.id} video={{ ...video, user: { username: user.username, displayName: user.displayName, avatarUrl: user.avatarUrl } }} />
+                {gridVideos.map((video) => (
+                  <VideoCard
+                    key={video.id}
+                    video={{ ...video, user: { username: user.username, displayName: user.displayName, avatarUrl: user.avatarUrl } }}
+                    hideCreator
+                    hideTags
+                    actionsSlot={isOwn ? (
+                      <PinButton
+                        videoId={video.id}
+                        isPinned={user.pinnedVideoId === video.id}
+                      />
+                    ) : undefined}
+                  />
                 ))}
               </div>
             )}

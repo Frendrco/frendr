@@ -44,7 +44,10 @@ export async function DELETE(_req: Request, { params }: Params) {
   if (!video) return NextResponse.json({ error: "Not found" }, { status: 404 })
   if (video.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-  await prisma.video.delete({ where: { id } })
+  await prisma.$transaction([
+    prisma.user.updateMany({ where: { pinnedVideoId: id }, data: { pinnedVideoId: null } }),
+    prisma.video.delete({ where: { id } }),
+  ])
 
   if (video.streamId) {
     const accountId = process.env.CLOUDFLARE_ACCOUNT_ID

@@ -33,7 +33,7 @@ export async function PATCH(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { displayName, location, age, bio, website, role, instagram, linkedin, twitter, tags, openToWork } = await req.json()
+  const { displayName, location, age, bio, website, role, instagram, linkedin, twitter, tags, openToWork, coverImageUrl } = await req.json()
 
   const clerk = await clerkClient()
   const clerkUser = await clerk.users.getUser(userId)
@@ -54,6 +54,7 @@ export async function PATCH(req: Request) {
       twitter: twitter ?? null,
       ...(Array.isArray(tags) && { tags }),
       ...(typeof openToWork === "boolean" && { openToWork }),
+      ...(coverImageUrl !== undefined && { coverImageUrl: coverImageUrl ?? null }),
     },
   })
 
