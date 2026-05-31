@@ -872,14 +872,14 @@ export function UploadClient({ username }: { username: string }) {
             {uploadError && <p className="mt-4 font-sans text-xs text-red-500">{uploadError}</p>}
 
             <div className="mt-6 flex items-center justify-end gap-3 border-t border-border pt-5">
-              <Link href={`/${username}`} className="h-10 px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
+              <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
                 Cancel
               </Link>
               <button
                 type="button"
                 onClick={handleUpload}
                 disabled={!file || !title.trim() || uploading}
-                className="h-10 rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
+                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {uploading ? (progress < 100 ? "Uploading…" : "Processing…") : "Upload Video"}
               </button>
@@ -935,14 +935,14 @@ export function UploadClient({ username }: { username: string }) {
             {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
 
             <div className="mt-2 flex items-center justify-end gap-3 border-t border-border pt-5">
-              <Link href={`/${username}`} className="h-10 px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
+              <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
                 Cancel
               </Link>
               <button
                 type="button"
                 onClick={handleImport}
                 disabled={!importEmbedUrl || !title.trim() || uploading}
-                className="h-10 rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
+                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {uploading ? "Saving…" : "Import Video"}
               </button>

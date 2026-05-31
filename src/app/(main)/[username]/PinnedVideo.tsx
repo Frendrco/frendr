@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Pin, Play } from "lucide-react"
 import { UnpinButton } from "./UnpinButton"
 import { getVideoEmbedUrl } from "@/lib/videoEmbed"
@@ -79,8 +80,13 @@ export function PinnedVideo({ video, isOwn }: Props) {
         )}
       </div>
 
-      {/* Title below video */}
-      <p className="mt-2 font-sans font-medium text-sm text-core-black">{video.title}</p>
+      {/* Title — links to video page */}
+      <Link
+        href={`/v/${video.id}`}
+        className="mt-2 inline-block font-sans font-medium text-sm text-core-black hover:underline"
+      >
+        {video.title}
+      </Link>
     </div>
   )
 }

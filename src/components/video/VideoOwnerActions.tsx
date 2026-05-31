@@ -2,13 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Image as ImageIcon, MoreHorizontal, Pencil, Play, Search, Upload, X } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { Check, Copy, Image as ImageIcon, MoreHorizontal, Play, Search, Upload, X } from "lucide-react"
 import {
   Dialog,
   DialogClose,
@@ -25,7 +19,7 @@ const FRAME_PERCENTS = ["5%", "20%", "35%", "50%", "65%", "85%"]
 const field =
   "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
-type EditTab = "basics" | "credits"
+type EditTab = "basics" | "credits" | "embed"
 
 interface CollabEntry {
   userId: string
@@ -45,6 +39,8 @@ interface Props {
   initialThumbnailUrl: string | null
   initialIsPublic: boolean
   initialCollaborators: CollabEntry[]
+  externalEditOpen?: boolean
+  onExternalEditOpenChange?: (open: boolean) => void
 }
 
 export function VideoOwnerActions({
@@ -57,11 +53,15 @@ export function VideoOwnerActions({
   initialThumbnailUrl,
   initialIsPublic,
   initialCollaborators,
+  externalEditOpen,
+  onExternalEditOpenChange,
 }: Props) {
   const router = useRouter()
   const thumbInputRef = useRef<HTMLInputElement>(null)
 
   const [editOpen,   setEditOpen]   = useState(false)
+  const effectiveEditOpen    = externalEditOpen    ?? editOpen
+  const setEffectiveEditOpen = onExternalEditOpenChange ?? setEditOpen
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [saving,     setSaving]     = useState(false)
   const [deleting,   setDeleting]   = useState(false)
@@ -84,11 +84,18 @@ export function VideoOwnerActions({
   const [collabLoading, setCollabLoading] = useState(false)
   const collabDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Embed tab state
+  const [allowEmbedding, setAllowEmbedding] = useState(true)
+  const [embedAutoplay,  setEmbedAutoplay]  = useState(false)
+  const [embedLoop,      setEmbedLoop]      = useState(false)
+  const [showControls,   setShowControls]   = useState(true)
+  const [copied,         setCopied]         = useState(false)
+
   // Re-sync credits when modal opens (in case initial data changed)
   useEffect(() => {
-    if (editOpen) setCollabs(initialCollaborators)
+    if (effectiveEditOpen) setCollabs(initialCollaborators)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editOpen])
+  }, [effectiveEditOpen])
 
   const searchCollabs = useCallback((q: string) => {
     if (!q.trim()) { setCollabResults([]); return }
@@ -161,7 +168,7 @@ export function VideoOwnerActions({
       }),
     })
     setSaving(false)
-    setEditOpen(false)
+    setEffectiveEditOpen(false)
     router.refresh()
   }
 
@@ -171,28 +178,28 @@ export function VideoOwnerActions({
     router.push(`/${username}`)
   }
 
+  function copyEmbed() {
+    navigator.clipboard.writeText(
+      `<iframe src="https://frendr.com/embed/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
+    ).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
+  }
+
   const currentThumb = thumbnailUrl.trim() || null
 
   return (
     <>
-      {/* ── Three-dot trigger ─────────────────────────────────── */}
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          aria-label="More options"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
-        >
-          <MoreHorizontal size={15} />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => { setThumbMode("default"); setSelectedFrame(null); setTab("basics"); setEditOpen(true) }}>
-            <Pencil size={14} />
-            Edit video
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* ── Three-dot trigger — opens modal directly ──────────── */}
+      <button
+        type="button"
+        aria-label="Edit video"
+        onClick={() => { setThumbMode("default"); setSelectedFrame(null); setTab("basics"); setEditOpen(true) }}
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
+      >
+        <MoreHorizontal size={15} />
+      </button>
 
       {/* ── Edit dialog ─────────────────────────────────────────── */}
-      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+      <Dialog open={effectiveEditOpen} onOpenChange={setEffectiveEditOpen}>
         <DialogContent
           className="sm:max-w-lg p-0 gap-0 max-h-[90dvh] overflow-hidden flex flex-col"
           showCloseButton={false}
@@ -216,7 +223,7 @@ export function VideoOwnerActions({
             </div>
             {/* Tab strip */}
             <div className="flex gap-6 px-4">
-              {(["basics", "credits"] as EditTab[]).map((t) => (
+              {(["basics", "credits", "embed"] as EditTab[]).map((t) => (
                 <button
                   key={t}
                   type="button"
@@ -378,6 +385,70 @@ export function VideoOwnerActions({
                       <polyline points="6 9 12 15 18 9" />
                     </svg>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── Embed tab ── */}
+            {tab === "embed" && (
+              <div className="flex flex-col gap-8">
+                {/* Allow embedding toggle */}
+                <div className="rounded-xl border border-border p-5">
+                  <button
+                    type="button"
+                    onClick={() => setAllowEmbedding((v) => !v)}
+                    className="flex w-full items-center justify-between gap-4 text-left"
+                  >
+                    <div>
+                      <p className="font-sans text-sm font-medium text-core-black">Allow embedding on other sites</p>
+                      <p className="font-sans text-xs text-foreground/40">Let anyone embed your video player on their website or blog.</p>
+                    </div>
+                    <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowEmbedding ? "bg-spring-green" : "bg-border")}>
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", allowEmbedding ? "translate-x-4" : "translate-x-0.5")} />
+                    </div>
+                  </button>
+                </div>
+
+                {/* Player options */}
+                <div className={cn("flex flex-col gap-5 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
+                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Player options</p>
+                  {([
+                    { on: embedAutoplay, set: setEmbedAutoplay, label: "Autoplay",             desc: "Video starts playing as soon as it loads." },
+                    { on: embedLoop,     set: setEmbedLoop,     label: "Loop",                 desc: "Replay automatically when the video ends." },
+                    { on: showControls,  set: setShowControls,  label: "Show player controls", desc: "Display play, pause, and volume controls to viewers." },
+                  ] as const).map(({ on, set, label, desc }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => set((v) => !v)}
+                      className="flex items-center justify-between gap-4 text-left"
+                    >
+                      <div>
+                        <p className="font-sans text-sm font-medium text-core-black">{label}</p>
+                        <p className="font-sans text-xs text-foreground/40">{desc}</p>
+                      </div>
+                      <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", on ? "bg-spring-green" : "bg-border")}>
+                        <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Embed code */}
+                <div className={cn("flex flex-col gap-2 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
+                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Embed code</p>
+                  <div className="relative">
+                    <pre className="w-full overflow-x-auto rounded-xl border border-border bg-foreground/[0.02] px-4 py-4 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre">{`<iframe\n  src="https://frendr.com/embed/${videoId}"\n  width="640" height="360"\n  frameborder="0"\n  allowfullscreen\n></iframe>`}</pre>
+                    <button
+                      type="button"
+                      onClick={copyEmbed}
+                      className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
+                    >
+                      {copied ? <Check size={12} className="text-spring-green" /> : <Copy size={12} />}
+                      {copied ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <p className="font-sans text-xs text-foreground/30">The embed code becomes active once your video is published.</p>
                 </div>
               </div>
             )}
