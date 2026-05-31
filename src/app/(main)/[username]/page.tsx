@@ -6,6 +6,7 @@ import { MapPin, Globe } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { AvailableForWork } from "@/components/common/AvailableForWork"
 import { FollowButton } from "@/components/common/FollowButton"
+import { MessageButton } from "@/components/messages/MessageButton"
 import { VideoCard } from "@/components/common/VideoCard"
 import { CoverImage } from "./CoverImage"
 import { PinnedVideo } from "./PinnedVideo"
@@ -212,11 +213,16 @@ export default async function ProfilePage({ params }: Props) {
                 }}
               />
             ) : (
-              <FollowButton
-                username={username}
-                initialIsFollowing={isFollowing}
-                size="md"
-              />
+              <div className="flex flex-col gap-2">
+                <FollowButton
+                  username={username}
+                  initialIsFollowing={isFollowing}
+                  size="md"
+                />
+                {clerkId && (
+                  <MessageButton recipientId={user.id} />
+                )}
+              </div>
             )}
           </aside>
 

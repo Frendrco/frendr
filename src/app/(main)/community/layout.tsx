@@ -17,7 +17,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
           <div>
             <h1 className="display-sm text-core-black">Frend Zone</h1>
             <p className="mt-1 font-sans text-sm text-foreground/40">
-              Talk shop, share work, find opportunities. Leave your ego at the door.
+              All the good stuff, none of the LinkedIn energy. Leave your ego at the door.
             </p>
           </div>
           {userId && (

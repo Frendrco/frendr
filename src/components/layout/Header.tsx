@@ -4,9 +4,10 @@ import React, { useState, useRef } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@clerk/nextjs"
-import { Search, Bell, MessageCircle, Upload } from "lucide-react"
+import { Search, Bell, Upload } from "lucide-react"
 
 import { Logo } from "@/components/common/Logo"
+import { MessagesNavItem } from "@/components/messages/MessagesNavItem"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -121,13 +122,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
               </Link>
 
               {/* Messages */}
-              <Link
-                href="/messages"
-                className="hidden md:flex h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur text-foreground/50 hover:text-foreground transition-colors"
-                aria-label="Messages"
-              >
-                <MessageCircle size={17} />
-              </Link>
+              <MessagesNavItem />
 
               {/* Notifications */}
               <Link
