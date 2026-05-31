@@ -36,15 +36,15 @@ export function PinnedVideo({ video, isOwn }: Props) {
     <div className="mb-8">
       {/* Label row */}
       <div className="mb-3 flex items-center justify-between">
-        <span className="flex items-center gap-1.5 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/40">
+        <span className="flex items-center gap-1.5 font-sans text-xs font-normal text-foreground/40">
           <Pin size={10} />
           Featured work
         </span>
         {isOwn && <UnpinButton videoId={video.id} />}
       </div>
 
-      {/* Video — full width */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black">
+      {/* Video — full width, fixed 16/9 */}
+      <div className="relative w-full overflow-hidden rounded-2xl bg-black" style={{ aspectRatio: "16/9" }}>
         {playing && embedUrl ? (
           <iframe
             src={embedUrl}

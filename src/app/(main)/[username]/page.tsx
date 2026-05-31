@@ -96,27 +96,27 @@ export default async function ProfilePage({ params }: Props) {
 
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 pb-10">
 
+        {/* ── Avatar — overlaps cover bottom edge ───────────── */}
+        <div className="-mt-9 mb-4 flex relative z-10">
+          {/* ring-4 on the outer element so it isn't clipped by overflow-hidden */}
+          <div className="h-[72px] w-[72px] rounded-full ring-4 ring-white">
+            <div className="h-full w-full overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
+              {avatarUrl ? (
+                <Image src={avatarUrl} alt={user.displayName} width={72} height={72} className="h-full w-full object-cover" />
+              ) : (
+                <span className="font-sans font-bold text-xl text-core-black">{initials}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-10 md:flex-row md:gap-12 lg:gap-16">
 
           {/* ── Sidebar ─────────────────────────────────────── */}
           <aside className="shrink-0 md:w-52 lg:w-56">
 
-            {/* Avatar — overlaps cover bottom edge, centered in sidebar */}
-            <div className="-mt-9 mb-4 flex justify-center relative z-10">
-              {/* ring-4 on the outer element so it isn't clipped by overflow-hidden */}
-              <div className="h-[72px] w-[72px] rounded-full ring-4 ring-white">
-                <div className="h-full w-full overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
-                  {avatarUrl ? (
-                    <Image src={avatarUrl} alt={user.displayName} width={72} height={72} className="h-full w-full object-cover" />
-                  ) : (
-                    <span className="font-sans font-bold text-xl text-core-black">{initials}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Name + role — centered */}
-            <div className="mb-4 flex flex-col items-center gap-1 text-center">
+            {/* Name + role */}
+            <div className="mb-4 flex flex-col gap-1">
               <h1 className="font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
               {user.role && (
                 <p className="font-sans text-xs text-foreground/50">{user.role}</p>
@@ -221,7 +221,7 @@ export default async function ProfilePage({ params }: Props) {
           </aside>
 
           {/* ── Main content ────────────────────────────────── */}
-          <main className="min-w-0 flex-1">
+          <main className="min-w-0 flex-1 md:pt-6">
 
             {/* Tab bar */}
             <div className="mb-6 border-b border-border pb-0">
