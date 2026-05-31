@@ -4,12 +4,13 @@ import { Logo } from "@/components/common/Logo"
 
 const SOCIAL_LINKS = [
   { label: "Instagram", href: "https://instagram.com/frendr" },
-  { label: "Contact Us", href: "/contact" },
+  { label: "Discord",   href: "https://discord.gg/REPLACE_ME" },
 ]
 
 const LEGAL_LINKS = [
-  { label: "Terms",   href: "/terms"   },
-  { label: "Privacy", href: "/privacy" },
+  { label: "Terms",      href: "/terms"   },
+  { label: "Privacy",    href: "/privacy" },
+  { label: "Contact",    href: "/contact" },
 ]
 
 export function Footer() {
@@ -17,7 +18,7 @@ export function Footer() {
     <footer className="bg-white overflow-hidden">
 
       {/* ── Slim nav bar ── */}
-      <div className="mx-auto max-w-screen-xl px-6 md:px-8 pt-6 pb-3 relative flex items-center justify-between">
+      <div className="mx-auto max-w-screen-xl px-6 md:px-8 pt-6 pb-3 relative flex items-center justify-between border-t border-black/10">
 
         {/* Social links */}
         <div className="flex items-center gap-6">

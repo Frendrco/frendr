@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useClerk, useUser } from "@clerk/nextjs"
-import { Settings, Video, ListVideo, Tv2, LogOut, Mail, Compass, Users, Rss } from "lucide-react"
+import { Settings, Tv2, LogOut, Compass, Users, Rss } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -108,34 +108,10 @@ export function UserMenuDropdown({ username, displayName }: Props) {
 
         <DropdownMenuItem
           className="justify-between px-3 py-1.5 cursor-pointer"
-          onClick={() => router.push(`/${username}`)}
-        >
-          <span className="font-sans text-sm">My Videos</span>
-          <Video size={16} strokeWidth={1.5} className="text-foreground/40" />
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          className="justify-between px-3 py-1.5 cursor-pointer"
-          onClick={() => router.push(`/${username}/playlists`)}
-        >
-          <span className="font-sans text-sm">My Playlists</span>
-          <ListVideo size={16} strokeWidth={1.5} className="text-foreground/40" />
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          className="justify-between px-3 py-1.5 cursor-pointer"
           onClick={() => router.push("/dashboard/channels")}
         >
           <span className="font-sans text-sm">My Channels</span>
           <Tv2 size={16} strokeWidth={1.5} className="text-foreground/40" />
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          className="justify-between px-3 py-1.5 cursor-pointer"
-          onClick={() => router.push("/contact")}
-        >
-          <span className="font-sans text-sm">Contact Us</span>
-          <Mail size={16} strokeWidth={1.5} className="text-foreground/40" />
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
