@@ -24,6 +24,7 @@ model User {
   coverImageUrl String?
   pinnedVideoId String?
   tags          String[]
+  email         String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -49,6 +50,8 @@ model User {
   savedShops          SavedShop[]
   conversations       ConversationParticipant[]
   sentMessages        Message[]
+  notifications       Notification[]
+  notificationsFrom   Notification[] @relation("NotifFromUser")
 }
 
 model Video {
@@ -340,4 +343,18 @@ model Message {
   createdAt      DateTime     @default(now())
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // "follow" | "comment" | "reply" | "message" | "vote"
+  fromUserId  String?
+  contentId   String?
+  contentType String?
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user     User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fromUser User? @relation("NotifFromUser", fields: [fromUserId], references: [id], onDelete: SetNull)
 }

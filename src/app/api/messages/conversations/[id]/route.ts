@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { createNotification } from "@/lib/notifications"
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -71,6 +72,23 @@ export async function POST(req: Request, { params }: Params) {
       data: { updatedAt: new Date() },
     }),
   ])
+
+  // Notify all other participants
+  const conversation = await prisma.conversation.findUnique({
+    where: { id },
+    select: { participants: { select: { userId: true } } },
+  })
+  for (const p of conversation?.participants ?? []) {
+    if (p.userId !== user.id) {
+      createNotification({
+        userId: p.userId,
+        type: "message",
+        fromUserId: user.id,
+        contentId: id,
+        contentType: "conversation",
+      }).catch(() => {})
+    }
+  }
 
   return NextResponse.json(message, { status: 201 })
 }

@@ -27,11 +27,12 @@ export async function POST(req: Request) {
   const clerk = await clerkClient()
   const clerkUser = await clerk.users.getUser(userId)
   const avatarUrl = clerkUser.imageUrl ?? null
+  const email = clerkUser.emailAddresses[0]?.emailAddress ?? null
 
   const user = await prisma.user.upsert({
     where: { clerkId: userId },
-    update: { displayName, avatarUrl, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
-    create: { clerkId: userId, username, displayName, avatarUrl, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
+    update: { displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
+    create: { clerkId: userId, username, displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
   })
 
   return NextResponse.json(user)

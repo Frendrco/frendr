@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { createNotification } from "@/lib/notifications"
 
 type Params = { params: Promise<{ username: string }> }
 
@@ -30,6 +31,11 @@ export async function POST(_req: Request, { params }: Params) {
     await prisma.follow.create({
       data: { followerId: followerUser.id, followingId: targetUser.id },
     })
+    createNotification({
+      userId: targetUser.id,
+      type: "follow",
+      fromUserId: followerUser.id,
+    }).catch(() => {})
   }
 
   const followerCount = await prisma.follow.count({ where: { followingId: targetUser.id } })

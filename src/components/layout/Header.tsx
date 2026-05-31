@@ -4,10 +4,11 @@ import React, { useState, useRef } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@clerk/nextjs"
-import { Search, Bell, Upload } from "lucide-react"
+import { Search, Upload } from "lucide-react"
 
 import { Logo } from "@/components/common/Logo"
 import { MessagesNavItem } from "@/components/messages/MessagesNavItem"
+import { NotificationsBell } from "@/components/notifications/NotificationsBell"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -125,13 +126,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
               <MessagesNavItem />
 
               {/* Notifications */}
-              <Link
-                href="/notifications"
-                className="hidden md:flex h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur text-foreground/50 hover:text-foreground transition-colors"
-                aria-label="Notifications"
-              >
-                <Bell size={17} />
-              </Link>
+              <NotificationsBell />
 
               {/* Avatar / user menu */}
               {userMenu}
