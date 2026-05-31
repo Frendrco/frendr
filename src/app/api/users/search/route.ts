@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const q = req.nextUrl.searchParams.get("q")?.trim()
-  if (!q || q.length < 2) return NextResponse.json([])
+  if (!q) return NextResponse.json([])
 
   const users = await prisma.user.findMany({
     where: {

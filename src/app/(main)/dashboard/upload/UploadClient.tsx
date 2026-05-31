@@ -227,7 +227,7 @@ export function UploadClient({ username }: { username: string }) {
 
   useEffect(() => {
     if (collabDebounce.current) clearTimeout(collabDebounce.current)
-    collabDebounce.current = setTimeout(() => searchCollabs(collabSearch), 300)
+    collabDebounce.current = setTimeout(() => searchCollabs(collabSearch), 150)
     return () => { if (collabDebounce.current) clearTimeout(collabDebounce.current) }
   }, [collabSearch, searchCollabs])
 
