@@ -1,11 +1,15 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@clerk/nextjs/server"
-import { Eye, Heart, Bookmark, Share2, MoreHorizontal } from "lucide-react"
+import { Eye, MoreHorizontal } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { VideoPlayer } from "./VideoPlayer"
 import { FeatureButton } from "./FeatureButton"
+import { UpvoteButton } from "./UpvoteButton"
+import { SaveButton } from "./SaveButton"
+import { ShareButton } from "./ShareButton"
 import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
+import { VideoCommentSection, type VideoCommentData } from "./VideoCommentSection"
 import type { Metadata } from "next"
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
@@ -47,14 +51,65 @@ export default async function VideoPage({ params }: Props) {
   const { userId: clerkId } = await auth()
 
   const [video, currentUser] = await Promise.all([
-    prisma.video.findUnique({ where: { id }, include: { user: true } }),
-    clerkId ? prisma.user.findUnique({ where: { clerkId }, select: { role: true } }) : null,
+    prisma.video.findUnique({
+      where: { id },
+      include: {
+        user: true,
+        _count: { select: { likes: true } },
+      },
+    }),
+    clerkId ? prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } }) : null,
   ])
 
   if (!video) notFound()
 
-  const isAdmin   = currentUser?.role === "admin"
-  const isOwner   = clerkId != null && video.user.clerkId === clerkId
+  const isAdmin = currentUser?.role === "admin"
+  const isOwner = clerkId != null && video.user.clerkId === clerkId
+
+  const [upvoteData, savedData, rawComments] = await Promise.all([
+    currentUser
+      ? prisma.videoLike.findUnique({
+          where: { videoId_userId: { videoId: id, userId: currentUser.id } },
+        })
+      : null,
+    currentUser
+      ? prisma.playlistVideo.findFirst({
+          where: { videoId: id, playlist: { userId: currentUser.id, isDefault: true } },
+        })
+      : null,
+    prisma.comment.findMany({
+      where: { videoId: id, parentCommentId: null },
+      orderBy: { createdAt: "asc" },
+      include: {
+        user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+        votes: true,
+        replies: {
+          orderBy: { createdAt: "asc" },
+          include: {
+            user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+            votes: true,
+          },
+        },
+      },
+    }),
+  ])
+
+  const comments: VideoCommentData[] = rawComments.map((c) => ({
+    ...c,
+    createdAt: c.createdAt.toISOString(),
+    updatedAt: c.updatedAt.toISOString(),
+    userVote: currentUser
+      ? ((c.votes.find((v) => v.userId === currentUser.id)?.value ?? 0) as 1 | -1 | 0)
+      : 0,
+    replies: c.replies.map((r) => ({
+      ...r,
+      createdAt: r.createdAt.toISOString(),
+      updatedAt: r.updatedAt.toISOString(),
+      userVote: currentUser
+        ? ((r.votes.find((v) => v.userId === currentUser.id)?.value ?? 0) as 1 | -1 | 0)
+        : 0,
+    })),
+  }))
 
   const streamStatus = (!video.externalUrl && video.streamId)
     ? await getStreamStatus(video.streamId)
@@ -92,19 +147,13 @@ export default async function VideoPage({ params }: Props) {
                 {isAdmin && (
                   <FeatureButton videoId={video.id} initialFeatured={video.featured} />
                 )}
-                {[
-                  { icon: <Heart size={15} />,    label: "Like"  },
-                  { icon: <Bookmark size={15} />, label: "Save"  },
-                  { icon: <Share2 size={15} />,   label: "Share" },
-                ].map(({ icon, label }) => (
-                  <button
-                    key={label}
-                    aria-label={label}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
-                  >
-                    {icon}
-                  </button>
-                ))}
+                <UpvoteButton
+                  videoId={video.id}
+                  initialUpvoted={!!upvoteData}
+                  initialCount={video._count.likes}
+                />
+                <SaveButton videoId={video.id} initialSaved={!!savedData} />
+                <ShareButton />
                 {isOwner ? (
                   <VideoOwnerActions
                     videoId={video.id}
@@ -126,6 +175,19 @@ export default async function VideoPage({ params }: Props) {
                 )}
               </div>
             </div>
+
+            {/* Creator link */}
+            <Link href={`/${video.user.username}`} className="mt-2 inline-flex items-center gap-2 hover:opacity-70 transition-opacity">
+              <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
+                {video.user.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={video.user.avatarUrl} alt={video.user.displayName} className="h-full w-full object-cover" />
+                ) : (
+                  <span className="font-sans font-bold text-[7px] text-core-black">{video.user.displayName.charAt(0).toUpperCase()}</span>
+                )}
+              </div>
+              <span className="font-sans text-sm text-foreground/60">{video.user.displayName}</span>
+            </Link>
 
             {/* Meta row */}
             <div className="mt-2 flex items-center gap-3 text-foreground/40">
@@ -159,11 +221,13 @@ export default async function VideoPage({ params }: Props) {
               </div>
             )}
 
-            {/* Comments placeholder */}
+            {/* Comments */}
             <div className="mt-10 border-t border-border pt-8">
-              <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/30">
-                Comments — coming soon
-              </p>
+              <VideoCommentSection
+                videoId={video.id}
+                initialComments={comments}
+                currentUserId={currentUser?.id}
+              />
             </div>
           </div>
 

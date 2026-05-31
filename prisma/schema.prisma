@@ -29,6 +29,7 @@ model User {
   updatedAt   DateTime @updatedAt
 
   videos              Video[]
+  videoLikes          VideoLike[]
   threads             Thread[]
   threadVotes         ThreadVote[]
   savedThreads        SavedThread[]
@@ -68,6 +69,8 @@ model Video {
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   playlists     PlaylistVideo[]
   channels      ChannelVideo[]
+  likes         VideoLike[]
+  comments      Comment[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
@@ -106,15 +109,28 @@ model Comment {
   body            String
   voteCount       Int           @default(0)
   userId          String
-  threadId        String
+  threadId        String?
+  videoId         String?
   parentCommentId String?
   user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  thread          Thread        @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  thread          Thread?       @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  video           Video?        @relation(fields: [videoId], references: [id], onDelete: Cascade)
   parentComment   Comment?      @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies         Comment[]     @relation("CommentReplies")
   votes           CommentVote[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+}
+
+model VideoLike {
+  id        String   @id @default(cuid())
+  videoId   String
+  userId    String
+  createdAt DateTime @default(now())
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, userId])
 }
 
 model CommentVote {
