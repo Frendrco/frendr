@@ -33,7 +33,7 @@ export function MessageInput({ conversationId, onSent }: Props) {
     }
 
     setSending(false)
-    textareaRef.current?.focus()
+    textareaRef.current?.focus({ preventScroll: true })
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {

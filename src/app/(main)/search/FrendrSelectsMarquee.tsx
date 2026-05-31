@@ -2,11 +2,13 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { Sparkles } from "lucide-react"
 
 interface Video {
   id: string
   title: string
   thumbnailUrl: string | null
+  featured?: boolean
   user: { username: string; displayName: string }
 }
 
@@ -39,6 +41,9 @@ export function FrendrSelectsMarquee({ videos }: { videos: Video[] }) {
               ) : (
                 <div className="h-full w-full bg-mist-grey" />
               )}
+              <div className="absolute top-2 left-2 z-10 rounded-xl bg-spring-green p-1.5">
+                <Sparkles size={10} className="text-core-black" />
+              </div>
             </div>
             <p className="font-sans font-medium text-sm text-foreground leading-snug line-clamp-1">
               {video.title}

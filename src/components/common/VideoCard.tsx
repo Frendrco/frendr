@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Play } from "lucide-react"
+import { Play, Sparkles } from "lucide-react"
 import { timeAgo } from "@/lib/utils"
 import { detectProvider, getProviderLabel, type Provider } from "@/lib/videoEmbed"
 import { AddToPlaylistButton } from "./AddToPlaylistButton"
@@ -13,6 +13,7 @@ export type VideoCardData = {
   thumbnailUrl: string | null
   streamId?: string | null
   externalUrl?: string | null
+  featured?: boolean
   tags: string[]
   createdAt: Date | string
   user: {
@@ -72,6 +73,13 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
           />
         ) : (
           <div className="h-full w-full bg-mist-grey" />
+        )}
+
+        {/* Frendr Picks badge */}
+        {video.featured && (
+          <div className="absolute top-2 left-2 z-10 rounded-xl bg-spring-green p-1.5">
+            <Sparkles size={10} className="text-core-black" />
+          </div>
         )}
 
         {/* Provider badge for external videos */}

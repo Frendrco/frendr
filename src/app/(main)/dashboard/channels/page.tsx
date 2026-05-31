@@ -2,8 +2,18 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
-import { Globe, Lock, Pencil, Trash2 } from "lucide-react"
+import { Globe, Lock } from "lucide-react"
 import { CreateChannelForm } from "./CreateChannelForm"
+
+const COLOR_HEX: Record<string, string> = {
+  "spring-green":   "#5CE65C",
+  "winter-green":   "#B9FFB2",
+  "bloom-lavender": "#EDC1F6",
+  "sky-blue":       "#ADD8F6",
+  "sunny-yellow":   "#FFDC7C",
+  "hyper-blue":     "#619EF1",
+  "dream-lilac":    "#DCE0FA",
+}
 
 export default async function DashboardChannelsPage() {
   const { userId: clerkId } = await auth()
@@ -44,9 +54,12 @@ export default async function DashboardChannelsPage() {
                 <p className="font-sans text-xs text-foreground/40">Create your first channel to start curating</p>
               </div>
             ) : (
-              channels.map((ch) => (
-                <div key={ch.id} className="flex items-center gap-4 rounded-xl border border-border bg-white p-4">
-                  <div className="min-w-0 flex-1">
+              channels.map((ch) => {
+                const accentColor = ch.color ? (COLOR_HEX[ch.color] ?? "#E5E7EB") : "#E5E7EB"
+                return (
+                <div key={ch.id} className="flex items-center gap-4 rounded-xl border border-border bg-white overflow-hidden">
+                  <div className="w-1 self-stretch shrink-0" style={{ backgroundColor: accentColor }} />
+                  <div className="min-w-0 flex-1 py-4">
                     <div className="flex items-center gap-2">
                       <p className="font-sans font-semibold text-sm text-core-black">{ch.name}</p>
                       {ch.isPublic ? (
@@ -59,7 +72,7 @@ export default async function DashboardChannelsPage() {
                       {ch._count.videos} {ch._count.videos === 1 ? "video" : "videos"} · {ch._count.followers} {ch._count.followers === 1 ? "follower" : "followers"}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pr-4">
                     <Link
                       href={`/channels/${ch.slug}`}
                       className="inline-flex h-8 items-center rounded-full border border-border px-3 font-sans text-xs text-foreground/60 hover:text-foreground hover:border-foreground/30 transition-colors"
@@ -68,7 +81,8 @@ export default async function DashboardChannelsPage() {
                     </Link>
                   </div>
                 </div>
-              ))
+              )
+              })
             )}
           </div>
 

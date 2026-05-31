@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } })
   if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const { name, description, isPublic, type, coverUrl, admins } = await req.json()
+  const { name, description, isPublic, type, coverUrl, color, admins } = await req.json()
   if (!name?.trim()) return NextResponse.json({ error: "Name required" }, { status: 400 })
 
   // Only admins can create admin channels
@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
       isPublic: isPublic !== false,
       type: type === "admin" ? "admin" : "user",
       coverUrl: coverUrl ?? null,
+      color: color ?? null,
       userId: user.id,
     },
   })
