@@ -94,7 +94,7 @@ export function HeroSection() {
 
         <motion.h1
           className="display-md text-core-black"
-          style={{ y: headlineY, fontSize: "2.45rem", fontWeight: 400 }}
+          style={{ y: headlineY, fontSize: "2.45rem", fontWeight: 400, lineHeight: 1.06 }}
         >
           Designed for creativity.<br />Built for belonging.
         </motion.h1>
