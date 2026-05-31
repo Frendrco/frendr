@@ -16,7 +16,15 @@ export async function PATCH(req: Request, { params }: Params) {
   if (!video) return NextResponse.json({ error: "Not found" }, { status: 404 })
   if (video.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-  const { title, description, tags, thumbnailUrl, isPublic } = await req.json()
+  const body = await req.json() as {
+    title?:         string
+    description?:   string | null
+    tags?:          string[]
+    thumbnailUrl?:  string | null
+    isPublic?:      boolean
+    collaborators?: { userId: string; role?: string | null }[]
+  }
+  const { title, description, tags, thumbnailUrl, isPublic, collaborators } = body
 
   const updated = await prisma.video.update({
     where: { id },
@@ -28,6 +36,18 @@ export async function PATCH(req: Request, { params }: Params) {
       ...(isPublic     !== undefined && { isPublic }),
     },
   })
+
+  if (collaborators !== undefined) {
+    await prisma.$transaction([
+      prisma.videoCollaborator.deleteMany({ where: { videoId: id } }),
+      ...(collaborators.length > 0
+        ? [prisma.videoCollaborator.createMany({
+            data: collaborators.map((c) => ({ videoId: id, userId: c.userId, role: c.role ?? null })),
+            skipDuplicates: true,
+          })]
+        : []),
+    ])
+  }
 
   return NextResponse.json(updated)
 }

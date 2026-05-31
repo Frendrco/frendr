@@ -58,6 +58,7 @@ export default async function VideoPage({ params }: Props) {
         _count: { select: { likes: true } },
         collaborators: {
           include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+          orderBy: { addedAt: "asc" },
         },
       },
     }),
@@ -160,7 +161,7 @@ export default async function VideoPage({ params }: Props) {
                   initialSaved={!!savedData}
                   triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
                 />
-                <ShareButton title={video.title} />
+                <ShareButton title={video.title} videoId={video.id} />
                 {isOwner ? (
                   <VideoOwnerActions
                     videoId={video.id}
@@ -171,6 +172,13 @@ export default async function VideoPage({ params }: Props) {
                     initialTags={video.tags}
                     initialThumbnailUrl={video.thumbnailUrl}
                     initialIsPublic={video.isPublic}
+                    initialCollaborators={video.collaborators.map((c) => ({
+                      userId: c.userId,
+                      username: c.user.username,
+                      displayName: c.user.displayName,
+                      avatarUrl: c.user.avatarUrl,
+                      role: c.role,
+                    }))}
                   />
                 ) : (
                   <button
@@ -198,14 +206,16 @@ export default async function VideoPage({ params }: Props) {
 
             {/* Collaborators */}
             {video.collaborators.length > 0 && (
-              <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
-                <span className="font-sans text-xs text-foreground/40">with</span>
-                {video.collaborators.map(({ user: collab }) => (
+              <div className="mt-1.5 flex flex-col gap-0.5">
+                {video.collaborators.map(({ user: collab, role }) => (
                   <Link
                     key={collab.username}
                     href={`/${collab.username}`}
                     className="inline-flex items-center gap-1.5 hover:opacity-70 transition-opacity"
                   >
+                    <span className="font-sans text-xs text-foreground/40 w-24 shrink-0 text-right">
+                      {role || "with"}
+                    </span>
                     <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
                       {collab.avatarUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element

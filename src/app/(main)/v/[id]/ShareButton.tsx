@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Share2, Check, Link2 } from "lucide-react"
+import { Share2, Check, Link2, Copy } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import {
 
 interface Props {
   title?: string
+  videoId: string
 }
 
 const SOCIAL_TARGETS = (url: string, title: string) => [
@@ -29,19 +30,23 @@ const SOCIAL_TARGETS = (url: string, title: string) => [
   },
 ]
 
-export function ShareButton({ title = "" }: Props) {
-  const [copied, setCopied] = useState(false)
+export function ShareButton({ title = "", videoId }: Props) {
+  const [copiedLink,  setCopiedLink]  = useState(false)
+  const [copiedEmbed, setCopiedEmbed] = useState(false)
 
   const url = typeof window !== "undefined" ? window.location.href : ""
+  const embedCode = `<iframe src="https://frendr.com/embed/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
 
   async function copyLink() {
-    try {
-      await navigator.clipboard.writeText(url)
-    } catch {
-      // fallback for non-secure contexts
-    }
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try { await navigator.clipboard.writeText(url) } catch { /* non-secure context */ }
+    setCopiedLink(true)
+    setTimeout(() => setCopiedLink(false), 2000)
+  }
+
+  async function copyEmbed() {
+    try { await navigator.clipboard.writeText(embedCode) } catch { /* non-secure context */ }
+    setCopiedEmbed(true)
+    setTimeout(() => setCopiedEmbed(false), 2000)
   }
 
   return (
@@ -52,20 +57,20 @@ export function ShareButton({ title = "" }: Props) {
       >
         <Share2 size={15} />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-sm" showCloseButton>
+      <DialogContent className="sm:max-w-md" showCloseButton>
         <DialogHeader>
           <DialogTitle className="font-sans font-semibold text-base text-core-black">Share</DialogTitle>
         </DialogHeader>
 
         {/* Copy link row */}
-        <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
-          <span className="flex-1 truncate font-sans text-sm text-foreground/50">{url}</span>
+        <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
+          <span className="min-w-0 flex-1 truncate font-sans text-sm text-foreground/50">{url}</span>
           <button
             onClick={copyLink}
             aria-label="Copy link"
             className="shrink-0 text-foreground/40 transition-colors hover:text-foreground"
           >
-            {copied ? <Check size={14} className="text-spring-green" /> : <Link2 size={14} />}
+            {copiedLink ? <Check size={14} className="text-spring-green" /> : <Link2 size={14} />}
           </button>
         </div>
 
@@ -82,6 +87,24 @@ export function ShareButton({ title = "" }: Props) {
               {label}
             </a>
           ))}
+        </div>
+
+        {/* Embed code */}
+        <div className="border-t border-border pt-3 flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/40">Embed</p>
+            <button
+              type="button"
+              onClick={copyEmbed}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
+            >
+              {copiedEmbed ? <Check size={11} className="text-spring-green" /> : <Copy size={11} />}
+              {copiedEmbed ? "Copied!" : "Copy"}
+            </button>
+          </div>
+          <pre className="w-full overflow-hidden rounded-xl border border-border bg-foreground/[0.02] px-4 py-3 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre-wrap break-all">
+            {embedCode}
+          </pre>
         </div>
       </DialogContent>
     </Dialog>

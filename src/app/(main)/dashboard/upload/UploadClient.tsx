@@ -146,10 +146,10 @@ export function UploadClient({ username }: { username: string }) {
   const [copied, setCopied]                 = useState(false)
 
   // Collaborators
-  type CollabUser = { id: string; username: string; displayName: string; avatarUrl: string | null }
+  type CollabUser = { id: string; username: string; displayName: string; avatarUrl: string | null; role: string }
   const [collabs, setCollabs]           = useState<CollabUser[]>([])
   const [collabSearch, setCollabSearch] = useState("")
-  const [collabResults, setCollabResults] = useState<CollabUser[]>([])
+  const [collabResults, setCollabResults] = useState<Omit<CollabUser, "role">[]>([])
   const [collabLoading, setCollabLoading] = useState(false)
   const collabDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -231,14 +231,18 @@ export function UploadClient({ username }: { username: string }) {
     return () => { if (collabDebounce.current) clearTimeout(collabDebounce.current) }
   }, [collabSearch, searchCollabs])
 
-  function addCollab(user: CollabUser) {
-    if (!collabs.find((c) => c.id === user.id)) setCollabs((prev) => [...prev, user])
+  function addCollab(user: Omit<CollabUser, "role">) {
+    if (!collabs.find((c) => c.id === user.id)) setCollabs((prev) => [...prev, { ...user, role: "" }])
     setCollabSearch("")
     setCollabResults([])
   }
 
   function removeCollab(id: string) {
     setCollabs((prev) => prev.filter((c) => c.id !== id))
+  }
+
+  function updateCollabRole(id: string, role: string) {
+    setCollabs((prev) => prev.map((c) => c.id === id ? { ...c, role } : c))
   }
 
   function switchMode(next: Mode) {
@@ -340,13 +344,13 @@ export function UploadClient({ username }: { username: string }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          streamId:        uid,
-          title:           title.trim(),
-          description:     description || null,
-          tags:            categories,
+          streamId:      uid,
+          title:         title.trim(),
+          description:   description || null,
+          tags:          categories,
           isPublic,
-          thumbnailUrl:    thumbnail || null,
-          collaboratorIds: collabs.map((c) => c.id),
+          thumbnailUrl:  thumbnail || null,
+          collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
         }),
       })
       if (!saveRes.ok) throw new Error("Could not save video")
@@ -367,13 +371,13 @@ export function UploadClient({ username }: { username: string }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          externalUrl:     importUrl.trim(),
-          title:           title.trim(),
-          description:     description || null,
-          tags:            categories,
+          externalUrl:   importUrl.trim(),
+          title:         title.trim(),
+          description:   description || null,
+          tags:          categories,
           isPublic,
-          thumbnailUrl:    thumbnail || null,
-          collaboratorIds: collabs.map((c) => c.id),
+          thumbnailUrl:  thumbnail || null,
+          collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
         }),
       })
       if (!saveRes.ok) throw new Error("Could not save video")
@@ -549,18 +553,26 @@ export function UploadClient({ username }: { username: string }) {
       <div className="flex flex-col gap-2">
         <label className="font-sans text-xs font-medium text-foreground/50">Credits</label>
         {collabs.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-col gap-1.5">
             {collabs.map((c) => (
-              <span key={c.id} className="inline-flex items-center gap-1.5 rounded-full border border-core-black bg-core-black pl-1 pr-2 py-0.5 font-sans text-xs text-white">
-                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full overflow-hidden bg-spring-green">
+              <span key={c.id} className="inline-flex items-center gap-2 rounded-full border border-border bg-foreground/[0.06] pl-1.5 pr-2.5 py-1 font-sans text-xs text-core-black self-start">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden bg-spring-green">
                   {c.avatarUrl
                     // eslint-disable-next-line @next/next/no-img-element
                     ? <img src={c.avatarUrl} alt={c.displayName} className="h-full w-full object-cover" />
-                    : <span className="font-bold text-[7px] text-core-black">{c.displayName[0].toUpperCase()}</span>
+                    : <span className="font-bold text-[8px] text-core-black">{c.displayName[0].toUpperCase()}</span>
                   }
                 </span>
                 {c.displayName}
-                <button type="button" onClick={() => removeCollab(c.id)} className="hover:opacity-60 transition-opacity"><X size={10} /></button>
+                <span className="text-foreground/30">·</span>
+                <input
+                  type="text"
+                  value={c.role}
+                  onChange={(e) => updateCollabRole(c.id, e.target.value)}
+                  placeholder="Role…"
+                  className="w-20 bg-transparent placeholder:text-foreground/35 text-core-black focus:outline-none"
+                />
+                <button type="button" onClick={() => removeCollab(c.id)} className="text-foreground/40 hover:text-foreground transition-colors"><X size={11} /></button>
               </span>
             ))}
           </div>
