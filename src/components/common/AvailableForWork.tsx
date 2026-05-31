@@ -32,7 +32,7 @@ export function AvailableForWork({ initial, isOwn }: Props) {
       onClick={toggle}
       disabled={!isOwn || saving}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-sans text-xs font-medium transition-colors",
+        "self-start inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-sans text-xs font-medium transition-colors",
         available
           ? "bg-green-50 text-green-700"
           : "bg-foreground/5 text-foreground/40",

@@ -221,7 +221,7 @@ export default async function ProfilePage({ params }: Props) {
           </aside>
 
           {/* ── Main content ────────────────────────────────── */}
-          <main className="min-w-0 flex-1 md:pt-6">
+          <main className="min-w-0 flex-1">
 
             {/* Tab bar */}
             <div className="mb-6 border-b border-border pb-0">
