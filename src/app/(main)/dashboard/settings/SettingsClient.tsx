@@ -40,10 +40,12 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   const [saving, setSaving] = useState(false)
 
   // Basic info
-  const [firstName, setFirstName] = useState(profile.displayName.split(" ")[0] ?? "")
-  const [lastName,  setLastName]  = useState(profile.displayName.split(" ").slice(1).join(" ") ?? "")
-  const [location,  setLocation]  = useState(profile.location ?? "")
-  const [age,       setAge]       = useState(profile.age?.toString() ?? "")
+  const [firstName,     setFirstName]     = useState(profile.displayName.split(" ")[0] ?? "")
+  const [lastName,      setLastName]      = useState(profile.displayName.split(" ").slice(1).join(" ") ?? "")
+  const [username,      setUsername]      = useState(profile.username)
+  const [usernameError, setUsernameError] = useState("")
+  const [location,      setLocation]      = useState(profile.location ?? "")
+  const [age,           setAge]           = useState(profile.age?.toString() ?? "")
 
   // About me
   const [role,      setRole]      = useState(profile.role ?? "")
@@ -77,13 +79,15 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   }
 
   async function handleSave() {
+    setUsernameError("")
     setSaving(true)
     try {
-      await fetch("/api/users", {
+      const res = await fetch("/api/users", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           displayName,
+          username,
           location:  location  || null,
           age:       age       ? Number(age) : null,
           bio:       bio       || null,
@@ -95,7 +99,11 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
           tags,
         }),
       })
-      router.push(`/${profile.username}`)
+      if (res.status === 409) {
+        setUsernameError("That username is already taken.")
+        return
+      }
+      router.push(`/${username}`)
     } finally {
       setSaving(false)
     }
@@ -195,6 +203,22 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
                     <label className="font-sans text-xs font-medium text-foreground/50">Last name</label>
                     <input className={field} placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                   </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-sans text-xs font-medium text-foreground/50">Username</label>
+                  <div className={cn("flex items-center gap-0", field, "px-0 overflow-hidden")}>
+                    <span className="flex h-full items-center px-3 font-sans text-sm text-foreground/40 bg-foreground/5 border-r border-border select-none">@</span>
+                    <input
+                      className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                      placeholder="your-handle"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+                    />
+                  </div>
+                  {usernameError && (
+                    <p className="font-sans text-xs text-red-500">{usernameError}</p>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-1.5">

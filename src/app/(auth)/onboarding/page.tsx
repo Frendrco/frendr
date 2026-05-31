@@ -37,14 +37,21 @@ const FLOATING = [
   { bg: "bg-dream-lilac",    style: { top: "48%",   right: "25%", width: 65,  height: 65  } },
 ]
 
+function toSlug(val: string) {
+  return val.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+}
+
 export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState<1 | 2>(1)
 
   // Step 1 state
-  const [name,     setName]     = useState("")
-  const [location, setLocation] = useState("")
-  const [age,      setAge]      = useState("")
+  const [name,          setName]          = useState("")
+  const [username,      setUsername]      = useState("")
+  const [usernameDirty, setUsernameDirty] = useState(false)
+  const [usernameError, setUsernameError] = useState("")
+  const [location,      setLocation]      = useState("")
+  const [age,           setAge]           = useState("")
 
   // Step 2 state
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -59,17 +66,33 @@ export default function OnboardingPage() {
     )
   }
 
+  function handleNameChange(val: string) {
+    setName(val)
+    if (!usernameDirty) setUsername(toSlug(val))
+  }
+
+  function handleUsernameChange(val: string) {
+    setUsernameDirty(true)
+    setUsername(val.toLowerCase().replace(/[^a-z0-9-]/g, ""))
+  }
+
   function handleProfileContinue(e: React.FormEvent) {
     e.preventDefault()
+    setUsernameError("")
     setStep(2)
   }
 
   async function handleFinish() {
-    await fetch("/api/users", {
+    const res = await fetch("/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ displayName: name, location, age, tags: selectedTags }),
+      body: JSON.stringify({ displayName: name, username, location, age, tags: selectedTags }),
     })
+    if (res.status === 409) {
+      setUsernameError("That username is already taken. Please choose another.")
+      setStep(1)
+      return
+    }
     router.push("/search")
   }
 
@@ -108,9 +131,30 @@ export default function OnboardingPage() {
                     type="text"
                     placeholder="Your name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => handleNameChange(e.target.value)}
                     className="h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                   />
+                </div>
+
+                {/* Username */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-sans font-medium text-sm text-core-black">
+                    Username
+                  </label>
+                  <div className="flex h-11 items-center rounded-xl border border-border bg-white px-4 focus-within:ring-2 focus-within:ring-spring-green">
+                    <span className="font-sans text-sm text-foreground/40 select-none">@</span>
+                    <input
+                      required
+                      type="text"
+                      placeholder="your-handle"
+                      value={username}
+                      onChange={(e) => handleUsernameChange(e.target.value)}
+                      className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                    />
+                  </div>
+                  {usernameError && (
+                    <p className="font-sans text-xs text-red-500">{usernameError}</p>
+                  )}
                 </div>
 
                 {/* Location */}
