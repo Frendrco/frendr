@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { Bookmark, Clock, Plus, Lock, Globe, Check, Loader2 } from "lucide-react"
+import { Bookmark, Clock, Plus, Lock, Globe, Loader2 } from "lucide-react"
 import { useAuth } from "@clerk/nextjs"
 import {
   Popover,
@@ -27,8 +27,6 @@ export function AddToPlaylistButton({ videoId }: Props) {
   const [open, setOpen] = useState(false)
   const [playlists, setPlaylists] = useState<Playlist[]>([])
   const [loading, setLoading] = useState(false)
-  const [watchLaterSaved, setWatchLaterSaved] = useState(false)
-  const [watchLaterLoading, setWatchLaterLoading] = useState(false)
   const [showNewForm, setShowNewForm] = useState(false)
   const [newName, setNewName] = useState("")
   const [newPublic, setNewPublic] = useState(false)
@@ -50,22 +48,17 @@ export function AddToPlaylistButton({ videoId }: Props) {
     if (next) fetchPlaylists()
   }
 
-  const handleWatchLater = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (!isSignedIn) return
-    setWatchLaterLoading(true)
-    try {
-      await fetch("/api/playlists/watch-later", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ videoId }),
-      })
-      setWatchLaterSaved(true)
-      setTimeout(() => setWatchLaterSaved(false), 2000)
-    } finally {
-      setWatchLaterLoading(false)
+  const handleWatchLaterToggle = async () => {
+    const existing = playlists.find(p => p.isDefault)
+    if (existing) {
+      setPlaylists(prev => prev.map(p => p.isDefault ? { ...p, hasVideo: !p.hasVideo } : p))
     }
+    await fetch("/api/playlists/watch-later", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ videoId }),
+    })
+    if (!existing) fetchPlaylists()
   }
 
   const togglePlaylist = async (playlist: Playlist) => {
@@ -111,29 +104,15 @@ export function AddToPlaylistButton({ videoId }: Props) {
 
   if (!isSignedIn) return null
 
-  return (
-    <div className="flex items-center gap-1" onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
-      {/* Watch Later quick-save */}
-      <button
-        onClick={handleWatchLater}
-        disabled={watchLaterLoading}
-        className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors"
-        title="Save to Watch Later"
-      >
-        {watchLaterLoading ? (
-          <Loader2 size={14} className="animate-spin" />
-        ) : watchLaterSaved ? (
-          <Check size={14} className="text-spring-green" />
-        ) : (
-          <Clock size={14} />
-        )}
-      </button>
+  const watchLaterPlaylist = playlists.find(p => p.isDefault)
+  const regularPlaylists = playlists.filter(p => !p.isDefault)
 
-      {/* Add to playlist popover */}
+  return (
+    <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger
           className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors"
-          title="Add to playlist"
+          title="Save to playlist"
         >
           <Bookmark size={14} />
         </PopoverTrigger>
@@ -143,18 +122,28 @@ export function AddToPlaylistButton({ videoId }: Props) {
           onClick={(e) => { e.preventDefault(); e.stopPropagation() }}
         >
           <div className="px-3 py-2.5 border-b border-border">
-            <p className="font-sans font-semibold text-xs text-core-black">Add to playlist</p>
+            <p className="font-sans font-semibold text-xs text-core-black">Save to</p>
           </div>
+
+          {/* Watch Later — always first */}
+          <button
+            onClick={handleWatchLaterToggle}
+            className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors border-b border-border"
+          >
+            <Checkbox checked={watchLaterPlaylist?.hasVideo ?? false} className="pointer-events-none" />
+            <Clock size={13} className="shrink-0 text-foreground/50" />
+            <span className="flex-1 truncate font-sans text-sm text-left text-core-black">Watch Later</span>
+          </button>
 
           <div className="max-h-52 overflow-y-auto">
             {loading ? (
               <div className="flex items-center justify-center py-6">
                 <Loader2 size={16} className="animate-spin text-foreground/40" />
               </div>
-            ) : playlists.length === 0 ? (
+            ) : regularPlaylists.length === 0 ? (
               <p className="px-3 py-4 font-sans text-xs text-foreground/40">No playlists yet</p>
             ) : (
-              playlists.map((pl) => (
+              regularPlaylists.map((pl) => (
                 <button
                   key={pl.id}
                   onClick={() => togglePlaylist(pl)}
