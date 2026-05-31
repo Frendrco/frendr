@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Upload, X, Search, Copy, Check, ArrowLeft, ImageIcon, Link2 } from "lucide-react"
@@ -14,15 +14,15 @@ import {
 } from "@/lib/videoEmbed"
 
 const CATEGORIES = [
-  "Motion Design", "Animation", "3D", "Typography", "Branding", "Film",
-  "Motion Graphics", "VFX", "Loop", "Experimental", "Sound",
-  "Documentary", "Short Film", "Music Video", "Commercial",
-  "Stop Motion", "Live Action", "2D Animation", "3D Animation",
-  "Graphic Design", "Illustration", "Photography", "UX/UI", "3D Type",
+  "Motion Design", "Animation", "3D", "Motion Graphics", "VFX",
+  "2D Animation", "3D Animation", "3D Type", "Typography",
+  "Branding", "Commercial", "Music Video", "Short Film", "Film",
+  "Loop", "Experimental", "Stop Motion", "Sound",
+  "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini",
 ]
 
 const MAX_CATEGORIES = 5
-const DESC_MAX = 150
+const DESC_MAX = 500
 const FRAME_COUNT = 6
 
 type Mode       = "upload" | "import"
@@ -145,6 +145,14 @@ export function UploadClient({ username }: { username: string }) {
   const [showControls, setShowControls]     = useState(true)
   const [copied, setCopied]                 = useState(false)
 
+  // Collaborators
+  type CollabUser = { id: string; username: string; displayName: string; avatarUrl: string | null }
+  const [collabs, setCollabs]           = useState<CollabUser[]>([])
+  const [collabSearch, setCollabSearch] = useState("")
+  const [collabResults, setCollabResults] = useState<CollabUser[]>([])
+  const [collabLoading, setCollabLoading] = useState(false)
+  const collabDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   // Submit state
   const [uploading, setUploading]     = useState(false)
   const [progress, setProgress]       = useState(0)
@@ -206,6 +214,32 @@ export function UploadClient({ username }: { username: string }) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [importUrl])
+
+  const searchCollabs = useCallback((q: string) => {
+    if (!q.trim()) { setCollabResults([]); return }
+    setCollabLoading(true)
+    fetch(`/api/users/search?q=${encodeURIComponent(q)}`)
+      .then((r) => r.json())
+      .then((data) => setCollabResults(data))
+      .catch(() => setCollabResults([]))
+      .finally(() => setCollabLoading(false))
+  }, [])
+
+  useEffect(() => {
+    if (collabDebounce.current) clearTimeout(collabDebounce.current)
+    collabDebounce.current = setTimeout(() => searchCollabs(collabSearch), 300)
+    return () => { if (collabDebounce.current) clearTimeout(collabDebounce.current) }
+  }, [collabSearch, searchCollabs])
+
+  function addCollab(user: CollabUser) {
+    if (!collabs.find((c) => c.id === user.id)) setCollabs((prev) => [...prev, user])
+    setCollabSearch("")
+    setCollabResults([])
+  }
+
+  function removeCollab(id: string) {
+    setCollabs((prev) => prev.filter((c) => c.id !== id))
+  }
 
   function switchMode(next: Mode) {
     setMode(next)
@@ -306,12 +340,13 @@ export function UploadClient({ username }: { username: string }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          streamId:    uid,
-          title:       title.trim(),
-          description: description || null,
-          tags:        categories,
+          streamId:        uid,
+          title:           title.trim(),
+          description:     description || null,
+          tags:            categories,
           isPublic,
-          thumbnailUrl: thumbnail || null,
+          thumbnailUrl:    thumbnail || null,
+          collaboratorIds: collabs.map((c) => c.id),
         }),
       })
       if (!saveRes.ok) throw new Error("Could not save video")
@@ -332,12 +367,13 @@ export function UploadClient({ username }: { username: string }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          externalUrl: importUrl.trim(),
-          title:       title.trim(),
-          description: description || null,
-          tags:        categories,
+          externalUrl:     importUrl.trim(),
+          title:           title.trim(),
+          description:     description || null,
+          tags:            categories,
           isPublic,
-          thumbnailUrl: thumbnail || null,
+          thumbnailUrl:    thumbnail || null,
+          collaboratorIds: collabs.map((c) => c.id),
         }),
       })
       if (!saveRes.ok) throw new Error("Could not save video")
@@ -507,6 +543,66 @@ export function UploadClient({ username }: { username: string }) {
           value={description} onChange={(e) => setDescription(e.target.value)}
           className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
         />
+      </div>
+
+      {/* Credits / Collaborators */}
+      <div className="flex flex-col gap-2">
+        <label className="font-sans text-xs font-medium text-foreground/50">Credits</label>
+        {collabs.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {collabs.map((c) => (
+              <span key={c.id} className="inline-flex items-center gap-1.5 rounded-full border border-core-black bg-core-black pl-1 pr-2 py-0.5 font-sans text-xs text-white">
+                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full overflow-hidden bg-spring-green">
+                  {c.avatarUrl
+                    // eslint-disable-next-line @next/next/no-img-element
+                    ? <img src={c.avatarUrl} alt={c.displayName} className="h-full w-full object-cover" />
+                    : <span className="font-bold text-[7px] text-core-black">{c.displayName[0].toUpperCase()}</span>
+                  }
+                </span>
+                {c.displayName}
+                <button type="button" onClick={() => removeCollab(c.id)} className="hover:opacity-60 transition-opacity"><X size={10} /></button>
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="relative">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-white px-3 h-11">
+            <Search size={13} className="shrink-0 text-foreground/30" />
+            <input
+              className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+              placeholder="Search by name or @handle…"
+              value={collabSearch}
+              onChange={(e) => setCollabSearch(e.target.value)}
+            />
+            {collabLoading && <span className="h-3.5 w-3.5 animate-spin rounded-full border border-border border-t-foreground/40 shrink-0" />}
+          </div>
+          {collabResults.length > 0 && (
+            <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-border bg-white shadow-lg">
+              {collabResults
+                .filter((r) => !collabs.find((c) => c.id === r.id))
+                .map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => addCollab(r)}
+                    className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors"
+                  >
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full overflow-hidden bg-spring-green">
+                      {r.avatarUrl
+                        // eslint-disable-next-line @next/next/no-img-element
+                        ? <img src={r.avatarUrl} alt={r.displayName} className="h-full w-full object-cover" />
+                        : <span className="font-bold text-[9px] text-core-black">{r.displayName[0].toUpperCase()}</span>
+                      }
+                    </span>
+                    <div className="text-left">
+                      <p className="font-sans text-sm font-medium text-core-black">{r.displayName}</p>
+                      <p className="font-sans text-xs text-foreground/40">@{r.username}</p>
+                    </div>
+                  </button>
+                ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Categories */}

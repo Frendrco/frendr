@@ -15,11 +15,11 @@ import {
 import { Button } from "@/components/ui/button"
 
 const SKILLS = [
-  "Motion Design", "Animation", "3D", "Typography", "Branding", "Film",
-  "Motion Graphics", "VFX", "Loop", "Experimental", "Sound",
-  "Documentary", "Short Film", "Music Video", "Commercial",
-  "Stop Motion", "Live Action", "2D Animation", "3D Animation",
-  "Graphic Design", "Illustration", "Photography", "UX/UI", "3D Type",
+  "Motion Design", "Animation", "3D", "Motion Graphics", "VFX",
+  "2D Animation", "3D Animation", "3D Type", "Typography",
+  "Branding", "Commercial", "Music Video", "Short Film", "Film",
+  "Loop", "Experimental", "Stop Motion", "Sound",
+  "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini",
 ]
 const MAX_SKILLS = 5
 const BIO_MAX    = 150

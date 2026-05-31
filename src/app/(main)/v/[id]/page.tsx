@@ -56,6 +56,9 @@ export default async function VideoPage({ params }: Props) {
       include: {
         user: true,
         _count: { select: { likes: true } },
+        collaborators: {
+          include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+        },
       },
     }),
     clerkId ? prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } }) : null,
@@ -192,6 +195,30 @@ export default async function VideoPage({ params }: Props) {
               </div>
               <span className="font-sans text-sm text-foreground/60">{video.user.displayName}</span>
             </Link>
+
+            {/* Collaborators */}
+            {video.collaborators.length > 0 && (
+              <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+                <span className="font-sans text-xs text-foreground/40">with</span>
+                {video.collaborators.map(({ user: collab }) => (
+                  <Link
+                    key={collab.username}
+                    href={`/${collab.username}`}
+                    className="inline-flex items-center gap-1.5 hover:opacity-70 transition-opacity"
+                  >
+                    <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
+                      {collab.avatarUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={collab.avatarUrl} alt={collab.displayName} className="h-full w-full object-cover" />
+                      ) : (
+                        <span className="font-bold text-[7px] text-core-black">{collab.displayName.charAt(0).toUpperCase()}</span>
+                      )}
+                    </div>
+                    <span className="font-sans text-sm text-foreground/60">{collab.displayName}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* Meta row */}
             <div className="mt-2 flex items-center gap-3 text-foreground/40">

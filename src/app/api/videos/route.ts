@@ -11,16 +11,17 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
   const body = await req.json() as {
-    streamId?:    string
-    externalUrl?: string
-    title:        string
-    description?: string
-    tags?:        string[]
-    isPublic?:    boolean
-    thumbnailUrl?: string
+    streamId?:         string
+    externalUrl?:      string
+    title:             string
+    description?:      string
+    tags?:             string[]
+    isPublic?:         boolean
+    thumbnailUrl?:     string
+    collaboratorIds?:  string[]
   }
 
-  const { streamId, externalUrl, title, description, tags, thumbnailUrl } = body
+  const { streamId, externalUrl, title, description, tags, thumbnailUrl, collaboratorIds } = body
 
   if (!title) return NextResponse.json({ error: "title is required" }, { status: 400 })
   if (!streamId && !externalUrl) {
@@ -41,6 +42,14 @@ export async function POST(req: Request) {
         tags:        tags        ?? [],
         thumbnailUrl: resolvedThumbnail ?? null,
         userId: user.id,
+        ...(collaboratorIds?.length && {
+          collaborators: {
+            createMany: {
+              data: collaboratorIds.map((userId) => ({ userId })),
+              skipDuplicates: true,
+            },
+          },
+        }),
       },
     })
     return NextResponse.json(video, { status: 201 })

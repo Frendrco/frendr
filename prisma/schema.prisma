@@ -56,6 +56,7 @@ model User {
   sentMessages        Message[]
   notifications       Notification[]
   notificationsFrom   Notification[] @relation("NotifFromUser")
+  collaborationsOn    VideoCollaborator[]
 }
 
 model Video {
@@ -70,12 +71,24 @@ model Video {
   featured      Boolean        @default(false)
   userId        String
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  playlists     PlaylistVideo[]
-  channels      ChannelVideo[]
-  likes         VideoLike[]
-  comments      Comment[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  playlists      PlaylistVideo[]
+  channels       ChannelVideo[]
+  likes          VideoLike[]
+  comments       Comment[]
+  collaborators  VideoCollaborator[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model VideoCollaborator {
+  id      String   @id @default(cuid())
+  videoId String
+  userId  String
+  role    String?
+  addedAt DateTime @default(now())
+  video   Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([videoId, userId])
 }
 
 model Thread {
