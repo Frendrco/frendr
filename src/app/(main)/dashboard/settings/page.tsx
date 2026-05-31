@@ -22,7 +22,6 @@ export default async function SettingsPage() {
       role:        true,
       instagram:   true,
       linkedin:    true,
-      twitter:     true,
       patreon:     true,
       substack:    true,
       playlist:    true,

@@ -32,7 +32,6 @@ interface Profile {
   role:        string | null
   instagram:   string | null
   linkedin:    string | null
-  twitter:     string | null
   patreon:     string | null
   substack:    string | null
   playlist:    string | null
@@ -57,7 +56,6 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
   const [bio,       setBio]       = useState(profile.bio       ?? "")
   const [instagram, setInstagram] = useState(profile.instagram ?? "")
   const [linkedin,  setLinkedin]  = useState(profile.linkedin  ?? "")
-  const [twitter,   setTwitter]   = useState(profile.twitter   ?? "")
   const [patreon,   setPatreon]   = useState(profile.patreon   ?? "")
   const [substack,  setSubstack]  = useState(profile.substack  ?? "")
   const [playlist,  setPlaylist]  = useState(profile.playlist  ?? "")
@@ -75,7 +73,6 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
     setBio(profile.bio       ?? "")
     setInstagram(profile.instagram ?? "")
     setLinkedin(profile.linkedin  ?? "")
-    setTwitter(profile.twitter   ?? "")
     setPatreon(profile.patreon   ?? "")
     setSubstack(profile.substack  ?? "")
     setPlaylist(profile.playlist  ?? "")
@@ -116,7 +113,6 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
         role:      role      || null,
         instagram: instagram || null,
         linkedin:  linkedin  || null,
-        twitter:   twitter   || null,
         patreon:   patreon   || null,
         substack:  substack  || null,
         playlist:  playlist  || null,
@@ -237,10 +233,9 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                 {([
                   { key: "instagram", label: "IG", value: instagram, set: setInstagram, placeholder: "instagram.com/handle" },
                   { key: "linkedin",  label: "in", value: linkedin,  set: setLinkedin,  placeholder: "linkedin.com/in/handle" },
-                  { key: "twitter",   label: "X",  value: twitter,   set: setTwitter,   placeholder: "x.com/handle" },
-                  { key: "patreon",   label: "Pa", value: patreon,   set: setPatreon,   placeholder: "patreon.com/handle" },
-                  { key: "substack",  label: "SS", value: substack,  set: setSubstack,  placeholder: "yourname.substack.com" },
                   { key: "playlist",  label: "♫",  value: playlist,  set: setPlaylist,  placeholder: "open.spotify.com/playlist/…" },
+                  { key: "substack",  label: "SS", value: substack,  set: setSubstack,  placeholder: "yourname.substack.com" },
+                  { key: "patreon",   label: "Pa", value: patreon,   set: setPatreon,   placeholder: "patreon.com/handle" },
                 ] as const).map(({ key, label, value, set, placeholder }) => (
                   <div key={key} className="flex items-center gap-2">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border font-sans font-bold text-xs text-foreground/40">
