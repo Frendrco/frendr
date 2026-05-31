@@ -34,6 +34,8 @@ type SortValue = "newest" | "trending" | "following"
 type Props = { searchParams: Promise<{ q?: string; tag?: string; sort?: string }> }
 
 export default async function SearchPage({ searchParams }: Props) {
+  const { userId: clerkId } = await auth()
+
   const { q = "", tag = "", sort = "newest" } = await searchParams
   const query = q.trim()
   const activeTag = tag || "All"
@@ -42,14 +44,11 @@ export default async function SearchPage({ searchParams }: Props) {
 
   // For "following" sort, look up who the current user follows
   let followingIds: string[] = []
-  if (!isSearching && activeSort === "following") {
-    const { userId: clerkId } = await auth()
-    if (clerkId) {
-      const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
-      if (user) {
-        const follows = await prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
-        followingIds = follows.map(f => f.followingId)
-      }
+  if (!isSearching && activeSort === "following" && clerkId) {
+    const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    if (user) {
+      const follows = await prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
+      followingIds = follows.map(f => f.followingId)
     }
   }
 
