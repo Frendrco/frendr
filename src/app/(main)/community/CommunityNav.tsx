@@ -7,7 +7,11 @@ import { cn } from "@/lib/utils"
 const BASE_TABS = [
   { label: "Discussions", href: "/community" },
   { label: "Jobs",        href: "/community/jobs" },
+  { label: "Events",      href: "/community/events" },
+  { label: "Marketplace", href: "/community/marketplace" },
 ]
+
+const NON_DISCUSSION_PREFIXES = ["/community/jobs", "/community/events", "/community/marketplace", "/community/saved"]
 
 type Props = { isSignedIn?: boolean }
 
@@ -25,8 +29,7 @@ export function CommunityNav({ isSignedIn = false }: Props) {
           href === "/community"
             ? pathname === "/community" ||
               (pathname.startsWith("/community/") &&
-                !pathname.startsWith("/community/jobs") &&
-                !pathname.startsWith("/community/saved"))
+                !NON_DISCUSSION_PREFIXES.some(p => pathname.startsWith(p)))
             : pathname.startsWith(href)
         return (
           <Link

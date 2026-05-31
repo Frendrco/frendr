@@ -7,6 +7,8 @@ import { prisma } from "@/lib/prisma"
 import { timeAgo } from "@/lib/utils"
 import { SaveThreadButton } from "../SaveThreadButton"
 import { SaveJobButton } from "../jobs/SaveJobButton"
+import { SaveEventButton } from "../events/SaveEventButton"
+import { SaveShopButton } from "../marketplace/SaveShopButton"
 
 export default async function SavedPage() {
   const { userId: clerkId } = await auth()
@@ -15,7 +17,7 @@ export default async function SavedPage() {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) redirect("/sign-in")
 
-  const [savedThreads, savedJobs] = await Promise.all([
+  const [savedThreads, savedJobs, savedEvents, savedShops] = await Promise.all([
     prisma.savedThread.findMany({
       where: { userId: user.id },
       orderBy: { savedAt: "desc" },
@@ -34,6 +36,24 @@ export default async function SavedPage() {
       include: {
         job: {
           include: { user: { select: { displayName: true, username: true } } },
+        },
+      },
+    }),
+    prisma.savedEvent.findMany({
+      where: { userId: user.id },
+      orderBy: { savedAt: "desc" },
+      include: {
+        event: {
+          include: { user: { select: { displayName: true, username: true } } },
+        },
+      },
+    }),
+    prisma.savedShop.findMany({
+      where: { userId: user.id },
+      orderBy: { savedAt: "desc" },
+      include: {
+        shop: {
+          include: { user: { select: { displayName: true, username: true, avatarUrl: true } } },
         },
       },
     }),
@@ -155,6 +175,85 @@ export default async function SavedPage() {
                 <p className="mt-3 font-sans text-xs text-foreground/50 line-clamp-2 leading-relaxed">
                   {job.description}
                 </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Saved Events */}
+      <section>
+        <h2 className="font-sans font-semibold text-sm text-core-black mb-5">
+          Saved Events
+          {savedEvents.length > 0 && (
+            <span className="ml-2 font-normal text-foreground/40">{savedEvents.length}</span>
+          )}
+        </h2>
+
+        {savedEvents.length === 0 ? (
+          <p className="font-sans text-sm text-foreground/40 py-8 text-center">
+            No saved events yet. Bookmark events to find them here.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {savedEvents.map(({ event }) => (
+              <div key={event.id} className="rounded-2xl border border-border p-5 transition-colors hover:border-foreground/20">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-sans font-semibold text-sm text-core-black">{event.title}</p>
+                    <p className="mt-0.5 font-sans text-xs text-foreground/40">by {event.user.displayName}</p>
+                    <p className="mt-2 font-sans text-xs text-foreground/50">
+                      {event.date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
+                      {event.location ? ` · ${event.location}` : event.onlineUrl ? " · Online" : ""}
+                    </p>
+                  </div>
+                  <SaveEventButton eventId={event.id} initialSaved={true} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Saved Shops */}
+      <section>
+        <h2 className="font-sans font-semibold text-sm text-core-black mb-5">
+          Saved Shops
+          {savedShops.length > 0 && (
+            <span className="ml-2 font-normal text-foreground/40">{savedShops.length}</span>
+          )}
+        </h2>
+
+        {savedShops.length === 0 ? (
+          <p className="font-sans text-sm text-foreground/40 py-8 text-center">
+            No saved shops yet. Bookmark shops to find them here.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {savedShops.map(({ shop }) => (
+              <div key={shop.id} className="rounded-2xl border border-border p-5 transition-colors hover:border-foreground/20">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-sans font-semibold text-sm text-core-black">{shop.name}</p>
+                    <p className="mt-0.5 font-sans text-xs text-foreground/40">by {shop.user.displayName}</p>
+                    {shop.category && (
+                      <span className="mt-2 inline-flex h-5 items-center rounded-full bg-foreground/[0.06] px-2 font-sans text-[10px] font-medium text-foreground/60">
+                        {shop.category}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <SaveShopButton shopId={shop.id} initialSaved={true} />
+                    <a
+                      href={shop.shopUrl.startsWith("http") ? shop.shopUrl : `https://${shop.shopUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex h-8 items-center rounded-full bg-core-black px-4 font-sans font-medium text-xs text-white transition-colors hover:bg-core-black/80"
+                    >
+                      Visit Shop
+                    </a>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

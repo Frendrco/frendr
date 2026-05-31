@@ -13,8 +13,8 @@ const PLACEHOLDER_COLOURS = [
 ]
 
 const FILTER_PILLS = [
-  "All", "Motion Design", "3D", "Animation", "VFX",
-  "Music Video", "Short Film", "Typography", "Experimental",
+  "All", "Motion Design", "2D", "3D", "Live Action", "VFX",
+  "Music Video", "Typography", "Experimental",
 ]
 
 type Sort = "newest" | "trending"

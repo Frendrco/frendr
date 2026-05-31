@@ -42,6 +42,11 @@ model User {
   channelFollows      ChannelFollow[]
   channelVideosAdded  ChannelVideo[]  @relation("ChannelVideoAddedBy")
   channelAdmins       ChannelAdmin[]
+  events              Event[]
+  eventRsvps          EventRsvp[]
+  savedEvents         SavedEvent[]
+  shop                Shop?
+  savedShops          SavedShop[]
 }
 
 model Video {
@@ -242,4 +247,66 @@ model ChannelAdmin {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([channelId, userId])
+}
+
+model Event {
+  id           String      @id @default(cuid())
+  title        String
+  description  String
+  date         DateTime
+  location     String?
+  onlineUrl    String?
+  maxAttendees Int?
+  userId       String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rsvps        EventRsvp[]
+  saves        SavedEvent[]
+}
+
+model EventRsvp {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+}
+
+model Shop {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  shopUrl     String
+  category    String?
+  userId      String      @unique
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  saves       SavedShop[]
+}
+
+model SavedEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  savedAt   DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+}
+
+model SavedShop {
+  id        String   @id @default(cuid())
+  userId    String
+  shopId    String
+  savedAt   DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, shopId])
 }
