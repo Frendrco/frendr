@@ -11,6 +11,7 @@ import { ShareButton } from "./ShareButton"
 import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
 import { VideoCommentSection, type VideoCommentData } from "./VideoCommentSection"
 import { FollowButton } from "@/components/common/FollowButton"
+import { ViewTracker } from "./ViewTracker"
 import type { Metadata } from "next"
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
@@ -57,6 +58,7 @@ export default async function VideoPage({ params }: Props) {
       include: {
         user: true,
         _count: { select: { likes: true } },
+        viewCount: true,
         collaborators: {
           include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
           orderBy: { addedAt: "asc" },
@@ -131,6 +133,7 @@ export default async function VideoPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-white">
+      <ViewTracker videoId={id} />
 
       {/* ── Player ─────────────────────────────────────────── */}
       <div className="bg-core-black w-full">
@@ -233,7 +236,7 @@ export default async function VideoPage({ params }: Props) {
             {/* Meta row */}
             <div className="mt-2 flex items-center gap-3 text-foreground/40">
               <span className="flex items-center gap-1 font-sans text-xs">
-                <Eye size={12} /> 0 views
+                <Eye size={12} /> {video.viewCount.toLocaleString()} {video.viewCount === 1 ? "view" : "views"}
               </span>
               <span className="font-sans text-xs">·</span>
               <span className="font-sans text-xs">{formattedDate}</span>
