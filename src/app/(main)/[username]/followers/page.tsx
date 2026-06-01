@@ -42,7 +42,7 @@ export default async function FollowersPage({ params }: Props) {
             followingId: { in: profileUser.followers.map(f => f.follower.id) },
           },
           select: { followingId: true },
-        })).map(f => f.followingId)
+        })).map((f: { followingId: string }) => f.followingId)
       )
     : new Set<string>()
 
