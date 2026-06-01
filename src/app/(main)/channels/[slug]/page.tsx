@@ -115,7 +115,9 @@ export default async function ChannelPage({ params }: Props) {
             )}
             <p className="mt-2 font-sans text-xs text-foreground/40">
               {channel._count.videos} {channel._count.videos === 1 ? "video" : "videos"}
-              {channel._count.followers > 0 && ` · ${channel._count.followers} ${channel._count.followers === 1 ? "follower" : "followers"}`}
+              {channel._count.followers > 0 && (
+                <> · <Link href={`/channels/${channel.slug}/followers`} className="hover:underline">{channel._count.followers} {channel._count.followers === 1 ? "follower" : "followers"}</Link></>
+              )}
               {channel.user && channel.type === "user" && (
                 <> · by <Link href={`/${channel.user.username}`} className="hover:underline">{channel.user.displayName}</Link></>
               )}
