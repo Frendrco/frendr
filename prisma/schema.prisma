@@ -243,6 +243,7 @@ model Channel {
   coverUrl    String?
   color       String?
   isPublic    Boolean         @default(true)
+  featured    Boolean         @default(false)
   type        String          @default("user")
   userId      String?
   user        User?           @relation(fields: [userId], references: [id])

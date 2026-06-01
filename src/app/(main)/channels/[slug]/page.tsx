@@ -8,6 +8,7 @@ import { VideoCard } from "@/components/common/VideoCard"
 import { ChannelFollowButton } from "./ChannelFollowButton"
 import { AddVideoToChannelButton } from "./AddVideoToChannelButton"
 import { ChannelSettings } from "./ChannelSettings"
+import { ChannelFeatureButton } from "./ChannelFeatureButton"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -122,6 +123,9 @@ export default async function ChannelPage({ params }: Props) {
           </div>
 
           <div className="flex items-center gap-2">
+            {isSiteAdmin && (
+              <ChannelFeatureButton channelId={channel.id} initialFeatured={channel.featured} />
+            )}
             {isOwner && (
               <ChannelSettings
                 channel={{

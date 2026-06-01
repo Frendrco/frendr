@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Sparkles, Users, Plus } from "lucide-react"
+import { Sparkles, Star, Users, Plus } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { CreateChannelSheet } from "./CreateChannelSheet"
+import { cn } from "@/lib/utils"
 
 const COLOR_MAP: Record<string, string> = {
   "spring-green":   "bg-spring-green/60",
@@ -30,6 +31,7 @@ type ChannelData = {
   coverUrl: string | null
   color: string | null
   type: string
+  featured: boolean
   _count: { videos: number; followers: number }
   videos: { video: { thumbnailUrl: string | null } }[]
 }
@@ -86,7 +88,7 @@ export function ChannelsClient({ adminChannels, userChannels, isSignedIn, isAdmi
             {adminChannels.length > 0 ? (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {adminChannels.map((channel, i) => (
-                  <ChannelCard key={channel.id} channel={channel} index={i} featured />
+                  <ChannelCard key={channel.id} channel={channel} index={i} isFrendrPick isAdmin={isAdmin} />
                 ))}
               </div>
             ) : (
@@ -103,7 +105,7 @@ export function ChannelsClient({ adminChannels, userChannels, isSignedIn, isAdmi
               <>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                   {userChannels.map((channel, i) => (
-                    <ChannelCard key={channel.id} channel={channel} index={i} />
+                    <ChannelCard key={channel.id} channel={channel} index={i} isAdmin={isAdmin} />
                   ))}
                 </div>
               </>
@@ -120,13 +122,30 @@ export function ChannelsClient({ adminChannels, userChannels, isSignedIn, isAdmi
 
 function ChannelCard({
   channel,
-  featured = false,
+  isFrendrPick = false,
+  isAdmin = false,
   index,
 }: {
   channel: ChannelData
-  featured?: boolean
+  isFrendrPick?: boolean
+  isAdmin?: boolean
   index: number
 }) {
+  const [featuredState, setFeaturedState] = useState(channel.featured)
+  const [toggling, setToggling] = useState(false)
+
+  const toggleFeature = useCallback(async (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (toggling) return
+    setToggling(true)
+    const res = await fetch(`/api/channels/${channel.id}/feature`, { method: "POST" })
+    if (res.ok) {
+      const data = await res.json() as { featured: boolean }
+      setFeaturedState(data.featured)
+    }
+    setToggling(false)
+  }, [channel.id, toggling])
+
   const cover = channel.coverUrl ?? channel.videos[0]?.video.thumbnailUrl ?? null
   const colorClass = channel.color
     ? (COLOR_MAP[channel.color] ?? getFallbackColor(index))
@@ -134,7 +153,7 @@ function ChannelCard({
 
   return (
     <Link href={`/channels/${channel.slug}`} className="group flex flex-col gap-3">
-      <div className={`relative overflow-hidden rounded-xl ${featured ? "aspect-video" : "aspect-video"}`}>
+      <div className="relative aspect-video overflow-hidden rounded-xl">
         {cover ? (
           <Image
             src={cover}
@@ -145,11 +164,27 @@ function ChannelCard({
         ) : (
           <div className={`h-full w-full ${colorClass} transition-opacity group-hover:opacity-90`} />
         )}
-        {channel.type === "admin" && (
+        {isFrendrPick && (
           <div className="absolute top-2.5 left-2.5 flex items-center gap-1 rounded-full bg-spring-green px-2.5 py-1">
             <Sparkles size={9} className="text-core-black" />
             <span className="font-sans font-medium text-[9px] text-core-black">Frendr Picks</span>
           </div>
+        )}
+        {isAdmin && (
+          <button
+            onClick={toggleFeature}
+            disabled={toggling}
+            aria-label={featuredState ? "Remove from discover page" : "Feature on discover page"}
+            title={featuredState ? "Remove from discover page" : "Feature on discover page"}
+            className={cn(
+              "absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full border backdrop-blur-sm transition-all disabled:opacity-50",
+              featuredState
+                ? "border-spring-green bg-spring-green/20 text-spring-green"
+                : "border-white/30 bg-black/30 text-white opacity-0 group-hover:opacity-100"
+            )}
+          >
+            <Star size={12} className={cn(featuredState && "fill-current")} />
+          </button>
         )}
       </div>
 
