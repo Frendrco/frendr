@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
+import { NextResponse } from "next/server"
 
 // Routes that require authentication
 const isProtectedRoute = createRouteMatcher([
@@ -9,6 +10,16 @@ const isProtectedRoute = createRouteMatcher([
 ])
 
 export const proxy = clerkMiddleware(async (auth, req) => {
+  const { pathname } = req.nextUrl
+  const isBetaRoute = pathname === "/beta" || pathname.startsWith("/api/beta")
+
+  if (process.env.BETA_PASSWORD && !isBetaRoute) {
+    const cookie = req.cookies.get("beta_access")?.value
+    if (cookie !== process.env.BETA_PASSWORD) {
+      return NextResponse.redirect(new URL("/beta", req.url))
+    }
+  }
+
   if (isProtectedRoute(req)) {
     await auth.protect()
   }
