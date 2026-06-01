@@ -10,6 +10,7 @@ import { AddToPlaylistButton } from "@/components/common/AddToPlaylistButton"
 import { ShareButton } from "./ShareButton"
 import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
 import { VideoCommentSection, type VideoCommentData } from "./VideoCommentSection"
+import { FollowButton } from "@/components/common/FollowButton"
 import type { Metadata } from "next"
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
@@ -70,7 +71,7 @@ export default async function VideoPage({ params }: Props) {
   const isAdmin = currentUser?.role === "admin"
   const isOwner = clerkId != null && video.user.clerkId === clerkId
 
-  const [upvoteData, savedData, rawComments] = await Promise.all([
+  const [upvoteData, savedData, rawComments, followData] = await Promise.all([
     currentUser
       ? prisma.videoLike.findUnique({
           where: { videoId_userId: { videoId: id, userId: currentUser.id } },
@@ -96,6 +97,11 @@ export default async function VideoPage({ params }: Props) {
         },
       },
     }),
+    (!isOwner && currentUser)
+      ? prisma.follow.findFirst({
+          where: { followerId: currentUser.id, followingId: video.user.id },
+        })
+      : null,
   ])
 
   const comments: VideoCommentData[] = rawComments.map((c) => ({
@@ -202,44 +208,27 @@ export default async function VideoPage({ params }: Props) {
               </div>
             </div>
 
-            {/* Creator link */}
-            <Link href={`/${video.user.username}`} className="mt-2 inline-flex items-center gap-2 hover:opacity-70 transition-opacity">
-              <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
-                {video.user.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={video.user.avatarUrl} alt={video.user.displayName} className="h-full w-full object-cover" />
-                ) : (
-                  <span className="font-sans font-bold text-[7px] text-core-black">{video.user.displayName.charAt(0).toUpperCase()}</span>
-                )}
-              </div>
-              <span className="font-sans text-sm text-foreground/60">{video.user.displayName}</span>
-            </Link>
-
-            {/* Collaborators */}
-            {video.collaborators.length > 0 && (
-              <div className="mt-1 flex flex-col gap-1">
-                {video.collaborators.map(({ user: collab, role }) => (
-                  <Link
-                    key={collab.username}
-                    href={`/${collab.username}`}
-                    className="inline-flex items-center gap-1.5 hover:opacity-70 transition-opacity"
-                  >
-                    <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
-                      {collab.avatarUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={collab.avatarUrl} alt={collab.displayName} className="h-full w-full object-cover" />
-                      ) : (
-                        <span className="font-bold text-[7px] text-core-black">{collab.displayName.charAt(0).toUpperCase()}</span>
-                      )}
-                    </div>
-                    <span className="font-sans text-sm text-foreground/60">{collab.displayName}</span>
-                    {role && (
-                      <span className="font-sans text-xs text-foreground/35">· {role}</span>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            )}
+            {/* Creator row */}
+            <div className="mt-2 flex items-center gap-3">
+              <Link href={`/${video.user.username}`} className="inline-flex items-center gap-2 hover:opacity-70 transition-opacity min-w-0">
+                <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
+                  {video.user.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={video.user.avatarUrl} alt={video.user.displayName} className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="font-sans font-bold text-[7px] text-core-black">{video.user.displayName.charAt(0).toUpperCase()}</span>
+                  )}
+                </div>
+                <span className="font-sans text-sm text-foreground/60">{video.user.displayName}</span>
+              </Link>
+              {!isOwner && (
+                <FollowButton
+                  username={video.user.username}
+                  initialIsFollowing={!!followData}
+                  size="sm"
+                />
+              )}
+            </div>
 
             {/* Meta row */}
             <div className="mt-2 flex items-center gap-3 text-foreground/40">
@@ -270,6 +259,28 @@ export default async function VideoPage({ params }: Props) {
                 <p className="font-sans text-sm text-foreground/70 leading-relaxed whitespace-pre-wrap">
                   {video.description}
                 </p>
+              </div>
+            )}
+
+            {/* Credits */}
+            {video.collaborators.length > 0 && (
+              <div className="mt-6 border-t border-border pt-6">
+                <p className="font-sans font-medium text-xs uppercase tracking-widest text-foreground/30 mb-3">Credits</p>
+                <div className="flex flex-col gap-2">
+                  {video.collaborators.map(({ user: collab, role }) => (
+                    <div key={collab.username} className="flex items-baseline gap-3">
+                      <Link
+                        href={`/${collab.username}`}
+                        className="font-sans text-xs font-medium text-core-black hover:underline shrink-0"
+                      >
+                        {collab.displayName}
+                      </Link>
+                      {role && (
+                        <span className="font-sans text-xs text-foreground/40">{role}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
