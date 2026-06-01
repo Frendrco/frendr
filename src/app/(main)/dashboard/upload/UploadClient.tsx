@@ -880,7 +880,7 @@ export function UploadClient({ username }: { username: string }) {
                 type="button"
                 onClick={handleUpload}
                 disabled={!file || !title.trim() || uploading}
-                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
+                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {uploading ? (progress < 100 ? "Uploading…" : "Processing…") : "Upload Video"}
               </button>
@@ -943,7 +943,7 @@ export function UploadClient({ username }: { username: string }) {
                 type="button"
                 onClick={handleImport}
                 disabled={!importEmbedUrl || !title.trim() || uploading}
-                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
+                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {uploading ? "Saving…" : "Import Video"}
               </button>
