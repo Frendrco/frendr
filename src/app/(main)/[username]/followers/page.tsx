@@ -46,7 +46,7 @@ export default async function FollowersPage({ params }: Props) {
       )
     : new Set<string>()
 
-  const creators = profileUser.followers.map(f => f.follower)
+  const creators = profileUser.followers.map((f: { follower: { id: string; username: string; displayName: string; avatarUrl: string | null; role: string | null } }) => f.follower)
 
   return (
     <div className="min-h-screen bg-white">
