@@ -1,0 +1,107 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link [ref=e60] [cursor=pointer]:
+          - /url: /
+          - img [ref=e61]
+        - navigation [ref=e7]:
+          - link [ref=e62] [cursor=pointer]:
+            - /url: /search
+            - text: Discover
+          - link [ref=e63] [cursor=pointer]:
+            - /url: /channels
+            - text: Channels
+          - link [ref=e64] [cursor=pointer]:
+            - /url: /community
+            - text: Community
+          - link [ref=e65] [cursor=pointer]:
+            - /url: /feed
+            - text: Following
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e13]:
+        - link [ref=e66] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e67]
+        - link [ref=e69] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=e70]
+        - button [ref=e73]:
+          - img [ref=e74]
+          - img [ref=e76]
+  - main [ref=e17]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - heading [level=1] [ref=e77]: Channels
+          - paragraph [ref=e23]: Curated collections of the best work on Frendr
+        - button [ref=e78]:
+          - img [ref=e25]
+          - text: Start a Channel
+      - generic [ref=e26]:
+        - tablist [ref=e27]:
+          - tab [ref=e79]:
+            - img
+            - text: Frendr Picks
+          - tab [selected] [ref=e80]:
+            - img
+            - text: Creator Channels
+        - tabpanel [ref=e81]:
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - paragraph [ref=e85]: No creator channels yet
+              - paragraph [ref=e86]: Be the first to curate a channel and share your taste with the community.
+            - button [ref=e87]:
+              - img [ref=e88]
+              - text: Start the first channel
+  - contentinfo [ref=e38]:
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - link [ref=e89] [cursor=pointer]:
+          - /url: https://instagram.com/frendr
+          - text: Instagram
+        - link [ref=e90] [cursor=pointer]:
+          - /url: https://www.secondhold.com
+          - text: Second Hold
+      - img [ref=e91]
+      - generic [ref=e45]:
+        - link [ref=e92] [cursor=pointer]:
+          - /url: /terms
+          - text: Terms
+        - link [ref=e93] [cursor=pointer]:
+          - /url: /privacy
+          - text: Privacy
+    - img [ref=e94]
+  - button "Open Next.js Dev Tools" [ref=e55] [cursor=pointer]:
+    - img [ref=e56]
+  - alert [ref=e59]
+  - dialog "Who can see it?" [ref=e133]:
+    - generic [ref=e100]:
+      - heading "Who can see it?" [level=2] [ref=e134]
+      - generic [ref=e102]: Step 2 of 3
+    - generic [ref=e154]:
+      - paragraph [ref=e155]: Choose who can find and follow Best of .
+      - button "Public Anyone can find and follow this channel" [ref=e156]:
+        - img [ref=e157]
+        - generic [ref=e160]:
+          - paragraph [ref=e161]: Public
+          - paragraph [ref=e162]: Anyone can find and follow this channel
+      - button "Private Only you and administrators can see this channel" [ref=e163]:
+        - img [ref=e164]
+        - generic [ref=e167]:
+          - paragraph [ref=e168]: Private
+          - paragraph [ref=e169]: Only you and administrators can see this channel
+    - generic [ref=e125]:
+      - button "Back" [ref=e170]:
+        - img [ref=e171]
+        - text: Back
+      - button "Continue" [active] [ref=e127]:
+        - text: Continue
+        - img [ref=e128]
+    - button "Close" [ref=e130]:
+      - img
+      - generic [ref=e131]: Close

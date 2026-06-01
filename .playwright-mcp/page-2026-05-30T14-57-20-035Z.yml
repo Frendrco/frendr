@@ -1,0 +1,86 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Frendr" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Frendr" [ref=e6]
+        - navigation [ref=e7]:
+          - link "Discover" [ref=e8] [cursor=pointer]:
+            - /url: /search
+          - link "Channels" [ref=e9] [cursor=pointer]:
+            - /url: /channels
+          - link "Community" [ref=e10] [cursor=pointer]:
+            - /url: /community
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e14]:
+        - link "Login" [ref=e15] [cursor=pointer]:
+          - /url: /sign-in
+        - link "Sign up" [ref=e16] [cursor=pointer]:
+          - /url: /sign-up
+  - main [ref=e17]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - heading "Following" [level=1] [ref=e21]
+        - paragraph [ref=e22]: Creators and channels you follow
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - heading "Frends4" [level=2] [ref=e25]
+          - generic [ref=e26]:
+            - generic:
+              - generic:
+                - paragraph: Jamie Larson
+                - paragraph: "@jamielarson"
+                - generic: Open to work
+            - generic:
+              - generic:
+                - paragraph: Mika Okonkwo
+                - paragraph: "@mikaokonkwo"
+            - generic:
+              - generic:
+                - paragraph: Teo Brandeis
+                - paragraph: "@teobrandeis"
+                - generic: Open to work
+            - generic:
+              - generic:
+                - paragraph: Rena Castillo
+                - paragraph: "@renacastillo"
+        - generic [ref=e27]:
+          - heading "Channels2" [level=2] [ref=e28]
+          - generic [ref=e29]:
+            - link "Good Type Frendr Picks Good Type 0 videos" [ref=e30] [cursor=pointer]:
+              - /url: /channels/good-type
+              - generic [ref=e31]:
+                - img "Good Type" [ref=e32]
+                - generic [ref=e33]:
+                  - img [ref=e34]
+                  - generic [ref=e37]: Frendr Picks
+              - generic [ref=e38]:
+                - paragraph [ref=e39]: Good Type
+                - paragraph [ref=e40]: 0 videos
+            - link "Cavalry Users Cavalry Users 0 videos" [ref=e41] [cursor=pointer]:
+              - /url: /channels/cavalry-users
+              - img "Cavalry Users" [ref=e43]
+              - generic [ref=e44]:
+                - paragraph [ref=e45]: Cavalry Users
+                - paragraph [ref=e46]: 0 videos
+  - contentinfo [ref=e47]:
+    - generic [ref=e48]:
+      - generic [ref=e49]:
+        - link "Instagram" [ref=e50] [cursor=pointer]:
+          - /url: https://instagram.com/frendr
+        - link "Second Hold" [ref=e51] [cursor=pointer]:
+          - /url: https://www.secondhold.com
+      - img "Frendr" [ref=e53]
+      - generic [ref=e54]:
+        - link "Terms" [ref=e55] [cursor=pointer]:
+          - /url: /terms
+        - link "Privacy" [ref=e56] [cursor=pointer]:
+          - /url: /privacy
+    - img "frendr" [ref=e58]
+  - button "Open Next.js Dev Tools" [ref=e64] [cursor=pointer]:
+    - img [ref=e65]

@@ -1,0 +1,63 @@
+[     970ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1008ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1100ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1264ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    8365ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    8423ms] [LOG] [Fast Refresh] done in 160ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   18617ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   18668ms] [LOG] [Fast Refresh] done in 152ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  270941ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  270979ms] [LOG] [Fast Refresh] done in 155ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  757602ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=IH_-CYaL1gqm3ETq9OWZM' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  758605ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=IH_-CYaL1gqm3ETq9OWZM' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  759608ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=IH_-CYaL1gqm3ETq9OWZM' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  760610ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=IH_-CYaL1gqm3ETq9OWZM' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  762367ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  765667ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  765693ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  765843ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  765962ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  766362ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  766391ms] [LOG] [Fast Refresh] done in 132ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  771675ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  771687ms] [LOG] [Fast Refresh] done in 112ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1559391ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1559400ms] [LOG] [Fast Refresh] done in 110ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1582350ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1582351ms] [LOG] [Fast Refresh] done in 103ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1587748ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1587836ms] [LOG] [Fast Refresh] done in 170ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1594418ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1594456ms] [LOG] [Fast Refresh] done in 129ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1600157ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1600198ms] [LOG] [Fast Refresh] done in 132ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1611582ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1611742ms] [LOG] [Fast Refresh] done in 213ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1622931ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1623003ms] [LOG] [Fast Refresh] done in 35ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1634027ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1634135ms] [LOG] [Fast Refresh] done in 161ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1639947ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1640007ms] [LOG] [Fast Refresh] done in 68ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1723105ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1723483ms] [LOG] [Fast Refresh] done in 468ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1723883ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1724103ms] [LOG] [Fast Refresh] done in 321ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1741601ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1741610ms] [LOG] [Fast Refresh] done in 112ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2141303ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2141580ms] [LOG] [Fast Refresh] done in 319ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2150777ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2150804ms] [LOG] [Fast Refresh] done in 117ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2884063ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2884288ms] [LOG] [Fast Refresh] done in 325ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2884834ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2885070ms] [LOG] [Fast Refresh] done in 337ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2885216ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2885262ms] [LOG] [Fast Refresh] done in 147ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2887555ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2887617ms] [LOG] [Fast Refresh] done in 163ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2888376ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2888405ms] [LOG] [Fast Refresh] done in 76ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3481359ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4025474ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477

@@ -1,0 +1,284 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Frendr" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Frendr" [ref=e6]
+        - navigation [ref=e7]:
+          - link "Discover" [ref=e8] [cursor=pointer]:
+            - /url: /search
+          - link "Channels" [ref=e9] [cursor=pointer]:
+            - /url: /channels
+          - link "Community" [ref=e10] [cursor=pointer]:
+            - /url: /community
+          - link "Following" [ref=e175] [cursor=pointer]:
+            - /url: /feed
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e13]:
+        - link "Upload" [ref=e176] [cursor=pointer]:
+          - /url: /dashboard/upload
+          - img [ref=e177]
+          - text: Upload
+        - link "Messages" [ref=e180] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e181]
+        - link "Notifications" [ref=e183] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=e184]
+        - button "Ryan Rumbolt" [expanded] [ref=e187]:
+          - img "Ryan Rumbolt" [ref=e188]
+        - menu "Ryan Rumbolt" [active] [ref=e193]:
+          - menuitem "View Profile Ryan Rumbolt" [ref=e194] [cursor=pointer]:
+            - generic [ref=e195]: View Profile
+            - img "Ryan Rumbolt" [ref=e197]
+          - menuitem "Settings" [ref=e198] [cursor=pointer]:
+            - generic [ref=e199]: Settings
+            - img
+          - menuitem "My Channels" [ref=e200] [cursor=pointer]:
+            - generic [ref=e201]: My Channels
+            - img
+          - separator [ref=e202]
+          - menuitem "Log Out" [ref=e203] [cursor=pointer]:
+            - generic [ref=e204]: Log Out
+            - img
+  - main [ref=e17]:
+    - generic [ref=e23]:
+      - heading "Designed for creativity. Built for belonging." [level=1] [ref=e24]:
+        - text: Designed for creativity.
+        - text: Built for belonging.
+      - img "frendr" [ref=e26]
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - heading "Explore Frendr" [level=2] [ref=e33]
+          - paragraph [ref=e34]: The best motion design, animation, and video from the community.
+        - generic [ref=e35]:
+          - link "Trending" [ref=e36] [cursor=pointer]:
+            - /url: /
+          - link "Newest" [ref=e37] [cursor=pointer]:
+            - /url: /?sort=newest
+      - generic [ref=e38]:
+        - link "All" [ref=e39] [cursor=pointer]:
+          - /url: /search
+        - link "Motion Design" [ref=e40] [cursor=pointer]:
+          - /url: /search?tag=Motion%20Design
+        - link "3D" [ref=e41] [cursor=pointer]:
+          - /url: /search?tag=3D
+        - link "Animation" [ref=e42] [cursor=pointer]:
+          - /url: /search?tag=Animation
+        - link "VFX" [ref=e43] [cursor=pointer]:
+          - /url: /search?tag=VFX
+        - link "Music Video" [ref=e44] [cursor=pointer]:
+          - /url: /search?tag=Music%20Video
+        - link "Short Film" [ref=e45] [cursor=pointer]:
+          - /url: /search?tag=Short%20Film
+        - link "Typography" [ref=e46] [cursor=pointer]:
+          - /url: /search?tag=Typography
+        - link "Experimental" [ref=e47] [cursor=pointer]:
+          - /url: /search?tag=Experimental
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - img "Reel // Intro Outro" [ref=e51]
+            - img [ref=e53]
+            - generic:
+              - link "Play Reel // Intro Outro":
+                - /url: /v/cmpskcsbx0000272g5x8zugn5
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt Reel // Intro Outro Ryan Rumbolt" [ref=e56] [cursor=pointer]:
+            - /url: /v/cmpskcsbx0000272g5x8zugn5
+            - img "Ryan Rumbolt" [ref=e58]
+            - generic [ref=e59]:
+              - paragraph [ref=e60]: Reel // Intro Outro
+              - paragraph [ref=e61]: Ryan Rumbolt
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - img "Air Canada" [ref=e64]
+            - generic:
+              - link "Play Air Canada":
+                - /url: /v/cmpqyp5m900050f2guq8ghnj3
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt Air Canada Ryan Rumbolt" [ref=e65] [cursor=pointer]:
+            - /url: /v/cmpqyp5m900050f2guq8ghnj3
+            - img "Ryan Rumbolt" [ref=e67]
+            - generic [ref=e68]:
+              - paragraph [ref=e69]: Air Canada
+              - paragraph [ref=e70]: Ryan Rumbolt
+          - generic [ref=e71]:
+            - generic [ref=e72]: 3D
+            - generic [ref=e73]: VFX
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - img "Blue Moon - Juicy" [ref=e76]
+            - generic:
+              - link "Play Blue Moon - Juicy":
+                - /url: /v/cmpqymn3x00040f2g0fg4rke5
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt Blue Moon - Juicy Ryan Rumbolt" [ref=e77] [cursor=pointer]:
+            - /url: /v/cmpqymn3x00040f2g0fg4rke5
+            - img "Ryan Rumbolt" [ref=e79]
+            - generic [ref=e80]:
+              - paragraph [ref=e81]: Blue Moon - Juicy
+              - paragraph [ref=e82]: Ryan Rumbolt
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - img "Lyft - Happy Birthday" [ref=e85]
+            - generic:
+              - link "Play Lyft - Happy Birthday":
+                - /url: /v/cmpqyiqbc00030f2gk2i3h969
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt Lyft - Happy Birthday Ryan Rumbolt" [ref=e86] [cursor=pointer]:
+            - /url: /v/cmpqyiqbc00030f2gk2i3h969
+            - img "Ryan Rumbolt" [ref=e88]
+            - generic [ref=e89]:
+              - paragraph [ref=e90]: Lyft - Happy Birthday
+              - paragraph [ref=e91]: Ryan Rumbolt
+        - generic [ref=e92]:
+          - generic [ref=e93]:
+            - img "Jovia" [ref=e94]
+            - generic:
+              - link "Play Jovia":
+                - /url: /v/cmpqygvlc00020f2gqxckh973
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt Jovia Ryan Rumbolt" [ref=e95] [cursor=pointer]:
+            - /url: /v/cmpqygvlc00020f2gqxckh973
+            - img "Ryan Rumbolt" [ref=e97]
+            - generic [ref=e98]:
+              - paragraph [ref=e99]: Jovia
+              - paragraph [ref=e100]: Ryan Rumbolt
+          - generic [ref=e101]:
+            - generic [ref=e102]: Animation
+            - generic [ref=e103]: Commercial
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - img "The Chill" [ref=e106]
+            - generic:
+              - link "Play The Chill":
+                - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt The Chill Ryan Rumbolt" [ref=e107] [cursor=pointer]:
+            - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+            - img "Ryan Rumbolt" [ref=e109]
+            - generic [ref=e110]:
+              - paragraph [ref=e111]: The Chill
+              - paragraph [ref=e112]: Ryan Rumbolt
+          - generic [ref=e113]:
+            - generic [ref=e114]: 3D Animation
+            - generic [ref=e115]: Animation
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - img "Swans" [ref=e118]
+            - generic:
+              - link "Play Swans":
+                - /url: /v/cmpqyaj0w00000f2gcqwpixj8
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt Swans Ryan Rumbolt" [ref=e119] [cursor=pointer]:
+            - /url: /v/cmpqyaj0w00000f2gcqwpixj8
+            - img "Ryan Rumbolt" [ref=e121]
+            - generic [ref=e122]:
+              - paragraph [ref=e123]: Swans
+              - paragraph [ref=e124]: Ryan Rumbolt
+          - generic [ref=e125]:
+            - generic [ref=e126]: Short Film
+            - generic [ref=e127]: 2D Animation
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - img "Uber Delta" [ref=e130]
+            - generic:
+              - link "Play Uber Delta":
+                - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt Uber Delta Ryan Rumbolt" [ref=e131] [cursor=pointer]:
+            - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+            - img "Ryan Rumbolt" [ref=e133]
+            - generic [ref=e134]:
+              - paragraph [ref=e135]: Uber Delta
+              - paragraph [ref=e136]: Ryan Rumbolt
+          - generic [ref=e137]:
+            - generic [ref=e138]: Motion Design
+            - generic [ref=e139]: Animation
+        - generic [ref=e140]:
+          - generic [ref=e141]:
+            - img "Sondermind" [ref=e142]
+            - generic:
+              - link "Play Sondermind":
+                - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+                - generic:
+                  - img
+              - generic:
+                - generic:
+                  - button "Save to playlist":
+                    - img
+          - link "Ryan Rumbolt Sondermind Ryan Rumbolt" [ref=e143] [cursor=pointer]:
+            - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+            - img "Ryan Rumbolt" [ref=e145]
+            - generic [ref=e146]:
+              - paragraph [ref=e147]: Sondermind
+              - paragraph [ref=e148]: Ryan Rumbolt
+          - generic [ref=e149]:
+            - generic [ref=e150]: Animation
+            - generic [ref=e151]: Motion Design
+  - contentinfo [ref=e152]:
+    - generic [ref=e153]:
+      - generic [ref=e154]:
+        - link "Instagram" [ref=e155] [cursor=pointer]:
+          - /url: https://instagram.com/frendr
+        - link "Discord" [ref=e156] [cursor=pointer]:
+          - /url: https://discord.gg/REPLACE_ME
+      - img "Frendr" [ref=e158]
+      - generic [ref=e159]:
+        - link "Terms" [ref=e160] [cursor=pointer]:
+          - /url: /terms
+        - link "Privacy" [ref=e161] [cursor=pointer]:
+          - /url: /privacy
+        - link "Contact" [ref=e162] [cursor=pointer]:
+          - /url: /contact
+    - img "frendr" [ref=e164]
+  - button "Open Next.js Dev Tools" [ref=e170] [cursor=pointer]:
+    - img [ref=e171]
+  - alert [ref=e174]

@@ -1,0 +1,52 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Frendr" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Frendr" [ref=e6]
+        - navigation [ref=e7]:
+          - link "Discover" [ref=e8] [cursor=pointer]:
+            - /url: /
+          - link "Channels" [ref=e9] [cursor=pointer]:
+            - /url: /channels
+          - link "Community" [ref=e10] [cursor=pointer]:
+            - /url: /community
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e14]:
+        - link "Login" [ref=e15] [cursor=pointer]:
+          - /url: /sign-in
+        - link "Sign up" [ref=e16] [cursor=pointer]:
+          - /url: /sign-up
+  - main [ref=e17]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - heading "Your Feed" [level=2] [ref=e22]
+          - paragraph [ref=e23]: Latest from creators and channels you follow
+        - link "Browse channels →" [ref=e24] [cursor=pointer]:
+          - /url: /channels
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: Nothing posted yet
+        - paragraph [ref=e27]: The creators and channels you follow haven't posted any videos yet.
+  - contentinfo [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - link "Instagram" [ref=e31] [cursor=pointer]:
+          - /url: https://instagram.com/frendr
+        - link "Second Hold" [ref=e32] [cursor=pointer]:
+          - /url: https://www.secondhold.com
+      - img "Frendr" [ref=e34]
+      - generic [ref=e35]:
+        - link "Terms" [ref=e36] [cursor=pointer]:
+          - /url: /terms
+        - link "Privacy" [ref=e37] [cursor=pointer]:
+          - /url: /privacy
+    - img "frendr" [ref=e39]
+  - button "Open Next.js Dev Tools" [ref=e45] [cursor=pointer]:
+    - img [ref=e46]
+  - alert [ref=e49]

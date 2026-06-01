@@ -1,0 +1,127 @@
+[    1576ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1608ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1778ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1797ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1798ms] [WARNING] Image with src "https://videodelivery.net/3b2696f077d0e769ac9b2813876877e7/thumbnails/thumbnail.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1799ms] [WARNING] Image with src "https://videodelivery.net/7091e379841bf28eab0e59f4355f10ed/thumbnails/thumbnail.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1799ms] [WARNING] Image with src "https://videodelivery.net/f2bb6fb9317cad488e7ffa6963b39926/thumbnails/thumbnail.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1799ms] [WARNING] Image with src "https://videodelivery.net/9d192f545911ca0ef3da7d49c69f72c6/thumbnails/thumbnail.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1799ms] [WARNING] Image with src "https://videodelivery.net/ac5c216b2ab9d970a27be47af24505d2/thumbnails/thumbnail.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1799ms] [WARNING] Image with src "https://videodelivery.net/3c5400eef9dfe517b10625fd633e44d1/thumbnails/thumbnail.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1802ms] [WARNING] Image with src "https://videodelivery.net/f0aefd3848d742388dc95db1e2466723/thumbnails/thumbnail.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1802ms] [WARNING] Image with src "https://videodelivery.net/68de5b1f368d16a9f7f798129d8f25c4/thumbnails/thumbnail.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1894ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1904ms] [LOG] [Fast Refresh] done in 111ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    4851ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    4909ms] [LOG] [Fast Refresh] done in 159ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   57975ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   58143ms] [LOG] [Fast Refresh] done in 150ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   58337ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   58575ms] [LOG] [Fast Refresh] done in 338ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   59070ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   59136ms] [LOG] [Fast Refresh] done in 167ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   61000ms] [WARNING] Image with src "/images/logo-3d.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  331149ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  331184ms] [LOG] [Fast Refresh] done in 79ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  637029ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  637232ms] [LOG] [Fast Refresh] done in 295ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  637372ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  637709ms] [LOG] [Fast Refresh] done in 438ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  638426ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  638452ms] [LOG] [Fast Refresh] done in 126ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  821783ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  821803ms] [LOG] [Fast Refresh] done in 114ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  836943ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  836973ms] [LOG] [Fast Refresh] done in 71ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  848140ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  848186ms] [LOG] [Fast Refresh] done in 116ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  939358ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  939381ms] [LOG] [Fast Refresh] done in 108ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  945090ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  945121ms] [LOG] [Fast Refresh] done in 53ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  948731ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  948761ms] [LOG] [Fast Refresh] done in 69ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1047631ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1048343ms] [LOG] [Fast Refresh] done in 813ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1164944ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1164977ms] [LOG] [Fast Refresh] done in 68ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1181862ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1181867ms] [ERROR] ./src/app/(main)/feed/page.tsx:151:14
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  149 |                 </div>
+  150 |               </section>
+> 151 |             )}
+      |              ^
+  152 |
+  153 |             {/* ── Channels ─────────────────────────────────── */}
+  154 |             {channels.length > 0 && (
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1181867ms] [ERROR] ./src/app/(main)/feed/page.tsx
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/src/app/(main)/feed/page.tsx [app-rsc] (ecmascript)
+
+Caused by:
+- CJS module can't be async.
+
+Debug info:
+- An error occurred while generating the chunk item [project]/src/app/(main)/feed/page.tsx [app-rsc] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of EcmascriptChunkItemContent::new failed
+- CJS module can't be async. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1181927ms] [ERROR] ./src/app/(main)/feed/page.tsx:151:14
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  149 |                 </div>
+  150 |               </section>
+> 151 |             )}
+      |              ^
+  152 |
+  153 |             {/* ── Channels ─────────────────────────────────── */}
+  154 |             {channels.length > 0 && (
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1181928ms] [ERROR] ./src/app/(main)/feed/page.tsx
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/src/app/(main)/feed/page.tsx [app-rsc] (ecmascript)
+
+Caused by:
+- CJS module can't be async.
+
+Debug info:
+- An error occurred while generating the chunk item [project]/src/app/(main)/feed/page.tsx [app-rsc] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of EcmascriptChunkItemContent::new failed
+- CJS module can't be async. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1182010ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1193348ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1193509ms] [LOG] [Fast Refresh] done in 233ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1213955ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1213957ms] [ERROR] ./src/app/(main)/feed/page.tsx:196:10
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  194 |
+  195 |           </div>
+> 196 |         )}
+      |          ^
+  197 |       </div>
+  198 |     </div>
+  199 |   )
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1213958ms] [ERROR] ./src/app/(main)/feed/page.tsx
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/src/app/(main)/feed/page.tsx [app-rsc] (ecmascript)
+
+Caused by:
+- CJS module can't be async.
+
+Debug info:
+- An error occurred while generating the chunk item [project]/src/app/(main)/feed/page.tsx [app-rsc] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of EcmascriptChunkItemContent::new failed
+- CJS module can't be async. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1224567ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1224597ms] [LOG] [Fast Refresh] done in 54ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1235440ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1235472ms] [LOG] [Fast Refresh] done in 63ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1235592ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1235617ms] [LOG] [Fast Refresh] done in 127ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477

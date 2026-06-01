@@ -1,0 +1,264 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Frendr" [ref=e335] [cursor=pointer]:
+          - /url: /
+          - img "Frendr" [ref=e336]
+        - navigation [ref=e7]:
+          - link "Discover" [ref=e337] [cursor=pointer]:
+            - /url: /search
+          - link "Channels" [ref=e338] [cursor=pointer]:
+            - /url: /channels
+          - link "Community" [ref=e339] [cursor=pointer]:
+            - /url: /community
+          - link "Following" [ref=e340] [cursor=pointer]:
+            - /url: /feed
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e13]:
+        - link "Upload" [ref=e341] [cursor=pointer]:
+          - /url: /dashboard/upload
+          - img [ref=e162]
+          - text: Upload
+        - link "Messages" [ref=e342] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e166]
+        - link "Notifications" [ref=e343] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=e169]
+        - button "Ryan Rumbolt" [ref=e344]:
+          - img "Ryan Rumbolt" [ref=e345]
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - img "Cover" [ref=e346]
+        - button "Edit cover" [ref=e347]:
+          - img [ref=e22]
+          - text: Edit cover
+      - generic [ref=e25]:
+        - img "Ryan Rumbolt" [ref=e348]
+        - generic [ref=e30]:
+          - complementary [ref=e31]:
+            - generic [ref=e32]:
+              - heading "Ryan Rumbolt" [level=1] [ref=e349]
+              - paragraph [ref=e34]: Founder / Creative Director
+              - button "Available for work" [ref=e350] [cursor=pointer]: Available for work
+            - generic [ref=e37]:
+              - generic [ref=e38]:
+                - generic [ref=e39]: Followers
+                - link "0" [ref=e351] [cursor=pointer]:
+                  - /url: /ryan-rumbolt8324/followers
+              - generic [ref=e41]:
+                - generic [ref=e42]: Following
+                - link "0" [ref=e352] [cursor=pointer]:
+                  - /url: /ryan-rumbolt8324/following
+            - generic [ref=e44]:
+              - img [ref=e45]
+              - generic [ref=e48]: Lisbon, Portugal
+            - generic [ref=e49]:
+              - img [ref=e50]
+              - link "www.wonderlust.work" [ref=e353] [cursor=pointer]:
+                - /url: https://www.wonderlust.work
+            - generic [ref=e57]:
+              - link "IG" [ref=e354] [cursor=pointer]:
+                - /url: https://www.instagram.com/ryanrumbolt/
+              - link "in" [ref=e355] [cursor=pointer]:
+                - /url: https://ca.linkedin.com/in/ryanrumbolt
+            - generic [ref=e60]:
+              - paragraph [ref=e61]: Skills
+              - generic [ref=e62]:
+                - generic [ref=e63]: Motion Design
+                - generic [ref=e64]: Animation
+                - generic [ref=e65]: 3D
+                - generic [ref=e66]: Branding
+                - generic [ref=e67]: Typography
+            - button "Edit profile" [active] [ref=e356]
+          - main [ref=e69]:
+            - generic [ref=e71]:
+              - link "Videos" [ref=e357] [cursor=pointer]:
+                - /url: /ryan-rumbolt8324
+              - link "Playlists" [ref=e358] [cursor=pointer]:
+                - /url: /ryan-rumbolt8324/playlists
+              - generic [ref=e74]: Activity
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - generic [ref=e77]:
+                  - img [ref=e78]
+                  - text: Featured work
+                - button "Unpin" [ref=e359]
+              - button "Swans" [ref=e360]:
+                - img "Swans" [ref=e361]
+                - img [ref=e86]
+              - paragraph [ref=e88]: Swans
+            - heading "All Videos(8)" [level=2] [ref=e362]:
+              - text: All Videos
+              - generic [ref=e91]: (8)
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - generic [ref=e94]:
+                  - img "Reel // Intro Outro" [ref=e363]
+                  - img [ref=e97]
+                  - generic:
+                    - link "Play Reel // Intro Outro":
+                      - /url: /v/cmpskcsbx0000272g5x8zugn5
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button "Save to playlist":
+                          - img
+                    - generic:
+                      - button "Pin to profile":
+                        - img
+                - link "Reel // Intro Outro" [ref=e364] [cursor=pointer]:
+                  - /url: /v/cmpskcsbx0000272g5x8zugn5
+                  - paragraph [ref=e101]: Reel // Intro Outro
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - img "Air Canada" [ref=e365]
+                  - generic:
+                    - link "Play Air Canada":
+                      - /url: /v/cmpqyp5m900050f2guq8ghnj3
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button "Save to playlist":
+                          - img
+                    - generic:
+                      - button "Pin to profile":
+                        - img
+                - link "Air Canada" [ref=e366] [cursor=pointer]:
+                  - /url: /v/cmpqyp5m900050f2guq8ghnj3
+                  - paragraph [ref=e106]: Air Canada
+              - generic [ref=e107]:
+                - generic [ref=e108]:
+                  - img "Blue Moon - Juicy" [ref=e367]
+                  - generic:
+                    - link "Play Blue Moon - Juicy":
+                      - /url: /v/cmpqymn3x00040f2g0fg4rke5
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button "Save to playlist":
+                          - img
+                    - generic:
+                      - button "Pin to profile":
+                        - img
+                - link "Blue Moon - Juicy" [ref=e368] [cursor=pointer]:
+                  - /url: /v/cmpqymn3x00040f2g0fg4rke5
+                  - paragraph [ref=e111]: Blue Moon - Juicy
+              - generic [ref=e112]:
+                - generic [ref=e113]:
+                  - img "Lyft - Happy Birthday" [ref=e369]
+                  - generic:
+                    - link "Play Lyft - Happy Birthday":
+                      - /url: /v/cmpqyiqbc00030f2gk2i3h969
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button "Save to playlist":
+                          - img
+                    - generic:
+                      - button "Pin to profile":
+                        - img
+                - link "Lyft - Happy Birthday" [ref=e370] [cursor=pointer]:
+                  - /url: /v/cmpqyiqbc00030f2gk2i3h969
+                  - paragraph [ref=e116]: Lyft - Happy Birthday
+              - generic [ref=e117]:
+                - generic [ref=e118]:
+                  - img "Jovia" [ref=e371]
+                  - generic:
+                    - link "Play Jovia":
+                      - /url: /v/cmpqygvlc00020f2gqxckh973
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button "Save to playlist":
+                          - img
+                    - generic:
+                      - button "Pin to profile":
+                        - img
+                - link "Jovia" [ref=e372] [cursor=pointer]:
+                  - /url: /v/cmpqygvlc00020f2gqxckh973
+                  - paragraph [ref=e121]: Jovia
+              - generic [ref=e122]:
+                - generic [ref=e123]:
+                  - img "The Chill" [ref=e373]
+                  - generic:
+                    - link "Play The Chill":
+                      - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button "Save to playlist":
+                          - img
+                    - generic:
+                      - button "Pin to profile":
+                        - img
+                - link "The Chill" [ref=e374] [cursor=pointer]:
+                  - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+                  - paragraph [ref=e126]: The Chill
+              - generic [ref=e127]:
+                - generic [ref=e128]:
+                  - img "Uber Delta" [ref=e375]
+                  - generic:
+                    - link "Play Uber Delta":
+                      - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button "Save to playlist":
+                          - img
+                    - generic:
+                      - button "Pin to profile":
+                        - img
+                - link "Uber Delta" [ref=e376] [cursor=pointer]:
+                  - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+                  - paragraph [ref=e131]: Uber Delta
+              - generic [ref=e132]:
+                - generic [ref=e133]:
+                  - img "Sondermind" [ref=e377]
+                  - generic:
+                    - link "Play Sondermind":
+                      - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button "Save to playlist":
+                          - img
+                    - generic:
+                      - button "Pin to profile":
+                        - img
+                - link "Sondermind" [ref=e378] [cursor=pointer]:
+                  - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+                  - paragraph [ref=e136]: Sondermind
+  - contentinfo [ref=e137]:
+    - generic [ref=e138]:
+      - generic [ref=e139]:
+        - link "Instagram" [ref=e379] [cursor=pointer]:
+          - /url: https://instagram.com/frendr
+        - link "Discord" [ref=e380] [cursor=pointer]:
+          - /url: https://discord.gg/REPLACE_ME
+      - img "Frendr" [ref=e381]
+      - generic [ref=e144]:
+        - link "Terms" [ref=e382] [cursor=pointer]:
+          - /url: /terms
+        - link "Privacy" [ref=e383] [cursor=pointer]:
+          - /url: /privacy
+        - link "Contact" [ref=e384] [cursor=pointer]:
+          - /url: /contact
+    - img "frendr" [ref=e385]
+  - button "Open Next.js Dev Tools" [ref=e155] [cursor=pointer]:
+    - img [ref=e156]
+  - alert [ref=e159]

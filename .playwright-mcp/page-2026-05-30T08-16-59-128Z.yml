@@ -1,0 +1,35 @@
+- generic [ref=e2]:
+  - region "Notifications alt+T"
+  - generic [ref=e7]:
+    - generic [ref=e8]:
+      - img "Prisma Logo" [ref=e9]
+      - generic [ref=e10]: Prisma Studio
+    - combobox [ref=e12] [cursor=pointer]:
+      - generic [ref=e14]: "Schema:"
+      - img [ref=e16]
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - img [ref=e20]
+        - heading "Studio" [level=2] [ref=e22]
+      - navigation "Studio" [ref=e23]:
+        - link "Visualizer" [ref=e25] [cursor=pointer]:
+          - /url: "#view=schema"
+        - link "Console" [ref=e27] [cursor=pointer]:
+          - /url: "#view=console"
+        - link "SQL" [ref=e29] [cursor=pointer]:
+          - /url: "#view=sql"
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - img [ref=e33]
+          - heading "Tables" [level=2] [ref=e35]
+        - button "Search tables" [ref=e36] [cursor=pointer]:
+          - img [ref=e37]
+        - generic:
+          - textbox "Search tables":
+            - /placeholder: Search tables...
+      - navigation "Tables" [ref=e40]:
+        - button [ref=e41] [cursor=pointer]
+        - button [ref=e43] [cursor=pointer]
+        - button [ref=e45] [cursor=pointer]
+        - button [ref=e47] [cursor=pointer]

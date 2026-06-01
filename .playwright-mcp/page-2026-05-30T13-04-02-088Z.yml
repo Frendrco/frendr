@@ -1,0 +1,107 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link [ref=e72] [cursor=pointer]:
+          - /url: /
+          - img [ref=e73]
+        - navigation [ref=e7]:
+          - link [ref=e74] [cursor=pointer]:
+            - /url: /search
+            - text: Discover
+          - link [ref=e75] [cursor=pointer]:
+            - /url: /channels
+            - text: Channels
+          - link [ref=e76] [cursor=pointer]:
+            - /url: /community
+            - text: Community
+          - link [ref=e77] [cursor=pointer]:
+            - /url: /feed
+            - text: Following
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e13]:
+        - link [ref=e78] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e62]
+        - link [ref=e79] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=e65]
+        - button [ref=e80]:
+          - img [ref=e69]
+          - img [ref=e81]
+  - main [ref=e17]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - heading [level=1] [ref=e82]: Channels
+          - paragraph [ref=e23]: Curated collections of the best work on Frendr
+        - button [ref=e83]:
+          - img [ref=e25]
+          - text: Start a Channel
+      - generic [ref=e26]:
+        - tablist [ref=e27]:
+          - tab [ref=e84]:
+            - img
+            - text: Frendr Picks
+          - tab [selected] [ref=e85]:
+            - img
+            - text: Creator Channels
+        - tabpanel [ref=e86]:
+          - link [ref=e87] [cursor=pointer]:
+            - /url: /channels/motion-loops
+            - generic [ref=e35]:
+              - paragraph [ref=e36]: Motion Loops
+              - paragraph [ref=e37]: 0 videos
+  - contentinfo [ref=e38]:
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - link [ref=e88] [cursor=pointer]:
+          - /url: https://instagram.com/frendr
+          - text: Instagram
+        - link [ref=e89] [cursor=pointer]:
+          - /url: https://www.secondhold.com
+          - text: Second Hold
+      - img [ref=e90]
+      - generic [ref=e45]:
+        - link [ref=e91] [cursor=pointer]:
+          - /url: /terms
+          - text: Terms
+        - link [ref=e92] [cursor=pointer]:
+          - /url: /privacy
+          - text: Privacy
+    - img [ref=e93]
+  - button "Open Next.js Dev Tools" [ref=e55] [cursor=pointer]:
+    - img [ref=e56]
+  - alert [ref=e59]
+  - dialog "Name your channel" [ref=e97]:
+    - generic [ref=e99]:
+      - heading "Name your channel" [level=2] [ref=e100]
+      - generic [ref=e101]: Step 1 of 3
+    - generic [ref=e105]:
+      - button "Mark as Frendr Pick Appears in the editorial Frendr Picks tab" [ref=e106]:
+        - img [ref=e107]
+        - generic [ref=e110]:
+          - paragraph [ref=e111]: Mark as Frendr Pick
+          - paragraph [ref=e112]: Appears in the editorial Frendr Picks tab
+      - generic [ref=e114]:
+        - generic [ref=e115]: Channel name
+        - textbox "e.g. Best of Motion Design" [active] [ref=e116]
+      - generic [ref=e117]:
+        - generic [ref=e118]: Description (optional)
+        - textbox "What's this channel about?" [ref=e119]
+      - generic [ref=e120]:
+        - generic [ref=e121]: Cover image (optional)
+        - button "Click to upload JPG, PNG or WebP" [ref=e122]:
+          - img [ref=e123]
+          - generic [ref=e127]: Click to upload
+          - generic [ref=e128]: JPG, PNG or WebP
+    - button "Continue" [disabled] [ref=e131]:
+      - text: Continue
+      - img [ref=e132]
+    - button "Close" [ref=e134]:
+      - img
+      - generic [ref=e135]: Close

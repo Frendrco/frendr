@@ -84,7 +84,7 @@ export function NewMessageButton() {
               <div className="px-4 py-6 text-center font-sans text-xs text-foreground/40">Search for someone to message</div>
             )}
             {results.map((u) => {
-              const initials = u.displayName.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
+              const initials = u.displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
               return (
                 <button
                   key={u.id}

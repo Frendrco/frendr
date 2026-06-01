@@ -82,7 +82,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
 
   const avatarUrl   = user?.imageUrl
   const displayName = [firstName, lastName].filter(Boolean).join(" ") || "User"
-  const initials    = displayName.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
+  const initials    = displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]

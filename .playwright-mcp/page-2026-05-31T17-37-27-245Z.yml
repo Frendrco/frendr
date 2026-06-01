@@ -1,0 +1,85 @@
+- generic [ref=e1]:
+  - generic [active]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - navigation [ref=e7]:
+            - button "previous" [disabled] [ref=e8]:
+              - img "previous" [ref=e9]
+            - generic [ref=e11]:
+              - generic [ref=e12]: 1/
+              - text: "1"
+            - button "next" [disabled] [ref=e13]:
+              - img "next" [ref=e14]
+          - img
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - img [ref=e18]
+            - generic "Latest available version is detected (16.2.6)." [ref=e20]: Next.js 16.2.6
+            - generic [ref=e21]: Turbopack
+          - img
+      - dialog "Runtime PrismaClientValidationError" [ref=e23]:
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - generic [ref=e29]:
+                - generic [ref=e30]: Runtime PrismaClientValidationError
+                - generic [ref=e31]: Server
+              - generic [ref=e32]:
+                - button "Copy Error Info" [ref=e33] [cursor=pointer]:
+                  - img [ref=e34]
+                - button "No related documentation found" [disabled] [ref=e36]:
+                  - img [ref=e37]
+                - button "Attach Node.js inspector" [ref=e39] [cursor=pointer]:
+                  - img [ref=e40]
+            - generic [ref=e48]:
+              - generic [ref=e49]: "Invalid `prisma.user.findUnique()` invocation: { where: { clerkId: \"user_3ELXF0XCt4lrtlONuljDX3AijFr\" }, select: { username: true, displayName: true, location: true, age: true, bio: true, website: true, role: true, instagram: true, linkedin: true, twitter: true, patreon: true, ~~~~~~~ substack: true, playlist: true, tags: true, ? id?: true, ? clerkId?: true, ? openToWork?: true, ? avatarUrl?: true, ? coverImageUrl?: true, ? pinnedVideoId?: true, ? email?: true, ? createdAt?: true, ? updatedAt?: true, ? videos?: true, ? videoLikes?: true, ? threads?: true, ? threadVotes?: true, ? savedThreads?: true, ? comments?: true, ? commentVotes?: true, ? jobs?: true, ? savedJobs?: true, ? followers?: true, ? following?: true, ? playlists?: true, ? channels?: true, ? channelFollows?: true, ? channelVideosAdded?: true, ? channelAdmins?: true, ? events?: true, ? eventRsvps?: true, ? savedEvents?: true, ? shop?: true, ? savedShops?: true, ? conversations?: true, ? sentMessages?: true, ? notifications?: true, ? notificationsFrom?: true, ? _count?: true } } Unknown field `patreon` for select statement on model `User`. Available options are marked with ?."
+              - button "Show More" [ref=e51] [cursor=pointer]
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - paragraph [ref=e55]:
+                - img [ref=e57]
+                - generic [ref=e60]: src/app/(main)/dashboard/settings/page.tsx (13:16) @ SettingsPage
+                - button "Open in editor" [ref=e61] [cursor=pointer]:
+                  - img [ref=e63]
+              - generic [ref=e66]:
+                - generic [ref=e67]: 11 | if (!clerkId) redirect("/sign-in")
+                - generic [ref=e68]: 12 |
+                - generic [ref=e69]: "> 13 | const user = await prisma.user.findUnique({"
+                - generic [ref=e70]: "| ^"
+                - generic [ref=e71]: "14 | where: { clerkId },"
+                - generic [ref=e72]: "15 | select: {"
+                - generic [ref=e73]: "16 | username: true,"
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - paragraph [ref=e76]:
+                  - text: Call Stack
+                  - generic [ref=e77]: "6"
+                - button "Show 5 ignore-listed frame(s)" [ref=e78] [cursor=pointer]:
+                  - text: Show 5 ignore-listed frame(s)
+                  - img [ref=e79]
+              - generic [ref=e81]:
+                - generic [ref=e82]:
+                  - text: SettingsPage
+                  - button "Open SettingsPage in editor" [ref=e83] [cursor=pointer]:
+                    - img [ref=e84]
+                - text: src/app/(main)/dashboard/settings/page.tsx (13:16)
+        - generic [ref=e86]: "1"
+        - generic [ref=e87]: "2"
+    - generic [ref=e92] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e93]:
+        - img [ref=e94]
+      - generic [ref=e97]:
+        - button "Open issues overlay" [ref=e98]:
+          - generic [ref=e99]:
+            - generic [ref=e100]: "0"
+            - generic [ref=e101]: "1"
+          - generic [ref=e102]: Issue
+        - button "Collapse issues badge" [ref=e103]:
+          - img [ref=e104]
+  - generic [ref=e107]:
+    - img [ref=e108]
+    - heading "This page couldn’t load" [level=1] [ref=e110]
+    - paragraph [ref=e111]: A server error occurred. Reload to try again.
+    - button "Reload" [ref=e114] [cursor=pointer]
+  - paragraph [ref=e115]: ERROR 592043996

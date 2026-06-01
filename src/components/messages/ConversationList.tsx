@@ -52,7 +52,7 @@ export function ConversationList({ initial, activeId }: Props) {
         const isActive = c.id === activeId
         const initials = c.other?.displayName
           .split(" ")
-          .map((w) => w[0])
+          .map((w: string) => w[0])
           .slice(0, 2)
           .join("")
           .toUpperCase() ?? "?"

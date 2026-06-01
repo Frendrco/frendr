@@ -56,7 +56,7 @@ function ProviderIcon({ provider }: { provider: Provider }) {
 
 export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hideCreator = false, hideTags = false, actionsSlot }: Props) {
   const initials = video.user.displayName
-    .split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
+    .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   const rounded = roundedSize === "2xl" ? "rounded-2xl" : "rounded-xl"
 

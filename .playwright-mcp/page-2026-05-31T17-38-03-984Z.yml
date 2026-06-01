@@ -1,0 +1,156 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Frendr" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Frendr" [ref=e6]
+        - navigation [ref=e7]:
+          - link "Discover" [ref=e8] [cursor=pointer]:
+            - /url: /search
+          - link "Channels" [ref=e9] [cursor=pointer]:
+            - /url: /channels
+          - link "Community" [ref=e10] [cursor=pointer]:
+            - /url: /community
+          - link "Following" [ref=e88] [cursor=pointer]:
+            - /url: /feed
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e13]:
+        - link "Upload" [ref=e89] [cursor=pointer]:
+          - /url: /dashboard/upload
+          - img [ref=e90]
+          - text: Upload
+        - link "Messages" [ref=e93] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e94]
+        - button "Notifications" [ref=e97]:
+          - img [ref=e98]
+        - button "Ryan Rumbolt" [ref=e101]:
+          - img "Ryan Rumbolt" [ref=e102]
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - complementary [ref=e19]:
+        - navigation [ref=e20]:
+          - button "Basic Information" [ref=e21]
+          - button "About Me" [active] [ref=e22]
+        - generic [ref=e23]:
+          - img "Ryan Rumbolt" [ref=e103]
+          - button "Replace" [ref=e26]:
+            - img [ref=e27]
+            - text: Replace
+          - generic [ref=e30]: or choose an avatar
+          - generic [ref=e31]:
+            - button "🦥" [ref=e32]
+            - button "🐉" [ref=e33]
+            - button "🦀" [ref=e34]
+            - button "🐶" [ref=e35]
+        - button "Delete Account" [ref=e38]:
+          - img [ref=e39]
+          - text: Delete Account
+      - generic [ref=e42]:
+        - generic [ref=e104]:
+          - heading "About Me" [level=2] [ref=e105]
+          - generic [ref=e106]:
+            - generic [ref=e107]:
+              - generic [ref=e108]:
+                - generic [ref=e109]: Role
+                - textbox "e.g. Motion Designer" [ref=e110]: Founder / Creative Director
+              - generic [ref=e111]:
+                - generic [ref=e112]: Website
+                - textbox "www.yoursite.com" [ref=e113]: www.wonderlust.work
+            - generic [ref=e114]:
+              - generic [ref=e115]:
+                - generic [ref=e116]: Bio
+                - generic [ref=e117]: 43/150
+              - textbox "Tell the community about yourself…" [ref=e118]: Just a dude trying to create a community.
+            - generic [ref=e119]:
+              - generic [ref=e120]: Social Media
+              - generic [ref=e121]:
+                - generic [ref=e122]: IG
+                - textbox "www.instagram.com/handle" [ref=e123]: https://www.instagram.com/ryanrumbolt/
+                - button [ref=e124]:
+                  - img [ref=e125]
+              - generic [ref=e128]:
+                - generic [ref=e129]: in
+                - textbox "www.linkedin.com/in/handle" [ref=e130]: ca.linkedin.com/in/ryanrumbolt
+                - button [ref=e131]:
+                  - img [ref=e132]
+              - generic [ref=e135]:
+                - generic [ref=e136]: X
+                - textbox "x.com/handle" [ref=e137]
+              - generic [ref=e138]:
+                - generic [ref=e139]: Pa
+                - textbox "www.patreon.com/handle" [ref=e140]
+              - generic [ref=e141]:
+                - generic [ref=e142]: SS
+                - textbox "yourname.substack.com" [ref=e143]
+              - generic [ref=e144]:
+                - generic [ref=e145]: ♫
+                - textbox "open.spotify.com/playlist/…" [ref=e146]
+            - generic [ref=e147]:
+              - generic [ref=e148]:
+                - generic [ref=e149]: Skills
+                - generic [ref=e150]: 5/5
+              - generic [ref=e151]:
+                - button "Motion Design" [ref=e152]:
+                  - text: Motion Design
+                  - img [ref=e153]
+                - button "Animation" [ref=e156]:
+                  - text: Animation
+                  - img [ref=e157]
+                - button "3D" [ref=e160]:
+                  - text: 3D
+                  - img [ref=e161]
+                - button "Typography" [ref=e164]:
+                  - text: Typography
+                  - img [ref=e165]
+                - button "Branding" [ref=e168]:
+                  - text: Branding
+                  - img [ref=e169]
+                - button "Film" [disabled] [ref=e172]
+                - button "Motion Graphics" [disabled] [ref=e173]
+                - button "VFX" [disabled] [ref=e174]
+                - button "Loop" [disabled] [ref=e175]
+                - button "Experimental" [disabled] [ref=e176]
+                - button "Sound" [disabled] [ref=e177]
+                - button "Documentary" [disabled] [ref=e178]
+                - button "Short Film" [disabled] [ref=e179]
+                - button "Music Video" [disabled] [ref=e180]
+                - button "Commercial" [disabled] [ref=e181]
+                - button "Stop Motion" [disabled] [ref=e182]
+                - button "Live Action" [disabled] [ref=e183]
+                - button "2D Animation" [disabled] [ref=e184]
+                - button "3D Animation" [disabled] [ref=e185]
+                - button "Graphic Design" [disabled] [ref=e186]
+                - button "Illustration" [disabled] [ref=e187]
+                - button "Photography" [disabled] [ref=e188]
+                - button "UX/UI" [disabled] [ref=e189]
+                - button "3D Type" [disabled] [ref=e190]
+        - generic [ref=e62]:
+          - button "Cancel" [ref=e63]
+          - button "Save Changes" [ref=e64]
+  - contentinfo [ref=e65]:
+    - generic [ref=e66]:
+      - generic [ref=e67]:
+        - link "Instagram" [ref=e68] [cursor=pointer]:
+          - /url: https://www.instagram.com/frendr.co
+        - link "Newsletter" [ref=e69] [cursor=pointer]:
+          - /url: https://frendr.co/newsletter
+      - link "Frendr" [ref=e70] [cursor=pointer]:
+        - /url: /
+        - img "Frendr" [ref=e71]
+      - generic [ref=e72]:
+        - link "Terms" [ref=e73] [cursor=pointer]:
+          - /url: /terms
+        - link "Privacy" [ref=e74] [cursor=pointer]:
+          - /url: /privacy
+        - link "Contact" [ref=e75] [cursor=pointer]:
+          - /url: mailto:ryan@frendr.co
+    - img "frendr" [ref=e77]
+  - button "Open Next.js Dev Tools" [ref=e83] [cursor=pointer]:
+    - img [ref=e84]
+  - alert [ref=e87]

@@ -53,7 +53,7 @@ export function MessageThread({ messages, currentUserId }: Props) {
         const showAvatar = !isOwn && (i === 0 || prev?.senderId !== msg.senderId)
         const initials = msg.sender.displayName
           .split(" ")
-          .map((w) => w[0])
+          .map((w: string) => w[0])
           .slice(0, 2)
           .join("")
           .toUpperCase()

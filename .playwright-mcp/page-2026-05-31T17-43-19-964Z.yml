@@ -1,0 +1,86 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Frendr" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Frendr" [ref=e6]
+        - navigation [ref=e7]:
+          - link "Discover" [ref=e8] [cursor=pointer]:
+            - /url: /search
+          - link "Channels" [ref=e9] [cursor=pointer]:
+            - /url: /channels
+          - link "Community" [ref=e10] [cursor=pointer]:
+            - /url: /community
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e14]:
+        - link "Login" [ref=e15] [cursor=pointer]:
+          - /url: /sign-in
+        - link "Sign up" [ref=e16] [cursor=pointer]:
+          - /url: /sign-up
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - complementary [ref=e19]:
+        - navigation [ref=e20]:
+          - button "Basic Information" [ref=e21]
+          - button "About Me" [ref=e22]
+        - generic [ref=e23]:
+          - generic [ref=e25]: RR
+          - button "Replace" [ref=e26]:
+            - img [ref=e27]
+            - text: Replace
+          - generic [ref=e30]: or choose an avatar
+          - generic [ref=e31]:
+            - button "🦥" [ref=e32]
+            - button "🐉" [ref=e33]
+            - button "🦀" [ref=e34]
+            - button "🐶" [ref=e35]
+        - button "Delete Account" [ref=e38]:
+          - img [ref=e39]
+          - text: Delete Account
+      - generic [ref=e42]:
+        - generic [ref=e44]:
+          - heading "Basic Information" [level=2] [ref=e45]
+          - generic [ref=e46]:
+            - generic [ref=e47]:
+              - generic [ref=e48]:
+                - generic [ref=e49]: First name
+                - textbox "First name" [ref=e50]: Ryan
+              - generic [ref=e51]:
+                - generic [ref=e52]: Last name
+                - textbox "Last name" [ref=e53]: Rumbolt
+            - generic [ref=e54]:
+              - generic [ref=e55]: Username
+              - generic [ref=e56]:
+                - generic [ref=e57]: "@"
+                - textbox "your-handle" [ref=e58]: frendr
+            - generic [ref=e59]:
+              - generic [ref=e60]: Location
+              - textbox "City, Country" [ref=e61]: Lisbon, Portugal
+        - generic [ref=e62]:
+          - button "Cancel" [ref=e63]
+          - button "Save Changes" [ref=e64]
+  - contentinfo [ref=e65]:
+    - generic [ref=e66]:
+      - generic [ref=e67]:
+        - link "Instagram" [ref=e68] [cursor=pointer]:
+          - /url: https://www.instagram.com/frendr.co
+        - link "Newsletter" [ref=e69] [cursor=pointer]:
+          - /url: https://frendr.co/newsletter
+      - link "Frendr" [ref=e70] [cursor=pointer]:
+        - /url: /
+        - img "Frendr" [ref=e71]
+      - generic [ref=e72]:
+        - link "Terms" [ref=e73] [cursor=pointer]:
+          - /url: /terms
+        - link "Privacy" [ref=e74] [cursor=pointer]:
+          - /url: /privacy
+        - link "Contact" [ref=e75] [cursor=pointer]:
+          - /url: mailto:ryan@frendr.co
+    - img "frendr" [ref=e77]
+  - button "Open Next.js Dev Tools" [ref=e83] [cursor=pointer]:
+    - img [ref=e84]

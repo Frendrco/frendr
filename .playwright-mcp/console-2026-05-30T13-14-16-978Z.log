@@ -1,0 +1,87 @@
+[      62ms] [WARNING] document.domain mutation is ignored because the surrounding agent cluster is origin-keyed. @ https://medium.com/cavalry-animation:91
+[     301ms] [LOG] 
+    :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*:
+   :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  %@@@@@@@@@#-:::::::%@@@@@@@@@@@@@@-::::::=#@@@@@@@@@+
+  %@@@@@@@@@@@:.    .:@@@@@@@@@@@@@+..    -@@@@@@@@@@@+
+  %@@@@@@@@@@@:...   .-@@@@@@@@@@@#.-.    =@@@@@@@@@@@+
+  %@@@@@@@@@@@:=-..   .*@@@@@@@@@@:=+.    =@@@@@@@@@@%+
+  %@@@@@@@@@@@:=@:..   .%@@@@@@@@::@+.    =@@@@@@*:.:-:
+  %@@@@@@@@@@@:=@@..    .@@@@@@@=.@@*.    =@@@@=...%@@+
+  %@@@@@@@@@@@:=@@#..   .:@@@@@*.%@@*.    =@@@:...*@@@+
+  %@@@@@@@@@@@:=@@@+.    .=@@@%.*@@@*.    =@@=....@@@@+
+  %@@@@@@@@@@@:=@@@@-..   .*@@:=@@@@*.   .=@@.. ..++++-
+  %@@@@@@@@@@@:=@@@@@:..   .%-:@@@@@*.   .=@#.   -@@@@+
+  %@@@@@@@@@@@:=@@@@@%..     .@@@@@@*.   .=@#.. ..%@@@+
+  %@@@@@@@@@@@:=@@@@@@*..   .%@@@@@@*.   .=@@:.  .:@@@+
+  %@@@@@@@@@@@:=@@@@@@@=.. .*@@@@@@@*.   .=@@+... ..+@+
+  %@@@@@@@@@@@:=@@@@@@@@:..-@@@@@@@@*.   .=@@@=..   ...
+  %@@@@@@@@@@#.:%@@@@@@@@.:@@@@@@@@@-.....:%@@@*:.... 
+  %@@@@@@@@@*****#@@@@@@@%@@@@@@@@#+++++++++*@@@@%+-:::
+  #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=
+     :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*:
+ @ https://cdn-client.medium.com/lite/static/js/main.7ad11617.js:1
+[     301ms] [LOG] We're hiring! https://medium.com/jobs-at-medium/work-at-medium-959d1a85284e @ https://cdn-client.medium.com/lite/static/js/main.7ad11617.js:1
+[    1204ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:84
+[    1210ms] [ERROR] Not signed in with the identity provider. @ https://medium.com/cavalry-animation:0
+[    2480ms] [WARNING] document.domain mutation is ignored because the surrounding agent cluster is origin-keyed. @ https://medium.com/cavalry-animation?source=collection_home_page----deff797a0a06----------------------------------------:91
+[    2546ms] [LOG] 
+    :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*:
+   :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  %@@@@@@@@@#-:::::::%@@@@@@@@@@@@@@-::::::=#@@@@@@@@@+
+  %@@@@@@@@@@@:.    .:@@@@@@@@@@@@@+..    -@@@@@@@@@@@+
+  %@@@@@@@@@@@:...   .-@@@@@@@@@@@#.-.    =@@@@@@@@@@@+
+  %@@@@@@@@@@@:=-..   .*@@@@@@@@@@:=+.    =@@@@@@@@@@%+
+  %@@@@@@@@@@@:=@:..   .%@@@@@@@@::@+.    =@@@@@@*:.:-:
+  %@@@@@@@@@@@:=@@..    .@@@@@@@=.@@*.    =@@@@=...%@@+
+  %@@@@@@@@@@@:=@@#..   .:@@@@@*.%@@*.    =@@@:...*@@@+
+  %@@@@@@@@@@@:=@@@+.    .=@@@%.*@@@*.    =@@=....@@@@+
+  %@@@@@@@@@@@:=@@@@-..   .*@@:=@@@@*.   .=@@.. ..++++-
+  %@@@@@@@@@@@:=@@@@@:..   .%-:@@@@@*.   .=@#.   -@@@@+
+  %@@@@@@@@@@@:=@@@@@%..     .@@@@@@*.   .=@#.. ..%@@@+
+  %@@@@@@@@@@@:=@@@@@@*..   .%@@@@@@*.   .=@@:.  .:@@@+
+  %@@@@@@@@@@@:=@@@@@@@=.. .*@@@@@@@*.   .=@@+... ..+@+
+  %@@@@@@@@@@@:=@@@@@@@@:..-@@@@@@@@*.   .=@@@=..   ...
+  %@@@@@@@@@@#.:%@@@@@@@@.:@@@@@@@@@-.....:%@@@*:.... 
+  %@@@@@@@@@*****#@@@@@@@%@@@@@@@@#+++++++++*@@@@%+-:::
+  #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=
+     :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*:
+ @ https://cdn-client.medium.com/lite/static/js/main.7ad11617.js:1
+[    2546ms] [LOG] We're hiring! https://medium.com/jobs-at-medium/work-at-medium-959d1a85284e @ https://cdn-client.medium.com/lite/static/js/main.7ad11617.js:1
+[    3072ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:84
+[    3097ms] [ERROR] Not signed in with the identity provider. @ https://medium.com/cavalry-animation:0
+[    3493ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://accounts.google.com/gsi/client:85
+[    6836ms] [WARNING] document.domain mutation is ignored because the surrounding agent cluster is origin-keyed. @ https://medium.com/cavalry-animation:91
+[    6867ms] [LOG] 
+    :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*:
+   :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  %@@@@@@@@@#-:::::::%@@@@@@@@@@@@@@-::::::=#@@@@@@@@@+
+  %@@@@@@@@@@@:.    .:@@@@@@@@@@@@@+..    -@@@@@@@@@@@+
+  %@@@@@@@@@@@:...   .-@@@@@@@@@@@#.-.    =@@@@@@@@@@@+
+  %@@@@@@@@@@@:=-..   .*@@@@@@@@@@:=+.    =@@@@@@@@@@%+
+  %@@@@@@@@@@@:=@:..   .%@@@@@@@@::@+.    =@@@@@@*:.:-:
+  %@@@@@@@@@@@:=@@..    .@@@@@@@=.@@*.    =@@@@=...%@@+
+  %@@@@@@@@@@@:=@@#..   .:@@@@@*.%@@*.    =@@@:...*@@@+
+  %@@@@@@@@@@@:=@@@+.    .=@@@%.*@@@*.    =@@=....@@@@+
+  %@@@@@@@@@@@:=@@@@-..   .*@@:=@@@@*.   .=@@.. ..++++-
+  %@@@@@@@@@@@:=@@@@@:..   .%-:@@@@@*.   .=@#.   -@@@@+
+  %@@@@@@@@@@@:=@@@@@%..     .@@@@@@*.   .=@#.. ..%@@@+
+  %@@@@@@@@@@@:=@@@@@@*..   .%@@@@@@*.   .=@@:.  .:@@@+
+  %@@@@@@@@@@@:=@@@@@@@=.. .*@@@@@@@*.   .=@@+... ..+@+
+  %@@@@@@@@@@@:=@@@@@@@@:..-@@@@@@@@*.   .=@@@=..   ...
+  %@@@@@@@@@@#.:%@@@@@@@@.:@@@@@@@@@-.....:%@@@*:.... 
+  %@@@@@@@@@*****#@@@@@@@%@@@@@@@@#+++++++++*@@@@%+-:::
+  #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+  *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=
+     :#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*:
+ @ https://cdn-client.medium.com/lite/static/js/main.7ad11617.js:1
+[    6867ms] [LOG] We're hiring! https://medium.com/jobs-at-medium/work-at-medium-959d1a85284e @ https://cdn-client.medium.com/lite/static/js/main.7ad11617.js:1
+[    7212ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:84
+[    7213ms] [ERROR] Not signed in with the identity provider. @ https://medium.com/cavalry-animation:0
+[   10781ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://accounts.google.com/gsi/client:85
+[   16879ms] [LOG] Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm @ https://cdn-client.medium.com/lite/static/js/4082.672cd7fc.js:1

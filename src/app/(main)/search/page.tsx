@@ -170,7 +170,7 @@ export default async function SearchPage({ searchParams }: Props) {
             <div className="flex flex-wrap gap-3">
               {creators.map(creator => {
                 const initials = creator.displayName
-                  .split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase()
+                  .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
                 return (
                   <Link
                     key={creator.id}

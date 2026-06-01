@@ -1,0 +1,379 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "Frendr" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "Frendr" [ref=e6]
+        - navigation [ref=e7]:
+          - link "Discover" [ref=e8] [cursor=pointer]:
+            - /url: /search
+          - link "Channels" [ref=e9] [cursor=pointer]:
+            - /url: /channels
+          - link "Community" [ref=e10] [cursor=pointer]:
+            - /url: /community
+          - link "Following" [ref=e265] [cursor=pointer]:
+            - /url: /feed
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e13]:
+        - link "Messages" [ref=e266] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e267]
+        - link "Notifications" [ref=e269] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=e270]
+        - button "Ryan Rumbolt" [ref=e273]:
+          - img [ref=e274]
+          - img "Ryan Rumbolt" [ref=e276]
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - generic [ref=e21]:
+        - link "All" [ref=e22] [cursor=pointer]:
+          - /url: /search
+        - link "Motion Design" [ref=e23] [cursor=pointer]:
+          - /url: /search?tag=Motion%20Design
+        - link "Animation" [ref=e24] [cursor=pointer]:
+          - /url: /search?tag=Animation
+        - link "3D" [ref=e25] [cursor=pointer]:
+          - /url: /search?tag=3D
+        - link "Typography" [ref=e26] [cursor=pointer]:
+          - /url: /search?tag=Typography
+        - link "Branding" [ref=e27] [cursor=pointer]:
+          - /url: /search?tag=Branding
+        - link "Film" [ref=e28] [cursor=pointer]:
+          - /url: /search?tag=Film
+        - link "VFX" [ref=e29] [cursor=pointer]:
+          - /url: /search?tag=VFX
+        - link "Experimental" [ref=e30] [cursor=pointer]:
+          - /url: /search?tag=Experimental
+        - link "Abstract" [ref=e31] [cursor=pointer]:
+          - /url: /search?tag=Abstract
+        - link "Loop" [ref=e32] [cursor=pointer]:
+          - /url: /search?tag=Loop
+        - link "Sound" [ref=e33] [cursor=pointer]:
+          - /url: /search?tag=Sound
+        - link "Documentary" [ref=e34] [cursor=pointer]:
+          - /url: /search?tag=Documentary
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - heading "Selected by Frendr" [level=2] [ref=e37]
+          - generic [ref=e39]:
+            - link "The Chill The Chill Ryan Rumbolt" [ref=e40] [cursor=pointer]:
+              - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+              - img "The Chill" [ref=e42]
+              - paragraph [ref=e43]: The Chill
+              - paragraph [ref=e44]: Ryan Rumbolt
+            - link "Sondermind Sondermind Ryan Rumbolt" [ref=e45] [cursor=pointer]:
+              - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+              - img "Sondermind" [ref=e47]
+              - paragraph [ref=e48]: Sondermind
+              - paragraph [ref=e49]: Ryan Rumbolt
+            - link "Uber Delta Uber Delta Ryan Rumbolt" [ref=e50] [cursor=pointer]:
+              - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+              - img "Uber Delta" [ref=e52]
+              - paragraph [ref=e53]: Uber Delta
+              - paragraph [ref=e54]: Ryan Rumbolt
+            - link "Lyft - Happy Birthday Lyft - Happy Birthday Ryan Rumbolt" [ref=e55] [cursor=pointer]:
+              - /url: /v/cmpqyiqbc00030f2gk2i3h969
+              - img "Lyft - Happy Birthday" [ref=e57]
+              - paragraph [ref=e58]: Lyft - Happy Birthday
+              - paragraph [ref=e59]: Ryan Rumbolt
+            - link "Blue Moon - Juicy Blue Moon - Juicy Ryan Rumbolt" [ref=e60] [cursor=pointer]:
+              - /url: /v/cmpqymn3x00040f2g0fg4rke5
+              - img "Blue Moon - Juicy" [ref=e62]
+              - paragraph [ref=e63]: Blue Moon - Juicy
+              - paragraph [ref=e64]: Ryan Rumbolt
+            - link "Air Canada Air Canada Ryan Rumbolt" [ref=e65] [cursor=pointer]:
+              - /url: /v/cmpqyp5m900050f2guq8ghnj3
+              - img "Air Canada" [ref=e67]
+              - paragraph [ref=e68]: Air Canada
+              - paragraph [ref=e69]: Ryan Rumbolt
+            - link "The Chill The Chill Ryan Rumbolt" [ref=e70] [cursor=pointer]:
+              - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+              - img "The Chill" [ref=e72]
+              - paragraph [ref=e73]: The Chill
+              - paragraph [ref=e74]: Ryan Rumbolt
+            - link "Sondermind Sondermind Ryan Rumbolt" [ref=e75] [cursor=pointer]:
+              - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+              - img "Sondermind" [ref=e77]
+              - paragraph [ref=e78]: Sondermind
+              - paragraph [ref=e79]: Ryan Rumbolt
+            - link "Uber Delta Uber Delta Ryan Rumbolt" [ref=e80] [cursor=pointer]:
+              - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+              - img "Uber Delta" [ref=e82]
+              - paragraph [ref=e83]: Uber Delta
+              - paragraph [ref=e84]: Ryan Rumbolt
+            - link "Lyft - Happy Birthday Lyft - Happy Birthday Ryan Rumbolt" [ref=e85] [cursor=pointer]:
+              - /url: /v/cmpqyiqbc00030f2gk2i3h969
+              - img "Lyft - Happy Birthday" [ref=e87]
+              - paragraph [ref=e88]: Lyft - Happy Birthday
+              - paragraph [ref=e89]: Ryan Rumbolt
+            - link "Blue Moon - Juicy Blue Moon - Juicy Ryan Rumbolt" [ref=e90] [cursor=pointer]:
+              - /url: /v/cmpqymn3x00040f2g0fg4rke5
+              - img "Blue Moon - Juicy" [ref=e92]
+              - paragraph [ref=e93]: Blue Moon - Juicy
+              - paragraph [ref=e94]: Ryan Rumbolt
+            - link "Air Canada Air Canada Ryan Rumbolt" [ref=e95] [cursor=pointer]:
+              - /url: /v/cmpqyp5m900050f2guq8ghnj3
+              - img "Air Canada" [ref=e97]
+              - paragraph [ref=e98]: Air Canada
+              - paragraph [ref=e99]: Ryan Rumbolt
+        - generic [ref=e100]:
+          - generic [ref=e101]:
+            - heading "Featured Channels" [level=2] [ref=e102]
+            - link "See all →" [ref=e103] [cursor=pointer]:
+              - /url: /channels
+          - generic [ref=e104]:
+            - link "Best of Cavalry Studio picks" [ref=e105] [cursor=pointer]:
+              - /url: /channels/best-of-cavalry
+              - generic [ref=e107]:
+                - paragraph [ref=e108]: Best of Cavalry
+                - paragraph [ref=e109]: Studio picks
+            - link "Good Type Typography in motion" [ref=e110] [cursor=pointer]:
+              - /url: /channels/good-type
+              - generic [ref=e112]:
+                - paragraph [ref=e113]: Good Type
+                - paragraph [ref=e114]: Typography in motion
+            - link "Best of Motion Design Community favourites" [ref=e115] [cursor=pointer]:
+              - /url: /channels/best-of-motion-design
+              - generic [ref=e117]:
+                - paragraph [ref=e118]: Best of Motion Design
+                - paragraph [ref=e119]: Community favourites
+            - link "Tutorials Learn from the best" [ref=e120] [cursor=pointer]:
+              - /url: /channels/tutorials
+              - generic [ref=e122]:
+                - paragraph [ref=e123]: Tutorials
+                - paragraph [ref=e124]: Learn from the best
+            - link "Best of Blendr 3D & beyond" [ref=e125] [cursor=pointer]:
+              - /url: /channels/best-of-blendr
+              - generic [ref=e127]:
+                - paragraph [ref=e128]: Best of Blendr
+                - paragraph [ref=e129]: 3D & beyond
+            - link "AI that isn't slop Thoughtful AI work" [ref=e130] [cursor=pointer]:
+              - /url: /channels/ai-that-isnt-slop
+              - generic [ref=e132]:
+                - paragraph [ref=e133]: AI that isn't slop
+                - paragraph [ref=e134]: Thoughtful AI work
+            - link "Frendr Frendr Picks Curated by the team" [ref=e135] [cursor=pointer]:
+              - /url: /channels/frendr-picks
+              - generic [ref=e137]:
+                - img [ref=e138]
+                - generic [ref=e141]: Frendr
+              - generic [ref=e142]:
+                - paragraph [ref=e143]: Frendr Picks
+                - paragraph [ref=e144]: Curated by the team
+        - generic [ref=e145]:
+          - generic [ref=e146]:
+            - heading "Explore Video" [level=2] [ref=e147]
+            - generic [ref=e148]:
+              - button "Newest" [active] [ref=e149]:
+                - text: Newest
+                - img [ref=e150]
+              - generic [ref=e295]:
+                - button "Newest" [ref=e296]:
+                  - generic [ref=e297]: Newest
+                  - img [ref=e298]
+                - button "Trending" [ref=e300]:
+                  - generic [ref=e301]: Trending
+                - button "Following" [ref=e302]:
+                  - generic [ref=e303]: Following
+          - generic [ref=e152]:
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - img "Air Canada" [ref=e155]
+                - generic:
+                  - link "Play Air Canada":
+                    - /url: /v/cmpqyp5m900050f2guq8ghnj3
+                    - generic:
+                      - img
+                  - generic:
+                    - generic:
+                      - button "Save to Watch Later":
+                        - img
+                      - button "Add to playlist":
+                        - img
+              - link "Ryan Rumbolt Air Canada Ryan Rumbolt · 19h ago" [ref=e156] [cursor=pointer]:
+                - /url: /v/cmpqyp5m900050f2guq8ghnj3
+                - img "Ryan Rumbolt" [ref=e158]
+                - generic [ref=e159]:
+                  - paragraph [ref=e160]: Air Canada
+                  - paragraph [ref=e161]: Ryan Rumbolt · 19h ago
+              - generic [ref=e162]:
+                - generic [ref=e163]: 3D
+                - generic [ref=e164]: VFX
+            - generic [ref=e165]:
+              - generic [ref=e166]:
+                - img "Blue Moon - Juicy" [ref=e167]
+                - generic:
+                  - link "Play Blue Moon - Juicy":
+                    - /url: /v/cmpqymn3x00040f2g0fg4rke5
+                    - generic:
+                      - img
+                  - generic:
+                    - generic:
+                      - button "Save to Watch Later":
+                        - img
+                      - button "Add to playlist":
+                        - img
+              - link "Ryan Rumbolt Blue Moon - Juicy Ryan Rumbolt · 19h ago" [ref=e168] [cursor=pointer]:
+                - /url: /v/cmpqymn3x00040f2g0fg4rke5
+                - img "Ryan Rumbolt" [ref=e170]
+                - generic [ref=e171]:
+                  - paragraph [ref=e172]: Blue Moon - Juicy
+                  - paragraph [ref=e173]: Ryan Rumbolt · 19h ago
+            - generic [ref=e174]:
+              - generic [ref=e175]:
+                - img "Lyft - Happy Birthday" [ref=e176]
+                - generic:
+                  - link "Play Lyft - Happy Birthday":
+                    - /url: /v/cmpqyiqbc00030f2gk2i3h969
+                    - generic:
+                      - img
+                  - generic:
+                    - generic:
+                      - button "Save to Watch Later":
+                        - img
+                      - button "Add to playlist":
+                        - img
+              - link "Ryan Rumbolt Lyft - Happy Birthday Ryan Rumbolt · 19h ago" [ref=e177] [cursor=pointer]:
+                - /url: /v/cmpqyiqbc00030f2gk2i3h969
+                - img "Ryan Rumbolt" [ref=e179]
+                - generic [ref=e180]:
+                  - paragraph [ref=e181]: Lyft - Happy Birthday
+                  - paragraph [ref=e182]: Ryan Rumbolt · 19h ago
+            - generic [ref=e183]:
+              - generic [ref=e184]:
+                - img "Jovia" [ref=e185]
+                - generic:
+                  - link "Play Jovia":
+                    - /url: /v/cmpqygvlc00020f2gqxckh973
+                    - generic:
+                      - img
+                  - generic:
+                    - generic:
+                      - button "Save to Watch Later":
+                        - img
+                      - button "Add to playlist":
+                        - img
+              - link "Ryan Rumbolt Jovia Ryan Rumbolt · 19h ago" [ref=e186] [cursor=pointer]:
+                - /url: /v/cmpqygvlc00020f2gqxckh973
+                - img "Ryan Rumbolt" [ref=e188]
+                - generic [ref=e189]:
+                  - paragraph [ref=e190]: Jovia
+                  - paragraph [ref=e191]: Ryan Rumbolt · 19h ago
+              - generic [ref=e192]:
+                - generic [ref=e193]: Animation
+                - generic [ref=e194]: Commercial
+            - generic [ref=e195]:
+              - generic [ref=e196]:
+                - img "The Chill" [ref=e197]
+                - generic:
+                  - link "Play The Chill":
+                    - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+                    - generic:
+                      - img
+                  - generic:
+                    - generic:
+                      - button "Save to Watch Later":
+                        - img
+                      - button "Add to playlist":
+                        - img
+              - link "Ryan Rumbolt The Chill Ryan Rumbolt · 19h ago" [ref=e198] [cursor=pointer]:
+                - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+                - img "Ryan Rumbolt" [ref=e200]
+                - generic [ref=e201]:
+                  - paragraph [ref=e202]: The Chill
+                  - paragraph [ref=e203]: Ryan Rumbolt · 19h ago
+              - generic [ref=e204]:
+                - generic [ref=e205]: 3D Animation
+                - generic [ref=e206]: Animation
+            - generic [ref=e207]:
+              - generic [ref=e208]:
+                - img "Swans" [ref=e209]
+                - generic:
+                  - link "Play Swans":
+                    - /url: /v/cmpqyaj0w00000f2gcqwpixj8
+                    - generic:
+                      - img
+                  - generic:
+                    - generic:
+                      - button "Save to Watch Later":
+                        - img
+                      - button "Add to playlist":
+                        - img
+              - link "Ryan Rumbolt Swans Ryan Rumbolt · 19h ago" [ref=e210] [cursor=pointer]:
+                - /url: /v/cmpqyaj0w00000f2gcqwpixj8
+                - img "Ryan Rumbolt" [ref=e212]
+                - generic [ref=e213]:
+                  - paragraph [ref=e214]: Swans
+                  - paragraph [ref=e215]: Ryan Rumbolt · 19h ago
+              - generic [ref=e216]:
+                - generic [ref=e217]: Short Film
+                - generic [ref=e218]: 2D Animation
+            - generic [ref=e219]:
+              - generic [ref=e220]:
+                - img "Uber Delta" [ref=e221]
+                - generic:
+                  - link "Play Uber Delta":
+                    - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+                    - generic:
+                      - img
+                  - generic:
+                    - generic:
+                      - button "Save to Watch Later":
+                        - img
+                      - button "Add to playlist":
+                        - img
+              - link "Ryan Rumbolt Uber Delta Ryan Rumbolt · 19h ago" [ref=e222] [cursor=pointer]:
+                - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+                - img "Ryan Rumbolt" [ref=e224]
+                - generic [ref=e225]:
+                  - paragraph [ref=e226]: Uber Delta
+                  - paragraph [ref=e227]: Ryan Rumbolt · 19h ago
+              - generic [ref=e228]:
+                - generic [ref=e229]: Motion Design
+                - generic [ref=e230]: Animation
+            - generic [ref=e231]:
+              - generic [ref=e232]:
+                - img "Sondermind" [ref=e233]
+                - generic:
+                  - link "Play Sondermind":
+                    - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+                    - generic:
+                      - img
+                  - generic:
+                    - generic:
+                      - button "Save to Watch Later":
+                        - img
+                      - button "Add to playlist":
+                        - img
+              - link "Ryan Rumbolt Sondermind Ryan Rumbolt · 19h ago" [ref=e234] [cursor=pointer]:
+                - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+                - img "Ryan Rumbolt" [ref=e236]
+                - generic [ref=e237]:
+                  - paragraph [ref=e238]: Sondermind
+                  - paragraph [ref=e239]: Ryan Rumbolt · 19h ago
+              - generic [ref=e240]:
+                - generic [ref=e241]: Animation
+                - generic [ref=e242]: Motion Design
+  - contentinfo [ref=e243]:
+    - generic [ref=e244]:
+      - generic [ref=e245]:
+        - link "Instagram" [ref=e246] [cursor=pointer]:
+          - /url: https://instagram.com/frendr
+        - link "Second Hold" [ref=e247] [cursor=pointer]:
+          - /url: https://www.secondhold.com
+      - img "Frendr" [ref=e249]
+      - generic [ref=e250]:
+        - link "Terms" [ref=e251] [cursor=pointer]:
+          - /url: /terms
+        - link "Privacy" [ref=e252] [cursor=pointer]:
+          - /url: /privacy
+    - img "frendr" [ref=e254]
+  - button "Open Next.js Dev Tools" [ref=e260] [cursor=pointer]:
+    - img [ref=e261]
+  - alert [ref=e264]

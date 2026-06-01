@@ -1,0 +1,17 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Frendr" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - img "Frendr" [ref=e5]
+    - generic [ref=e6]:
+      - heading "Welcome back" [level=1] [ref=e7]
+      - paragraph [ref=e8]:
+        - text: Or
+        - link "create an account" [ref=e9] [cursor=pointer]:
+          - /url: /sign-up
+    - link "Frendr" [ref=e10] [cursor=pointer]:
+      - /url: /
+      - img "Frendr" [ref=e11]
+  - button "Open Next.js Dev Tools" [ref=e23] [cursor=pointer]:
+    - img [ref=e24]
+  - alert [ref=e27]

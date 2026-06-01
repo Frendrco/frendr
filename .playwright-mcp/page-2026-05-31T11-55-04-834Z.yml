@@ -1,0 +1,373 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link [ref=e174] [cursor=pointer]:
+          - /url: /
+          - img [ref=e175]
+        - navigation [ref=e7]:
+          - link [ref=e176] [cursor=pointer]:
+            - /url: /search
+            - text: Discover
+          - link [ref=e177] [cursor=pointer]:
+            - /url: /channels
+            - text: Channels
+          - link [ref=e178] [cursor=pointer]:
+            - /url: /community
+            - text: Community
+          - link [ref=e179] [cursor=pointer]:
+            - /url: /feed
+            - text: Following
+      - generic [ref=e11]:
+        - generic:
+          - img
+          - generic: Search creators & videos…
+        - textbox [ref=e12]
+      - generic [ref=e13]:
+        - link [ref=e180] [cursor=pointer]:
+          - /url: /dashboard/upload
+          - img [ref=e162]
+          - text: Upload
+        - link [ref=e181] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e166]
+        - link [ref=e182] [cursor=pointer]:
+          - /url: /notifications
+          - img [ref=e169]
+        - button [ref=e183]:
+          - img [ref=e184]
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - img [ref=e185]
+        - button [ref=e186]:
+          - img [ref=e22]
+          - text: Edit cover
+      - generic [ref=e25]:
+        - img [ref=e187]
+        - generic [ref=e30]:
+          - complementary [ref=e31]:
+            - generic [ref=e32]:
+              - heading [level=1] [ref=e188]: Ryan Rumbolt
+              - paragraph [ref=e34]: Founder / Creative Director
+              - button [ref=e189] [cursor=pointer]: Available for work
+            - generic [ref=e37]:
+              - generic [ref=e38]:
+                - generic [ref=e39]: Followers
+                - link [ref=e190] [cursor=pointer]:
+                  - /url: /ryan-rumbolt8324/followers
+                  - text: "0"
+              - generic [ref=e41]:
+                - generic [ref=e42]: Following
+                - link [ref=e191] [cursor=pointer]:
+                  - /url: /ryan-rumbolt8324/following
+                  - text: "0"
+            - generic [ref=e44]:
+              - img [ref=e45]
+              - generic [ref=e48]: Lisbon, Portugal
+            - generic [ref=e49]:
+              - img [ref=e50]
+              - link [ref=e192] [cursor=pointer]:
+                - /url: https://www.wonderlust.work
+                - text: www.wonderlust.work
+            - generic [ref=e54]:
+              - paragraph [ref=e55]: Bio
+              - paragraph [ref=e56]: Motion designer. Building Frendr.
+            - generic [ref=e57]:
+              - link [ref=e193] [cursor=pointer]:
+                - /url: https://www.instagram.com/ryanrumbolt/
+                - text: IG
+              - link [ref=e194] [cursor=pointer]:
+                - /url: https://ca.linkedin.com/in/ryanrumbolt
+                - text: in
+            - generic [ref=e60]:
+              - paragraph [ref=e61]: Skills
+              - generic [ref=e62]:
+                - generic [ref=e63]: Motion Design
+                - generic [ref=e64]: Animation
+                - generic [ref=e65]: 3D
+                - generic [ref=e66]: Branding
+                - generic [ref=e67]: Typography
+            - button [ref=e195]: Edit profile
+          - main [ref=e69]:
+            - generic [ref=e71]:
+              - link [ref=e196] [cursor=pointer]:
+                - /url: /ryan-rumbolt8324
+                - text: Videos
+              - link [ref=e197] [cursor=pointer]:
+                - /url: /ryan-rumbolt8324/playlists
+                - text: Playlists
+              - generic [ref=e74]: Activity
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - generic [ref=e77]:
+                  - img [ref=e78]
+                  - text: Featured work
+                - button [ref=e198]: Unpin
+              - button [ref=e199]:
+                - img [ref=e200]
+                - img [ref=e86]
+              - paragraph [ref=e88]: Swans
+            - heading [level=2] [ref=e201]:
+              - text: All Videos
+              - generic [ref=e91]: (8)
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - generic [ref=e94]:
+                  - img [ref=e202]
+                  - img [ref=e97]
+                  - generic:
+                    - link:
+                      - /url: /v/cmpskcsbx0000272g5x8zugn5
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button:
+                          - img
+                    - generic:
+                      - button:
+                        - img
+                - link [ref=e203] [cursor=pointer]:
+                  - /url: /v/cmpskcsbx0000272g5x8zugn5
+                  - paragraph [ref=e101]: Reel // Intro Outro
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - img [ref=e204]
+                  - generic:
+                    - link:
+                      - /url: /v/cmpqyp5m900050f2guq8ghnj3
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button:
+                          - img
+                    - generic:
+                      - button:
+                        - img
+                - link [ref=e205] [cursor=pointer]:
+                  - /url: /v/cmpqyp5m900050f2guq8ghnj3
+                  - paragraph [ref=e106]: Air Canada
+              - generic [ref=e107]:
+                - generic [ref=e108]:
+                  - img [ref=e206]
+                  - generic:
+                    - link:
+                      - /url: /v/cmpqymn3x00040f2g0fg4rke5
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button:
+                          - img
+                    - generic:
+                      - button:
+                        - img
+                - link [ref=e207] [cursor=pointer]:
+                  - /url: /v/cmpqymn3x00040f2g0fg4rke5
+                  - paragraph [ref=e111]: Blue Moon - Juicy
+              - generic [ref=e112]:
+                - generic [ref=e113]:
+                  - img [ref=e208]
+                  - generic:
+                    - link:
+                      - /url: /v/cmpqyiqbc00030f2gk2i3h969
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button:
+                          - img
+                    - generic:
+                      - button:
+                        - img
+                - link [ref=e209] [cursor=pointer]:
+                  - /url: /v/cmpqyiqbc00030f2gk2i3h969
+                  - paragraph [ref=e116]: Lyft - Happy Birthday
+              - generic [ref=e117]:
+                - generic [ref=e118]:
+                  - img [ref=e210]
+                  - generic:
+                    - link:
+                      - /url: /v/cmpqygvlc00020f2gqxckh973
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button:
+                          - img
+                    - generic:
+                      - button:
+                        - img
+                - link [ref=e211] [cursor=pointer]:
+                  - /url: /v/cmpqygvlc00020f2gqxckh973
+                  - paragraph [ref=e121]: Jovia
+              - generic [ref=e122]:
+                - generic [ref=e123]:
+                  - img [ref=e212]
+                  - generic:
+                    - link:
+                      - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button:
+                          - img
+                    - generic:
+                      - button:
+                        - img
+                - link [ref=e213] [cursor=pointer]:
+                  - /url: /v/cmpqyej2u00010f2g3ng0nqxm
+                  - paragraph [ref=e126]: The Chill
+              - generic [ref=e127]:
+                - generic [ref=e128]:
+                  - img [ref=e214]
+                  - generic:
+                    - link:
+                      - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button:
+                          - img
+                    - generic:
+                      - button:
+                        - img
+                - link [ref=e215] [cursor=pointer]:
+                  - /url: /v/cmpqxvlfo00010m2ggmdhb3r6
+                  - paragraph [ref=e131]: Uber Delta
+              - generic [ref=e132]:
+                - generic [ref=e133]:
+                  - img [ref=e216]
+                  - generic:
+                    - link:
+                      - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+                      - generic:
+                        - img
+                    - generic:
+                      - generic:
+                        - button:
+                          - img
+                    - generic:
+                      - button:
+                        - img
+                - link [ref=e217] [cursor=pointer]:
+                  - /url: /v/cmpqxd9fl00000m2g8dqyuenu
+                  - paragraph [ref=e136]: Sondermind
+  - contentinfo [ref=e137]:
+    - generic [ref=e138]:
+      - generic [ref=e139]:
+        - link [ref=e218] [cursor=pointer]:
+          - /url: https://instagram.com/frendr
+          - text: Instagram
+        - link [ref=e219] [cursor=pointer]:
+          - /url: https://discord.gg/REPLACE_ME
+          - text: Discord
+      - img [ref=e220]
+      - generic [ref=e144]:
+        - link [ref=e221] [cursor=pointer]:
+          - /url: /terms
+          - text: Terms
+        - link [ref=e222] [cursor=pointer]:
+          - /url: /privacy
+          - text: Privacy
+        - link [ref=e223] [cursor=pointer]:
+          - /url: /contact
+          - text: Contact
+    - img [ref=e224]
+  - button "Open Next.js Dev Tools" [ref=e155] [cursor=pointer]:
+    - img [ref=e156]
+  - alert [ref=e159]
+  - dialog "Edit profile" [ref=e228]:
+    - generic [ref=e229]:
+      - heading "Edit profile" [level=2] [ref=e230]
+      - button "Close" [active] [ref=e231]:
+        - img [ref=e232]
+    - generic [ref=e236]:
+      - generic [ref=e237]:
+        - img "Ryan Rumbolt" [ref=e239]
+        - button "Change photo" [ref=e241]:
+          - img [ref=e242]
+          - text: Change photo
+      - generic [ref=e246]:
+        - generic [ref=e247]:
+          - generic [ref=e248]: First name
+          - textbox "First name" [ref=e249]: Ryan
+        - generic [ref=e250]:
+          - generic [ref=e251]: Last name
+          - textbox "Last name" [ref=e252]: Rumbolt
+      - generic [ref=e253]:
+        - generic [ref=e254]:
+          - generic [ref=e255]: Role
+          - textbox "Motion Designer" [ref=e256]: Founder / Creative Director
+        - generic [ref=e257]:
+          - generic [ref=e258]: Location
+          - textbox "City, Country" [ref=e259]: Lisbon, Portugal
+      - generic [ref=e260]:
+        - generic [ref=e261]: Website
+        - textbox "www.yoursite.com" [ref=e262]: www.wonderlust.work
+      - generic [ref=e263]:
+        - generic [ref=e264]:
+          - generic [ref=e265]: Bio
+          - generic [ref=e266]: 33/150
+        - textbox "Tell the community about yourself…" [ref=e267]: Motion designer. Building Frendr.
+      - generic [ref=e268]:
+        - generic [ref=e269]: Social
+        - generic [ref=e270]:
+          - generic [ref=e271]: IG
+          - textbox "instagram.com/handle" [ref=e272]: https://www.instagram.com/ryanrumbolt/
+          - button [ref=e273]:
+            - img [ref=e274]
+        - generic [ref=e277]:
+          - generic [ref=e278]: in
+          - textbox "linkedin.com/in/handle" [ref=e279]: ca.linkedin.com/in/ryanrumbolt
+          - button [ref=e280]:
+            - img [ref=e281]
+        - generic [ref=e284]:
+          - generic [ref=e285]: X
+          - textbox "x.com/handle" [ref=e286]
+      - generic [ref=e287]:
+        - generic [ref=e288]:
+          - generic [ref=e289]: Skills
+          - generic [ref=e290]: 5/5
+        - generic [ref=e291]:
+          - button "Motion Design" [ref=e292]:
+            - text: Motion Design
+            - img [ref=e293]
+          - button "Animation" [ref=e296]:
+            - text: Animation
+            - img [ref=e297]
+          - button "3D" [ref=e300]:
+            - text: 3D
+            - img [ref=e301]
+          - button "Typography" [ref=e304]:
+            - text: Typography
+            - img [ref=e305]
+          - button "Branding" [ref=e308]:
+            - text: Branding
+            - img [ref=e309]
+          - button "Film" [disabled] [ref=e312]
+          - button "Motion Graphics" [disabled] [ref=e313]
+          - button "VFX" [disabled] [ref=e314]
+          - button "Loop" [disabled] [ref=e315]
+          - button "Experimental" [disabled] [ref=e316]
+          - button "Sound" [disabled] [ref=e317]
+          - button "Documentary" [disabled] [ref=e318]
+          - button "Short Film" [disabled] [ref=e319]
+          - button "Music Video" [disabled] [ref=e320]
+          - button "Commercial" [disabled] [ref=e321]
+          - button "Stop Motion" [disabled] [ref=e322]
+          - button "Live Action" [disabled] [ref=e323]
+          - button "2D Animation" [disabled] [ref=e324]
+          - button "3D Animation" [disabled] [ref=e325]
+          - button "Graphic Design" [disabled] [ref=e326]
+          - button "Illustration" [disabled] [ref=e327]
+          - button "Photography" [disabled] [ref=e328]
+          - button "UX/UI" [disabled] [ref=e329]
+          - button "3D Type" [disabled] [ref=e330]
+    - generic [ref=e331]:
+      - button "Cancel" [ref=e332]
+      - button "Save changes" [ref=e333]

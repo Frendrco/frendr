@@ -1,0 +1,362 @@
+[    1846ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    1991ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    2113ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    2122ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    2129ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    2143ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    6425ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[    6486ms] [LOG] [Fast Refresh] done in 161ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   74596ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   74627ms] [LOG] [Fast Refresh] done in 56ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   74729ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[   74734ms] [LOG] [Fast Refresh] done in 105ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  154953ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=o8s7vYh4qjyyDB-9_qkIT' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  155955ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=o8s7vYh4qjyyDB-9_qkIT' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  156957ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=o8s7vYh4qjyyDB-9_qkIT' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  157960ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=o8s7vYh4qjyyDB-9_qkIT' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  158962ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=o8s7vYh4qjyyDB-9_qkIT' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  163965ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=o8s7vYh4qjyyDB-9_qkIT' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  168967ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=o8s7vYh4qjyyDB-9_qkIT' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[  173972ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  176352ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  176385ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  176486ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  176489ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  176494ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  176504ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[  176540ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1738780ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1739673ms] [ERROR] ./src/app/(main)/search/page.tsx:301:1
+Expected '}', got '<eof>'
+  299 |   )
+  300 | }
+> 301 |
+      | ^
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1739867ms] [ERROR] ./src/app/(main)/search/page.tsx:301:1
+Expected '}', got '<eof>'
+  299 |   )
+  300 | }
+> 301 |
+      | ^
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1739940ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1740166ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1740242ms] [ERROR] ./src/app/(main)/search/page.tsx:301:1
+Expected '}', got '<eof>'
+  299 |   )
+  300 | }
+> 301 |
+      | ^
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1740345ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1740389ms] [ERROR] ./src/app/(main)/search/page.tsx:301:1
+Expected '}', got '<eof>'
+  299 |   )
+  300 | }
+> 301 |
+      | ^
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1740390ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/feed?_rsc=OKx6Db7HUyVL81EV:0
+[ 1740506ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/feed?_rsc=OKx6Db7HUyVL81EV:0
+[ 1740530ms] [ERROR] ./src/app/(main)/search/page.tsx:301:1
+Expected '}', got '<eof>'
+  299 |   )
+  300 | }
+> 301 |
+      | ^
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:3318
+[ 1740545ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1740651ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/feed:0
+[ 1740938ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0p2h_react-dom_0vsf22y._.js:15305
+[ 1741043ms] Error: ./src/app/(main)/search/page.tsx:301:1
+Expected '}', got '<eof>'
+  299 |   )
+  300 | }
+> 301 |
+      | ^
+
+Parsing ecmascript source code failed
+
+
+    at <unknown> (Error: ./src/app/(main)/search/page.tsx:301:1)
+    at Object.getCompilationErrors (file:///Users/wonderlust/Developer/frendr/node_modules/.pnpm/next@16.2.6_@babel+core@7.29.7_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1186:59)
+    at DevBundlerService.getCompilationError (file:///Users/wonderlust/Developer/frendr/node_modules/.pnpm/next@16.2.6_@babel+core@7.29.7_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/wonderlust/Developer/frendr/node_modules/.pnpm/next@16.2.6_@babel+core@7.29.7_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/dev/next-dev-server.js:720:42)
+    at DevServer.findPageComponents (file:///Users/wonderlust/Developer/frendr/node_modules/.pnpm/next@16.2.6_@babel+core@7.29.7_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/dev/next-dev-server.js:690:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/wonderlust/Developer/frendr/node_modules/.pnpm/next@16.2.6_@babel+core@7.29.7_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/base-server.js:1753:26)
+[ 1741044ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0f.3z~m._.js:1226
+[ 1741050ms] [ERROR] ./src/app/(main)/search/page.tsx:301:1
+Expected '}', got '<eof>'
+  299 |   )
+  300 | }
+> 301 |
+      | ^
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0f.3z~m._.js:1945
+[ 1741129ms] [ERROR] ./src/app/(main)/search/page.tsx:301:1
+Expected '}', got '<eof>'
+  299 |   )
+  300 | }
+> 301 |
+      | ^
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0f.3z~m._.js:1945
+[ 1747261ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0f.3z~m._.js:1226
+[ 1747473ms] [LOG] [Fast Refresh] done in 306ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0f.3z~m._.js:1226
+[ 1750396ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1750442ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1750563ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1750570ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1750576ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1750611ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1751672ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1751700ms] [LOG] [Fast Refresh] done in 73ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1751814ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1751830ms] [LOG] [Fast Refresh] done in 116ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1777103ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 1777137ms] [LOG] [Fast Refresh] done in 92ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2257881ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2257911ms] [LOG] [Fast Refresh] done in 58ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2261340ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2261369ms] [LOG] [Fast Refresh] done in 52ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2270252ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2270283ms] [LOG] [Fast Refresh] done in 35ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2281476ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2281505ms] [LOG] [Fast Refresh] done in 52ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2299584ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2299735ms] [LOG] [Fast Refresh] done in 246ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2299841ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2300064ms] [LOG] [Fast Refresh] done in 324ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2301414ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2301417ms] [LOG] [Fast Refresh] done in 103ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2610977ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2611039ms] [LOG] [Fast Refresh] done in 125ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2803503ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2803513ms] [LOG] [Fast Refresh] done in 111ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2807694ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2807722ms] [LOG] [Fast Refresh] done in 97ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2818471ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2819343ms] [LOG] [Fast Refresh] done in 932ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2820005ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2820185ms] [LOG] [Fast Refresh] done in 282ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2824071ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2824120ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2824312ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2824322ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2824350ms] [LOG] [Fast Refresh] done in 150ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2824396ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2824406ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2824410ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2829461ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 2829545ms] [LOG] [Fast Refresh] done in 128ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3236140ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3237047ms] [LOG] [Fast Refresh] done in 979ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3237883ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3238193ms] [LOG] [Fast Refresh] done in 411ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3241648ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3242104ms] [LOG] [Fast Refresh] done in 538ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3242112ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3242380ms] [LOG] [Fast Refresh] done in 250ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3243184ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3243450ms] [LOG] [Fast Refresh] done in 367ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3244029ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3244097ms] [LOG] [Fast Refresh] done in 168ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3246036ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3246067ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3246261ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3246320ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3246326ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3246333ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3246884ms] ReferenceError: Menu is not defined
+    at UserMenuDropdown (http://localhost:3000/_next/static/chunks/src_components_0p0w8_x._.js:780:385)
+    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:15037:24)
+    at renderWithHooks (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:6081:21)
+    at beginWork (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:6665:639)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:9555:97)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:9449:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:9098:47)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_react-dom_068f94d._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/01vs_next_dist_compiled_0x276ti._.js:2647:64)
+[ 3247751ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3247753ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3247778ms] [LOG] [Fast Refresh] done in 91ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3249099ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3249243ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3249305ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3249310ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3249316ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3249371ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3256945ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3257492ms] [LOG] [Fast Refresh] done in 624ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3258044ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3258249ms] [LOG] [Fast Refresh] done in 306ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3258447ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3258631ms] [LOG] [Fast Refresh] done in 286ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3260634ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3260759ms] [LOG] [Fast Refresh] done in 38ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3262300ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3262589ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3262671ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3262677ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3262682ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3262726ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3335204ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=mY_i_gmrz5J0a4B62Wdij' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 3336206ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=mY_i_gmrz5J0a4B62Wdij' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 3337209ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=mY_i_gmrz5J0a4B62Wdij' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 3338212ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=mY_i_gmrz5J0a4B62Wdij' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 3339214ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=mY_i_gmrz5J0a4B62Wdij' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 3344217ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=mY_i_gmrz5J0a4B62Wdij' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 3349226ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3353322ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3353353ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3353444ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3353450ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3353456ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3353511ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3371750ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3371758ms] [LOG] [Fast Refresh] done in 110ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3373182ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3373188ms] [LOG] [Fast Refresh] done in 107ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3514805ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3514806ms] [LOG] [Fast Refresh] done in 101ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3605085ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3605690ms] [LOG] [Fast Refresh] done in 664ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3715693ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3715741ms] [LOG] [Fast Refresh] done in 111ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3909610ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 3909678ms] [LOG] [Fast Refresh] done in 59ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4434868ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4434887ms] [LOG] [Fast Refresh] done in 119ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4439286ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4441696ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4447370ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4447494ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4447591ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4447599ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4447607ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4447634ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4448059ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4448270ms] [LOG] [Fast Refresh] done in 311ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4448416ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4448464ms] [LOG] [Fast Refresh] done in 149ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4459313ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4459475ms] [LOG] [Fast Refresh] done in 246ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4459846ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4460020ms] [LOG] [Fast Refresh] done in 275ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4460158ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4460196ms] [LOG] [Fast Refresh] done in 138ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4476333ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4476354ms] [LOG] [Fast Refresh] done in 83ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4482227ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4482377ms] [LOG] [Fast Refresh] done in 248ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4482916ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4483119ms] [LOG] [Fast Refresh] done in 302ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4613101ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4613159ms] [LOG] [Fast Refresh] done in 147ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4613581ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4613868ms] [LOG] [Fast Refresh] done in 387ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4830536ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 4830577ms] [LOG] [Fast Refresh] done in 142ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5185353ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5185864ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5185867ms] [LOG] [Fast Refresh] done in 566ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5186266ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5186789ms] [LOG] [Fast Refresh] done in 625ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5190427ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5190456ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5190567ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5190573ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5190582ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5190612ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5191953ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5191964ms] [LOG] [Fast Refresh] done in 98ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5204117ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5204128ms] [LOG] [Fast Refresh] done in 105ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5208567ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5208577ms] [LOG] [Fast Refresh] done in 104ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5219647ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5219787ms] [LOG] [Fast Refresh] done in 228ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5285127ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5285242ms] [LOG] [Fast Refresh] done in 216ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5349335ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=2gVCDzq2ve3c8EE65v9Mq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 5350339ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=2gVCDzq2ve3c8EE65v9Mq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 5351341ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=2gVCDzq2ve3c8EE65v9Mq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 5352343ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=2gVCDzq2ve3c8EE65v9Mq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 5353346ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=2gVCDzq2ve3c8EE65v9Mq' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 5358353ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5362320ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5362352ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5362453ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5362461ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5362469ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5362504ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5415680ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5420215ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5420243ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5420336ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5420341ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5420347ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5420387ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5719838ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5719857ms] [LOG] [Fast Refresh] done in 121ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5725607ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5725625ms] [LOG] [Fast Refresh] done in 102ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5730310ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5730330ms] [LOG] [Fast Refresh] done in 68ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5885047ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5885065ms] [LOG] [Fast Refresh] done in 86ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5890575ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5890623ms] [LOG] [Fast Refresh] done in 132ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5965063ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 5965080ms] [LOG] [Fast Refresh] done in 91ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6403440ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6403465ms] [LOG] [Fast Refresh] done in 88ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6409223ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6409396ms] [LOG] [Fast Refresh] done in 158ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6409727ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6409908ms] [LOG] [Fast Refresh] done in 282ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6410035ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6410134ms] [LOG] [Fast Refresh] done in 199ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6681588ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6681613ms] [LOG] [Fast Refresh] done in 48ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6707926ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=V4reuSAXV9CKVCUp0Idqd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 6708929ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=V4reuSAXV9CKVCUp0Idqd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 6709931ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=V4reuSAXV9CKVCUp0Idqd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 6710932ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=V4reuSAXV9CKVCUp0Idqd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 6711937ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=V4reuSAXV9CKVCUp0Idqd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 6716941ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=V4reuSAXV9CKVCUp0Idqd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 6721954ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=V4reuSAXV9CKVCUp0Idqd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/01vs_next_dist_client_10-2.sc._.js:13322
+[ 6727836ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6732397ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6732444ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6732646ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6732873ms] [WARNING] Image with src "http://localhost:3000/images/logo-symbol.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6732881ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780149183669.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6732889ms] [WARNING] Image with src "https://pub-9e57cf70d1094d95a60948a06cea6cb6.r2.dev/channels/covers/user_3ELXF0XCt4lrtlONuljDX3AijFr-1780148407420.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6880082ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6880675ms] [LOG] [Fast Refresh] done in 670ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6886764ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6886882ms] [LOG] [Fast Refresh] done in 93ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6890512ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6890547ms] [LOG] [Fast Refresh] done in 58ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6893494ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6893579ms] [LOG] [Fast Refresh] done in 51ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6961303ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477
+[ 6961352ms] [LOG] [Fast Refresh] done in 150ms @ http://localhost:3000/_next/static/chunks/01vs_next_dist_0z7rf41._.js:2477

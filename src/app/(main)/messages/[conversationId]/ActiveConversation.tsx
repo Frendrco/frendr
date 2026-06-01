@@ -48,7 +48,7 @@ export function ActiveConversation({ conversationId, initialMessages, currentUse
 
   const initials = other?.displayName
     .split(" ")
-    .map((w) => w[0])
+    .map((w: string) => w[0])
     .slice(0, 2)
     .join("")
     .toUpperCase() ?? "?"
