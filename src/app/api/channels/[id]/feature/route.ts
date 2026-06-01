@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
+import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 
 type Params = { params: Promise<{ id: string }> }
@@ -21,5 +22,6 @@ export async function POST(_req: Request, { params }: Params) {
     select: { featured: true },
   })
 
+  revalidatePath("/")
   return NextResponse.json({ featured: updated.featured })
 }

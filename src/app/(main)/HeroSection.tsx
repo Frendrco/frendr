@@ -9,7 +9,7 @@ import { useState, useRef } from "react"
 const BLOBS = [
   { id: 1, bg: "bg-bloom-lavender", style: { top: "24%",   left:  "6%",  width: 192, height: 192 } },
   { id: 2, bg: "bg-sky-blue",       style: { top: "18%",   right: "9%",  width: 152, height: 152 } },
-  { id: 3, bg: "bg-sunny-yellow",   style: { bottom: "6%", left:  "11%", width: 112, height: 112 } },
+  { id: 3, bg: "bg-sunny-yellow",   style: { bottom: "6%", left:  "11%", width: 152, height: 152 } },
   { id: 4, bg: "bg-winter-green",   style: { bottom: "-2%", right: "6%", width: 208, height: 208 } },
 ]
 
@@ -32,7 +32,7 @@ export function HeroSection() {
   const blob4Y = useTransform(scrollY, [0, 800], [0, -280])  // 208px — largest, fastest
   const blob1Y = useTransform(scrollY, [0, 800], [0, -220])  // 192px
   const blob2Y = useTransform(scrollY, [0, 800], [0, -140])  // 152px
-  const blob3Y = useTransform(scrollY, [0, 800], [0, -70])   // 112px — smallest, slowest
+  const blob3Y = useTransform(scrollY, [0, 800], [0, -140])  // 152px
 
   const blobY = { 1: blob1Y, 2: blob2Y, 3: blob3Y, 4: blob4Y }
 
@@ -117,7 +117,7 @@ export function HeroSection() {
           <motion.div style={{ y: headlineY }}>
             <Link
               href="/sign-up"
-              className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-colors hover:bg-spring-green/90"
+              className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-all hover:bg-core-black hover:text-white hover:scale-105"
             >
               Join Free
             </Link>

@@ -99,7 +99,7 @@ export default async function ChannelPage({ params }: Props) {
         </div>
 
         {/* Channel header */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex items-center gap-2.5 mb-1">
               <h1 className="font-sans font-bold text-2xl text-core-black">{channel.name}</h1>

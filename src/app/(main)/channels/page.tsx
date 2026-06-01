@@ -19,7 +19,7 @@ export default async function ChannelsPage() {
       videos: {
         take: 1,
         orderBy: { addedAt: "desc" },
-        include: { video: { select: { thumbnailUrl: true } } },
+        include: { video: { select: { thumbnailUrl: true, streamId: true } } },
       },
     },
   })

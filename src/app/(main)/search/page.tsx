@@ -8,15 +8,17 @@ import { FrendrSelectsMarquee } from "./FrendrSelectsMarquee"
 import { VideoCard } from "@/components/common/VideoCard"
 import { ExploreSort } from "./ExploreSort"
 
-const FEATURED_CHANNELS = [
-  { name: "Best of Cavalry",       slug: "best-of-cavalry",        bg: "bg-bloom-lavender",    descriptor: "Studio picks" },
-  { name: "Good Type",             slug: "good-type",               bg: "bg-sky-blue",           descriptor: "Typography in motion" },
-  { name: "Best of Motion Design", slug: "best-of-motion-design",   bg: "bg-sunny-yellow",       descriptor: "Community favourites" },
-  { name: "Tutorials",             slug: "tutorials",               bg: "bg-winter-green",       descriptor: "Learn from the best" },
-  { name: "Best of Blendr",        slug: "best-of-blendr",          bg: "bg-dream-lilac",        descriptor: "3D & beyond" },
-  { name: "AI that isn't slop",    slug: "ai-that-isnt-slop",       bg: "bg-hyper-blue/50",      descriptor: "Thoughtful AI work" },
-  { name: "Frendr Picks",          slug: "frendr-picks",            bg: "bg-spring-green/60",    descriptor: "Curated by the team", isAdmin: true },
-]
+const COLOR_MAP: Record<string, string> = {
+  "spring-green":   "bg-spring-green/60",
+  "winter-green":   "bg-winter-green",
+  "bloom-lavender": "bg-bloom-lavender",
+  "sky-blue":       "bg-sky-blue",
+  "sunny-yellow":   "bg-sunny-yellow",
+  "hyper-blue":     "bg-hyper-blue/50",
+  "dream-lilac":    "bg-dream-lilac",
+}
+
+const FALLBACK_COLORS = Object.values(COLOR_MAP)
 
 const TAGS = [
   "All", "Motion Design", "Animation", "3D", "Typography",
@@ -70,7 +72,7 @@ export default async function SearchPage({ searchParams }: Props) {
       ? [{ featured: "desc" as const }, { createdAt: "desc" as const }]
       : { createdAt: "desc" as const }
 
-  const [videos, creators, featuredVideos] = await Promise.all([
+  const [videos, creators, featuredVideos, featuredChannels] = await Promise.all([
     prisma.video.findMany({
       where: videoWhere,
       orderBy: videoOrderBy,
@@ -99,6 +101,22 @@ export default async function SearchPage({ searchParams }: Props) {
           take: 12,
           include: {
             user: { select: { username: true, displayName: true } },
+          },
+        })
+      : Promise.resolve([]),
+    !isSearching
+      ? prisma.channel.findMany({
+          where: { featured: true, isPublic: true },
+          orderBy: { createdAt: "asc" },
+          take: 10,
+          select: {
+            id: true, name: true, slug: true, description: true,
+            coverUrl: true, color: true, type: true,
+            videos: {
+              take: 1,
+              orderBy: { addedAt: "desc" },
+              include: { video: { select: { thumbnailUrl: true, streamId: true } } },
+            },
           },
         })
       : Promise.resolve([]),
@@ -191,7 +209,7 @@ export default async function SearchPage({ searchParams }: Props) {
         )}
 
         {/* ── Featured Channels (browse only) ── */}
-        {!isSearching && (
+        {!isSearching && featuredChannels.length > 0 && (
           <section>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="font-sans font-bold text-base text-core-black">Featured Channels</h2>
@@ -203,28 +221,42 @@ export default async function SearchPage({ searchParams }: Props) {
               </Link>
             </div>
             <div className="flex gap-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-4 px-4 md:-mx-6 md:px-6 scroll-smooth snap-x snap-mandatory pb-1">
-              {FEATURED_CHANNELS.map((ch) => (
-                <Link
-                  key={ch.slug}
-                  href={`/channels/${ch.slug}`}
-                  className="group shrink-0 w-60 snap-start"
-                >
-                  {/* Colour card — 16:9 to match video cards */}
-                  <div className={`relative aspect-video overflow-hidden rounded-xl ${ch.bg} transition-transform duration-300 group-hover:scale-[1.02]`}>
-                    {ch.isAdmin && (
-                      <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-white/80 px-2 py-0.5 backdrop-blur-sm">
-                        <Sparkles size={9} className="text-core-black" />
-                        <span className="font-sans font-medium text-[9px] text-core-black">Frendr</span>
-                      </div>
-                    )}
-                  </div>
-                  {/* Meta */}
-                  <div className="mt-2">
-                    <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1">{ch.name}</p>
-                    <p className="font-sans text-xs text-foreground/40">{ch.descriptor}</p>
-                  </div>
-                </Link>
-              ))}
+              {featuredChannels.map((ch, i) => {
+                const vid = ch.videos[0]?.video
+                const cover = ch.coverUrl
+                  ?? vid?.thumbnailUrl
+                  ?? (vid?.streamId ? `https://videodelivery.net/${vid.streamId}/thumbnails/thumbnail.jpg` : null)
+                const colorClass = ch.color
+                  ? (COLOR_MAP[ch.color] ?? FALLBACK_COLORS[i % FALLBACK_COLORS.length])
+                  : FALLBACK_COLORS[i % FALLBACK_COLORS.length]
+                return (
+                  <Link
+                    key={ch.slug}
+                    href={`/channels/${ch.slug}`}
+                    className="group shrink-0 w-60 snap-start"
+                  >
+                    <div className="relative aspect-video overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.02]">
+                      {cover ? (
+                        <Image src={cover} alt={ch.name} fill className="object-cover" />
+                      ) : (
+                        <div className={`h-full w-full ${colorClass}`} />
+                      )}
+                      {ch.type === "admin" && (
+                        <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-white/80 px-2 py-0.5 backdrop-blur-sm">
+                          <Sparkles size={9} className="text-core-black" />
+                          <span className="font-sans font-medium text-[9px] text-core-black">Frendr</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-2">
+                      <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1">{ch.name}</p>
+                      {ch.description && (
+                        <p className="font-sans text-xs text-foreground/40 line-clamp-1">{ch.description}</p>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           </section>
         )}

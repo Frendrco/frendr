@@ -33,7 +33,7 @@ type ChannelData = {
   type: string
   featured: boolean
   _count: { videos: number; followers: number }
-  videos: { video: { thumbnailUrl: string | null } }[]
+  videos: { video: { thumbnailUrl: string | null; streamId: string | null } }[]
 }
 
 type Props = {
@@ -146,7 +146,10 @@ function ChannelCard({
     setToggling(false)
   }, [channel.id, toggling])
 
-  const cover = channel.coverUrl ?? channel.videos[0]?.video.thumbnailUrl ?? null
+  const vid = channel.videos[0]?.video
+  const cover = channel.coverUrl
+    ?? vid?.thumbnailUrl
+    ?? (vid?.streamId ? `https://videodelivery.net/${vid.streamId}/thumbnails/thumbnail.jpg` : null)
   const colorClass = channel.color
     ? (COLOR_MAP[channel.color] ?? getFallbackColor(index))
     : getFallbackColor(index)
