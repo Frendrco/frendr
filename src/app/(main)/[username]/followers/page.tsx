@@ -39,7 +39,7 @@ export default async function FollowersPage({ params }: Props) {
         (await prisma.follow.findMany({
           where: {
             followerId: currentUser.id,
-            followingId: { in: profileUser.followers.map(f => f.follower.id) },
+            followingId: { in: profileUser.followers.map((f: { follower: { id: string } }) => f.follower.id) },
           },
           select: { followingId: true },
         })).map((f: { followingId: string }) => f.followingId)
