@@ -7,11 +7,10 @@ import { prisma } from "@/lib/prisma"
 import { AvailableForWork } from "@/components/common/AvailableForWork"
 import { FollowButton } from "@/components/common/FollowButton"
 import { MessageButton } from "@/components/messages/MessageButton"
-import { VideoCard } from "@/components/common/VideoCard"
 import { CoverImage } from "./CoverImage"
 import { PinnedVideo } from "./PinnedVideo"
-import { PinButton } from "./PinButton"
 import { EditProfileModal } from "./EditProfileModal"
+import { ProfileVideoGrid } from "./ProfileVideoGrid"
 import type { Metadata } from "next"
 
 const PLACEHOLDER_CARDS = [
@@ -39,7 +38,7 @@ export default async function ProfilePage({ params }: Props) {
   const user = await prisma.user.findUnique({
     where: { username },
     include: {
-      videos: { orderBy: { createdAt: "desc" } },
+      videos: { orderBy: [{ position: "asc" }, { createdAt: "desc" }] },
       _count: { select: { followers: true, following: true } },
     },
   })
@@ -273,6 +272,9 @@ export default async function ProfilePage({ params }: Props) {
                   <span className="ml-2 font-normal text-foreground/40">({gridVideos.length})</span>
                 )}
               </h2>
+              {isOwn && gridVideos.length > 1 && (
+                <p className="font-sans text-xs text-foreground/30 mt-0.5">Drag to reorder</p>
+              )}
             </div>
 
             {/* Video grid or colour placeholders */}
@@ -287,22 +289,28 @@ export default async function ProfilePage({ params }: Props) {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
-                {gridVideos.map((video) => (
-                  <VideoCard
-                    key={video.id}
-                    video={{ ...video, user: { username: user.username, displayName: user.displayName, avatarUrl: user.avatarUrl } }}
-                    hideCreator
-                    hideTags
-                    actionsSlot={isOwn ? (
-                      <PinButton
-                        videoId={video.id}
-                        isPinned={user.pinnedVideoId === video.id}
-                      />
-                    ) : undefined}
-                  />
-                ))}
-              </div>
+              <ProfileVideoGrid
+                initialVideos={gridVideos.map((v) => ({
+                  id: v.id,
+                  title: v.title,
+                  thumbnailUrl: v.thumbnailUrl,
+                  streamId: v.streamId,
+                  externalUrl: v.externalUrl,
+                  featured: v.featured,
+                  tags: v.tags,
+                  createdAt: v.createdAt,
+                  user: {
+                    username: user.username,
+                    displayName: user.displayName,
+                    avatarUrl: user.avatarUrl,
+                  },
+                }))}
+                pinnedVideoId={user.pinnedVideoId}
+                username={user.username}
+                displayName={user.displayName}
+                avatarUrl={user.avatarUrl}
+                isOwn={isOwn}
+              />
             )}
           </main>
 

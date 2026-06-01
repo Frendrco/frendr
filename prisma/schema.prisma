@@ -71,6 +71,7 @@ model Video {
   isPublic       Boolean        @default(true)
   allowDownloads Boolean        @default(false)
   featured       Boolean        @default(false)
+  position       Int?
   userId        String
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   playlists      PlaylistVideo[]
