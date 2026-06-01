@@ -43,14 +43,11 @@ export async function PATCH(req: Request, { params }: Params) {
     const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
     const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
     if (accountId && token) {
-      fetch(
-        `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${video.streamId}`,
-        {
-          method:  "POST",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body:    JSON.stringify({ downloadable: allowDownloads }),
-        }
-      ).catch(() => {})
+      const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${video.streamId}/downloads`
+      fetch(url, {
+        method:  allowDownloads ? "POST" : "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {})
     }
   }
 

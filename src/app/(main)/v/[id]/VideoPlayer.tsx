@@ -1,19 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import Script from "next/script"
+import Hls from "hls.js"
 import { getVideoEmbedUrl, detectProvider } from "@/lib/videoEmbed"
-
-declare global {
-  interface Window {
-    Stream: (el: HTMLIFrameElement) => {
-      muted:               boolean
-      volume:              number
-      addEventListener:    (event: string, cb: () => void) => void
-    }
-  }
-}
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
 
@@ -25,30 +15,36 @@ interface Props {
 }
 
 export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unknown" }: Props) {
-  const router    = useRouter()
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const router   = useRouter()
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !streamId) return
+
+    const hlsUrl = `https://videodelivery.net/${streamId}/manifest/video.m3u8`
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({ capLevelToPlayerSize: false })
+      hls.on(Hls.Events.MANIFEST_PARSED, (_evt, data) => {
+        // Cloudflare orders levels lowest→highest; lock to the last (highest quality)
+        hls.currentLevel = data.levels.length - 1
+      })
+      hls.loadSource(hlsUrl)
+      hls.attachMedia(video)
+      return () => hls.destroy()
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      // Safari — native HLS
+      video.src = hlsUrl
+    }
+  }, [streamId])
 
   // Poll for readiness while the video is processing
   useEffect(() => {
     if (streamStatus !== "processing" || !streamId) return
     const id = setInterval(() => router.refresh(), 5000)
     return () => clearInterval(id)
-  }, [streamStatus, streamId, router])
-
-  // Override any cached muted preference via the Stream SDK
-  const applyUnmuted = useCallback(() => {
-    if (!iframeRef.current || !window.Stream) return
-    const player = window.Stream(iframeRef.current)
-    player.addEventListener("loadedmetadata", () => {
-      player.muted  = false
-      player.volume = 1
-    })
-  }, [])
-
-  // Re-run when streamId changes (script already loaded on subsequent navigations)
-  useEffect(() => {
-    applyUnmuted()
-  }, [streamId, applyUnmuted])
+  }, [streamStatus, streamId])
 
   // External video (YouTube, Vimeo, Framerate)
   if (externalUrl) {
@@ -83,7 +79,7 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
     )
   }
 
-  // No streamId at all — shouldn't normally happen
+  // No streamId — shouldn't normally happen
   if (!streamId) {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
@@ -92,7 +88,7 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
     )
   }
 
-  // Cloudflare says video is still processing → show spinner and poll
+  // Still processing
   if (streamStatus === "processing") {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
@@ -111,24 +107,14 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
     )
   }
 
-  // ready or unknown — always try the player
+  // Ready or unknown — render the HLS player
   return (
-    <>
-      <Script
-        src="https://embed.cloudflarestream.com/embed/sdk.latest.js"
-        strategy="afterInteractive"
-        onLoad={applyUnmuted}
+    <div className="relative aspect-video w-full">
+      <video
+        ref={videoRef}
+        controls
+        className="absolute inset-0 h-full w-full bg-black"
       />
-      <div className="relative aspect-video w-full">
-        <iframe
-          ref={iframeRef}
-          src={`https://iframe.videodelivery.net/${streamId}?autoplay=false&controls=true`}
-          title={title}
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
-          allowFullScreen
-          className="absolute inset-0 h-full w-full border-0"
-        />
-      </div>
-    </>
+    </div>
   )
 }

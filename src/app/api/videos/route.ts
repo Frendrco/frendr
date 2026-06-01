@@ -53,11 +53,10 @@ export async function POST(req: Request) {
       const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
       if (accountId && token) {
         fetch(
-          `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}`,
+          `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}/downloads`,
           {
             method:  "POST",
-            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-            body:    JSON.stringify({ downloadable: true }),
+            headers: { Authorization: `Bearer ${token}` },
           }
         ).catch(() => {})
       }
