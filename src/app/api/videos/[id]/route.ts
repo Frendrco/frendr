@@ -12,30 +12,47 @@ export async function PATCH(req: Request, { params }: Params) {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
-  const video = await prisma.video.findUnique({ where: { id }, select: { userId: true } })
+  const video = await prisma.video.findUnique({ where: { id }, select: { userId: true, streamId: true } })
   if (!video) return NextResponse.json({ error: "Not found" }, { status: 404 })
   if (video.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const body = await req.json() as {
-    title?:         string
-    description?:   string | null
-    tags?:          string[]
-    thumbnailUrl?:  string | null
-    isPublic?:      boolean
-    collaborators?: { userId: string; role?: string | null }[]
+    title?:          string
+    description?:    string | null
+    tags?:           string[]
+    thumbnailUrl?:   string | null
+    isPublic?:       boolean
+    allowDownloads?: boolean
+    collaborators?:  { userId: string; role?: string | null }[]
   }
-  const { title, description, tags, thumbnailUrl, isPublic, collaborators } = body
+  const { title, description, tags, thumbnailUrl, isPublic, allowDownloads, collaborators } = body
 
   const updated = await prisma.video.update({
     where: { id },
     data: {
-      ...(title        !== undefined && { title }),
-      ...(description  !== undefined && { description }),
-      ...(tags         !== undefined && { tags }),
-      ...(thumbnailUrl !== undefined && { thumbnailUrl }),
-      ...(isPublic     !== undefined && { isPublic }),
+      ...(title          !== undefined && { title }),
+      ...(description    !== undefined && { description }),
+      ...(tags           !== undefined && { tags }),
+      ...(thumbnailUrl   !== undefined && { thumbnailUrl }),
+      ...(isPublic       !== undefined && { isPublic }),
+      ...(allowDownloads !== undefined && { allowDownloads }),
     },
   })
+
+  if (allowDownloads !== undefined && video.streamId) {
+    const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
+    const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
+    if (accountId && token) {
+      fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${video.streamId}`,
+        {
+          method:  "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body:    JSON.stringify({ downloadable: allowDownloads }),
+        }
+      ).catch(() => {})
+    }
+  }
 
   if (collaborators !== undefined) {
     await prisma.$transaction([

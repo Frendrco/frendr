@@ -38,6 +38,7 @@ interface Props {
   initialTags: string[]
   initialThumbnailUrl: string | null
   initialIsPublic: boolean
+  initialAllowDownloads: boolean
   initialCollaborators: CollabEntry[]
   externalEditOpen?: boolean
   onExternalEditOpenChange?: (open: boolean) => void
@@ -52,6 +53,7 @@ export function VideoOwnerActions({
   initialTags,
   initialThumbnailUrl,
   initialIsPublic,
+  initialAllowDownloads,
   initialCollaborators,
   externalEditOpen,
   onExternalEditOpenChange,
@@ -86,6 +88,7 @@ export function VideoOwnerActions({
 
   // Embed tab state
   const [allowEmbedding, setAllowEmbedding] = useState(true)
+  const [allowDownloads, setAllowDownloads] = useState(initialAllowDownloads)
   const [embedAutoplay,  setEmbedAutoplay]  = useState(false)
   const [embedLoop,      setEmbedLoop]      = useState(false)
   const [showControls,   setShowControls]   = useState(true)
@@ -159,12 +162,13 @@ export function VideoOwnerActions({
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title:         title.trim(),
-        description:   description.trim() || null,
-        tags:          tags.split(",").map((t) => t.trim()).filter(Boolean),
-        thumbnailUrl:  thumbnailUrl.trim() || null,
+        title:          title.trim(),
+        description:    description.trim() || null,
+        tags:           tags.split(",").map((t) => t.trim()).filter(Boolean),
+        thumbnailUrl:   thumbnailUrl.trim() || null,
         isPublic,
-        collaborators: collabs.map((c) => ({ userId: c.userId, role: (c.role ?? "").trim() || null })),
+        allowDownloads: streamId ? allowDownloads : undefined,
+        collaborators:  collabs.map((c) => ({ userId: c.userId, role: (c.role ?? "").trim() || null })),
       }),
     })
     setSaving(false)
@@ -408,6 +412,25 @@ export function VideoOwnerActions({
                     </div>
                   </button>
                 </div>
+
+                {/* Allow downloads toggle — only for Cloudflare-hosted videos */}
+                {streamId && (
+                  <div className="rounded-xl border border-border p-5">
+                    <button
+                      type="button"
+                      onClick={() => setAllowDownloads((v) => !v)}
+                      className="flex w-full items-center justify-between gap-4 text-left"
+                    >
+                      <div>
+                        <p className="font-sans text-sm font-medium text-core-black">Allow downloads</p>
+                        <p className="font-sans text-xs text-foreground/40">Let viewers download your video as an MP4 file.</p>
+                      </div>
+                      <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowDownloads ? "bg-spring-green" : "bg-border")}>
+                        <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", allowDownloads ? "translate-x-4" : "translate-x-0.5")} />
+                      </div>
+                    </button>
+                  </div>
+                )}
 
                 {/* Player options */}
                 <div className={cn("flex flex-col gap-5 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>

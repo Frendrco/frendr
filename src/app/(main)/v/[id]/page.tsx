@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@clerk/nextjs/server"
-import { Eye, MoreHorizontal } from "lucide-react"
+import { Download, Eye, MoreHorizontal } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { VideoPlayer } from "./VideoPlayer"
 import { FeatureButton } from "./FeatureButton"
@@ -161,6 +161,16 @@ export default async function VideoPage({ params }: Props) {
                   initialSaved={!!savedData}
                   triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
                 />
+                {video.allowDownloads && video.streamId && (
+                  <a
+                    href={`https://videodelivery.net/${video.streamId}/downloads/default.mp4`}
+                    download
+                    aria-label="Download video"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
+                  >
+                    <Download size={15} />
+                  </a>
+                )}
                 <ShareButton title={video.title} videoId={video.id} />
                 {isOwner ? (
                   <VideoOwnerActions
@@ -172,6 +182,7 @@ export default async function VideoPage({ params }: Props) {
                     initialTags={video.tags}
                     initialThumbnailUrl={video.thumbnailUrl}
                     initialIsPublic={video.isPublic}
+                    initialAllowDownloads={video.allowDownloads}
                     initialCollaborators={video.collaborators.map((c) => ({
                       userId: c.userId,
                       username: c.user.username,

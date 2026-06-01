@@ -349,6 +349,7 @@ export function UploadClient({ username }: { username: string }) {
           description:   description || null,
           tags:          categories,
           isPublic,
+          allowDownloads,
           thumbnailUrl:  thumbnail || null,
           collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
         }),

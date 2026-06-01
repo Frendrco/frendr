@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { auth } from "@clerk/nextjs/server"
 import { CommunityNav } from "./CommunityNav"
 
@@ -9,7 +10,15 @@ export default async function CommunityLayout({ children }: { children: React.Re
     <div className="min-h-screen bg-white">
 
       {/* Hero banner */}
-      <div className="w-full h-52 md:h-72 bg-gradient-to-br from-bloom-lavender via-sky-blue to-winter-green" />
+      <div className="relative w-full h-52 md:h-72 overflow-hidden">
+        <Image
+          src="/images/community-hero.png"
+          alt=""
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
 
       <div className="mx-auto max-w-screen-lg px-4 md:px-6">
 

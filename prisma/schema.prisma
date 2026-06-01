@@ -68,8 +68,9 @@ model Video {
   externalUrl   String?
   thumbnailUrl  String?
   tags          String[]
-  isPublic      Boolean        @default(true)
-  featured      Boolean        @default(false)
+  isPublic       Boolean        @default(true)
+  allowDownloads Boolean        @default(false)
+  featured       Boolean        @default(false)
   userId        String
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   playlists      PlaylistVideo[]

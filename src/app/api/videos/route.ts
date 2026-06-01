@@ -11,17 +11,18 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
   const body = await req.json() as {
-    streamId?:      string
-    externalUrl?:   string
-    title:          string
-    description?:   string
-    tags?:          string[]
-    isPublic?:      boolean
-    thumbnailUrl?:  string
-    collaborators?: { userId: string; role?: string | null }[]
+    streamId?:       string
+    externalUrl?:    string
+    title:           string
+    description?:    string
+    tags?:           string[]
+    isPublic?:       boolean
+    allowDownloads?: boolean
+    thumbnailUrl?:   string
+    collaborators?:  { userId: string; role?: string | null }[]
   }
 
-  const { streamId, externalUrl, title, description, tags, thumbnailUrl, collaborators } = body
+  const { streamId, externalUrl, title, description, tags, isPublic, allowDownloads, thumbnailUrl, collaborators } = body
 
   if (!title) return NextResponse.json({ error: "title is required" }, { status: 400 })
   if (!streamId && !externalUrl) {
@@ -35,15 +36,32 @@ export async function POST(req: Request) {
   try {
     const video = await prisma.video.create({
       data: {
-        streamId:    streamId    ?? null,
-        externalUrl: externalUrl ?? null,
+        streamId:      streamId       ?? null,
+        externalUrl:   externalUrl    ?? null,
         title,
-        description: description ?? null,
-        tags:        tags        ?? [],
-        thumbnailUrl: resolvedThumbnail ?? null,
+        description:   description    ?? null,
+        tags:          tags           ?? [],
+        thumbnailUrl:  resolvedThumbnail ?? null,
+        isPublic:      isPublic       ?? true,
+        allowDownloads: allowDownloads ?? false,
         userId: user.id,
       },
     })
+
+    if (allowDownloads && streamId) {
+      const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
+      const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
+      if (accountId && token) {
+        fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}`,
+          {
+            method:  "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body:    JSON.stringify({ downloadable: true }),
+          }
+        ).catch(() => {})
+      }
+    }
 
     if (collaborators?.length) {
       await prisma.videoCollaborator.createMany({
