@@ -46,7 +46,8 @@ export default async function FollowingPage({ params }: Props) {
       )
     : new Set<string>()
 
-  const creators = profileUser.following.map((f: { following: { id: string; username: string; displayName: string; avatarUrl: string | null; role: string | null } }) => f.following)
+  type Creator = { id: string; username: string; displayName: string; avatarUrl: string | null; role: string | null }
+  const creators: Creator[] = profileUser.following.map((f: { following: Creator }) => f.following)
 
   return (
     <div className="min-h-screen bg-white">
@@ -74,7 +75,7 @@ export default async function FollowingPage({ params }: Props) {
               const isOwn = currentUser?.id === creator.id
               const initials = creator.displayName
                 .split(" ")
-                .map(w => w[0])
+                .map((w: string) => w[0])
                 .slice(0, 2)
                 .join("")
                 .toUpperCase()
