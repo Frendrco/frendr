@@ -1,14 +1,7 @@
 import { SignIn } from "@clerk/nextjs"
 import Link from "next/link"
+import Image from "next/image"
 import { Logo } from "@/components/common/Logo"
-
-const FLOATING = [
-  { bg: "bg-bloom-lavender", style: { top: "10%",   left: "8%",   width: 160, height: 160 } },
-  { bg: "bg-sky-blue",       style: { top: "6%",    right: "10%", width: 120, height: 120 } },
-  { bg: "bg-sunny-yellow",   style: { bottom: "22%", left: "14%", width: 90,  height: 90  } },
-  { bg: "bg-winter-green",   style: { bottom: "10%", right: "7%", width: 190, height: 190 } },
-  { bg: "bg-dream-lilac",    style: { top: "46%",   right: "26%", width: 68,  height: 68  } },
-]
 
 export default function SignInPage() {
   return (
@@ -68,11 +61,9 @@ export default function SignInPage() {
 
       </div>
 
-      {/* ── Right: colour placeholder ── */}
-      <div className="relative hidden overflow-hidden bg-spring-green md:flex md:w-1/2">
-        {FLOATING.map((c, i) => (
-          <div key={i} className={`absolute rounded-full ${c.bg}`} style={c.style} />
-        ))}
+      {/* ── Right: billboard ── */}
+      <div className="relative hidden overflow-hidden md:flex md:w-1/2">
+        <Image src="/images/auth-billboard.png" alt="" fill className="object-cover" priority />
       </div>
 
     </div>

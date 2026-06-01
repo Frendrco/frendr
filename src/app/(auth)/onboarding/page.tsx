@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/common/Logo"
 
@@ -10,7 +11,7 @@ import { Logo } from "@/components/common/Logo"
 const TAG_GROUPS = [
   {
     label: "Popular",
-    tags: ["Motion Design", "Animation", "3D", "Typography", "Branding", "Film"],
+    tags: ["Motion Design", "Animation", "3D", "Typography", "Branding", "Film", "AI Video"],
   },
   {
     label: "Motion & VFX",
@@ -26,15 +27,13 @@ const TAG_GROUPS = [
   },
 ]
 
-const MAX_TAGS = 3
+const MAX_TAGS = 5
 
-// ── Right panel placeholder circles ──────────────────────
-const FLOATING = [
-  { bg: "bg-bloom-lavender", style: { top: "10%",   left: "10%",  width: 150, height: 150 } },
-  { bg: "bg-sky-blue",       style: { top: "6%",    right: "8%",  width: 110, height: 110 } },
-  { bg: "bg-sunny-yellow",   style: { bottom: "22%", left: "18%", width: 85,  height: 85  } },
-  { bg: "bg-winter-green",   style: { bottom: "10%", right: "6%", width: 190, height: 190 } },
-  { bg: "bg-dream-lilac",    style: { top: "48%",   right: "25%", width: 65,  height: 65  } },
+const RULES = [
+  "Be kind and respectful to other creators.",
+  "Only upload work you own the rights to.",
+  "Tag any AI-generated content honestly.",
+  "No AI slop — quality and craft matter here.",
 ]
 
 function toSlug(val: string) {
@@ -43,7 +42,7 @@ function toSlug(val: string) {
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const [step, setStep] = useState<1 | 2>(1)
+  const [step, setStep] = useState<1 | 2 | 3>(1)
 
   // Step 1 state
   const [name,          setName]          = useState("")
@@ -55,6 +54,9 @@ export default function OnboardingPage() {
 
   // Step 2 state
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+
+  // Step 3 state
+  const [showAiContent, setShowAiContent] = useState(true)
 
   function toggleTag(tag: string) {
     setSelectedTags((prev) =>
@@ -86,7 +88,7 @@ export default function OnboardingPage() {
     const res = await fetch("/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ displayName: name, username, location, age, tags: selectedTags }),
+      body: JSON.stringify({ displayName: name, username, location, age, tags: selectedTags, showAiContent }),
     })
     if (res.status === 409) {
       setUsernameError("That username is already taken. Please choose another.")
@@ -206,7 +208,7 @@ export default function OnboardingPage() {
                   What do you want to see?
                 </h1>
                 <p className="mt-1.5 font-sans text-sm text-foreground/50">
-                  Choose 3 to personalise your feed. Your taste will refine it over time.
+                  Choose up to 5 to personalise your feed. Your taste will refine it over time.
                 </p>
               </div>
 
@@ -253,6 +255,64 @@ export default function OnboardingPage() {
               </div>
             </div>
           )}
+
+          {/* Step 3 — Community standards ──────────────── */}
+          {step === 3 && (
+            <div className="flex flex-col gap-8">
+              <div>
+                <h1 className="font-sans text-2xl font-bold text-core-black">
+                  A few house rules
+                </h1>
+                <p className="mt-1.5 font-sans text-sm text-foreground/50">
+                  By joining frendr you agree to our community standards.
+                </p>
+              </div>
+
+              {/* Rules */}
+              <ul className="flex flex-col gap-3">
+                {RULES.map((rule) => (
+                  <li key={rule} className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-spring-green text-xs font-bold text-core-black">✓</span>
+                    <span className="font-sans text-sm text-core-black">{rule}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* AI preference */}
+              <div className="rounded-xl border border-border p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-sans font-medium text-sm text-core-black">Show AI-generated content</p>
+                    <p className="mt-0.5 font-sans text-xs text-foreground/50">You can change this any time in settings.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowAiContent((v) => !v)}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none",
+                      showAiContent ? "bg-spring-green" : "bg-foreground/20"
+                    )}
+                    role="switch"
+                    aria-checked={showAiContent}
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform",
+                        showAiContent ? "translate-x-5" : "translate-x-0"
+                      )}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              <button
+                onClick={handleFinish}
+                className="h-11 rounded-full bg-core-black font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80"
+              >
+                I agree &amp; join frendr
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Step 2 — sticky bottom bar ─────────────────── */}
@@ -267,32 +327,20 @@ export default function OnboardingPage() {
                 {" / "}{MAX_TAGS}
               </span>
               <button
-                onClick={handleFinish}
+                onClick={() => setStep(3)}
                 disabled={selectedTags.length < MAX_TAGS}
                 className="h-9 rounded-full bg-spring-green px-5 font-sans font-medium text-sm text-core-black transition-colors hover:bg-spring-green/90 disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                Finish
+                Continue
               </button>
             </div>
           </div>
         )}
       </div>
 
-      {/* ── Right: colour placeholder ── */}
-      <div className="relative hidden overflow-hidden bg-spring-green md:flex md:w-1/2">
-        {FLOATING.map((c, i) => (
-          <div
-            key={i}
-            className={`absolute rounded-full ${c.bg}`}
-            style={c.style}
-          />
-        ))}
-        <div className="absolute bottom-8 left-8">
-          <Logo variant="wordmark" height={20} colour="black" />
-          <p className="mt-2 font-sans text-xs text-core-black/50">
-            Real craft. Real community.
-          </p>
-        </div>
+      {/* ── Right: billboard ── */}
+      <div className="relative sticky top-0 hidden h-screen md:flex md:w-1/2 bg-white">
+        <Image src="/images/onboarding-billboard.jpg" alt="" fill className="object-cover" priority />
       </div>
 
     </div>

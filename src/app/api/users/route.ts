@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { displayName, username: rawUsername, location, age, tags } = await req.json()
+  const { displayName, username: rawUsername, location, age, tags, showAiContent } = await req.json()
   if (!displayName || typeof displayName !== "string") {
     return NextResponse.json({ error: "displayName is required" }, { status: 400 })
   }
@@ -31,8 +31,8 @@ export async function POST(req: Request) {
 
   const user = await prisma.user.upsert({
     where: { clerkId: userId },
-    update: { displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
-    create: { clerkId: userId, username, displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [] },
+    update: { displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [], ...(typeof showAiContent === "boolean" && { showAiContent }) },
+    create: { clerkId: userId, username, displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [], showAiContent: typeof showAiContent === "boolean" ? showAiContent : true },
   })
 
   return NextResponse.json(user)
