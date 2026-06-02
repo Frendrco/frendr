@@ -53,7 +53,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative -mt-16 min-h-[80svh] md:min-h-screen flex flex-col items-center justify-start md:justify-center overflow-hidden bg-white pt-16">
+    <section className="relative -mt-16 min-h-[80svh] md:min-h-screen flex flex-col items-center justify-center overflow-hidden bg-white pt-16">
 
       {/* Floating blobs */}
       {BLOBS.map((b, i) => {
@@ -90,7 +90,7 @@ export function HeroSection() {
       })}
 
       {/* Centre stack */}
-      <div className="relative z-10 flex flex-col items-center text-center px-4 pt-8 md:pt-0">
+      <div className="relative z-10 flex flex-col items-center text-center px-4">
 
         <motion.h1
           className="display-md text-core-black"
