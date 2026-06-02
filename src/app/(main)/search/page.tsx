@@ -212,9 +212,6 @@ export default async function SearchPage({ searchParams }: Props) {
                         {creator.displayName}
                       </p>
                       <p className="font-sans text-xs text-foreground/40">@{creator.username}</p>
-                      {creator.role && (
-                        <p className="font-sans text-xs text-foreground/50 mt-0.5">{creator.role}</p>
-                      )}
                     </div>
                   </Link>
                 )
@@ -313,9 +310,6 @@ export default async function SearchPage({ searchParams }: Props) {
                       >
                         {member.displayName}
                       </Link>
-                      {member.role && (
-                        <p className="font-sans text-[10px] text-foreground/40 leading-none">{member.role}</p>
-                      )}
                       {!isOwn && (
                         <FollowButton
                           username={member.username}
