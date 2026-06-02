@@ -130,6 +130,7 @@ export function UploadClient({ username }: { username: string }) {
   const [categories, setCategories]     = useState<string[]>([])
   const [categorySearch, setCategorySearch] = useState("")
   const [isPublic, setIsPublic]         = useState(true)
+  const [isAiGenerated, setIsAiGenerated] = useState(false)
 
   // Privacy (upload mode only)
   const [visibility, setVisibility]         = useState<Visibility>("public")
@@ -350,6 +351,7 @@ export function UploadClient({ username }: { username: string }) {
           tags:          categories,
           isPublic,
           allowDownloads,
+          isAiGenerated,
           thumbnailUrl:  thumbnail || null,
           collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
         }),
@@ -377,6 +379,7 @@ export function UploadClient({ username }: { username: string }) {
           description:   description || null,
           tags:          categories,
           isPublic,
+          isAiGenerated,
           thumbnailUrl:  thumbnail || null,
           collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
         }),
@@ -661,6 +664,10 @@ export function UploadClient({ username }: { username: string }) {
       {/* Make public */}
       <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
         description="Your video will appear in the Discover feed and on your profile." />
+
+      {/* AI content */}
+      <Toggle on={isAiGenerated} onToggle={() => setIsAiGenerated((v) => !v)} label="AI Generated Content"
+        description="Let viewers know if this video was created with the help of AI tools." />
     </>
   )
 

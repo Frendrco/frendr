@@ -11,18 +11,19 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
   const body = await req.json() as {
-    streamId?:       string
-    externalUrl?:    string
-    title:           string
-    description?:    string
-    tags?:           string[]
-    isPublic?:       boolean
-    allowDownloads?: boolean
-    thumbnailUrl?:   string
-    collaborators?:  { userId: string; role?: string | null }[]
+    streamId?:        string
+    externalUrl?:     string
+    title:            string
+    description?:     string
+    tags?:            string[]
+    isPublic?:        boolean
+    allowDownloads?:  boolean
+    isAiGenerated?:   boolean
+    thumbnailUrl?:    string
+    collaborators?:   { userId: string; role?: string | null }[]
   }
 
-  const { streamId, externalUrl, title, description, tags, isPublic, allowDownloads, thumbnailUrl, collaborators } = body
+  const { streamId, externalUrl, title, description, tags, isPublic, allowDownloads, isAiGenerated, thumbnailUrl, collaborators } = body
 
   if (!title) return NextResponse.json({ error: "title is required" }, { status: 400 })
   if (!streamId && !externalUrl) {
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
         thumbnailUrl:  resolvedThumbnail ?? null,
         isPublic:      isPublic       ?? true,
         allowDownloads: allowDownloads ?? false,
+        isAiGenerated: isAiGenerated  ?? false,
         userId: user.id,
       },
     })

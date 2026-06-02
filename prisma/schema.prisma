@@ -75,6 +75,7 @@ model Video {
   isPublic       Boolean        @default(true)
   allowDownloads Boolean        @default(false)
   featured       Boolean        @default(false)
+  isAiGenerated  Boolean        @default(false)
   viewCount      Int            @default(0)
   position       Int?
   userId        String
