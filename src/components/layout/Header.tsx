@@ -1,10 +1,10 @@
 "use client"
 
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@clerk/nextjs"
-import { Search, Upload } from "lucide-react"
+import { Search, Upload, Menu, X } from "lucide-react"
 
 import { Logo } from "@/components/common/Logo"
 import { MessagesNavItem } from "@/components/messages/MessagesNavItem"
@@ -45,6 +45,19 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
   const [searchFocused, setSearchFocused] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
   const searchActive = searchFocused || searchQuery.length > 0
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function onOutside(e: MouseEvent) {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
+        setMobileMenuOpen(false)
+      }
+    }
+    if (mobileMenuOpen) document.addEventListener("mousedown", onOutside)
+    return () => document.removeEventListener("mousedown", onOutside)
+  }, [mobileMenuOpen])
 
   function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -129,24 +142,69 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
               {userMenu}
             </>
           ) : (
-            <div className="hidden md:flex items-center gap-2">
-              <Link
-                href="/sign-in"
-                className="h-9 inline-flex items-center px-4 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur font-sans font-medium text-sm text-foreground hover:border-black/20 dark:hover:border-white/20 transition-colors"
+            <div ref={mobileMenuRef} className="relative">
+              {/* Desktop auth buttons */}
+              <div className="hidden md:flex items-center gap-2">
+                <Link
+                  href="/sign-in"
+                  className="h-9 inline-flex items-center px-4 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur font-sans font-medium text-sm text-foreground hover:border-black/20 dark:hover:border-white/20 transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className={cn(
+                    "rounded-full font-sans font-medium text-sm",
+                    "bg-core-black dark:bg-white text-white dark:text-core-black",
+                    "hover:bg-spring-green hover:text-core-black",
+                    "h-9 inline-flex items-center px-5 transition-colors"
+                  )}
+                >
+                  Sign up
+                </Link>
+              </div>
+
+              {/* Mobile hamburger */}
+              <button
+                onClick={() => setMobileMenuOpen((v) => !v)}
+                className="md:hidden flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/80 backdrop-blur text-foreground/60 hover:text-foreground transition-colors"
+                aria-label="Menu"
               >
-                Login
-              </Link>
-              <Link
-                href="/sign-up"
-                className={cn(
-                  "rounded-full font-sans font-medium text-sm",
-                  "bg-core-black dark:bg-white text-white dark:text-core-black",
-                  "hover:bg-spring-green hover:text-core-black",
-                  "h-9 inline-flex items-center px-5 transition-colors"
-                )}
-              >
-                Sign up
-              </Link>
+                {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
+              </button>
+
+              {/* Mobile dropdown */}
+              {mobileMenuOpen && (
+                <div className="absolute right-0 top-11 z-50 w-56 rounded-2xl border border-black/10 bg-white shadow-xl overflow-hidden">
+                  <div className="flex flex-col p-2">
+                    {NAV_LINKS.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="px-3 py-2.5 font-sans font-medium text-sm text-foreground/70 hover:text-foreground hover:bg-foreground/5 rounded-xl transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                    <div className="my-1.5 border-t border-black/5" />
+                    <Link
+                      href="/sign-in"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-3 py-2.5 font-sans font-medium text-sm text-foreground/70 hover:text-foreground hover:bg-foreground/5 rounded-xl transition-colors"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/sign-up"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="mt-1 px-3 py-2.5 font-sans font-medium text-sm text-center rounded-xl bg-core-black text-white hover:bg-spring-green hover:text-core-black transition-colors"
+                    >
+                      Sign up
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

@@ -53,7 +53,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative -mt-16 min-h-screen flex flex-col items-center justify-center overflow-hidden bg-white pt-16">
+    <section className="relative -mt-16 min-h-[80svh] md:min-h-screen flex flex-col items-center justify-start md:justify-center overflow-hidden bg-white pt-16">
 
       {/* Floating blobs */}
       {BLOBS.map((b, i) => {
@@ -90,7 +90,7 @@ export function HeroSection() {
       })}
 
       {/* Centre stack */}
-      <div className="relative z-10 flex flex-col items-center text-center px-4">
+      <div className="relative z-10 flex flex-col items-center text-center px-4 pt-8 md:pt-0">
 
         <motion.h1
           className="display-md text-core-black"
@@ -100,7 +100,7 @@ export function HeroSection() {
         </motion.h1>
 
         <motion.div
-          className="-mt-4 w-[340px] sm:w-[460px] md:w-[560px] lg:w-[640px]"
+          className="-mt-4 w-[260px] sm:w-[460px] md:w-[560px] lg:w-[640px]"
           style={{ y: logoY }}
         >
           <Image
