@@ -44,12 +44,14 @@ export default async function ProfilePage({ params }: Props) {
     },
   })
 
-  function formatLastActive(date: Date | null): string | null {
+  function getPresence(date: Date | null): { label: string; online: boolean } | null {
     if (!date) return null
-    const days = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))
-    if (days === 0) return "Active today"
-    if (days === 1) return "Active yesterday"
-    if (days <= 13) return `Active ${days} days ago`
+    const mins = Math.floor((Date.now() - date.getTime()) / 60_000)
+    if (mins < 10) return { label: "Online", online: true }
+    const days = Math.floor(mins / (60 * 24))
+    if (days === 0) return { label: "Active today", online: false }
+    if (days === 1) return { label: "Active yesterday", online: false }
+    if (days <= 13) return { label: `Active ${days} days ago`, online: false }
     return null
   }
 
@@ -143,13 +145,16 @@ export default async function ProfilePage({ params }: Props) {
               {user.role && (
                 <p className="font-sans text-xs text-foreground/50">{user.role}</p>
               )}
+              {(() => {
+                const p = getPresence(user.lastActiveAt)
+                return p ? (
+                  <p className="flex items-center gap-1.5 font-sans text-xs text-foreground/40">
+                    <span className={`h-1.5 w-1.5 rounded-full ${p.online ? "bg-spring-green" : "bg-foreground/25"}`} />
+                    {p.label}
+                  </p>
+                ) : null
+              })()}
               <AvailableForWork initial={user.openToWork} isOwn={isOwn} />
-              {formatLastActive(user.lastActiveAt) && (
-                <p className="flex items-center gap-1.5 font-sans text-xs text-foreground/40">
-                  <span className="h-1.5 w-1.5 rounded-full bg-foreground/25" />
-                  {formatLastActive(user.lastActiveAt)}
-                </p>
-              )}
             </div>
 
             {/* Stats — followers + following only */}
