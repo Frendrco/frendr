@@ -440,7 +440,7 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
                 <label className="font-sans text-xs font-medium text-foreground/50">Skills</label>
                 <span className="font-sans text-xs text-foreground/30">{tags.length}/{MAX_SKILLS}</span>
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap justify-center gap-1.5 md:justify-start">
                 {SKILLS.map((skill) => {
                   const on    = tags.includes(skill)
                   const maxed = !on && tags.length >= MAX_SKILLS
@@ -469,7 +469,7 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-border px-5 py-4 md:px-10">
+        <div className="flex items-center justify-center gap-3 border-t border-border px-5 py-4 md:justify-end md:px-10">
           <button
             onClick={() => router.back()}
             className="h-10 px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity"
