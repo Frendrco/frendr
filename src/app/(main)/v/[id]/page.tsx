@@ -58,7 +58,6 @@ export default async function VideoPage({ params }: Props) {
       include: {
         user: true,
         _count: { select: { likes: true } },
-        viewCount: true,
         collaborators: {
           include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
           orderBy: { addedAt: "asc" },
