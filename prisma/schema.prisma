@@ -250,7 +250,7 @@ model Channel {
   featured    Boolean         @default(false)
   type        String          @default("user")
   userId      String?
-  user        User?           @relation(fields: [userId], references: [id])
+  user        User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
   videos      ChannelVideo[]
   followers   ChannelFollow[]
   admins      ChannelAdmin[]
@@ -266,7 +266,7 @@ model ChannelVideo {
   addedAt   DateTime @default(now())
   channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  curator   User     @relation("ChannelVideoAddedBy", fields: [addedBy], references: [id])
+  curator   User     @relation("ChannelVideoAddedBy", fields: [addedBy], references: [id], onDelete: Cascade)
 
   @@unique([channelId, videoId])
 }
