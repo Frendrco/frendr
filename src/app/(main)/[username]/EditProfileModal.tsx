@@ -81,8 +81,10 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
   const { user }     = useUser()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [open,    setOpen]    = useState(false)
-  const [saving,  setSaving]  = useState(false)
+  const [open,        setOpen]        = useState(false)
+  const [saving,      setSaving]      = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting,    setDeleting]    = useState(false)
 
   const [firstName, setFirstName] = useState(profile.displayName.split(" ")[0] ?? "")
   const [lastName,  setLastName]  = useState(profile.displayName.split(" ").slice(1).join(" ") ?? "")
@@ -138,6 +140,13 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
         ? prev.filter((t) => t !== tag)
         : prev.length < MAX_SKILLS ? [...prev, tag] : prev
     )
+  }
+
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    await fetch("/api/users/me", { method: "DELETE" })
+    await user?.delete()
+    router.push("/")
   }
 
   async function handleSave() {
@@ -372,11 +381,48 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                 </div>
               </div>
 
+              {/* Danger zone */}
+              <div className="-mx-4 h-px bg-border" />
+              <div className="flex flex-col gap-2">
+                <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/30">Danger zone</p>
+                {!confirmDelete ? (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(true)}
+                    className="self-start font-sans text-sm text-red-500 hover:text-red-600 transition-colors"
+                  >
+                    Delete account
+                  </button>
+                ) : (
+                  <div className="rounded-xl border border-red-200 bg-red-50 p-4 flex flex-col gap-3">
+                    <p className="font-sans text-sm text-red-700 font-medium">Are you sure?</p>
+                    <p className="font-sans text-xs text-red-500">This will permanently delete your account, all your videos, and all your data. This cannot be undone.</p>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setConfirmDelete(false)}
+                        className="inline-flex h-8 items-center rounded-lg border border-border px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleDeleteAccount}
+                        disabled={deleting}
+                        className="inline-flex h-8 items-center rounded-lg bg-red-500 px-3 font-sans text-xs font-medium text-white hover:bg-red-600 transition-colors disabled:opacity-50"
+                      >
+                        {deleting ? "Deleting…" : "Yes, delete my account"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
             </div>
           </div>
 
           {/* Pinned footer */}
-          <div className="shrink-0 flex justify-end gap-2 border-t border-border bg-mist-grey/50 px-4 py-3 rounded-b-xl">
+          <div className="shrink-0 flex items-center justify-end gap-2 border-t border-border bg-mist-grey/50 px-4 py-3 rounded-b-xl">
             <DialogClose render={<Button variant="outline" className="rounded-xl" />}>
               Cancel
             </DialogClose>
