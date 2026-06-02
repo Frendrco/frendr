@@ -83,15 +83,15 @@ function CommentForm({ videoId, parentCommentId, isReply, onSubmit, onCancel }: 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 md:flex-row md:items-end">
       <textarea
-        rows={isReply ? 2 : 3}
-        className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+        rows={isReply ? 1 : 2}
+        className="flex-1 resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-base md:text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
         placeholder={isReply ? "Write a reply…" : "Add a comment…"}
         value={body}
         onChange={e => setBody(e.target.value)}
       />
-      <div className="flex items-center gap-2 justify-end">
+      <div className="flex shrink-0 items-center justify-end gap-2">
         {onCancel && (
           <button type="button" onClick={onCancel} className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors">
             Cancel
@@ -117,15 +117,15 @@ function InlineEditForm({ initialBody, onSave, onCancel }: {
   const [body, setBody] = useState(initialBody)
 
   return (
-    <div className="flex flex-col gap-2 mt-1.5">
+    <div className="flex flex-col gap-2 mt-1.5 md:flex-row md:items-end">
       <textarea
-        rows={3}
+        rows={2}
         autoFocus
-        className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black focus:outline-none focus:ring-2 focus:ring-spring-green"
+        className="flex-1 resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-base md:text-sm text-core-black focus:outline-none focus:ring-2 focus:ring-spring-green"
         value={body}
         onChange={e => setBody(e.target.value)}
       />
-      <div className="flex items-center gap-2 justify-end">
+      <div className="flex shrink-0 items-center justify-end gap-2">
         <button onClick={onCancel} className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors">Cancel</button>
         <button
           onClick={() => onSave(body.trim())}

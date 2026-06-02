@@ -8,7 +8,7 @@ export default function SignUpPage() {
     <div className="flex min-h-screen">
 
       {/* ── Left: form ── */}
-      <div className="relative flex w-full flex-col justify-between bg-white px-10 py-10 md:w-1/2 md:px-16 lg:px-24">
+      <div className="relative flex w-full flex-col items-center justify-start gap-10 bg-white px-8 py-10 md:items-start md:justify-between md:w-1/2 md:px-16 lg:px-24">
 
         {/* Symbol — top */}
         <Link href="/">
@@ -17,10 +17,10 @@ export default function SignUpPage() {
 
         {/* Clerk form — vertically centered */}
         <div className="w-full max-w-sm mx-auto">
-          <h1 className="mb-1 font-sans text-2xl font-bold text-core-black">
+          <h1 className="mb-1 font-sans text-2xl font-bold text-core-black text-center md:text-left">
             Enter your email
           </h1>
-          <p className="mb-8 font-sans text-sm text-foreground/50">
+          <p className="mb-8 font-sans text-sm text-foreground/50 text-center md:text-left">
             Sign up or{" "}
             <Link href="/sign-in" className="text-core-black underline underline-offset-2">
               log in
@@ -32,12 +32,12 @@ export default function SignUpPage() {
             appearance={{
               elements: {
                 rootBox:                  "w-full",
-                card:                     "w-full shadow-none p-0 bg-transparent",
+                card:                     "w-full",
                 // Hide Clerk's own header — we have ours
-                header:                   "hidden",
+                header:                   "!hidden",
                 // Hide Google / social
-                socialButtonsRoot:        "hidden",
-                dividerRow:               "hidden",
+                socialButtonsRoot:        "!hidden",
+                dividerRow:               "!hidden",
                 // Input
                 formFieldInput:
                   "h-12 rounded-xl border border-border bg-white font-sans text-sm text-core-black placeholder:text-foreground/30 focus:ring-2 focus:ring-spring-green shadow-none",
@@ -47,8 +47,8 @@ export default function SignUpPage() {
                 formButtonPrimary:
                   "w-full h-12 rounded-full bg-core-black text-white font-sans font-medium text-sm hover:bg-core-black/80 transition-colors shadow-none mt-2",
                 // Footer
-                footer:                   "hidden",
-                footerAction:             "hidden",
+                footer:                   "!hidden",
+                footerAction:             "!hidden",
                 identityPreviewText:      "font-sans text-sm",
                 identityPreviewEditButton:"font-sans text-sm underline",
                 formResendCodeLink:       "font-sans text-sm text-core-black underline",

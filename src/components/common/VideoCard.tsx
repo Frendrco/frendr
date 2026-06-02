@@ -77,39 +77,42 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
         {/* Frendr Picks badge */}
         {video.featured && (
-          <div className="absolute top-2 left-2 z-10 rounded-xl bg-spring-green p-1.5">
+          <div className="absolute top-2 left-2 z-20 rounded-xl bg-spring-green p-1.5">
             <Sparkles size={10} className="text-core-black" />
           </div>
         )}
 
         {/* Provider badge for external videos */}
         {video.externalUrl && (
-          <div className="absolute bottom-2 left-2 z-10 rounded-lg overflow-hidden shadow-sm">
+          <div className="absolute bottom-2 left-2 z-20 rounded-lg overflow-hidden shadow-sm">
             <ProviderIcon provider={detectProvider(video.externalUrl)} />
           </div>
         )}
 
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
-          {/* Play link — covers the whole card */}
-          <Link
-            href={`/v/${video.id}`}
-            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            aria-label={`Play ${video.title}`}
-          >
+        {/* Base link — always covers the full thumbnail so mobile taps work */}
+        <Link
+          href={`/v/${video.id}`}
+          className="absolute inset-0 z-10"
+          aria-label={`Play ${video.title}`}
+        />
+
+        {/* Hover overlay — visual only, pointer-events-none */}
+        <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/40 transition-all duration-300 pointer-events-none">
+          {/* Play icon — visual only */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg">
               <Play size={16} className="ml-0.5 text-core-black" fill="currentColor" />
             </div>
-          </Link>
+          </div>
 
           {/* Add to playlist — top-right corner */}
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="absolute top-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
             <AddToPlaylistButton videoId={video.id} />
           </div>
 
           {/* Owner actions slot — bottom-right corner */}
           {actionsSlot && (
-            <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+            <div className="absolute bottom-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
               {actionsSlot}
             </div>
           )}

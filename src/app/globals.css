@@ -354,3 +354,34 @@
     color: oklch(var(--foreground));
   }
 }
+
+/* ── Clerk auth overrides ────────────────────────────────── */
+.cl-card,
+.cl-cardBox {
+  box-shadow: none !important;
+  background: transparent !important;
+  border: none !important;
+}
+/* Remove internal padding/margin so form fields are truly full-width */
+.cl-rootBox,
+.cl-card,
+.cl-cardBox,
+.cl-main,
+.cl-form,
+.cl-formFields,
+.cl-formFieldRow {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+.cl-header,
+.cl-socialButtonsRoot,
+.cl-dividerRow,
+.cl-footer,
+.cl-footerAction {
+  display: none !important;
+}

@@ -34,8 +34,8 @@ export function ShareButton({ title = "", videoId }: Props) {
   const [copiedLink,  setCopiedLink]  = useState(false)
   const [copiedEmbed, setCopiedEmbed] = useState(false)
 
-  const url = typeof window !== "undefined" ? window.location.href : ""
-  const embedCode = `<iframe src="https://frendr.com/embed/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
+  const url = typeof window !== "undefined" ? `${window.location.origin}/v/${videoId}` : `https://frendr.co/v/${videoId}`
+  const embedCode = `<iframe src="https://frendr.co/embed/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
 
   async function copyLink() {
     try { await navigator.clipboard.writeText(url) } catch { /* non-secure context */ }
