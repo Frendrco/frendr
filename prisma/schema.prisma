@@ -250,6 +250,7 @@ model Channel {
   coverUrl    String?
   color       String?
   isPublic    Boolean         @default(true)
+  shareToken  String?         @unique
   featured    Boolean         @default(false)
   type        String          @default("user")
   userId      String?

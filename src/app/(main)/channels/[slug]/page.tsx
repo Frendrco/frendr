@@ -10,10 +10,11 @@ import { AddVideoToChannelButton } from "./AddVideoToChannelButton"
 import { ChannelSettings } from "./ChannelSettings"
 import { ChannelFeatureButton } from "./ChannelFeatureButton"
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ token?: string }> }
 
-export default async function ChannelPage({ params }: Props) {
+export default async function ChannelPage({ params, searchParams }: Props) {
   const { slug } = await params
+  const { token } = await searchParams
   const { userId: clerkId } = await auth()
 
   const channel = await prisma.channel.findUnique({
@@ -34,7 +35,8 @@ export default async function ChannelPage({ params }: Props) {
     },
   })
 
-  if (!channel || (!channel.isPublic && clerkId !== channel.user?.clerkId)) notFound()
+  const hasValidToken = !!channel?.shareToken && token === channel.shareToken
+  if (!channel || (!channel.isPublic && clerkId !== channel.user?.clerkId && !hasValidToken)) notFound()
 
   const currentUser = clerkId
     ? await prisma.user.findUnique({
@@ -132,10 +134,12 @@ export default async function ChannelPage({ params }: Props) {
               <ChannelSettings
                 channel={{
                   id: channel.id,
+                  slug: channel.slug,
                   name: channel.name,
                   description: channel.description,
                   coverUrl: channel.coverUrl,
                   isPublic: channel.isPublic,
+                  shareToken: channel.shareToken,
                 }}
                 canDelete={isOwner || isSiteAdmin}
                 isOwner={isOwner}

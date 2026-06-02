@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Settings, Loader2, X, ImagePlus, Trash2, UserPlus, UserMinus, Search } from "lucide-react"
+import { Settings, Loader2, X, ImagePlus, Trash2, UserPlus, UserMinus, Search, Link2, Copy, Check, RefreshCw } from "lucide-react"
 import {
   Sheet,
   SheetContent,
@@ -21,10 +21,12 @@ type AdminUser = {
 type Props = {
   channel: {
     id: string
+    slug: string
     name: string
     description: string | null
     coverUrl: string | null
     isPublic: boolean
+    shareToken: string | null
   }
   canDelete: boolean
   isOwner: boolean
@@ -46,6 +48,11 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState("")
+
+  // Private link state
+  const [shareToken, setShareToken] = useState<string | null>(channel.shareToken)
+  const [tokenLoading, setTokenLoading] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   // Admin management state
   const [admins, setAdmins] = useState<AdminUser[]>([])
@@ -373,6 +380,82 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
                       </div>
                     ))}
                   </div>
+                )}
+              </div>
+            )}
+
+            {/* Private link */}
+            {!channel.isPublic && isOwner && (
+              <div className="rounded-xl border border-border p-4 flex flex-col gap-3">
+                <div>
+                  <p className="font-sans font-medium text-sm text-core-black flex items-center gap-1.5">
+                    <Link2 size={13} className="text-foreground/40" />
+                    Private link
+                  </p>
+                  <p className="font-sans text-xs text-foreground/50 mt-0.5">
+                    Share this link with clients so they can view your private channel without an account.
+                  </p>
+                </div>
+                {shareToken ? (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        readOnly
+                        value={`${typeof window !== "undefined" ? window.location.origin : ""}/channels/${channel.slug}?token=${shareToken}`}
+                        className="flex-1 h-8 rounded-lg border border-border bg-foreground/[0.02] px-3 font-sans text-xs text-foreground/60 focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/channels/${channel.slug}?token=${shareToken}`)
+                          setCopied(true)
+                          setTimeout(() => setCopied(false), 2000)
+                        }}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-foreground/40 hover:text-foreground transition-colors shrink-0"
+                      >
+                        {copied ? <Check size={13} className="text-spring-green" /> : <Copy size={13} />}
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={tokenLoading}
+                      onClick={async () => {
+                        setTokenLoading(true)
+                        const res = await fetch(`/api/channels/${channel.id}/share-token`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ revoke: true }),
+                        })
+                        const data = await res.json()
+                        setShareToken(data.shareToken)
+                        setTokenLoading(false)
+                      }}
+                      className="self-start inline-flex items-center gap-1.5 font-sans text-xs text-foreground/40 hover:text-red-500 transition-colors disabled:opacity-40"
+                    >
+                      {tokenLoading ? <Loader2 size={11} className="animate-spin" /> : <X size={11} />}
+                      Revoke link
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={tokenLoading}
+                    onClick={async () => {
+                      setTokenLoading(true)
+                      const res = await fetch(`/api/channels/${channel.id}/share-token`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({}),
+                      })
+                      const data = await res.json()
+                      setShareToken(data.shareToken)
+                      setTokenLoading(false)
+                    }}
+                    className="inline-flex items-center gap-1.5 h-8 px-4 rounded-full bg-core-black font-sans font-medium text-xs text-white hover:bg-spring-green hover:text-core-black transition-colors disabled:opacity-40 w-fit"
+                  >
+                    {tokenLoading ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
+                    Generate private link
+                  </button>
                 )}
               </div>
             )}
