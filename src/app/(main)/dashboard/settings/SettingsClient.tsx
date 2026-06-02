@@ -4,7 +4,7 @@ import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
-import { Camera, X, Trash2, Globe } from "lucide-react"
+import { Camera, X, Globe } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface ProfileData {
@@ -207,13 +207,6 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
 
         <div className="flex-1" />
 
-        {/* Delete account */}
-        <div className="px-6 pb-8">
-          <button className="flex w-full h-10 items-center justify-center gap-2 rounded-xl border border-border font-sans text-sm text-red-500 hover:bg-red-50 transition-colors">
-            <Trash2 size={14} />
-            Delete Account
-          </button>
-        </div>
       </aside>
 
       {/* ── Right panel ────────────────────────────────── */}
