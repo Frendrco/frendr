@@ -115,7 +115,7 @@ export function ConversationList({ initial, activeId }: Props) {
             <button
               onClick={() => handleDelete(c.id)}
               className={cn(
-                "absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded text-foreground/20 hover:text-red-400 transition-opacity transition-colors",
+                "absolute right-3 bottom-3 p-1 rounded text-foreground/20 hover:text-red-400 transition-opacity transition-colors",
                 hoveredId === c.id ? "opacity-100" : "opacity-0"
               )}
               aria-label="Delete conversation"
