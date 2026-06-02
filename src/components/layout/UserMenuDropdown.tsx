@@ -89,13 +89,12 @@ export function UserMenuDropdown({ username, displayName }: Props) {
               { label: "Channels",  href: "/channels" },
               { label: "Community", href: "/community" },
               { label: "Following", href: "/feed" },
-              { label: "Upload",    href: "/dashboard/upload" },
             ].map(link => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="font-sans font-semibold text-2xl text-core-black py-3 hover:text-spring-green transition-colors"
+                className="font-sans font-medium text-2xl text-core-black py-3 hover:text-spring-green transition-colors"
               >
                 {link.label}
               </Link>
@@ -104,7 +103,17 @@ export function UserMenuDropdown({ username, displayName }: Props) {
 
           {/* Bottom: profile + logout */}
           <div className="px-6 pb-12 flex flex-col gap-3">
-            <div className="border-t border-black/10 mb-1" />
+            {/* Upload CTA */}
+            <Link
+              href="/dashboard/upload"
+              onClick={() => setOpen(false)}
+              className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-full bg-spring-green font-sans font-medium text-sm text-core-black hover:bg-spring-green/90 transition-colors"
+            >
+              <Upload size={14} />
+              Upload
+            </Link>
+
+            <div className="border-t border-black/10 mt-1" />
 
             <button
               onClick={() => navigate(username ? `/${username}` : "/onboarding")}
