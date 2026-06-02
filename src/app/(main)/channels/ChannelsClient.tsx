@@ -167,12 +167,6 @@ function ChannelCard({
         ) : (
           <div className={`h-full w-full ${colorClass} transition-opacity group-hover:opacity-90`} />
         )}
-        {isFrendrPick && (
-          <div className="absolute top-2.5 left-2.5 flex items-center gap-1 rounded-full bg-spring-green px-2.5 py-1">
-            <Sparkles size={9} className="text-core-black" />
-            <span className="font-sans font-medium text-[9px] text-core-black">Frendr Picks</span>
-          </div>
-        )}
         {isAdmin && (
           <button
             onClick={toggleFeature}

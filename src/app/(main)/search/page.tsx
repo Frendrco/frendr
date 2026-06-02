@@ -261,12 +261,6 @@ export default async function SearchPage({ searchParams }: Props) {
                       ) : (
                         <div className={`h-full w-full ${colorClass}`} />
                       )}
-                      {ch.type === "admin" && (
-                        <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-white/80 px-2 py-0.5 backdrop-blur-sm">
-                          <Sparkles size={9} className="text-core-black" />
-                          <span className="font-sans font-medium text-[9px] text-core-black">Frendr</span>
-                        </div>
-                      )}
                     </div>
                     <div className="mt-2">
                       <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1">{ch.name}</p>
