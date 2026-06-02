@@ -45,8 +45,8 @@ export default async function MessagesPage() {
   })
 
   return (
-    <div className="mx-auto max-w-screen-lg px-4 md:px-6 py-8">
-      <div className="flex h-[calc(100vh-10rem)] overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+    <div className="mx-auto max-w-screen-lg md:px-6 md:py-8">
+      <div className="flex h-[calc(100svh-4rem)] md:h-[calc(100vh-10rem)] overflow-hidden md:rounded-2xl border border-border bg-white shadow-sm">
 
         {/* Left: conversations list */}
         <div className="flex w-full md:w-72 md:shrink-0 flex-col border-r border-border">

@@ -54,7 +54,7 @@ export function MessageInput({ conversationId, onSent }: Props) {
         rows={1}
         className={cn(
           "flex-1 resize-none rounded-2xl border border-border bg-white px-4 py-2.5",
-          "font-sans text-sm text-foreground placeholder:text-foreground/30",
+          "font-sans text-base md:text-sm text-foreground placeholder:text-foreground/30",
           "focus:outline-none focus:border-black/20",
           "transition-colors min-h-[42px] max-h-32"
         )}

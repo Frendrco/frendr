@@ -7,6 +7,7 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/feed(.*)",
   "/admin(.*)",
+  "/messages(.*)",
 ])
 
 export const proxy = clerkMiddleware(async (auth, req) => {
