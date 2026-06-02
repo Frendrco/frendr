@@ -102,7 +102,7 @@ export function ConversationList({ initial, activeId }: Props) {
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-1.5 mt-0.5">
+                <div className="flex items-center gap-1.5 mt-0.5 pr-5">
                   <p className={cn("font-sans text-xs truncate", c.unreadCount > 0 ? "text-foreground/70" : "text-foreground/40")}>
                     {c.lastMessage?.body ?? "No messages yet"}
                   </p>
