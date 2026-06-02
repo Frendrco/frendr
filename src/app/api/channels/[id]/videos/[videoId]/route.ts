@@ -11,14 +11,14 @@ export async function DELETE(
   if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id: channelId, videoId } = await params
-  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } })
+  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, isAdmin: true } })
   if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const channel = await prisma.channel.findUnique({ where: { id: channelId } })
   if (!channel) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const isOwner = channel.userId === user.id
-  const isAdmin = user.role === "admin"
+  const isAdmin = user.isAdmin
   if (!isOwner && !isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   await prisma.channelVideo.deleteMany({ where: { channelId, videoId } })

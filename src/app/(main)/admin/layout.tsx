@@ -10,9 +10,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const user = await prisma.user.findUnique({
     where: { clerkId },
-    select: { role: true },
+    select: { isAdmin: true },
   })
-  if (!user || user.role !== "admin") redirect("/")
+  if (!user || !user.isAdmin) redirect("/")
 
   return (
     <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">

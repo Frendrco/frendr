@@ -3,14 +3,14 @@ import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 
 async function getAuthorizedChannel(clerkId: string, channelId: string) {
-  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } })
+  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, isAdmin: true } })
   if (!user) return null
 
   const channel = await prisma.channel.findUnique({ where: { id: channelId } })
   if (!channel) return null
 
   const isOwner = channel.userId === user.id
-  const isSiteAdmin = user.role === "admin"
+  const isSiteAdmin = user.isAdmin
   const isChannelAdmin = !isOwner && !isSiteAdmin
     ? !!(await prisma.channelAdmin.findUnique({ where: { channelId_userId: { channelId, userId: user.id } } }))
     : false

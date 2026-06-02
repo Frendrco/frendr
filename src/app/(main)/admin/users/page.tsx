@@ -16,7 +16,7 @@ export default async function AdminUsersPage() {
       username: true,
       displayName: true,
       avatarUrl: true,
-      role: true,
+      isAdmin: true,
       email: true,
       createdAt: true,
       _count: { select: { videos: true, followers: true } },
@@ -65,7 +65,7 @@ export default async function AdminUsersPage() {
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <AdminRoleButton userId={u.id} currentRole={u.role} isSelf={u.id === me.id} />
+                  <AdminRoleButton userId={u.id} isAdmin={u.isAdmin} isSelf={u.id === me.id} />
                 </td>
                 <td className="px-4 py-3 text-right">
                   {u.id !== me.id && (

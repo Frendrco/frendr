@@ -8,14 +8,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id: channelId } = await params
-  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } })
+  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, isAdmin: true } })
   if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const channel = await prisma.channel.findUnique({ where: { id: channelId } })
   if (!channel) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const isOwner = channel.userId === user.id
-  const isSiteAdmin = user.role === "admin"
+  const isSiteAdmin = user.isAdmin
   const isChannelAdmin = !isOwner && !isSiteAdmin
     ? !!(await prisma.channelAdmin.findUnique({ where: { channelId_userId: { channelId, userId: user.id } } }))
     : false

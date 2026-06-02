@@ -6,14 +6,13 @@ import { Loader2 } from "lucide-react"
 
 interface Props {
   userId: string
-  currentRole: string | null
+  isAdmin: boolean
   isSelf: boolean
 }
 
-export function AdminRoleButton({ userId, currentRole, isSelf }: Props) {
+export function AdminRoleButton({ userId, isAdmin, isSelf }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const isAdmin = currentRole === "admin"
 
   if (isSelf) {
     return (
@@ -29,7 +28,7 @@ export function AdminRoleButton({ userId, currentRole, isSelf }: Props) {
       await fetch(`/api/admin/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: isAdmin ? null : "admin" }),
+        body: JSON.stringify({ isAdmin: !isAdmin }),
       })
       router.refresh()
     } finally {

@@ -62,9 +62,9 @@ export default async function ProfilePage({ params }: Props) {
 
   // Is the current visitor following this profile?
   const currentDbUser = !isOwn && clerkId
-    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } })
+    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true, isAdmin: true } })
     : null
-  const isAdmin = currentDbUser?.role === "admin"
+  const isAdmin = currentDbUser?.isAdmin
   const isFollowing = currentDbUser
     ? !!(await prisma.follow.findUnique({
         where: { followerId_followingId: { followerId: currentDbUser.id, followingId: user.id } },

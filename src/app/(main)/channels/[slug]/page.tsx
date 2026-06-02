@@ -39,7 +39,7 @@ export default async function ChannelPage({ params }: Props) {
   const currentUser = clerkId
     ? await prisma.user.findUnique({
         where: { clerkId },
-        select: { id: true, role: true },
+        select: { id: true, isAdmin: true },
       })
     : null
 
@@ -50,7 +50,7 @@ export default async function ChannelPage({ params }: Props) {
     : false
 
   const isOwner = currentUser?.id === channel.userId
-  const isSiteAdmin = currentUser?.role === "admin"
+  const isSiteAdmin = currentUser?.isAdmin
   const isChannelAdmin = currentUser && !isOwner && !isSiteAdmin
     ? !!(await prisma.channelAdmin.findUnique({
         where: { channelId_userId: { channelId: channel.id, userId: currentUser.id } },

@@ -64,12 +64,12 @@ export default async function VideoPage({ params }: Props) {
         },
       },
     }),
-    clerkId ? prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } }) : null,
+    clerkId ? prisma.user.findUnique({ where: { clerkId }, select: { id: true, isAdmin: true } }) : null,
   ])
 
   if (!video) notFound()
 
-  const isAdmin = currentUser?.role === "admin"
+  const isAdmin = currentUser?.isAdmin
   const isOwner = clerkId != null && video.user.clerkId === clerkId
 
   const [upvoteData, savedData, rawComments, followData] = await Promise.all([

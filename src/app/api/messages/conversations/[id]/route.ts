@@ -92,3 +92,20 @@ export async function POST(req: Request, { params }: Params) {
 
   return NextResponse.json(message, { status: 201 })
 }
+
+export async function DELETE(_req: Request, { params }: Params) {
+  const { id } = await params
+  const { userId: clerkId } = await auth()
+  if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+  if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
+
+  const participant = await prisma.conversationParticipant.findUnique({
+    where: { conversationId_userId: { conversationId: id, userId: user.id } },
+  })
+  if (!participant) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+
+  await prisma.conversation.delete({ where: { id } })
+  return new NextResponse(null, { status: 204 })
+}

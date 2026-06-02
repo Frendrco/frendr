@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { Trash2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 function timeAgo(dateStr: string) {
@@ -27,7 +29,15 @@ interface Props {
 }
 
 export function ConversationList({ initial, activeId }: Props) {
+  const router = useRouter()
   const [conversations, setConversations] = useState(initial)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+
+  async function handleDelete(id: string) {
+    setConversations((prev) => prev.filter((c) => c.id !== id))
+    await fetch(`/api/messages/conversations/${id}`, { method: "DELETE" })
+    if (activeId === id) router.push("/messages")
+  }
 
   useEffect(() => {
     const id = setInterval(async () => {
@@ -58,7 +68,12 @@ export function ConversationList({ initial, activeId }: Props) {
           .toUpperCase() ?? "?"
 
         return (
-          <li key={c.id}>
+          <li
+            key={c.id}
+            onMouseEnter={() => setHoveredId(c.id)}
+            onMouseLeave={() => setHoveredId(null)}
+            className="relative"
+          >
             <Link
               href={`/messages/${c.id}`}
               className={cn(
@@ -97,6 +112,16 @@ export function ConversationList({ initial, activeId }: Props) {
                 </div>
               </div>
             </Link>
+            <button
+              onClick={() => handleDelete(c.id)}
+              className={cn(
+                "absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded text-foreground/20 hover:text-red-400 transition-opacity transition-colors",
+                hoveredId === c.id ? "opacity-100" : "opacity-0"
+              )}
+              aria-label="Delete conversation"
+            >
+              <Trash2 size={13} />
+            </button>
           </li>
         )
       })}

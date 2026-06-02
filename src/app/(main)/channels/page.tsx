@@ -6,7 +6,7 @@ export default async function ChannelsPage() {
   const { userId: clerkId } = await auth()
 
   const currentUser = clerkId
-    ? await prisma.user.findUnique({ where: { clerkId }, select: { role: true } })
+    ? await prisma.user.findUnique({ where: { clerkId }, select: { isAdmin: true } })
     : null
 
   const channels = await prisma.channel.findMany({
@@ -32,7 +32,7 @@ export default async function ChannelsPage() {
       adminChannels={adminChannels}
       userChannels={userChannels}
       isSignedIn={!!clerkId}
-      isAdmin={currentUser?.role === "admin"}
+      isAdmin={currentUser?.isAdmin}
     />
   )
 }

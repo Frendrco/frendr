@@ -9,9 +9,9 @@ export async function requireAdminPage() {
 
   const user = await prisma.user.findUnique({
     where: { clerkId },
-    select: { id: true, role: true },
+    select: { id: true, isAdmin: true },
   })
-  if (!user || user.role !== "admin") redirect("/")
+  if (!user || !user.isAdmin) redirect("/")
 
   return user
 }
@@ -22,9 +22,9 @@ export async function requireAdminApi() {
 
   const user = await prisma.user.findUnique({
     where: { clerkId },
-    select: { id: true, role: true },
+    select: { id: true, isAdmin: true },
   })
-  if (!user || user.role !== "admin") return null
+  if (!user || !user.isAdmin) return null
 
   return user
 }

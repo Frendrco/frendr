@@ -37,14 +37,14 @@ export async function POST(req: NextRequest) {
   const { userId: clerkId } = await auth()
   if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } })
+  const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true, isAdmin: true } })
   if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const { name, description, isPublic, type, coverUrl, color, admins } = await req.json()
   if (!name?.trim()) return NextResponse.json({ error: "Name required" }, { status: 400 })
 
   // Only admins can create admin channels
-  if (type === "admin" && user.role !== "admin")
+  if (type === "admin" && !user.isAdmin)
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const baseSlug = slugify(name)

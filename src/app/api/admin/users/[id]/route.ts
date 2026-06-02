@@ -21,16 +21,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if (!admin) return adminUnauthorized()
 
   const { id } = await params
-  const { role } = await req.json()
+  const { isAdmin } = await req.json()
 
-  if (!["admin", ""].includes(role ?? "")) {
-    return NextResponse.json({ error: "Invalid role" }, { status: 400 })
+  if (typeof isAdmin !== "boolean") {
+    return NextResponse.json({ error: "isAdmin must be a boolean" }, { status: 400 })
   }
 
   const user = await prisma.user.update({
     where: { id },
-    data: { role: role || null },
-    select: { id: true, role: true },
+    data: { isAdmin },
+    select: { id: true, isAdmin: true },
   })
 
   return NextResponse.json(user)

@@ -24,6 +24,7 @@ model User {
   playlist    String?
   behance     String?
   other       String?
+  isAdmin       Boolean  @default(false)
   openToWork    Boolean  @default(false)
   showAiContent Boolean  @default(true)
   avatarUrl     String?
