@@ -46,14 +46,15 @@ export default async function SearchPage({ searchParams }: Props) {
   const isSearching = query.length > 0
   const activeSort = (["newest", "trending", "following"].includes(sort) ? sort : "newest") as SortValue
 
-  // For "following" sort, look up who the current user follows
+  // Look up current user once — reused for "following" sort and new-member follow status
+  const currentUser = clerkId && !isSearching
+    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    : null
+
   let followingIds: string[] = []
-  if (!isSearching && activeSort === "following" && clerkId) {
-    const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
-    if (user) {
-      const follows = await prisma.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } })
-      followingIds = follows.map(f => f.followingId)
-    }
+  if (currentUser && activeSort === "following") {
+    const follows = await prisma.follow.findMany({ where: { followerId: currentUser.id }, select: { followingId: true } })
+    followingIds = follows.map(f => f.followingId)
   }
 
   const videoWhere = isSearching
@@ -131,19 +132,15 @@ export default async function SearchPage({ searchParams }: Props) {
       : Promise.resolve([]),
   ])
 
-  // Follow status for new members (sequential, browse mode only)
-  let currentUserId: string | null = null
+  // Follow status for new members — reuse currentUser from above
+  const currentUserId = currentUser?.id ?? null
   let newMemberFollowingIds = new Set<string>()
-  if (clerkId && newMembers.length > 0) {
-    const currentUser = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
-    if (currentUser) {
-      currentUserId = currentUser.id
-      const follows = await prisma.follow.findMany({
-        where: { followerId: currentUser.id, followingId: { in: newMembers.map(m => m.id) } },
-        select: { followingId: true },
-      })
-      newMemberFollowingIds = new Set(follows.map(f => f.followingId))
-    }
+  if (currentUser && newMembers.length > 0) {
+    const follows = await prisma.follow.findMany({
+      where: { followerId: currentUser.id, followingId: { in: newMembers.map(m => m.id) } },
+      select: { followingId: true },
+    })
+    newMemberFollowingIds = new Set(follows.map(f => f.followingId))
   }
 
   const noResults = isSearching && videos.length === 0 && creators.length === 0

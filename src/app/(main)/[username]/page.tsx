@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { auth, clerkClient } from "@clerk/nextjs/server"
+import { auth } from "@clerk/nextjs/server"
 import Image from "next/image"
 import Link from "next/link"
 import { MapPin, Globe } from "lucide-react"
@@ -39,7 +39,7 @@ export default async function ProfilePage({ params }: Props) {
   const user = await prisma.user.findUnique({
     where: { username },
     include: {
-      videos:   { orderBy: [{ position: "asc" }, { createdAt: "desc" }] },
+      videos:   { orderBy: [{ position: "asc" }, { createdAt: "desc" }], take: 48 },
       _count:   { select: { followers: true, following: true } },
     },
   })
@@ -59,10 +59,7 @@ export default async function ProfilePage({ params }: Props) {
 
   const isOwn = clerkId === user.clerkId
 
-  // Always pull avatar from Clerk so it's current without needing a webhook sync
-  const client = await clerkClient()
-  const clerkUser = await client.users.getUser(user.clerkId)
-  const avatarUrl = clerkUser.imageUrl
+  const avatarUrl = user.avatarUrl ?? null
 
   const initials = user.displayName
     .split(" ")
@@ -71,16 +68,15 @@ export default async function ProfilePage({ params }: Props) {
     .join("")
     .toUpperCase()
 
-  // Is the current visitor following this profile?
-  const currentDbUser = !isOwn && clerkId
-    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true, isAdmin: true } })
+  // Is the current visitor following this profile? (single query via relation join)
+  const followRecord = !isOwn && clerkId
+    ? await prisma.follow.findFirst({
+        where: { follower: { clerkId }, followingId: user.id },
+        select: { follower: { select: { id: true, isAdmin: true } } },
+      })
     : null
-  const isAdmin = currentDbUser?.isAdmin
-  const isFollowing = currentDbUser
-    ? !!(await prisma.follow.findUnique({
-        where: { followerId_followingId: { followerId: currentDbUser.id, followingId: user.id } },
-      }))
-    : false
+  const isFollowing = !!followRecord
+  const isAdmin = followRecord?.follower.isAdmin ?? false
 
   const stats = [
     { label: "Followers", value: String(user._count.followers), href: `/${username}/followers` },

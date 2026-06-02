@@ -4,12 +4,10 @@ import { prisma } from "@/lib/prisma"
 
 const commentInclude = {
   user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
-  votes: true,
   replies: {
     orderBy: { createdAt: "asc" as const },
     include: {
       user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
-      votes: true,
     },
   },
 }
@@ -28,20 +26,29 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     include: commentInclude,
   })
 
+  // Fetch current user's votes in one query instead of loading all votes
+  const allIds = [
+    ...comments.map(c => c.id),
+    ...comments.flatMap(c => c.replies.map(r => r.id)),
+  ]
+  const userVotes = currentUser && allIds.length > 0
+    ? await prisma.commentVote.findMany({
+        where: { userId: currentUser.id, commentId: { in: allIds } },
+        select: { commentId: true, value: true },
+      })
+    : []
+  const voteMap = new Map(userVotes.map(v => [v.commentId, v.value]))
+
   const serialized = comments.map((c) => ({
     ...c,
     createdAt: c.createdAt.toISOString(),
     updatedAt: c.updatedAt.toISOString(),
-    userVote: currentUser
-      ? (c.votes.find((v) => v.userId === currentUser.id)?.value ?? 0) as 1 | -1 | 0
-      : 0 as const,
+    userVote: (voteMap.get(c.id) ?? 0) as 1 | -1 | 0,
     replies: c.replies.map((r) => ({
       ...r,
       createdAt: r.createdAt.toISOString(),
       updatedAt: r.updatedAt.toISOString(),
-      userVote: currentUser
-        ? (r.votes.find((v) => v.userId === currentUser.id)?.value ?? 0) as 1 | -1 | 0
-        : 0 as const,
+      userVote: (voteMap.get(r.id) ?? 0) as 1 | -1 | 0,
     })),
   }))
 
