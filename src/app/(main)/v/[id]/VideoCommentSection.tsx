@@ -83,10 +83,10 @@ function CommentForm({ videoId, parentCommentId, isReply, onSubmit, onCancel }: 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 md:flex-row md:items-end">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
       <textarea
         rows={isReply ? 1 : 2}
-        className="flex-1 resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-base md:text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+        className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-base md:text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
         placeholder={isReply ? "Write a reply…" : "Add a comment…"}
         value={body}
         onChange={e => setBody(e.target.value)}
@@ -117,11 +117,11 @@ function InlineEditForm({ initialBody, onSave, onCancel }: {
   const [body, setBody] = useState(initialBody)
 
   return (
-    <div className="flex flex-col gap-2 mt-1.5 md:flex-row md:items-end">
+    <div className="flex flex-col gap-2 mt-1.5">
       <textarea
         rows={2}
         autoFocus
-        className="flex-1 resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-base md:text-sm text-core-black focus:outline-none focus:ring-2 focus:ring-spring-green"
+        className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-base md:text-sm text-core-black focus:outline-none focus:ring-2 focus:ring-spring-green"
         value={body}
         onChange={e => setBody(e.target.value)}
       />
