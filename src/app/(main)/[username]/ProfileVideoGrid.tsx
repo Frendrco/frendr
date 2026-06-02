@@ -80,6 +80,7 @@ export function ProfileVideoGrid({
   isOwn,
 }: Props) {
   const [videos, setVideos] = useState(initialVideos)
+  const [visibleCount, setVisibleCount] = useState(12)
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
@@ -105,16 +106,28 @@ export function ProfileVideoGrid({
 
   if (!isOwn) {
     return (
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
-        {videos.map((video) => (
-          <VideoCard
-            key={video.id}
-            video={{ ...video, user: { username, displayName, avatarUrl } }}
-            hideCreator
-            hideTags
-          />
-        ))}
-      </div>
+      <>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
+          {videos.slice(0, visibleCount).map((video) => (
+            <VideoCard
+              key={video.id}
+              video={{ ...video, user: { username, displayName, avatarUrl } }}
+              hideCreator
+              hideTags
+            />
+          ))}
+        </div>
+        {videos.length > visibleCount && (
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => setVisibleCount(c => c + 12)}
+              className="h-10 px-6 rounded-full border border-border font-sans font-medium text-sm text-foreground/60 hover:border-foreground/30 hover:text-foreground transition-colors"
+            >
+              Load more
+            </button>
+          </div>
+        )}
+      </>
     )
   }
 
@@ -124,9 +137,9 @@ export function ProfileVideoGrid({
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext items={videos.map((v) => v.id)} strategy={rectSortingStrategy}>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
-          {videos.map((video) => (
+      <SortableContext items={videos.slice(0, visibleCount).map((v) => v.id)} strategy={rectSortingStrategy}>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
+          {videos.slice(0, visibleCount).map((video) => (
             <SortableCard
               key={video.id}
               video={video}
@@ -138,6 +151,16 @@ export function ProfileVideoGrid({
           ))}
         </div>
       </SortableContext>
+      {videos.length > visibleCount && (
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => setVisibleCount(c => c + 12)}
+            className="h-10 px-6 rounded-full border border-border font-sans font-medium text-sm text-foreground/60 hover:border-foreground/30 hover:text-foreground transition-colors"
+          >
+            Load more
+          </button>
+        </div>
+      )}
     </DndContext>
   )
 }
