@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@clerk/nextjs"
@@ -47,17 +47,6 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
   const searchActive = searchFocused || searchQuery.length > 0
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const mobileMenuRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    function onOutside(e: MouseEvent) {
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
-        setMobileMenuOpen(false)
-      }
-    }
-    if (mobileMenuOpen) document.addEventListener("mousedown", onOutside)
-    return () => document.removeEventListener("mousedown", onOutside)
-  }, [mobileMenuOpen])
 
   function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -66,6 +55,63 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
   }
 
   return (
+    <>
+    {/* Full-screen mobile menu overlay (signed-out only) */}
+    {mobileMenuOpen && (
+      <div className="fixed inset-0 z-[60] flex flex-col bg-white md:hidden">
+
+        {/* Top bar */}
+        <div className="flex items-center justify-between px-4 h-16 shrink-0">
+          <Link href="/" onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 bg-white hover:bg-spring-green hover:border-spring-green transition-colors"
+          >
+            <Logo variant="symbol" height={22} colour="black" />
+          </Link>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground/60 hover:text-foreground transition-colors"
+            aria-label="Close menu"
+          >
+            <X size={17} />
+          </button>
+        </div>
+
+        {/* Nav links — centered */}
+        <div className="flex flex-1 flex-col items-center justify-center gap-1">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className="font-sans font-semibold text-2xl text-core-black py-3 hover:text-spring-green transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Auth buttons — bottom */}
+        <div className="px-6 pb-12 flex flex-col gap-3">
+          <div className="border-t border-black/10 mb-1" />
+          <Link
+            href="/sign-in"
+            onClick={() => setMobileMenuOpen(false)}
+            className="w-full h-11 inline-flex items-center justify-center rounded-full border border-black/20 font-sans font-medium text-sm text-foreground hover:border-black/40 transition-colors"
+          >
+            Login
+          </Link>
+          <Link
+            href="/sign-up"
+            onClick={() => setMobileMenuOpen(false)}
+            className="w-full h-11 inline-flex items-center justify-center rounded-full bg-core-black font-sans font-medium text-sm text-white hover:bg-spring-green hover:text-core-black transition-colors"
+          >
+            Sign up
+          </Link>
+        </div>
+
+      </div>
+    )}
+
     <header className={cn("sticky top-0 z-50 w-full", isHome ? "bg-transparent" : "bg-white")}>
       <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between gap-4 px-4 md:px-6">
 
@@ -142,7 +188,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
               {userMenu}
             </>
           ) : (
-            <div ref={mobileMenuRef} className="relative">
+            <>
               {/* Desktop auth buttons */}
               <div className="hidden md:flex items-center gap-2">
                 <Link
@@ -170,46 +216,14 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
                 className="md:hidden flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/80 backdrop-blur text-foreground/60 hover:text-foreground transition-colors"
                 aria-label="Menu"
               >
-                {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
+                <Menu size={17} />
               </button>
-
-              {/* Mobile dropdown */}
-              {mobileMenuOpen && (
-                <div className="absolute right-0 top-11 z-50 w-56 rounded-2xl border border-black/10 bg-white shadow-xl overflow-hidden">
-                  <div className="flex flex-col p-2">
-                    {NAV_LINKS.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="px-3 py-2.5 font-sans font-medium text-sm text-foreground/70 hover:text-foreground hover:bg-foreground/5 rounded-xl transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                    <div className="my-1.5 border-t border-black/5" />
-                    <Link
-                      href="/sign-in"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="px-3 py-2.5 font-sans font-medium text-sm text-foreground/70 hover:text-foreground hover:bg-foreground/5 rounded-xl transition-colors"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href="/sign-up"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="mt-1 px-3 py-2.5 font-sans font-medium text-sm text-center rounded-xl bg-core-black text-white hover:bg-spring-green hover:text-core-black transition-colors"
-                    >
-                      Sign up
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
+            </>
           )}
 
         </div>
       </div>
     </header>
+    </>
   )
 }
