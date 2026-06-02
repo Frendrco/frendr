@@ -23,13 +23,31 @@ async function sendEmail(params: CreateParams) {
   if (params.type === "vote") return
 
   const [recipient, actor] = await Promise.all([
-    prisma.user.findUnique({ where: { id: params.userId }, select: { email: true, displayName: true } }),
+    prisma.user.findUnique({
+      where: { id: params.userId },
+      select: {
+        email: true,
+        displayName: true,
+        emailNotifyMessages: true,
+        emailNotifyComments: true,
+        emailNotifyReplies:  true,
+        emailNotifyFollows:  true,
+      },
+    }),
     params.fromUserId
       ? prisma.user.findUnique({ where: { id: params.fromUserId }, select: { displayName: true, username: true } })
       : null,
   ])
 
   if (!recipient?.email) return
+
+  const prefEnabled: Record<string, boolean> = {
+    message: recipient.emailNotifyMessages,
+    comment: recipient.emailNotifyComments,
+    reply:   recipient.emailNotifyReplies,
+    follow:  recipient.emailNotifyFollows,
+  }
+  if (prefEnabled[params.type] === false) return
 
   const actorName = actor?.displayName ?? "Someone"
   const { subject, html } = buildEmail(params.type, actorName, actor?.username, params.contentId)
@@ -90,7 +108,7 @@ function buildEmail(
           <a href="${ctaUrl}" style="display:inline-block;background:#000;color:#fff;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;">${ctaLabel}</a>
         </td></tr>
         <tr><td style="padding:16px 32px;border-top:1px solid #eee;">
-          <p style="margin:0;font-size:12px;color:#999;">You're receiving this because you have an account on Frendr. <a href="${APP_URL}" style="color:#999;">Unsubscribe</a></p>
+          <p style="margin:0;font-size:12px;color:#999;">You're receiving this because you have an account on Frendr. <a href="${APP_URL}/dashboard/settings" style="color:#999;">Manage notifications</a></p>
         </td></tr>
       </table>
     </td></tr>

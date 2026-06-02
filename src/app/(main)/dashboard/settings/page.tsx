@@ -28,6 +28,10 @@ export default async function SettingsPage() {
       behance:     true,
       other:       true,
       tags:        true,
+      emailNotifyMessages: true,
+      emailNotifyComments: true,
+      emailNotifyReplies:  true,
+      emailNotifyFollows:  true,
     },
   })
 

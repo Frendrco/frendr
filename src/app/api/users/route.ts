@@ -42,7 +42,7 @@ export async function PATCH(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { displayName, username, location, age, bio, website, role, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, openToWork, coverImageUrl } = await req.json()
+  const { displayName, username, location, age, bio, website, role, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, openToWork, coverImageUrl, emailNotifyMessages, emailNotifyComments, emailNotifyReplies, emailNotifyFollows } = await req.json()
 
   if (username !== undefined) {
     if (!USERNAME_RE.test(username)) {
@@ -78,8 +78,12 @@ export async function PATCH(req: Request) {
       ...(behance    !== undefined && { behance:   behance   ?? null }),
       ...(other      !== undefined && { other:     other     ?? null }),
       ...(Array.isArray(tags) && { tags }),
-      ...(typeof openToWork === "boolean" && { openToWork }),
+      ...(typeof openToWork           === "boolean" && { openToWork }),
       ...(coverImageUrl !== undefined && { coverImageUrl: coverImageUrl ?? null }),
+      ...(typeof emailNotifyMessages  === "boolean" && { emailNotifyMessages }),
+      ...(typeof emailNotifyComments  === "boolean" && { emailNotifyComments }),
+      ...(typeof emailNotifyReplies   === "boolean" && { emailNotifyReplies }),
+      ...(typeof emailNotifyFollows   === "boolean" && { emailNotifyFollows }),
     },
   })
 

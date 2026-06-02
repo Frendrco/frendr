@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { Camera, X, Globe, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Switch } from "@/components/ui/switch"
 
 interface ProfileData {
   username: string
@@ -23,6 +24,10 @@ interface ProfileData {
   behance:  string | null
   other:    string | null
   tags: string[]
+  emailNotifyMessages: boolean
+  emailNotifyComments: boolean
+  emailNotifyReplies:  boolean
+  emailNotifyFollows:  boolean
 }
 
 const SKILLS = [
@@ -101,6 +106,20 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   const [behance,   setBehance]   = useState(profile.behance ?? "")
   const [other,     setOther]     = useState(profile.other ?? "")
   const [tags,      setTags]      = useState<string[]>(profile.tags)
+
+  // Notification preferences
+  const [notifyMessages, setNotifyMessages] = useState(profile.emailNotifyMessages)
+  const [notifyComments, setNotifyComments] = useState(profile.emailNotifyComments)
+  const [notifyReplies,  setNotifyReplies]  = useState(profile.emailNotifyReplies)
+  const [notifyFollows,  setNotifyFollows]  = useState(profile.emailNotifyFollows)
+
+  async function saveNotifPref(field: string, value: boolean) {
+    await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: value }),
+    })
+  }
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const avatarUrl    = user?.imageUrl
@@ -393,6 +412,32 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
                       <X size={14} />
                     </button>
                   )}
+                </div>
+              ))}
+            </div>
+
+            {/* ── Notifications divider ── */}
+            <div className="flex items-center gap-3 pt-2">
+              <span className="font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 shrink-0">Notifications</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              {([
+                { label: "Messages",  desc: "Email when someone sends you a message",     value: notifyMessages, set: setNotifyMessages, field: "emailNotifyMessages" },
+                { label: "Comments",  desc: "Email when someone comments on your video",  value: notifyComments, set: setNotifyComments, field: "emailNotifyComments" },
+                { label: "Replies",   desc: "Email when someone replies to your comment", value: notifyReplies,  set: setNotifyReplies,  field: "emailNotifyReplies"  },
+                { label: "Follows",   desc: "Email when someone follows you",             value: notifyFollows,  set: setNotifyFollows,  field: "emailNotifyFollows"  },
+              ] as const).map(({ label, desc, value, set, field }) => (
+                <div key={field} className="flex items-center justify-between gap-4 rounded-xl border border-border bg-white px-4 py-3">
+                  <div>
+                    <p className="font-sans text-sm font-medium text-core-black">{label}</p>
+                    <p className="font-sans text-xs text-foreground/40">{desc}</p>
+                  </div>
+                  <Switch
+                    checked={value}
+                    onCheckedChange={(next) => { set(next); saveNotifPref(field, next) }}
+                  />
                 </div>
               ))}
             </div>
