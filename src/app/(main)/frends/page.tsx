@@ -79,9 +79,6 @@ export default async function FrendsPage() {
                   >
                     {member.displayName}
                   </Link>
-                  {member.role && (
-                    <p className="font-sans text-[10px] text-foreground/40 line-clamp-1 w-full">{member.role}</p>
-                  )}
                   {!isOwn && (
                     <FollowButton
                       username={member.username}
