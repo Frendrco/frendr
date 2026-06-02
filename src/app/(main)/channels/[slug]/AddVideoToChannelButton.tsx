@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { Plus, Search, Loader2, Check } from "lucide-react"
 import Image from "next/image"
 
@@ -15,6 +16,7 @@ type VideoResult = {
 type Props = { channelId: string }
 
 export function AddVideoToChannelButton({ channelId }: Props) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<VideoResult[]>([])
@@ -58,6 +60,7 @@ export function AddVideoToChannelButton({ channelId }: Props) {
       })
     }
     setResults((prev) => prev.map((v) => v.id === video.id ? { ...v, inChannel: !v.inChannel } : v))
+    router.refresh()
   }
 
   return (

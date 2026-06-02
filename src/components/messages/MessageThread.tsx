@@ -17,27 +17,35 @@ interface Props {
   messages: MessageData[]
   currentUserId: string
   onDelete?: (messageId: string) => void
+  scrollRef?: React.RefObject<HTMLDivElement | null>
 }
 
 function fmtTime(dateStr: string) {
   return new Date(dateStr).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
 }
 
-export function MessageThread({ messages, currentUserId, onDelete }: Props) {
-  const bottomRef = useRef<HTMLDivElement>(null)
+export function MessageThread({ messages, currentUserId, onDelete, scrollRef }: Props) {
   const prevCountRef = useRef(messages.length)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
+  function scrollToBottom(smooth = false) {
+    const el = scrollRef?.current
+    if (!el) return
+    el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "instant" })
+  }
+
   useEffect(() => {
     if (messages.length !== prevCountRef.current) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+      scrollToBottom(true)
       prevCountRef.current = messages.length
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages.length])
 
   // Scroll to bottom on first render
   useEffect(() => {
-    bottomRef.current?.scrollIntoView()
+    scrollToBottom()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (messages.length === 0) {
@@ -115,7 +123,6 @@ export function MessageThread({ messages, currentUserId, onDelete }: Props) {
           </div>
         )
       })}
-      <div ref={bottomRef} />
     </div>
   )
 }

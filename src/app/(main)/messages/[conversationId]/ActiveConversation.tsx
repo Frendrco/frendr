@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
@@ -16,6 +16,7 @@ interface Props {
 
 export function ActiveConversation({ conversationId, initialMessages, currentUserId, other }: Props) {
   const [messages, setMessages] = useState(initialMessages)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   // Mark read on mount
   useEffect(() => {
@@ -83,8 +84,8 @@ export function ActiveConversation({ conversationId, initialMessages, currentUse
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto">
-        <MessageThread messages={messages} currentUserId={currentUserId} onDelete={handleDelete} />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
+        <MessageThread messages={messages} currentUserId={currentUserId} onDelete={handleDelete} scrollRef={scrollRef} />
       </div>
 
       {/* Input */}
