@@ -188,13 +188,13 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   const iconBadge = "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-foreground/40"
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="flex flex-col md:flex-row md:h-[calc(100vh-4rem)] md:overflow-hidden">
 
       {/* ── Left panel ─────────────────────────────────── */}
-      <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-white overflow-y-auto">
+      <aside className="flex flex-col items-center w-full md:w-64 md:shrink-0 border-b md:border-b-0 md:border-r border-border bg-white md:overflow-y-auto">
 
         {/* Avatar */}
-        <div className="flex flex-col items-center gap-3 px-6 py-8">
+        <div className="flex flex-col items-center gap-3 px-6 py-6 md:py-8 w-full">
           <div className="h-24 w-24 overflow-hidden rounded-full">
             {avatarUrl ? (
               <Image src={avatarUrl} alt={displayName} width={96} height={96} className="h-full w-full object-cover" />
@@ -231,10 +231,10 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
           </div>
         </div>
 
-        <div className="flex-1" />
+        <div className="hidden md:flex flex-1" />
 
         {/* Delete account */}
-        <div className="px-6 pb-8 flex flex-col gap-2">
+        <div className="px-6 pb-6 md:pb-8 w-full flex flex-col gap-2">
           {!confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
@@ -269,7 +269,7 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
 
       {/* ── Right panel ────────────────────────────────── */}
       <div className="flex flex-1 flex-col bg-white">
-        <div className="flex-1 overflow-y-auto px-10 py-8">
+        <div className="flex-1 overflow-y-auto px-5 py-6 md:px-10 md:py-8">
 
           <div className="max-w-2xl flex flex-col gap-5">
 
@@ -469,7 +469,7 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-border px-10 py-4">
+        <div className="flex items-center justify-end gap-3 border-t border-border px-5 py-4 md:px-10">
           <button
             onClick={() => router.back()}
             className="h-10 px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity"
