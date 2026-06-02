@@ -15,9 +15,10 @@ import {
 interface Props {
   endpoint: string
   label: string
+  redirectTo?: string
 }
 
-export function AdminDeleteButton({ endpoint, label }: Props) {
+export function AdminDeleteButton({ endpoint, label, redirectTo }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -28,7 +29,11 @@ export function AdminDeleteButton({ endpoint, label }: Props) {
       const res = await fetch(endpoint, { method: "DELETE" })
       if (res.ok) {
         setOpen(false)
-        router.refresh()
+        if (redirectTo) {
+          router.push(redirectTo)
+        } else {
+          router.refresh()
+        }
       }
     } finally {
       setLoading(false)

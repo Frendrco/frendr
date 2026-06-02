@@ -11,6 +11,7 @@ import { CoverImage } from "./CoverImage"
 import { PinnedVideo } from "./PinnedVideo"
 import { EditProfileModal } from "./EditProfileModal"
 import { ProfileVideoGrid } from "./ProfileVideoGrid"
+import { AdminDeleteButton } from "@/app/(main)/admin/AdminDeleteButton"
 import type { Metadata } from "next"
 
 const PLACEHOLDER_CARDS = [
@@ -61,8 +62,9 @@ export default async function ProfilePage({ params }: Props) {
 
   // Is the current visitor following this profile?
   const currentDbUser = !isOwn && clerkId
-    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true, role: true } })
     : null
+  const isAdmin = currentDbUser?.role === "admin"
   const isFollowing = currentDbUser
     ? !!(await prisma.follow.findUnique({
         where: { followerId_followingId: { followerId: currentDbUser.id, followingId: user.id } },
@@ -224,6 +226,16 @@ export default async function ProfilePage({ params }: Props) {
                 />
                 {clerkId && (
                   <MessageButton recipientId={user.id} />
+                )}
+                {isAdmin && (
+                  <div className="mt-2 border-t border-border pt-3">
+                    <p className="mb-2 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30">Admin</p>
+                    <AdminDeleteButton
+                      endpoint={`/api/admin/users/${user.id}`}
+                      label={`${user.displayName}'s account`}
+                      redirectTo="/admin/users"
+                    />
+                  </div>
                 )}
               </div>
             )}

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { FrendrSelectsMarquee } from "./FrendrSelectsMarquee"
 import { VideoCard } from "@/components/common/VideoCard"
 import { ExploreSort } from "./ExploreSort"
+import { FollowButton } from "@/components/common/FollowButton"
 
 const COLOR_MAP: Record<string, string> = {
   "spring-green":   "bg-spring-green/60",
@@ -72,7 +73,7 @@ export default async function SearchPage({ searchParams }: Props) {
       ? [{ featured: "desc" as const }, { createdAt: "desc" as const }]
       : { createdAt: "desc" as const }
 
-  const [videos, creators, featuredVideos, featuredChannels] = await Promise.all([
+  const [videos, creators, featuredVideos, featuredChannels, newMembers] = await Promise.all([
     prisma.video.findMany({
       where: videoWhere,
       orderBy: videoOrderBy,
@@ -120,7 +121,29 @@ export default async function SearchPage({ searchParams }: Props) {
           },
         })
       : Promise.resolve([]),
+    !isSearching
+      ? prisma.user.findMany({
+          orderBy: { createdAt: "desc" },
+          take: 8,
+          select: { id: true, username: true, displayName: true, avatarUrl: true, role: true },
+        })
+      : Promise.resolve([]),
   ])
+
+  // Follow status for new members (sequential, browse mode only)
+  let currentUserId: string | null = null
+  let newMemberFollowingIds = new Set<string>()
+  if (clerkId && newMembers.length > 0) {
+    const currentUser = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    if (currentUser) {
+      currentUserId = currentUser.id
+      const follows = await prisma.follow.findMany({
+        where: { followerId: currentUser.id, followingId: { in: newMembers.map(m => m.id) } },
+        select: { followingId: true },
+      })
+      newMemberFollowingIds = new Set(follows.map(f => f.followingId))
+    }
+  }
 
   const noResults = isSearching && videos.length === 0 && creators.length === 0
 
@@ -255,6 +278,53 @@ export default async function SearchPage({ searchParams }: Props) {
                       )}
                     </div>
                   </Link>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* ── New to Frendr (browse only) ── */}
+        {!isSearching && newMembers.length > 0 && (
+          <section>
+            <h2 className="mb-4 font-sans font-bold text-base text-core-black">New to Frendr</h2>
+            <div className="grid grid-cols-4 gap-4 sm:grid-cols-6 lg:grid-cols-8">
+              {newMembers.map(member => {
+                const initials = member.displayName
+                  .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
+                const isOwn = currentUserId === member.id
+                return (
+                  <div key={member.id} className="flex flex-col items-center gap-2">
+                    <Link href={`/${member.username}`} className="group w-full">
+                      <div className="relative w-full overflow-hidden rounded-3xl bg-spring-green aspect-square transition-opacity group-hover:opacity-90">
+                        {member.avatarUrl ? (
+                          <Image src={member.avatarUrl} alt={member.displayName} fill className="object-cover" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <span className="font-sans font-bold text-xl text-core-black">{initials}</span>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                    <div className="flex w-full flex-col items-center gap-1 text-center">
+                      <Link
+                        href={`/${member.username}`}
+                        className="font-sans font-semibold text-xs text-core-black hover:underline leading-tight"
+                      >
+                        {member.displayName}
+                      </Link>
+                      {member.role && (
+                        <p className="font-sans text-[10px] text-foreground/40 leading-none">{member.role}</p>
+                      )}
+                      {!isOwn && (
+                        <FollowButton
+                          username={member.username}
+                          initialIsFollowing={newMemberFollowingIds.has(member.id)}
+                          size="sm"
+                        />
+                      )}
+                    </div>
+                  </div>
                 )
               })}
             </div>
