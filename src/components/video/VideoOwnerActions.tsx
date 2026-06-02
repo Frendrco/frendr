@@ -320,7 +320,7 @@ export function VideoOwnerActions({
                     </div>
                   ) : (
                     <div className="flex flex-col gap-2">
-                      <div className="grid grid-cols-6 gap-1.5">
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
                         {FRAME_PERCENTS.map((pct, i) => (
                           <button
                             key={pct}

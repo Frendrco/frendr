@@ -49,7 +49,7 @@ export default async function MessagesPage() {
       <div className="flex h-[calc(100vh-10rem)] overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
 
         {/* Left: conversations list */}
-        <div className="flex w-72 shrink-0 flex-col border-r border-border">
+        <div className="flex w-full md:w-72 md:shrink-0 flex-col border-r border-border">
           <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
             <h1 className="font-sans font-semibold text-sm text-core-black">Messages</h1>
             <NewMessageButton />
@@ -60,7 +60,7 @@ export default async function MessagesPage() {
         </div>
 
         {/* Right: empty state */}
-        <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center p-8">
+        <div className="hidden md:flex flex-1 flex-col items-center justify-center gap-3 text-center p-8">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-foreground/5">
             <MessageCircle size={22} className="text-foreground/30" />
           </div>

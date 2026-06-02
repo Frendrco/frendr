@@ -501,7 +501,7 @@ export function UploadClient({ username }: { username: string }) {
                         </div>
                       )}
                     </div>
-                    <div className="grid grid-cols-6 gap-1.5">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
                       {videoFrames.map((src, i) => (
                         <button key={i} type="button" onClick={() => selectFrame(i)}
                           className={cn(

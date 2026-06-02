@@ -1,8 +1,14 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { ClerkProvider } from "@clerk/nextjs"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ActivityPing } from "@/components/common/ActivityPing"
 import "./globals.css"
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+}
 
 export const metadata: Metadata = {
   title: {

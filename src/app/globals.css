@@ -162,6 +162,18 @@
 }
 
 /* ─────────────────────────────────────────────────────────
+ * MOBILE TYPOGRAPHY SCALE
+ * Scale display sizes down on small screens (< 640px)
+ * ───────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  :root {
+    --font-size-display-lg: 3rem;     /* 48px (was 96px) */
+    --font-size-display-md: 2.25rem;  /* 36px (was 64px) */
+    --font-size-display-sm: 1.75rem;  /* 28px (was 40px) */
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
  * LIGHT MODE
  * Mist Grey background · Core Black text · Spring Green primary
  * ───────────────────────────────────────────────────────── */

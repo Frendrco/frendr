@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useClerk, useUser } from "@clerk/nextjs"
-import { Settings, Tv2, LogOut, Compass, Users, Rss } from "lucide-react"
+import { Settings, Tv2, LogOut, Compass, Users, Rss, Upload } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,6 +85,13 @@ export function UserMenuDropdown({ username, displayName }: Props) {
         >
           <span className="font-sans text-sm">Following</span>
           <Rss size={16} strokeWidth={1.5} className="text-foreground/40" />
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="justify-between px-3 py-1.5 cursor-pointer md:hidden"
+          onClick={() => router.push("/dashboard/upload")}
+        >
+          <span className="font-sans text-sm">Upload</span>
+          <Upload size={16} strokeWidth={1.5} className="text-foreground/40" />
         </DropdownMenuItem>
         <DropdownMenuSeparator className="md:hidden" />
 

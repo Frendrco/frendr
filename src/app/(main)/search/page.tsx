@@ -277,7 +277,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {!isSearching && newMembers.length > 0 && (
           <section>
             <h2 className="mb-4 font-sans font-bold text-base text-core-black">New Frends</h2>
-            <div className="grid grid-cols-4 gap-4 sm:grid-cols-6 lg:grid-cols-8">
+            <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
               {newMembers.map(member => {
                 const initials = member.displayName
                   .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
