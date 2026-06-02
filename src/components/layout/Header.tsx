@@ -82,15 +82,12 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
           onSubmit={handleSearch}
           className="hidden md:flex relative flex-1 max-w-xs rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur h-10 hover:border-black/20 dark:hover:border-white/20 transition-colors"
         >
+          <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
+
           {!searchActive && (
-            <div className="absolute inset-0 flex items-center justify-center gap-2 text-foreground/40 cursor-text pointer-events-none">
-              <Search size={15} className="shrink-0" />
+            <div className="absolute inset-0 flex items-center justify-center text-foreground/40 cursor-text pointer-events-none">
               <span className="font-sans font-medium text-sm">Search creators & videos…</span>
             </div>
-          )}
-
-          {searchActive && (
-            <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
           )}
 
           <input
@@ -102,8 +99,8 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
             className={cn(
-              "w-full bg-transparent font-sans font-medium text-sm text-foreground focus:outline-none transition-all",
-              searchActive ? "pl-10 pr-4" : "opacity-0 px-4"
+              "w-full bg-transparent font-sans font-medium text-sm text-foreground focus:outline-none pl-10 pr-4",
+              !searchActive && "opacity-0"
             )}
           />
         </form>
