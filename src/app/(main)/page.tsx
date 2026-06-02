@@ -2,7 +2,7 @@ import Link from "next/link"
 import { clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { HeroSection } from "./HeroSection"
-import { VideoCard } from "@/components/common/VideoCard"
+import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore"
 
 // ── Constants ─────────────────────────────────────────────
 
@@ -34,7 +34,7 @@ export default async function HomePage({
     orderBy: sort === "newest"
       ? { createdAt: "desc" }
       : [{ channels: { _count: "desc" } }, { createdAt: "desc" }],
-    take: 24,
+    take: 48,
     include: { user: { select: { username: true, displayName: true, avatarUrl: true, clerkId: true } } },
   }).catch(() => [])
 
@@ -108,11 +108,7 @@ export default async function HomePage({
           {videos.length === 0 ? (
             <PlaceholderGrid />
           ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {videos.map((video) => (
-                <VideoCard key={video.id} video={video} />
-              ))}
-            </div>
+            <VideoGridWithLoadMore initialVideos={videos} />
           )}
 
         </div>

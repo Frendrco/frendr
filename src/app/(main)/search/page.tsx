@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { cn } from "@/lib/utils"
 import { FrendrSelectsMarquee } from "./FrendrSelectsMarquee"
 import { VideoCard } from "@/components/common/VideoCard"
+import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore"
 import { ExploreSort } from "./ExploreSort"
 import { FollowButton } from "@/components/common/FollowButton"
 
@@ -77,7 +78,7 @@ export default async function SearchPage({ searchParams }: Props) {
     prisma.video.findMany({
       where: videoWhere,
       orderBy: videoOrderBy,
-      take: 24,
+      take: 48,
       include: {
         user: { select: { username: true, displayName: true, avatarUrl: true } },
       },
@@ -348,11 +349,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 <PlaceholderGrid />
               )
             ) : (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                {videos.map(video => (
-                  <VideoCard key={video.id} video={video} showTimestamp />
-                ))}
-              </div>
+              <VideoGridWithLoadMore initialVideos={videos} showTimestamp />
             )}
           </section>
         )}
