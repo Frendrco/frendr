@@ -64,13 +64,13 @@ export default async function HomePage({
 
           {/* Section header */}
           <div className="flex flex-col gap-4 py-12 md:flex-row md:items-end md:justify-between">
-            <div>
+            <div className="text-center md:text-left">
               <h2 className="display-sm text-core-black">Out of the oven</h2>
               <p className="mt-1 font-sans text-sm text-foreground/50">
                 The best motion design, animation, and video from the community.
               </p>
             </div>
-            <div className="flex items-center gap-1 shrink-0">
+            <div className="flex items-center justify-center gap-1 shrink-0 md:justify-start">
               {(["trending", "newest"] as Sort[]).map(opt => (
                 <Link
                   key={opt}
@@ -88,7 +88,7 @@ export default async function HomePage({
           </div>
 
           {/* Category filter pills */}
-          <div className="mb-8 flex flex-wrap gap-2">
+          <div className="mb-8 flex flex-wrap justify-center gap-2 md:justify-start">
             {FILTER_PILLS.map((pill, i) => (
               <Link
                 key={pill}
