@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
+import { Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface MessageData {
@@ -15,15 +16,17 @@ export interface MessageData {
 interface Props {
   messages: MessageData[]
   currentUserId: string
+  onDelete?: (messageId: string) => void
 }
 
 function fmtTime(dateStr: string) {
   return new Date(dateStr).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
 }
 
-export function MessageThread({ messages, currentUserId }: Props) {
+export function MessageThread({ messages, currentUserId, onDelete }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null)
   const prevCountRef = useRef(messages.length)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
 
   useEffect(() => {
     if (messages.length !== prevCountRef.current) {
@@ -61,6 +64,8 @@ export function MessageThread({ messages, currentUserId }: Props) {
         return (
           <div
             key={msg.id}
+            onMouseEnter={() => setHoveredId(msg.id)}
+            onMouseLeave={() => setHoveredId(null)}
             className={cn(
               "flex items-end gap-2",
               isOwn ? "flex-row-reverse" : "flex-row",
@@ -77,20 +82,35 @@ export function MessageThread({ messages, currentUserId }: Props) {
               </div>
             )}
 
-            <div className={cn("flex flex-col gap-0.5", isOwn ? "items-end" : "items-start")}>
-              <div
-                className={cn(
-                  "max-w-xs rounded-2xl px-3.5 py-2 font-sans text-sm leading-relaxed",
-                  isOwn
-                    ? "bg-core-black text-white rounded-br-sm"
-                    : "bg-foreground/8 text-foreground rounded-bl-sm"
-                )}
-              >
-                {msg.body}
+            <div className={cn("flex items-end gap-1.5", isOwn ? "flex-row-reverse" : "flex-row")}>
+              <div className={cn("flex flex-col gap-0.5", isOwn ? "items-end" : "items-start")}>
+                <div
+                  className={cn(
+                    "max-w-xs rounded-2xl px-3.5 py-2 font-sans text-sm leading-relaxed",
+                    isOwn
+                      ? "bg-core-black text-white rounded-br-sm"
+                      : "bg-foreground/8 text-foreground rounded-bl-sm"
+                  )}
+                >
+                  {msg.body}
+                </div>
+                <span className="font-sans text-[10px] text-foreground/30 px-1">
+                  {fmtTime(msg.createdAt)}
+                </span>
               </div>
-              <span className="font-sans text-[10px] text-foreground/30 px-1">
-                {fmtTime(msg.createdAt)}
-              </span>
+
+              {isOwn && onDelete && (
+                <button
+                  onClick={() => onDelete(msg.id)}
+                  className={cn(
+                    "mb-5 shrink-0 text-foreground/20 hover:text-red-400 transition-opacity transition-colors",
+                    hoveredId === msg.id ? "opacity-100" : "opacity-0"
+                  )}
+                  aria-label="Delete message"
+                >
+                  <Trash2 size={13} />
+                </button>
+              )}
             </div>
           </div>
         )

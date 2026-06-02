@@ -46,6 +46,11 @@ export function ActiveConversation({ conversationId, initialMessages, currentUse
     })
   }
 
+  async function handleDelete(messageId: string) {
+    setMessages((prev) => prev.filter((m) => m.id !== messageId))
+    await fetch(`/api/messages/${messageId}`, { method: "DELETE" })
+  }
+
   const initials = other?.displayName
     .split(" ")
     .map((w: string) => w[0])
@@ -79,7 +84,7 @@ export function ActiveConversation({ conversationId, initialMessages, currentUse
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto">
-        <MessageThread messages={messages} currentUserId={currentUserId} />
+        <MessageThread messages={messages} currentUserId={currentUserId} onDelete={handleDelete} />
       </div>
 
       {/* Input */}
