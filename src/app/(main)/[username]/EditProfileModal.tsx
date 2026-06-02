@@ -86,8 +86,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting,    setDeleting]    = useState(false)
 
-  const [firstName, setFirstName] = useState(profile.displayName.split(" ")[0] ?? "")
-  const [lastName,  setLastName]  = useState(profile.displayName.split(" ").slice(1).join(" ") ?? "")
+  const [displayName, setDisplayName] = useState(profile.displayName)
   const [location,  setLocation]  = useState(profile.location  ?? "")
   const [role,      setRole]      = useState(profile.role      ?? "")
   const [website,   setWebsite]   = useState(profile.website   ?? "")
@@ -105,8 +104,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
   // so stale initial state can't overwrite real DB values on save.
   useEffect(() => {
     if (!open) return
-    setFirstName(profile.displayName.split(" ")[0] ?? "")
-    setLastName(profile.displayName.split(" ").slice(1).join(" ") ?? "")
+    setDisplayName(profile.displayName)
     setLocation(profile.location  ?? "")
     setRole(profile.role      ?? "")
     setWebsite(profile.website   ?? "")
@@ -123,7 +121,6 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
   }, [open])
 
   const avatarUrl   = user?.imageUrl
-  const displayName = [firstName, lastName].filter(Boolean).join(" ") || "User"
   const initials    = displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -233,15 +230,9 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
               <div className="-mx-4 h-px bg-border" />
 
               {/* Name */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-xs font-medium text-foreground/50">First name</label>
-                  <input className={field} placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-xs font-medium text-foreground/50">Last name</label>
-                  <input className={field} placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-medium text-foreground/50">Display name</label>
+                <input className={field} placeholder="Full name or studio name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
               </div>
 
               {/* Role + Location */}
@@ -429,7 +420,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
             <button
               type="button"
               onClick={handleSave}
-              disabled={saving || !firstName.trim()}
+              disabled={saving || !displayName.trim()}
               className="inline-flex h-10 items-center rounded-xl bg-spring-green px-5 font-sans text-sm font-medium text-core-black transition-colors hover:bg-spring-green/90 disabled:opacity-50"
             >
               {saving ? "Saving…" : "Save changes"}

@@ -65,6 +65,7 @@ model User {
   sentMessages        Message[]
   notifications       Notification[]
   notificationsFrom   Notification[] @relation("NotifFromUser")
+  notificationQueue   NotificationQueue[]
   collaborationsOn    VideoCollaborator[]
 }
 
@@ -404,4 +405,16 @@ model Notification {
 
   user     User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   fromUser User? @relation("NotifFromUser", fields: [fromUserId], references: [id], onDelete: SetNull)
+}
+
+model NotificationQueue {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String    // "follow" | "comment" | "reply" | "message"
+  data      Json      // { actorName, actorUsername, contentId, contentType }
+  createdAt DateTime  @default(now())
+  sent      Boolean   @default(false)
+  sentAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

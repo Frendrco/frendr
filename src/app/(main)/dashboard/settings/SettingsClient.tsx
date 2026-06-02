@@ -87,8 +87,7 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   const [deleting,       setDeleting]       = useState(false)
 
   // Basic info
-  const [firstName,     setFirstName]     = useState(profile.displayName.split(" ")[0] ?? "")
-  const [lastName,      setLastName]      = useState(profile.displayName.split(" ").slice(1).join(" ") ?? "")
+  const [displayName,   setDisplayName]   = useState(profile.displayName)
   const [username,      setUsername]      = useState(profile.username)
   const [usernameError, setUsernameError] = useState("")
   const [location,      setLocation]      = useState(profile.location ?? "")
@@ -123,7 +122,6 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const avatarUrl    = user?.imageUrl
-  const displayName  = [firstName, lastName].filter(Boolean).join(" ") || "User"
   const initials     = displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -276,15 +274,9 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
           <div className="max-w-2xl flex flex-col gap-5">
 
             {/* ── Basic Information ── */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="font-sans text-xs font-medium text-foreground/50">First name</label>
-                <input className={field} placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="font-sans text-xs font-medium text-foreground/50">Last name</label>
-                <input className={field} placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-medium text-foreground/50">Display name</label>
+              <input className={field} placeholder="Full name or studio name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
             </div>
 
             <div className="flex flex-col gap-1.5">

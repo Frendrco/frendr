@@ -276,14 +276,22 @@ export default async function SearchPage({ searchParams }: Props) {
         {/* ── New to Frendr (browse only) ── */}
         {!isSearching && newMembers.length > 0 && (
           <section>
-            <h2 className="mb-4 font-sans font-bold text-base text-core-black">New Frends</h2>
-            <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-sans font-bold text-base text-core-black">New Frends</h2>
+              <Link
+                href="/frends"
+                className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
+              >
+                See all →
+              </Link>
+            </div>
+            <div className="flex gap-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-4 px-4 pb-1 scroll-smooth snap-x snap-mandatory md:mx-0 md:px-0 md:grid md:grid-cols-6 lg:grid-cols-8 md:overflow-visible md:snap-none">
               {newMembers.map(member => {
                 const initials = member.displayName
                   .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
                 const isOwn = currentUserId === member.id
                 return (
-                  <div key={member.id} className="flex flex-col items-center gap-2">
+                  <div key={member.id} className="flex flex-col items-center gap-2 shrink-0 w-24 snap-start md:w-auto">
                     <Link href={`/${member.username}`} className="group w-full">
                       <div className="relative w-full overflow-hidden rounded-3xl bg-spring-green aspect-square transition-opacity group-hover:opacity-90">
                         {member.avatarUrl ? (
