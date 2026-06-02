@@ -74,6 +74,7 @@ export default async function HomePage({
               {(["trending", "newest"] as Sort[]).map(opt => (
                 <Link
                   key={opt}
+                  scroll={false}
                   href={opt === "trending" ? "/" : `/?sort=${opt}`}
                   className={
                     sort === opt
