@@ -22,6 +22,8 @@ model User {
   patreon     String?
   substack    String?
   playlist    String?
+  behance     String?
+  other       String?
   openToWork    Boolean  @default(false)
   showAiContent Boolean  @default(true)
   avatarUrl     String?

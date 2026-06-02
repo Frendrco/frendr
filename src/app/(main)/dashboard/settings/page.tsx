@@ -25,6 +25,8 @@ export default async function SettingsPage() {
       patreon:     true,
       substack:    true,
       playlist:    true,
+      behance:     true,
+      other:       true,
       tags:        true,
     },
   })

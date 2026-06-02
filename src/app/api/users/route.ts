@@ -42,7 +42,7 @@ export async function PATCH(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { displayName, username, location, age, bio, website, role, instagram, linkedin, twitter, patreon, substack, playlist, tags, openToWork, coverImageUrl } = await req.json()
+  const { displayName, username, location, age, bio, website, role, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, openToWork, coverImageUrl } = await req.json()
 
   if (username !== undefined) {
     if (!USERNAME_RE.test(username)) {
@@ -75,6 +75,8 @@ export async function PATCH(req: Request) {
       ...(patreon    !== undefined && { patreon:   patreon   ?? null }),
       ...(substack   !== undefined && { substack:  substack  ?? null }),
       ...(playlist   !== undefined && { playlist:  playlist  ?? null }),
+      ...(behance    !== undefined && { behance:   behance   ?? null }),
+      ...(other      !== undefined && { other:     other     ?? null }),
       ...(Array.isArray(tags) && { tags }),
       ...(typeof openToWork === "boolean" && { openToWork }),
       ...(coverImageUrl !== undefined && { coverImageUrl: coverImageUrl ?? null }),

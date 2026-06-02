@@ -39,8 +39,8 @@ export default async function ProfilePage({ params }: Props) {
   const user = await prisma.user.findUnique({
     where: { username },
     include: {
-      videos: { orderBy: [{ position: "asc" }, { createdAt: "desc" }] },
-      _count: { select: { followers: true, following: true } },
+      videos:   { orderBy: [{ position: "asc" }, { createdAt: "desc" }] },
+      _count:   { select: { followers: true, following: true } },
     },
   })
 
@@ -76,12 +76,21 @@ export default async function ProfilePage({ params }: Props) {
     { label: "Following", value: String(user._count.following), href: `/${username}/following` },
   ]
 
+  function buildHref(value: string | null, base?: string): string | null {
+    if (!value) return null
+    if (value.startsWith("http")) return value
+    if (value.startsWith("www.")) return `https://${value}`
+    return base ? `${base}${value}` : `https://${value}`
+  }
+
   const socials = [
-    { key: "instagram", href: user.instagram, label: "IG"  },
-    { key: "linkedin",  href: user.linkedin,  label: "in"  },
-    { key: "playlist",  href: user.playlist,  label: "♫"   },
-    { key: "substack",  href: user.substack,  label: "SS"  },
-    { key: "patreon",   href: user.patreon,   label: "Pa"  },
+    { key: "instagram", href: buildHref(user.instagram, "https://www.instagram.com/"), label: "IG" },
+    { key: "linkedin",  href: buildHref(user.linkedin,  "https://www.linkedin.com/in/"), label: "in" },
+    { key: "playlist",  href: buildHref(user.playlist),  label: "♫"  },
+    { key: "substack",  href: buildHref(user.substack),  label: "SS" },
+    { key: "patreon",   href: buildHref(user.patreon),   label: "Pa" },
+    { key: "behance",   href: buildHref(user.behance,  "https://www.behance.net/"), label: "Be" },
+    { key: "other",     href: buildHref(user.other),     label: "↗"  },
   ].filter((s): s is { key: string; href: string; label: string } => Boolean(s.href))
 
   const pinnedVideo = user.pinnedVideoId
@@ -214,6 +223,8 @@ export default async function ProfilePage({ params }: Props) {
                   patreon:     user.patreon,
                   substack:    user.substack,
                   playlist:    user.playlist,
+                  behance:     user.behance,
+                  other:       user.other,
                   tags:        user.tags,
                 }}
               />
