@@ -375,7 +375,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
               {/* Danger zone */}
               <div className="-mx-4 h-px bg-border" />
               <div className="flex flex-col gap-2">
-                <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/30">Danger zone</p>
+                <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/30">Highway to the Danger Zone</p>
                 {!confirmDelete ? (
                   <button
                     type="button"
