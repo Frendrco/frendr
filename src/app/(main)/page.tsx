@@ -65,7 +65,7 @@ export default async function HomePage({
           {/* Section header */}
           <div className="flex flex-col gap-4 py-12 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="display-sm text-core-black">Straight out of the oven</h2>
+              <h2 className="display-sm text-core-black">Out of the oven</h2>
               <p className="mt-1 font-sans text-sm text-foreground/50">
                 The best motion design, animation, and video from the community.
               </p>
