@@ -69,10 +69,22 @@ export default function NotificationsPage() {
     if (url !== "#") router.push(url)
   }
 
+  async function clearAll() {
+    await fetch("/api/notifications", { method: "DELETE" })
+    setNotifications([])
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-xl px-4 py-12">
-        <h1 className="font-sans font-bold text-2xl text-core-black mb-8">Notifications</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="font-sans font-bold text-2xl text-core-black">Notifications</h1>
+          {notifications.length > 0 && (
+            <button onClick={clearAll} className="font-sans text-sm text-foreground/50 hover:text-foreground transition-colors">
+              Clear all
+            </button>
+          )}
+        </div>
 
         {loading ? (
           <div className="flex flex-col gap-3">

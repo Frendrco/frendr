@@ -65,6 +65,11 @@ export function NotificationsBell() {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
   }
 
+  async function clearAll() {
+    await fetch("/api/notifications", { method: "DELETE" })
+    setNotifications([])
+  }
+
   async function handleClick(n: Notification) {
     if (!n.read) {
       await fetch("/api/notifications", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: n.id }) })
@@ -109,10 +114,17 @@ export function NotificationsBell() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-black/5">
             <span className="font-sans font-semibold text-sm text-core-black">Notifications</span>
-            {unreadCount > 0 && (
-              <button onClick={markAllRead} className="font-sans text-xs text-foreground/50 hover:text-foreground transition-colors">
-                Mark all read
-              </button>
+            {notifications.length > 0 && (
+              <div className="flex items-center gap-3">
+                {unreadCount > 0 && (
+                  <button onClick={markAllRead} className="font-sans text-xs text-foreground/50 hover:text-foreground transition-colors">
+                    Mark all read
+                  </button>
+                )}
+                <button onClick={clearAll} className="font-sans text-xs text-foreground/50 hover:text-foreground transition-colors">
+                  Clear all
+                </button>
+              </div>
             )}
           </div>
 
