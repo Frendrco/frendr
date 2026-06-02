@@ -83,7 +83,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="font-sans font-semibold text-2xl text-core-black py-3 hover:text-spring-green transition-colors"
+              className="font-sans font-medium text-2xl text-core-black py-3 hover:text-spring-green transition-colors"
             >
               {link.label}
             </Link>
