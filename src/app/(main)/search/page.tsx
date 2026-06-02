@@ -264,9 +264,6 @@ export default async function SearchPage({ searchParams }: Props) {
                     </div>
                     <div className="mt-2">
                       <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1">{ch.name}</p>
-                      {ch.description && (
-                        <p className="font-sans text-xs text-foreground/40 line-clamp-1">{ch.description}</p>
-                      )}
                     </div>
                   </Link>
                 )
