@@ -38,7 +38,6 @@ const EMOJI_AVATARS = ["🦥", "🐉", "🦀", "🐶"]
 export function SettingsClient({ profile }: { profile: ProfileData }) {
   const router = useRouter()
   const { user } = useUser()
-  const [tab, setTab] = useState<"basic" | "about">("basic")
   const [saving, setSaving] = useState(false)
 
   // Basic info
@@ -123,24 +122,6 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
       {/* ── Left panel ─────────────────────────────────── */}
       <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-white overflow-y-auto">
 
-        {/* Tab nav */}
-        <nav className="flex flex-col px-6 pt-8">
-          {(["basic", "about"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={cn(
-                "h-11 text-left font-sans text-sm transition-colors",
-                tab === t
-                  ? "font-bold text-core-black"
-                  : "font-medium text-foreground/40 hover:text-foreground/70"
-              )}
-            >
-              {t === "basic" ? "Basic Information" : "About Me"}
-            </button>
-          ))}
-        </nav>
-
         {/* Avatar */}
         <div className="flex flex-col items-center gap-3 px-6 py-8">
           <div className="h-24 w-24 overflow-hidden rounded-full">
@@ -194,144 +175,134 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
       <div className="flex flex-1 flex-col bg-white">
         <div className="flex-1 overflow-y-auto px-10 py-8">
 
-          {/* ── Basic Information ── */}
-          {tab === "basic" && (
-            <div className="max-w-2xl">
-              <h2 className="mb-6 font-sans font-bold text-lg text-core-black">Basic Information</h2>
-              <div className="flex flex-col gap-5">
+          <div className="max-w-2xl flex flex-col gap-5">
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="font-sans text-xs font-medium text-foreground/50">First name</label>
-                    <input className={field} placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="font-sans text-xs font-medium text-foreground/50">Last name</label>
-                    <input className={field} placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                  </div>
-                </div>
+            {/* ── Basic Information ── */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-medium text-foreground/50">First name</label>
+                <input className={field} placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-medium text-foreground/50">Last name</label>
+                <input className={field} placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              </div>
+            </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-xs font-medium text-foreground/50">Username</label>
-                  <div className={cn("flex items-center gap-0", field, "px-0 overflow-hidden")}>
-                    <span className="flex h-full items-center px-3 font-sans text-sm text-foreground/40 bg-foreground/5 border-r border-border select-none">@</span>
-                    <input
-                      className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
-                      placeholder="your-handle"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
-                    />
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-medium text-foreground/50">Username</label>
+              <div className={cn("flex items-center gap-0", field, "px-0 overflow-hidden")}>
+                <span className="flex h-full items-center px-3 font-sans text-sm text-foreground/40 bg-foreground/5 border-r border-border select-none">@</span>
+                <input
+                  className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                  placeholder="your-handle"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+                />
+              </div>
+              {usernameError && (
+                <p className="font-sans text-xs text-red-500">{usernameError}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-medium text-foreground/50">Location</label>
+              <input className={field} placeholder="City, Country" value={location} onChange={(e) => setLocation(e.target.value)} />
+            </div>
+
+            {/* ── Divider ── */}
+            <div className="flex items-center gap-3 pt-2">
+              <span className="font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 shrink-0">About Me</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-medium text-foreground/50">Role</label>
+                <input className={field} placeholder="e.g. Motion Designer" value={role} onChange={(e) => setRole(e.target.value)} />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans text-xs font-medium text-foreground/50">Website</label>
+                <input className={field} placeholder="www.yoursite.com" value={website} onChange={(e) => setWebsite(e.target.value)} />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <label className="font-sans text-xs font-medium text-foreground/50">Bio</label>
+                <span className="font-sans text-xs text-foreground/30">{bio.length}/{BIO_MAX}</span>
+              </div>
+              <textarea
+                rows={4}
+                maxLength={BIO_MAX}
+                placeholder="Tell the community about yourself…"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+              />
+            </div>
+
+            {/* Social media */}
+            <div className="flex flex-col gap-2">
+              <label className="font-sans text-xs font-medium text-foreground/50">Social Media</label>
+              {([
+                { key: "instagram", label: "IG", value: instagram, set: setInstagram, placeholder: "www.instagram.com/handle" },
+                { key: "linkedin",  label: "in", value: linkedin,  set: setLinkedin,  placeholder: "www.linkedin.com/in/handle" },
+                { key: "playlist",  label: "♫",  value: playlist,  set: setPlaylist,  placeholder: "open.spotify.com/playlist/…" },
+                { key: "substack",  label: "SS", value: substack,  set: setSubstack,  placeholder: "yourname.substack.com" },
+                { key: "patreon",   label: "Pa", value: patreon,   set: setPatreon,   placeholder: "www.patreon.com/handle" },
+              ] as const).map(({ key, label, value, set, placeholder }) => (
+                <div key={key} className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white font-sans font-bold text-xs text-foreground/40">
+                    {label}
                   </div>
-                  {usernameError && (
-                    <p className="font-sans text-xs text-red-500">{usernameError}</p>
+                  <input
+                    className={cn(field, "flex-1")}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={(e) => set(e.target.value)}
+                  />
+                  {value && (
+                    <button onClick={() => set("")} className="shrink-0 text-foreground/30 hover:text-foreground/60 transition-colors">
+                      <X size={14} />
+                    </button>
                   )}
                 </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-xs font-medium text-foreground/50">Location</label>
-                  <input className={field} placeholder="City, Country" value={location} onChange={(e) => setLocation(e.target.value)} />
-                </div>
-
-              </div>
+              ))}
             </div>
-          )}
 
-          {/* ── About Me ── */}
-          {tab === "about" && (
-            <div className="max-w-2xl">
-              <h2 className="mb-6 font-sans font-bold text-lg text-core-black">About Me</h2>
-              <div className="flex flex-col gap-5">
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="font-sans text-xs font-medium text-foreground/50">Role</label>
-                    <input className={field} placeholder="e.g. Motion Designer" value={role} onChange={(e) => setRole(e.target.value)} />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="font-sans text-xs font-medium text-foreground/50">Website</label>
-                    <input className={field} placeholder="www.yoursite.com" value={website} onChange={(e) => setWebsite(e.target.value)} />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="font-sans text-xs font-medium text-foreground/50">Bio</label>
-                    <span className="font-sans text-xs text-foreground/30">{bio.length}/{BIO_MAX}</span>
-                  </div>
-                  <textarea
-                    rows={4}
-                    maxLength={BIO_MAX}
-                    placeholder="Tell the community about yourself…"
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
-                  />
-                </div>
-
-                {/* Social media */}
-                <div className="flex flex-col gap-2">
-                  <label className="font-sans text-xs font-medium text-foreground/50">Social Media</label>
-
-                  {([
-                    { key: "instagram", label: "IG", value: instagram, set: setInstagram, placeholder: "www.instagram.com/handle" },
-                    { key: "linkedin",  label: "in", value: linkedin,  set: setLinkedin,  placeholder: "www.linkedin.com/in/handle" },
-                    { key: "playlist",  label: "♫",  value: playlist,  set: setPlaylist,  placeholder: "open.spotify.com/playlist/…" },
-                    { key: "substack",  label: "SS", value: substack,  set: setSubstack,  placeholder: "yourname.substack.com" },
-                    { key: "patreon",   label: "Pa", value: patreon,   set: setPatreon,   placeholder: "www.patreon.com/handle" },
-                  ] as const).map(({ key, label, value, set, placeholder }) => (
-                    <div key={key} className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white font-sans font-bold text-xs text-foreground/40">
-                        {label}
-                      </div>
-                      <input
-                        className={cn(field, "flex-1")}
-                        placeholder={placeholder}
-                        value={value}
-                        onChange={(e) => set(e.target.value)}
-                      />
-                      {value && (
-                        <button onClick={() => set("")} className="shrink-0 text-foreground/30 hover:text-foreground/60 transition-colors">
-                          <X size={14} />
-                        </button>
+            {/* Skills */}
+            <div className="flex flex-col gap-2 pb-4">
+              <div className="flex items-baseline justify-between">
+                <label className="font-sans text-xs font-medium text-foreground/50">Skills</label>
+                <span className="font-sans text-xs text-foreground/30">{tags.length}/{MAX_SKILLS}</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {SKILLS.map((skill) => {
+                  const on    = tags.includes(skill)
+                  const maxed = !on && tags.length >= MAX_SKILLS
+                  return (
+                    <button
+                      key={skill}
+                      onClick={() => toggleTag(skill)}
+                      disabled={maxed}
+                      className={cn(
+                        "inline-flex h-7 items-center gap-1 rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                        on    ? "border-core-black bg-core-black text-white"
+                              : maxed
+                              ? "border-border text-foreground/25 cursor-not-allowed"
+                              : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
                       )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Skills */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-baseline justify-between">
-                    <label className="font-sans text-xs font-medium text-foreground/50">Skills</label>
-                    <span className="font-sans text-xs text-foreground/30">{tags.length}/{MAX_SKILLS}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {SKILLS.map((skill) => {
-                      const on    = tags.includes(skill)
-                      const maxed = !on && tags.length >= MAX_SKILLS
-                      return (
-                        <button
-                          key={skill}
-                          onClick={() => toggleTag(skill)}
-                          disabled={maxed}
-                          className={cn(
-                            "inline-flex h-7 items-center gap-1 rounded-full border px-3 font-sans text-xs font-medium transition-colors",
-                            on    ? "border-core-black bg-core-black text-white"
-                                  : maxed
-                                  ? "border-border text-foreground/25 cursor-not-allowed"
-                                  : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
-                          )}
-                        >
-                          {skill}
-                          {on && <X size={10} className="ml-0.5" />}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-
+                    >
+                      {skill}
+                      {on && <X size={10} className="ml-0.5" />}
+                    </button>
+                  )
+                })}
               </div>
             </div>
-          )}
+
+          </div>
         </div>
 
         {/* Footer */}
