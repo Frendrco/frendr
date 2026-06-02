@@ -4,7 +4,7 @@ import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
-import { Camera, X, Globe } from "lucide-react"
+import { Camera, X, Globe, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface ProfileData {
@@ -77,7 +77,9 @@ function BehanceIcon() {
 export function SettingsClient({ profile }: { profile: ProfileData }) {
   const router = useRouter()
   const { user } = useUser()
-  const [saving, setSaving] = useState(false)
+  const [saving,         setSaving]         = useState(false)
+  const [confirmDelete,  setConfirmDelete]  = useState(false)
+  const [deleting,       setDeleting]       = useState(false)
 
   // Basic info
   const [firstName,     setFirstName]     = useState(profile.displayName.split(" ")[0] ?? "")
@@ -157,6 +159,13 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
     }
   }
 
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    await fetch("/api/users/me", { method: "DELETE" })
+    await user?.delete()
+    router.push("/")
+  }
+
   const field = "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
   const iconBadge = "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-foreground/40"
@@ -207,6 +216,38 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
 
         <div className="flex-1" />
 
+        {/* Delete account */}
+        <div className="px-6 pb-8 flex flex-col gap-2">
+          {!confirmDelete ? (
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="flex w-full h-10 items-center justify-center gap-2 rounded-xl border border-border font-sans text-sm text-red-500 hover:bg-red-50 transition-colors"
+            >
+              <Trash2 size={14} />
+              Delete Account
+            </button>
+          ) : (
+            <div className="rounded-xl border border-red-200 bg-red-50 p-3 flex flex-col gap-2">
+              <p className="font-sans text-xs text-red-700 font-medium">Delete your account?</p>
+              <p className="font-sans text-[11px] text-red-500 leading-relaxed">This permanently deletes your account and all your videos. Cannot be undone.</p>
+              <div className="flex gap-1.5 mt-1">
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="flex-1 h-8 rounded-lg border border-border font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={deleting}
+                  className="flex-1 h-8 rounded-lg bg-red-500 font-sans text-xs font-medium text-white hover:bg-red-600 transition-colors disabled:opacity-50"
+                >
+                  {deleting ? "Deleting…" : "Confirm"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </aside>
 
       {/* ── Right panel ────────────────────────────────── */}
