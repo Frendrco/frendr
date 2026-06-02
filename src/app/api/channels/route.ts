@@ -12,9 +12,45 @@ function slugify(name: string): string {
 }
 
 // GET /api/channels?type=admin|user&q=search
+// GET /api/channels?mine=true&videoId={id}  — returns user's managed channels with inChannel flag
 export async function GET(req: NextRequest) {
-  const type = req.nextUrl.searchParams.get("type")
-  const q = req.nextUrl.searchParams.get("q")?.trim()
+  const { searchParams } = req.nextUrl
+  const mine = searchParams.get("mine") === "true"
+
+  if (mine) {
+    const { userId: clerkId } = await auth()
+    if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+    const videoId = searchParams.get("videoId") ?? undefined
+
+    const channels = await prisma.channel.findMany({
+      where: {
+        OR: [
+          { userId: user.id },
+          { admins: { some: { userId: user.id } } },
+        ],
+      },
+      include: {
+        videos: videoId ? { where: { videoId } } : false,
+      },
+      orderBy: { createdAt: "desc" },
+    })
+
+    return NextResponse.json(
+      channels.map((c) => ({
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        color: c.color,
+        inChannel: Array.isArray(c.videos) && c.videos.length > 0,
+      }))
+    )
+  }
+
+  const type = searchParams.get("type")
+  const q = searchParams.get("q")?.trim()
 
   const channels = await prisma.channel.findMany({
     where: {

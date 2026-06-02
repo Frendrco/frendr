@@ -1,0 +1,114 @@
+"use client"
+
+import { useState, useCallback } from "react"
+import { Tv2, Check, Loader2 } from "lucide-react"
+import { useAuth } from "@clerk/nextjs"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import Link from "next/link"
+
+type Channel = {
+  id: string
+  name: string
+  slug: string
+  color: string | null
+  inChannel: boolean
+}
+
+export function AddToChannelButton({ videoId }: { videoId: string }) {
+  const { isSignedIn } = useAuth()
+  const [open, setOpen] = useState(false)
+  const [channels, setChannels] = useState<Channel[]>([])
+  const [loading, setLoading] = useState(false)
+
+  const fetchChannels = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/channels?mine=true&videoId=${videoId}`)
+      if (res.ok) setChannels(await res.json())
+    } finally {
+      setLoading(false)
+    }
+  }, [videoId])
+
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next)
+    if (next) fetchChannels()
+  }
+
+  const toggle = async (channel: Channel) => {
+    const next = !channel.inChannel
+    setChannels((prev) => prev.map((c) => c.id === channel.id ? { ...c, inChannel: next } : c))
+    if (next) {
+      await fetch(`/api/channels/${channel.id}/videos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoId }),
+      })
+    } else {
+      await fetch(`/api/channels/${channel.id}/videos/${videoId}`, { method: "DELETE" })
+    }
+  }
+
+  if (!isSignedIn) return null
+
+  return (
+    <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
+        <PopoverTrigger
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors"
+          title="Add to channel"
+        >
+          <Tv2 size={14} />
+        </PopoverTrigger>
+
+        <PopoverContent
+          className="w-56 p-0 overflow-hidden"
+          align="end"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation() }}
+        >
+          <div className="px-3 py-2.5 border-b border-border">
+            <p className="font-sans font-semibold text-xs text-core-black">Add to channel</p>
+          </div>
+
+          <div className="max-h-52 overflow-y-auto">
+            {loading ? (
+              <div className="flex items-center justify-center py-6">
+                <Loader2 size={16} className="animate-spin text-foreground/40" />
+              </div>
+            ) : channels.length === 0 ? (
+              <div className="flex flex-col items-center gap-1.5 px-3 py-5 text-center">
+                <Tv2 size={18} className="text-foreground/20" />
+                <p className="font-sans text-xs text-foreground/40">No channels yet</p>
+                <Link
+                  href="/channels"
+                  className="font-sans text-xs text-spring-green hover:underline"
+                  onClick={() => setOpen(false)}
+                >
+                  Create one
+                </Link>
+              </div>
+            ) : (
+              channels.map((ch) => (
+                <button
+                  key={ch.id}
+                  onClick={() => toggle(ch)}
+                  className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors"
+                >
+                  {/* Color dot */}
+                  <span
+                    className="h-4 w-4 shrink-0 rounded-full border border-border"
+                    style={{ background: ch.color ?? "#e5e7eb" }}
+                  />
+                  <span className="flex-1 truncate font-sans text-sm text-left text-core-black">{ch.name}</span>
+                  {ch.inChannel && (
+                    <Check size={13} className="shrink-0 text-spring-green" strokeWidth={2.5} />
+                  )}
+                </button>
+              ))
+            )}
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}

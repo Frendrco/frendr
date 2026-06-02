@@ -6,6 +6,7 @@ import { Play, Sparkles } from "lucide-react"
 import { timeAgo } from "@/lib/utils"
 import { detectProvider, getProviderLabel, type Provider } from "@/lib/videoEmbed"
 import { AddToPlaylistButton } from "./AddToPlaylistButton"
+import { AddToChannelButton } from "./AddToChannelButton"
 
 export type VideoCardData = {
   id: string
@@ -105,8 +106,9 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
             </div>
           </div>
 
-          {/* Add to playlist — top-right corner */}
-          <div className="absolute top-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
+          {/* Action buttons — top-right corner */}
+          <div className="absolute top-2 right-2 z-30 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
+            <AddToChannelButton videoId={video.id} />
             <AddToPlaylistButton videoId={video.id} />
           </div>
 
