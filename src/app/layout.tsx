@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { ClerkProvider } from "@clerk/nextjs"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { ActivityPing } from "@/components/common/ActivityPing"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className="min-h-screen flex flex-col antialiased">
           <TooltipProvider>
+            <ActivityPing />
             {children}
           </TooltipProvider>
         </body>

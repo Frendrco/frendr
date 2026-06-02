@@ -44,6 +44,15 @@ export default async function ProfilePage({ params }: Props) {
     },
   })
 
+  function formatLastActive(date: Date | null): string | null {
+    if (!date) return null
+    const days = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))
+    if (days === 0) return "Active today"
+    if (days === 1) return "Active yesterday"
+    if (days <= 13) return `Active ${days} days ago`
+    return null
+  }
+
   if (!user) notFound()
 
   const isOwn = clerkId === user.clerkId
@@ -135,6 +144,12 @@ export default async function ProfilePage({ params }: Props) {
                 <p className="font-sans text-xs text-foreground/50">{user.role}</p>
               )}
               <AvailableForWork initial={user.openToWork} isOwn={isOwn} />
+              {formatLastActive(user.lastActiveAt) && (
+                <p className="flex items-center gap-1.5 font-sans text-xs text-foreground/40">
+                  <span className="h-1.5 w-1.5 rounded-full bg-foreground/25" />
+                  {formatLastActive(user.lastActiveAt)}
+                </p>
+              )}
             </div>
 
             {/* Stats — followers + following only */}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Briefcase } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Props {
@@ -40,10 +41,7 @@ export function AvailableForWork({ initial, isOwn }: Props) {
         !isOwn && "cursor-default"
       )}
     >
-      <span className={cn(
-        "h-1.5 w-1.5 rounded-full",
-        available ? "bg-green-500" : "bg-foreground/30"
-      )} />
+      <Briefcase size={11} />
       {available ? "Available for work" : "Not available"}
     </button>
   )
