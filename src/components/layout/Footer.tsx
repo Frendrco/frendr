@@ -34,7 +34,7 @@ export function Footer() {
         </div>
 
         {/* Symbol — absolutely centered so it's independent of side widths */}
-        <Link href="/" className="absolute left-1/2 -translate-x-1/2 hover:scale-125 transition-transform duration-200">
+        <Link href="/" className="hidden md:block absolute left-1/2 -translate-x-1/2 hover:scale-125 transition-transform duration-200">
           <Logo variant="symbol" height={22} colour="black" />
         </Link>
 
