@@ -35,7 +35,7 @@ export function ExploreSort({ current }: { current: SortValue }) {
     } else {
       params.set("sort", value)
     }
-    router.push(`/search?${params.toString()}`)
+    router.push(`/search?${params.toString()}`, { scroll: false })
     setOpen(false)
   }
 
