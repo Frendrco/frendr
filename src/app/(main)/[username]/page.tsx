@@ -290,9 +290,6 @@ export default async function ProfilePage({ params }: Props) {
                 >
                   Playlists
                 </Link>
-                <span className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/25 cursor-not-allowed">
-                  Activity
-                </span>
               </div>
             </div>
 
