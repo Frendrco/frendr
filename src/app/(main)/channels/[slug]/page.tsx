@@ -138,6 +138,7 @@ export default async function ChannelPage({ params }: Props) {
                   isPublic: channel.isPublic,
                 }}
                 canDelete={isOwner || isSiteAdmin}
+                isOwner={isOwner}
               />
             )}
             {canManage && <AddVideoToChannelButton channelId={channel.id} />}

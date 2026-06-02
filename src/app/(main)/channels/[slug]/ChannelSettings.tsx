@@ -1,15 +1,22 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Settings, Loader2, X, ImagePlus, Trash2 } from "lucide-react"
+import { Settings, Loader2, X, ImagePlus, Trash2, UserPlus, UserMinus, Search } from "lucide-react"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
+
+type AdminUser = {
+  id: string
+  username: string
+  displayName: string | null
+  avatarUrl: string | null
+}
 
 type Props = {
   channel: {
@@ -20,9 +27,10 @@ type Props = {
     isPublic: boolean
   }
   canDelete: boolean
+  isOwner: boolean
 }
 
-export function ChannelSettings({ channel, canDelete }: Props) {
+export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(false)
@@ -39,6 +47,69 @@ export function ChannelSettings({ channel, canDelete }: Props) {
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState("")
 
+  // Admin management state
+  const [admins, setAdmins] = useState<AdminUser[]>([])
+  const [adminSearch, setAdminSearch] = useState("")
+  const [adminResults, setAdminResults] = useState<AdminUser[]>([])
+  const [adminSearching, setAdminSearching] = useState(false)
+  const [adminAdding, setAdminAdding] = useState<string | null>(null)
+  const [adminRemoving, setAdminRemoving] = useState<string | null>(null)
+  const adminSearchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const loadAdmins = useCallback(async () => {
+    const res = await fetch(`/api/channels/${channel.id}/admins`)
+    if (res.ok) setAdmins(await res.json())
+  }, [channel.id])
+
+  useEffect(() => {
+    if (open && isOwner) loadAdmins()
+  }, [open, isOwner, loadAdmins])
+
+  useEffect(() => {
+    if (adminSearchTimeout.current) clearTimeout(adminSearchTimeout.current)
+    if (!adminSearch.trim()) { setAdminResults([]); return }
+    adminSearchTimeout.current = setTimeout(async () => {
+      setAdminSearching(true)
+      try {
+        const res = await fetch(`/api/users/search?q=${encodeURIComponent(adminSearch)}`)
+        if (res.ok) {
+          const all: AdminUser[] = await res.json()
+          setAdminResults(all.filter((u) => !admins.some((a) => a.id === u.id)))
+        }
+      } finally {
+        setAdminSearching(false)
+      }
+    }, 300)
+  }, [adminSearch, admins])
+
+  async function addAdmin(user: AdminUser) {
+    setAdminAdding(user.id)
+    try {
+      const res = await fetch(`/api/channels/${channel.id}/admins`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id }),
+      })
+      if (res.ok) {
+        setAdmins((prev) => [...prev, user])
+        setAdminResults((prev) => prev.filter((u) => u.id !== user.id))
+        setAdminSearch("")
+      }
+    } finally {
+      setAdminAdding(null)
+    }
+  }
+
+  async function removeAdmin(userId: string) {
+    setAdminRemoving(userId)
+    try {
+      const res = await fetch(`/api/channels/${channel.id}/admins/${userId}`, { method: "DELETE" })
+      if (res.ok) setAdmins((prev) => prev.filter((a) => a.id !== userId))
+    } finally {
+      setAdminRemoving(null)
+    }
+  }
+
   function handleOpen() {
     setName(channel.name)
     setDescription(channel.description ?? "")
@@ -47,6 +118,8 @@ export function ChannelSettings({ channel, canDelete }: Props) {
     setCoverError("")
     setError("")
     setDeleteConfirm(false)
+    setAdminSearch("")
+    setAdminResults([])
     setOpen(true)
   }
 
@@ -215,6 +288,94 @@ export function ChannelSettings({ channel, canDelete }: Props) {
 
               {coverError && <p className="font-sans text-xs text-red-500">{coverError}</p>}
             </div>
+
+            {/* Administrators */}
+            {isOwner && (
+              <div className="flex flex-col gap-3">
+                <div>
+                  <p className="font-sans font-medium text-sm text-core-black">Administrators</p>
+                  <p className="font-sans text-xs text-foreground/40 mt-0.5">
+                    Admins can add and remove videos from this channel.
+                  </p>
+                </div>
+
+                {/* Current admins */}
+                {admins.length > 0 && (
+                  <div className="flex flex-col gap-1">
+                    {admins.map((admin) => (
+                      <div key={admin.id} className="flex items-center gap-2.5 py-1.5">
+                        <div className="h-7 w-7 rounded-full overflow-hidden bg-muted flex-shrink-0">
+                          {admin.avatarUrl
+                            ? <Image src={admin.avatarUrl} alt={admin.displayName ?? admin.username} width={28} height={28} className="object-cover" />
+                            : <div className="h-full w-full bg-bloom-lavender" />
+                          }
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-sans text-sm text-core-black truncate">{admin.displayName ?? admin.username}</p>
+                          <p className="font-sans text-[11px] text-foreground/40 truncate">@{admin.username}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeAdmin(admin.id)}
+                          disabled={adminRemoving === admin.id}
+                          className="flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-foreground/30 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40"
+                        >
+                          {adminRemoving === admin.id
+                            ? <Loader2 size={13} className="animate-spin" />
+                            : <UserMinus size={13} />
+                          }
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Search to add */}
+                <div className="relative">
+                  <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30 pointer-events-none" />
+                  <input
+                    value={adminSearch}
+                    onChange={(e) => setAdminSearch(e.target.value)}
+                    placeholder="Search by name or username…"
+                    className="w-full h-9 pl-8 pr-3 rounded-lg border border-border bg-transparent font-sans text-sm outline-none focus:border-foreground/30 transition-colors"
+                  />
+                  {adminSearching && (
+                    <Loader2 size={13} className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-foreground/30" />
+                  )}
+                </div>
+
+                {adminResults.length > 0 && (
+                  <div className="rounded-lg border border-border overflow-hidden">
+                    {adminResults.map((user) => (
+                      <div key={user.id} className="flex items-center gap-2.5 px-3 py-2 hover:bg-muted/50 transition-colors">
+                        <div className="h-7 w-7 rounded-full overflow-hidden bg-muted flex-shrink-0">
+                          {user.avatarUrl
+                            ? <Image src={user.avatarUrl} alt={user.displayName ?? user.username} width={28} height={28} className="object-cover" />
+                            : <div className="h-full w-full bg-bloom-lavender" />
+                          }
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-sans text-sm text-core-black truncate">{user.displayName ?? user.username}</p>
+                          <p className="font-sans text-[11px] text-foreground/40 truncate">@{user.username}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => addAdmin(user)}
+                          disabled={adminAdding === user.id}
+                          className="flex-shrink-0 inline-flex items-center gap-1 h-7 px-3 rounded-full bg-core-black font-sans font-medium text-[11px] text-white disabled:opacity-40 transition-opacity"
+                        >
+                          {adminAdding === user.id
+                            ? <Loader2 size={11} className="animate-spin" />
+                            : <UserPlus size={11} />
+                          }
+                          Add
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Delete zone */}
             {canDelete && (
