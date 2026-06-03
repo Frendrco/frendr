@@ -57,7 +57,7 @@ export async function fetchVideoMetadata(url: string): Promise<VideoMetadata> {
   if (provider === "vimeo") {
     try {
       const res = await fetch(
-        `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`,
+        `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}&width=1280`,
         { next: { revalidate: 3600 } }
       )
       if (res.ok) {
