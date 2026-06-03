@@ -23,7 +23,7 @@ export function CommunityNav({ isSignedIn = false }: Props) {
     : BASE_TABS
 
   return (
-    <div className="flex gap-1 border-b border-border">
+    <div className="flex gap-1 border-b border-border overflow-x-auto scrollbar-hide">
       {tabs.map(({ label, href }) => {
         const active =
           href === "/community"
@@ -36,7 +36,7 @@ export function CommunityNav({ isSignedIn = false }: Props) {
             key={href}
             href={href}
             className={cn(
-              "pb-4 font-sans font-medium text-base border-b-2 -mb-px transition-colors mr-8",
+              "pb-4 font-sans font-medium text-base border-b-2 -mb-px transition-colors mr-5 md:mr-8 whitespace-nowrap shrink-0",
               active
                 ? "border-core-black text-core-black"
                 : "border-transparent text-foreground/40 hover:text-foreground/70"

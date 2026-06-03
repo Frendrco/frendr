@@ -22,7 +22,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
 
       <div className="mx-auto max-w-screen-lg px-4 md:px-6">
 
-        <div className="flex items-end justify-between py-10">
+        <div className="flex flex-col gap-4 py-10 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="display-sm text-core-black">Frend Zone</h1>
             <p className="mt-1 font-sans text-sm text-foreground/40">
@@ -32,7 +32,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
           {userId && (
             <Link
               href="/community/new"
-              className="inline-flex h-9 items-center rounded-full bg-core-black px-5 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80"
+              className="inline-flex h-9 w-fit items-center rounded-full bg-core-black px-5 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80"
             >
               New Thread
             </Link>
