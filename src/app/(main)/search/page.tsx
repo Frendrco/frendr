@@ -387,10 +387,10 @@ function PlaceholderGrid() {
         <div key={i} className="flex flex-col gap-2">
           <div className={`aspect-video rounded-xl ${bg}`} />
           <div className="flex items-start gap-2">
-            <div className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-foreground/8" />
+            <div className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-foreground/0" />
             <div className="flex flex-col gap-1 flex-1 pt-0.5">
-              <div className="h-3 w-4/5 rounded-full bg-foreground/8" />
-              <div className="h-2.5 w-2/5 rounded-full bg-foreground/5" />
+              <div className="h-3 w-4/5 rounded-full bg-foreground/0" />
+              <div className="h-2.5 w-2/5 rounded-full bg-foreground/0" />
             </div>
           </div>
         </div>

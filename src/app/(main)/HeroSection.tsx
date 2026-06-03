@@ -1,10 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useAuth } from "@clerk/nextjs"
-import { useState, useRef } from "react"
+import { useState, useRef, type ReactNode } from "react"
 
 const BLOBS = [
   { id: 1, bg: "bg-bloom-lavender", style: { top: "24%",   left:  "6%",  width: 192, height: 192 } },
@@ -22,8 +20,7 @@ const HERO_CLIPS = [
   "/videos/hero/clip-4.mp4",
 ]
 
-export function HeroSection() {
-  const { isSignedIn } = useAuth()
+export function HeroSection({ children }: { children?: ReactNode }) {
   const { scrollY } = useScroll()
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -113,14 +110,9 @@ export function HeroSection() {
           />
         </motion.div>
 
-        {!isSignedIn && (
+        {children && (
           <motion.div style={{ y: headlineY }}>
-            <Link
-              href="/sign-up"
-              className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-all hover:bg-core-black hover:text-white hover:scale-105"
-            >
-              Join Free
-            </Link>
+            {children}
           </motion.div>
         )}
 

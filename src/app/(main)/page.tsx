@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { clerkClient } from "@clerk/nextjs/server"
+import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { HeroSection } from "./HeroSection"
 import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore"
@@ -27,7 +27,7 @@ export default async function HomePage({
 }: {
   searchParams: Promise<{ sort?: string }>
 }) {
-  const { sort: sortParam } = await searchParams
+  const [{ sort: sortParam }, { userId }] = await Promise.all([searchParams, auth()])
   const sort: Sort = sortParam === "newest" ? "newest" : "trending"
 
   const videos = await prisma.video.findMany({
@@ -57,7 +57,16 @@ export default async function HomePage({
 
   return (
     <>
-      <HeroSection />
+      <HeroSection>
+        {!userId && (
+          <Link
+            href="/sign-up"
+            className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-all hover:bg-core-black hover:text-white hover:scale-105"
+          >
+            Join Free
+          </Link>
+        )}
+      </HeroSection>
 
       <section className="bg-white pb-24">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6">
@@ -127,10 +136,10 @@ function PlaceholderGrid() {
         <div key={i} className="flex flex-col gap-2">
           <div className={`aspect-video rounded-xl ${bg}`} />
           <div className="flex items-start gap-2">
-            <div className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-foreground/8" />
+            <div className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-foreground/0" />
             <div className="flex flex-col gap-1 flex-1 pt-0.5">
-              <div className="h-3 w-4/5 rounded-full bg-foreground/8" />
-              <div className="h-2.5 w-2/5 rounded-full bg-foreground/5" />
+              <div className="h-3 w-4/5 rounded-full bg-foreground/0" />
+              <div className="h-2.5 w-2/5 rounded-full bg-foreground/0" />
             </div>
           </div>
         </div>
