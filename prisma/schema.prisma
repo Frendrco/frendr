@@ -116,6 +116,7 @@ model Thread {
   videoUrl   String?
   imageUrls  String[]
   riveUrls   String[]
+  source     String       @default("community")
   voteCount  Int          @default(0)
   userId     String
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)

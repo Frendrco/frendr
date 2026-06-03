@@ -7,6 +7,7 @@ export async function GET(req: Request) {
   const sort = searchParams.get("sort") ?? "recent"
 
   const threads = await prisma.thread.findMany({
+    where: { source: "community" },
     orderBy: sort === "top" ? { voteCount: "desc" } : { createdAt: "desc" },
     include: {
       user: { select: { username: true, displayName: true, avatarUrl: true } },
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
-  const { title, body, tags, videoUrl, imageUrls, riveUrls } = await req.json()
+  const { title, body, tags, videoUrl, imageUrls, riveUrls, source } = await req.json()
   const hasRive = Array.isArray(riveUrls) && riveUrls.some((u: string) => u?.trim())
   if (!title?.trim() || (!body?.trim() && !hasRive)) {
     return NextResponse.json({ error: "Title and body are required" }, { status: 400 })
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
       videoUrl: videoUrl?.trim() || null,
       imageUrls: Array.isArray(imageUrls) ? imageUrls.filter(Boolean) : [],
       riveUrls: Array.isArray(riveUrls) ? riveUrls.filter(Boolean) : [],
+      source: source === "rive_world" ? "rive_world" : "community",
       userId: user.id,
     },
   })

@@ -54,6 +54,7 @@ export function ShareRiveButton() {
         title: title.trim(),
         body: description.trim(),
         riveUrls: [riveUrl.trim()],
+        source: "rive_world",
       }),
     })
 

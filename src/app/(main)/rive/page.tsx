@@ -4,7 +4,7 @@ import { ShareRiveButton } from "./ShareRiveButton"
 
 export default async function RiveWorldPage() {
   const threads = await prisma.thread.findMany({
-    where: { riveUrls: { isEmpty: false } },
+    where: { source: "rive_world" },
     orderBy: { createdAt: "desc" },
     take: 24,
     select: {
