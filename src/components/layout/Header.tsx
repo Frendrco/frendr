@@ -36,7 +36,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
 }
 
 export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
-  const { isSignedIn } = useAuth()
+  const { isSignedIn, isLoaded } = useAuth()
   const pathname = usePathname()
   const router = useRouter()
   const isHome = pathname === "/"
@@ -167,7 +167,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
         {/* ── Right: Actions ── */}
         <div className="flex items-center gap-2 shrink-0">
 
-          {isSignedIn ? (
+          {!isLoaded ? null : isSignedIn ? (
             <>
               {/* Upload */}
               <Link
