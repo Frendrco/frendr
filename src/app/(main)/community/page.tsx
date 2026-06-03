@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma"
 import { timeAgo } from "@/lib/utils"
 import { VoteButtons } from "./VoteButtons"
 import { SaveThreadButton } from "./SaveThreadButton"
+import { DeleteThreadButton } from "./DeleteThreadButton"
 
 type Props = { searchParams: Promise<{ sort?: string }> }
 
@@ -107,6 +108,9 @@ export default async function CommunityPage({ searchParams }: Props) {
                   </Link>
                   {currentUser && (
                     <SaveThreadButton threadId={thread.id} initialSaved={savedSet.has(thread.id)} />
+                  )}
+                  {currentUser?.id === thread.userId && (
+                    <DeleteThreadButton threadId={thread.id} />
                   )}
                 </div>
 
