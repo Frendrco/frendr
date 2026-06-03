@@ -69,6 +69,7 @@ export function ShareRiveButton() {
     setRiveUrl("")
     setDescription("")
     setError(null)
+    setSubmitting(false)
     setOpen(false)
     router.refresh()
   }
