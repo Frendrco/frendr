@@ -59,6 +59,7 @@ export async function GET(req: NextRequest) {
       ...(q ? { name: { contains: q, mode: "insensitive" } } : {}),
     },
     orderBy: [{ type: "asc" }, { createdAt: "desc" }],
+    take: 48,
     include: {
       _count: { select: { videos: true, followers: true } },
       user: { select: { username: true, displayName: true } },

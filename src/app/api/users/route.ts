@@ -1,6 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import slugify from "slugify"
+import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 
 const USERNAME_RE = /^[a-z0-9-]{3,30}$/
@@ -29,11 +30,19 @@ export async function POST(req: Request) {
   const avatarUrl = clerkUser.imageUrl ?? null
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? null
 
-  const user = await prisma.user.upsert({
-    where: { clerkId: userId },
-    update: { displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [], ...(typeof showAiContent === "boolean" && { showAiContent }) },
-    create: { clerkId: userId, username, displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [], showAiContent: typeof showAiContent === "boolean" ? showAiContent : true },
-  })
+  let user
+  try {
+    user = await prisma.user.upsert({
+      where: { clerkId: userId },
+      update: { displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [], ...(typeof showAiContent === "boolean" && { showAiContent }) },
+      create: { clerkId: userId, username, displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [], showAiContent: typeof showAiContent === "boolean" ? showAiContent : true },
+    })
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return NextResponse.json({ error: "Username already taken" }, { status: 409 })
+    }
+    return NextResponse.json({ error: "Failed to create user" }, { status: 500 })
+  }
 
   // Auto-follow all admins on signup
   const admins = await prisma.user.findMany({ where: { isAdmin: true, NOT: { id: user.id } }, select: { id: true } })

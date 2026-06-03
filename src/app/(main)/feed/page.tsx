@@ -190,7 +190,7 @@ export default async function FollowingPage() {
                   >
                     <div className="relative h-16 w-16 overflow-hidden rounded-full bg-muted ring-2 ring-transparent group-hover:ring-spring-green transition-all duration-200">
                       {user.avatarUrl ? (
-                        <Image src={user.avatarUrl} alt={user.displayName} fill className="object-cover" />
+                        <Image src={user.avatarUrl} alt={user.displayName} fill sizes="64px" className="object-cover" />
                       ) : (
                         <div className="h-full w-full bg-bloom-lavender" />
                       )}

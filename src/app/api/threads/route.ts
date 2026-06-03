@@ -9,6 +9,7 @@ export async function GET(req: Request) {
   const threads = await prisma.thread.findMany({
     where: { source: "community" },
     orderBy: sort === "top" ? { voteCount: "desc" } : { createdAt: "desc" },
+    take: 50,
     include: {
       user: { select: { username: true, displayName: true, avatarUrl: true } },
       _count: { select: { comments: true } },

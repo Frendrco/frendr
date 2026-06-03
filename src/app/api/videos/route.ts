@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { getVideoThumbnail } from "@/lib/videoEmbed"
 
@@ -73,6 +74,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json(video, { status: 201 })
   } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return NextResponse.json({ error: "Duplicate entry" }, { status: 409 })
+    }
     console.error("[POST /api/videos]", err)
     return NextResponse.json({ error: "Failed to save video" }, { status: 500 })
   }

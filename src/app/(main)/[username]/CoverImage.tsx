@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
+import Image from "next/image"
 import { Camera } from "lucide-react"
 
 interface Props {
@@ -36,8 +37,7 @@ export function CoverImage({ initialCoverUrl, isOwn }: Props) {
   return (
     <div className="relative w-full h-[200px] overflow-hidden bg-mist-grey">
       {coverUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={coverUrl} alt="Cover" className="h-full w-full object-cover" />
+        <Image src={coverUrl} alt="Cover" fill sizes="100vw" className="object-cover" />
       )}
 
       {isOwn && (

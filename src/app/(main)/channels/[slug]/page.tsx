@@ -45,19 +45,22 @@ export default async function ChannelPage({ params, searchParams }: Props) {
       })
     : null
 
-  const isFollowing = currentUser
-    ? !!(await prisma.channelFollow.findUnique({
-        where: { channelId_userId: { channelId: channel.id, userId: currentUser.id } },
-      }))
-    : false
-
   const isOwner = currentUser?.id === channel.userId
   const isSiteAdmin = currentUser?.isAdmin
-  const isChannelAdmin = currentUser && !isOwner && !isSiteAdmin
-    ? !!(await prisma.channelAdmin.findUnique({
-        where: { channelId_userId: { channelId: channel.id, userId: currentUser.id } },
-      }))
-    : false
+
+  const [isFollowing, isChannelAdmin] = await Promise.all([
+    currentUser
+      ? prisma.channelFollow.findUnique({
+          where: { channelId_userId: { channelId: channel.id, userId: currentUser.id } },
+        }).then(Boolean)
+      : Promise.resolve(false),
+    currentUser && !isOwner && !isSiteAdmin
+      ? prisma.channelAdmin.findUnique({
+          where: { channelId_userId: { channelId: channel.id, userId: currentUser.id } },
+        }).then(Boolean)
+      : Promise.resolve(false),
+  ])
+
   const canManage = isOwner || isSiteAdmin || isChannelAdmin
 
   const videos = channel.videos.map((cv) => cv.video)

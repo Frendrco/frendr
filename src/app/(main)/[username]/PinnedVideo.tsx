@@ -64,6 +64,7 @@ export function PinnedVideo({ video, isOwn }: Props) {
                 src={video.thumbnailUrl}
                 alt={video.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
             )}
@@ -75,7 +76,7 @@ export function PinnedVideo({ video, isOwn }: Props) {
           </button>
         ) : (
           video.thumbnailUrl && (
-            <Image src={video.thumbnailUrl} alt={video.title} fill className="object-cover" />
+            <Image src={video.thumbnailUrl} alt={video.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
           )
         )}
       </div>

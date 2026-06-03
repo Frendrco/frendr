@@ -77,8 +77,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     include: commentInclude,
   })
 
-  // Notify video owner (unless they're the commenter)
-  const video = await prisma.video.findUnique({ where: { id }, select: { userId: true } })
+  // Fetch video owner + parent comment author in parallel
+  const [video, parent] = await Promise.all([
+    prisma.video.findUnique({ where: { id }, select: { userId: true } }),
+    parentCommentId
+      ? prisma.comment.findUnique({ where: { id: parentCommentId }, select: { userId: true } })
+      : Promise.resolve(null),
+  ])
+
   if (video && video.userId !== user.id) {
     createNotification({
       userId: video.userId,
@@ -89,18 +95,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }).catch(() => {})
   }
 
-  // If a reply, also notify the parent comment author (if different from video owner and commenter)
-  if (parentCommentId) {
-    const parent = await prisma.comment.findUnique({ where: { id: parentCommentId }, select: { userId: true } })
-    if (parent && parent.userId !== user.id && parent.userId !== video?.userId) {
-      createNotification({
-        userId: parent.userId,
-        type: "reply",
-        fromUserId: user.id,
-        contentId: id,
-        contentType: "video",
-      }).catch(() => {})
-    }
+  if (parent && parent.userId !== user.id && parent.userId !== video?.userId) {
+    createNotification({
+      userId: parent.userId,
+      type: "reply",
+      fromUserId: user.id,
+      contentId: id,
+      contentType: "video",
+    }).catch(() => {})
   }
 
   return NextResponse.json({

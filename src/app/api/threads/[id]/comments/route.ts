@@ -32,8 +32,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     },
   })
 
-  // Notify thread author (unless they're the commenter)
-  const thread = await prisma.thread.findUnique({ where: { id: threadId }, select: { userId: true } })
+  // Fetch thread author + parent comment author in parallel
+  const [thread, parent] = await Promise.all([
+    prisma.thread.findUnique({ where: { id: threadId }, select: { userId: true } }),
+    parentCommentId
+      ? prisma.comment.findUnique({ where: { id: parentCommentId }, select: { userId: true } })
+      : Promise.resolve(null),
+  ])
+
   if (thread && thread.userId !== user.id) {
     createNotification({
       userId: thread.userId,
@@ -44,18 +50,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }).catch(() => {})
   }
 
-  // If a reply, also notify the parent comment author (if different from thread author and commenter)
-  if (parentCommentId) {
-    const parent = await prisma.comment.findUnique({ where: { id: parentCommentId }, select: { userId: true } })
-    if (parent && parent.userId !== user.id && parent.userId !== thread?.userId) {
-      createNotification({
-        userId: parent.userId,
-        type: "reply",
-        fromUserId: user.id,
-        contentId: threadId,
-        contentType: "thread",
-      }).catch(() => {})
-    }
+  if (parent && parent.userId !== user.id && parent.userId !== thread?.userId) {
+    createNotification({
+      userId: parent.userId,
+      type: "reply",
+      fromUserId: user.id,
+      contentId: threadId,
+      contentType: "thread",
+    }).catch(() => {})
   }
 
   return NextResponse.json(comment, { status: 201 })
