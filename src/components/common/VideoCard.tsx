@@ -106,8 +106,8 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
             </div>
           </div>
 
-          {/* Action buttons — top-right corner */}
-          <div className="absolute top-2 right-2 z-30 flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
+          {/* Action buttons — top-right corner (desktop hover only) */}
+          <div className="absolute top-2 right-2 z-30 hidden sm:flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
             <AddToChannelButton videoId={video.id} />
             <AddToPlaylistButton videoId={video.id} />
           </div>
@@ -119,6 +119,12 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
             </div>
           )}
         </div>
+      </div>
+
+      {/* Mobile-only action row — below thumbnail, not covering it */}
+      <div className="flex gap-1 sm:hidden">
+        <AddToChannelButton videoId={video.id} />
+        <AddToPlaylistButton videoId={video.id} />
       </div>
 
       {/* Meta — links to video page */}

@@ -288,7 +288,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
                 const isOwn = currentUserId === member.id
                 return (
-                  <div key={member.id} className="flex flex-col items-center gap-2 shrink-0 w-24 snap-start md:w-auto">
+                  <div key={member.id} className="flex flex-col items-center gap-2 shrink-0 w-20 snap-start md:w-auto">
                     <Link href={`/${member.username}`} className="group w-full">
                       <div className="relative w-full overflow-hidden rounded-3xl bg-spring-green aspect-square transition-opacity group-hover:opacity-90">
                         {member.avatarUrl ? (
@@ -303,7 +303,7 @@ export default async function SearchPage({ searchParams }: Props) {
                     <div className="flex w-full flex-col items-center gap-1 text-center">
                       <Link
                         href={`/${member.username}`}
-                        className="font-sans font-semibold text-xs text-core-black hover:underline leading-tight"
+                        className="font-sans font-semibold text-xs text-core-black hover:underline leading-tight line-clamp-1"
                       >
                         {member.displayName}
                       </Link>
