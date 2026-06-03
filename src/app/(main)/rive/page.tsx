@@ -1,6 +1,6 @@
-import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { RiveGrid } from "./RiveGrid"
+import { ShareRiveButton } from "./ShareRiveButton"
 
 export default async function RiveWorldPage() {
   const threads = await prisma.thread.findMany({
@@ -30,12 +30,7 @@ export default async function RiveWorldPage() {
               Interactive work from the community. Hover to play.
             </p>
           </div>
-          <Link
-            href="/community/new"
-            className="inline-flex h-10 w-fit items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 shrink-0"
-          >
-            Share Rive
-          </Link>
+          <ShareRiveButton />
         </div>
       </div>
 

@@ -46,7 +46,7 @@ export function RiveCard({ id, title, riveUrl, voteCount, commentCount, user }: 
 
       {/* Meta bar */}
       <Link
-        href={`/community/${id}`}
+        href={`/rive/${id}`}
         className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-foreground/[0.03] transition-colors"
       >
         <div className="h-6 w-6 shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">

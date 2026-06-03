@@ -25,7 +25,8 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
   const { title, body, tags, videoUrl, imageUrls, riveUrls } = await req.json()
-  if (!title?.trim() || !body?.trim()) {
+  const hasRive = Array.isArray(riveUrls) && riveUrls.some((u: string) => u?.trim())
+  if (!title?.trim() || (!body?.trim() && !hasRive)) {
     return NextResponse.json({ error: "Title and body are required" }, { status: 400 })
   }
 
