@@ -55,6 +55,12 @@ function ProviderIcon({ provider }: { provider: Provider }) {
   return null
 }
 
+function cfThumb(url: string | null): string | null {
+  if (!url || !url.includes("videodelivery.net")) return url
+  if (url.includes("width=")) return url
+  return url + (url.includes("?") ? "&" : "?") + "width=1280"
+}
+
 export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hideCreator = false, hideTags = false, actionsSlot }: Props) {
   const initials = video.user.displayName
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
@@ -67,9 +73,10 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
       <div className={`relative aspect-video overflow-hidden ${rounded} bg-mist-grey`}>
         {video.thumbnailUrl ? (
           <Image
-            src={video.thumbnailUrl}
+            src={cfThumb(video.thumbnailUrl)!}
             alt={video.title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           />
         ) : (

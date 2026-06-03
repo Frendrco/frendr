@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   }
 
   const resolvedThumbnail = thumbnailUrl
-    ?? (streamId     ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg` : null)
+    ?? (streamId     ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?width=1280` : null)
     ?? (externalUrl  ? getVideoThumbnail(externalUrl) : null)
 
   try {
