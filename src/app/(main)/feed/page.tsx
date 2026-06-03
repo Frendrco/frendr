@@ -124,7 +124,7 @@ export default async function FollowingPage() {
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
 
-        <div className="mb-10">
+        <div className="mb-10 text-center md:text-left">
           <h1 className="font-sans font-bold text-2xl text-core-black">Following</h1>
           <p className="mt-1 font-sans text-sm text-foreground/40">Creators and channels you follow</p>
         </div>
