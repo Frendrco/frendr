@@ -35,8 +35,9 @@ function NavLink({ href, label }: { href: string; label: string }) {
   )
 }
 
-export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
-  const { isSignedIn, isLoaded } = useAuth()
+export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: React.ReactNode; isSignedIn?: boolean }) {
+  const { isSignedIn: clientIsSignedIn, isLoaded } = useAuth()
+  const isSignedIn = isLoaded ? !!clientIsSignedIn : (serverIsSignedIn ?? false)
   const pathname = usePathname()
   const router = useRouter()
   const isHome = pathname === "/"
@@ -167,14 +168,7 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
         {/* ── Right: Actions ── */}
         <div className="flex items-center gap-2 shrink-0">
 
-          {!isLoaded ? (
-            <>
-              <div className="hidden md:block h-9 w-[88px]" />
-              <div className="h-9 w-9" />
-              <div className="h-9 w-9" />
-              <div className="h-9 w-9" />
-            </>
-          ) : isSignedIn ? (
+          {isSignedIn ? (
             <>
               {/* Upload */}
               <Link

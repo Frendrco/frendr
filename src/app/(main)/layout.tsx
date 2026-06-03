@@ -1,11 +1,13 @@
+import { auth } from "@clerk/nextjs/server"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { UserMenu } from "@/components/layout/UserMenu"
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default async function MainLayout({ children }: { children: React.ReactNode }) {
+  const { userId } = await auth()
   return (
     <>
-      <Header userMenu={<UserMenu />} />
+      <Header isSignedIn={!!userId} userMenu={userId ? <UserMenu /> : undefined} />
       <main className="flex-1">{children}</main>
       <Footer />
     </>
