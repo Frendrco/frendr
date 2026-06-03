@@ -1,22 +1,29 @@
+import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { RiveGrid } from "./RiveGrid"
 import { ShareRiveButton } from "./ShareRiveButton"
 
 export default async function RiveWorldPage() {
-  const threads = await prisma.thread.findMany({
-    where: { source: "rive_world" },
-    orderBy: { createdAt: "desc" },
-    take: 24,
-    select: {
-      id:        true,
-      title:     true,
-      riveUrls:  true,
-      voteCount: true,
-      createdAt: true,
-      user:      { select: { username: true, displayName: true, avatarUrl: true } },
-      _count:    { select: { comments: true } },
-    },
-  })
+  const { userId: clerkId } = await auth()
+
+  const [threads, currentUser] = await Promise.all([
+    prisma.thread.findMany({
+      where: { source: "rive_world" },
+      orderBy: { createdAt: "desc" },
+      take: 24,
+      select: {
+        id:        true,
+        title:     true,
+        riveUrls:  true,
+        voteCount: true,
+        createdAt: true,
+        userId:    true,
+        user:      { select: { username: true, displayName: true, avatarUrl: true } },
+        _count:    { select: { comments: true } },
+      },
+    }),
+    clerkId ? prisma.user.findUnique({ where: { clerkId }, select: { id: true } }) : null,
+  ])
 
   return (
     <div className="min-h-screen bg-white">
@@ -36,7 +43,7 @@ export default async function RiveWorldPage() {
 
       {/* Grid */}
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
-        <RiveGrid threads={threads} />
+        <RiveGrid threads={threads} currentUserId={currentUser?.id} />
       </div>
 
     </div>

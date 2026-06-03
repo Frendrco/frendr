@@ -9,13 +9,14 @@ type Thread = {
   riveUrls:  string[]
   voteCount: number
   createdAt: Date | string
+  userId:    string
   user: { username: string; displayName: string; avatarUrl: string | null }
   _count:    { comments: number }
 }
 
 type Sort = "recent" | "popular"
 
-export function RiveGrid({ threads }: { threads: Thread[] }) {
+export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; currentUserId?: string }) {
   const [sort, setSort] = useState<Sort>("recent")
 
   const sorted = sort === "popular"
@@ -58,6 +59,7 @@ export function RiveGrid({ threads }: { threads: Thread[] }) {
               voteCount={t.voteCount}
               commentCount={t._count.comments}
               user={t.user}
+              isOwner={!!currentUserId && currentUserId === t.userId}
             />
           ))}
         </div>

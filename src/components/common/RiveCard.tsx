@@ -1,9 +1,10 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { Play, ChevronUp, MessageSquare } from "lucide-react"
+import { Play, ChevronUp, MessageSquare, Trash2 } from "lucide-react"
 
 type LoadState = "idle" | "preloading" | "loading" | "ready"
 
@@ -13,6 +14,7 @@ type Props = {
   riveUrl:      string
   voteCount:    number
   commentCount: number
+  isOwner?:     boolean
   user: {
     username:    string
     displayName: string
@@ -20,8 +22,10 @@ type Props = {
   }
 }
 
-export function RiveCard({ id, title, riveUrl, voteCount, commentCount, user }: Props) {
+export function RiveCard({ id, title, riveUrl, voteCount, commentCount, isOwner, user }: Props) {
+  const router = useRouter()
   const [loadState, setLoadState] = useState<LoadState>("idle")
+  const [deleting, setDeleting] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -51,6 +55,14 @@ export function RiveCard({ id, title, riveUrl, voteCount, commentCount, user }: 
 
   function handleIframeLoad() {
     setLoadState("ready")
+  }
+
+  async function handleDelete(e: React.MouseEvent) {
+    e.preventDefault()
+    if (!window.confirm("Delete this post?")) return
+    setDeleting(true)
+    await fetch(`/api/threads/${id}`, { method: "DELETE" })
+    router.refresh()
   }
 
   return (
@@ -116,6 +128,16 @@ export function RiveCard({ id, title, riveUrl, voteCount, commentCount, user }: 
           <span className="flex items-center gap-0.5 font-sans text-xs text-foreground/40">
             <MessageSquare size={12} />{commentCount}
           </span>
+          {isOwner && (
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              title="Delete post"
+              className="text-foreground/30 hover:text-red-500 transition-colors disabled:opacity-40"
+            >
+              <Trash2 size={13} />
+            </button>
+          )}
         </div>
       </Link>
     </div>
