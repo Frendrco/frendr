@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, type CSSProperties } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, Search, Loader2, Check } from "lucide-react"
 import Image from "next/image"
@@ -21,7 +21,9 @@ export function AddVideoToChannelButton({ channelId }: Props) {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<VideoResult[]>([])
   const [loading, setLoading] = useState(false)
+  const [dropdownStyle, setDropdownStyle] = useState<CSSProperties>({})
   const ref = useRef<HTMLDivElement>(null)
+  const btnRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -66,7 +68,17 @@ export function AddVideoToChannelButton({ channelId }: Props) {
   return (
     <div className="relative" ref={ref}>
       <button
-        onClick={() => setOpen((v) => !v)}
+        ref={btnRef}
+        onClick={() => {
+          const next = !open
+          if (next && btnRef.current && window.innerWidth < 640) {
+            const r = btnRef.current.getBoundingClientRect()
+            setDropdownStyle({ position: "fixed", top: r.bottom + 8, left: 16, right: 16, width: "auto" })
+          } else {
+            setDropdownStyle({})
+          }
+          setOpen(next)
+        }}
         className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-white px-4 font-sans font-medium text-sm text-core-black hover:bg-foreground/5 transition-colors"
       >
         <Plus size={14} />
@@ -74,7 +86,7 @@ export function AddVideoToChannelButton({ channelId }: Props) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-xl border border-border bg-white shadow-lg">
+        <div style={dropdownStyle} className="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-xl border border-border bg-white shadow-lg">
           <div className="flex items-center gap-2 border-b border-border px-3 py-2.5">
             <Search size={14} className="shrink-0 text-foreground/40" />
             <input
