@@ -90,7 +90,7 @@ export function HeroSection({ children }: { children?: ReactNode }) {
       <div className="relative z-10 flex flex-col items-center text-center px-4">
 
         <motion.h1
-          className="display-md text-core-black"
+          className="font-display text-core-black tracking-[-0.05em]"
           style={{ y: headlineY, fontSize: "2.45rem", fontWeight: 400, lineHeight: 1.06 }}
         >
           Designed for creativity.<br />Built for belonging.
