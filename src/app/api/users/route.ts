@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import slugify from "slugify"
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
+import { sendWelcomeMessage } from "@/lib/sendWelcomeMessage"
 
 const USERNAME_RE = /^[a-z0-9-]{3,30}$/
 
@@ -52,6 +53,8 @@ export async function POST(req: Request) {
       skipDuplicates: true,
     })
   }
+
+  sendWelcomeMessage(user).catch(console.error)
 
   return NextResponse.json(user)
 }
