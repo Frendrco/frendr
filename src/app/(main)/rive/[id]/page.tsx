@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma"
 import { timeAgo } from "@/lib/utils"
 import { VoteButtons } from "../../community/VoteButtons"
 import { CommentSection } from "../../community/[threadId]/CommentSection"
+import { RivePostActions } from "./RivePostActions"
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -26,6 +27,8 @@ export default async function RiveDetailPage({ params }: Props) {
   const currentUser = clerkId
     ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
     : null
+
+  const isOwner = currentUser?.id === thread.userId
 
   const [threadVote, comments] = await Promise.all([
     currentUser
@@ -94,6 +97,17 @@ export default async function RiveDetailPage({ params }: Props) {
           <h1 className="font-sans font-bold text-xl text-core-black leading-snug">
             {thread.title}
           </h1>
+
+          {isOwner && (
+            <div className="mt-2">
+              <RivePostActions
+                threadId={thread.id}
+                initialTitle={thread.title}
+                initialUrl={thread.riveUrls[0]}
+                initialBody={thread.body}
+              />
+            </div>
+          )}
 
           <div className="mt-3 flex items-center gap-3">
             <Link

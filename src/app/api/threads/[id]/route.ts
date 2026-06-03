@@ -17,7 +17,8 @@ export async function PATCH(req: Request, { params }: Params) {
   if (thread.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { title, body, tags, videoUrl, imageUrls, riveUrls } = await req.json()
-  if (!title?.trim() || !body?.trim()) {
+  const hasRive = Array.isArray(riveUrls) && riveUrls.some((u: string) => u?.trim())
+  if (!title?.trim() || (!body?.trim() && !hasRive)) {
     return NextResponse.json({ error: "Title and body are required" }, { status: 400 })
   }
 
