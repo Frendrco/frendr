@@ -35,6 +35,15 @@ export async function POST(req: Request) {
     create: { clerkId: userId, username, displayName, avatarUrl, email, location: location || null, age: age ? Number(age) : null, tags: Array.isArray(tags) ? tags : [], showAiContent: typeof showAiContent === "boolean" ? showAiContent : true },
   })
 
+  // Auto-follow all admins on signup
+  const admins = await prisma.user.findMany({ where: { isAdmin: true, NOT: { id: user.id } }, select: { id: true } })
+  if (admins.length > 0) {
+    await prisma.follow.createMany({
+      data: admins.map((a) => ({ followerId: user.id, followingId: a.id })),
+      skipDuplicates: true,
+    })
+  }
+
   return NextResponse.json(user)
 }
 
