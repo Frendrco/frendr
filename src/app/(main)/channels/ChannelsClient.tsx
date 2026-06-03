@@ -72,7 +72,7 @@ export function ChannelsClient({ adminChannels, userChannels, isSignedIn, isAdmi
         </div>
 
         <Tabs defaultValue="frendr">
-          <TabsList variant="line" className="mb-8">
+          <TabsList variant="line" className="mb-8 mx-auto md:mx-0">
             <TabsTrigger value="frendr" className="font-sans text-sm px-3 gap-1.5">
               <Sparkles size={12} />
               Frendr Picks
