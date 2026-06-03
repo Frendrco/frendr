@@ -53,8 +53,8 @@ export function ChannelsClient({ adminChannels, userChannels, isSignedIn, isAdmi
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-12">
 
         {/* Header */}
-        <div className="mb-8 flex items-end justify-between">
-          <div>
+        <div className="mb-8 flex flex-col items-center gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="text-center md:text-left">
             <h1 className="display-sm text-core-black">Channels</h1>
             <p className="mt-2 font-sans text-sm text-foreground/50">
               Curated collections of the best work on Frendr
