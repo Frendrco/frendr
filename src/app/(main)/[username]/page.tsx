@@ -117,7 +117,7 @@ export default async function ProfilePage({ params }: Props) {
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 pb-10">
 
         {/* ── Avatar — overlaps cover bottom edge ───────────── */}
-        <div className="-mt-9 mb-4 flex relative z-10">
+        <div className="-mt-9 mb-4 flex justify-center md:justify-start relative z-10">
           {/* ring-4 on the outer element so it isn't clipped by overflow-hidden */}
           <div className="h-[72px] w-[72px] rounded-full ring-4 ring-white">
             <div className="h-full w-full overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
@@ -136,7 +136,7 @@ export default async function ProfilePage({ params }: Props) {
           <aside className="shrink-0 md:w-52 lg:w-56">
 
             {/* Name + role */}
-            <div className="mb-4 flex flex-col gap-1">
+            <div className="mb-4 flex flex-col gap-1 items-center md:items-start text-center md:text-left">
               <h1 className="font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
               {user.role && (
                 <p className="font-sans text-xs text-foreground/50">{user.role}</p>
@@ -167,13 +167,13 @@ export default async function ProfilePage({ params }: Props) {
 
             {/* Location + website */}
             {user.location && (
-              <div className="mb-1 flex items-center gap-1.5">
+              <div className="mb-1 flex items-center gap-1.5 justify-center md:justify-start">
                 <MapPin size={11} className="shrink-0 text-foreground/40" />
                 <span className="font-sans text-xs text-foreground/60">{user.location}</span>
               </div>
             )}
             {user.website && (
-              <div className="mb-4 flex items-center gap-1.5">
+              <div className="mb-4 flex items-center gap-1.5 justify-center md:justify-start">
                 <Globe size={11} className="shrink-0 text-foreground/40" />
                 <a
                   href={user.website.startsWith("http") ? user.website : `https://${user.website}`}
@@ -189,14 +189,14 @@ export default async function ProfilePage({ params }: Props) {
             {/* Bio */}
             {user.bio && (
               <div className="mb-4">
-                <p className="mb-1 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30">Bio</p>
+                <p className="mb-1 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 text-center md:text-left">Bio</p>
                 <p className="font-sans text-xs leading-relaxed text-foreground/60">{user.bio}</p>
               </div>
             )}
 
             {/* Social links */}
             {socials.length > 0 && (
-              <div className="mb-4 flex gap-2">
+              <div className="mb-4 flex gap-2 justify-center md:justify-start">
                 {socials.map(({ key, href, label }) => (
                   <a
                     key={key}
@@ -215,7 +215,7 @@ export default async function ProfilePage({ params }: Props) {
             {user.tags.length > 0 && (
               <div className="mb-5">
                 <p className="mb-2 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30">Skills</p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                   {user.tags.map((tag) => (
                     <span key={tag} className="rounded-full border border-border px-2.5 py-0.5 font-sans text-xs text-foreground/60">
                       {tag}
