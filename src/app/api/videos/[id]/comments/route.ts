@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
+import { createNotification } from "@/lib/notifications"
 
 const commentInclude = {
   user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
@@ -75,6 +76,32 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     },
     include: commentInclude,
   })
+
+  // Notify video owner (unless they're the commenter)
+  const video = await prisma.video.findUnique({ where: { id }, select: { userId: true } })
+  if (video && video.userId !== user.id) {
+    createNotification({
+      userId: video.userId,
+      type: parentCommentId ? "reply" : "comment",
+      fromUserId: user.id,
+      contentId: id,
+      contentType: "video",
+    }).catch(() => {})
+  }
+
+  // If a reply, also notify the parent comment author (if different from video owner and commenter)
+  if (parentCommentId) {
+    const parent = await prisma.comment.findUnique({ where: { id: parentCommentId }, select: { userId: true } })
+    if (parent && parent.userId !== user.id && parent.userId !== video?.userId) {
+      createNotification({
+        userId: parent.userId,
+        type: "reply",
+        fromUserId: user.id,
+        contentId: id,
+        contentType: "video",
+      }).catch(() => {})
+    }
+  }
 
   return NextResponse.json({
     ...comment,

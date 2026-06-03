@@ -34,6 +34,12 @@ function notifUrl(n: Notification) {
   switch (n.type) {
     case "follow":  return n.fromUser?.username ? `/${n.fromUser.username}` : "/"
     case "message": return "/messages"
+    case "comment":
+    case "reply":
+    case "vote":
+      if (n.contentType === "video"  && n.contentId) return `/v/${n.contentId}`
+      if (n.contentType === "thread" && n.contentId) return `/community/${n.contentId}`
+      return "/notifications"
     default:        return "/notifications"
   }
 }
