@@ -16,23 +16,25 @@ import type { Metadata } from "next"
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
 
-async function getStreamStatus(streamId: string): Promise<StreamStatus> {
+interface StreamInfo { status: StreamStatus; duration: number | null }
+
+async function getStreamInfo(streamId: string): Promise<StreamInfo> {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
   const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
-  if (!accountId || !token) return "unknown"
+  if (!accountId || !token) return { status: "unknown", duration: null }
   try {
     const res = await fetch(
       `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}`,
       { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 0 } }
     )
-    if (!res.ok) return "unknown"
-    const { result } = await res.json() as { result: { status: { state: string } } }
+    if (!res.ok) return { status: "unknown", duration: null }
+    const { result } = await res.json() as { result: { status: { state: string }; duration?: number } }
     const state = result?.status?.state
-    if (state === "ready") return "ready"
-    if (state === "error") return "error"
-    return "processing"
+    const status: StreamStatus =
+      state === "ready" ? "ready" : state === "error" ? "error" : "processing"
+    return { status, duration: result?.duration ?? null }
   } catch {
-    return "unknown"
+    return { status: "unknown", duration: null }
   }
 }
 
@@ -122,9 +124,10 @@ export default async function VideoPage({ params }: Props) {
     })),
   }))
 
-  const streamStatus = (!video.externalUrl && video.streamId)
-    ? await getStreamStatus(video.streamId)
-    : "unknown"
+  const streamInfo = (!video.externalUrl && video.streamId)
+    ? await getStreamInfo(video.streamId)
+    : { status: "unknown" as StreamStatus, duration: null }
+  const streamStatus = streamInfo.status
 
   const formattedDate = new Date(video.createdAt).toLocaleDateString("en-US", {
     month: "long", day: "numeric", year: "numeric",
@@ -185,6 +188,7 @@ export default async function VideoPage({ params }: Props) {
                     videoId={video.id}
                     username={video.user.username}
                     streamId={video.streamId}
+                    streamDuration={streamInfo.duration}
                     initialTitle={video.title}
                     initialDescription={video.description ?? ""}
                     initialTags={video.tags}

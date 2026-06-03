@@ -14,12 +14,19 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-function randomFramePercents(): string[] {
-  // Split 3%–92% into 6 equal buckets, pick a random value within each
+function randomFrameTimes(duration: number | null): string[] {
+  if (!duration || duration <= 0) {
+    // Fallback: fixed offsets in seconds that work for most videos
+    return [2, 8, 15, 25, 40, 55].map(s => `${s}s`)
+  }
+  // Divide into 6 buckets across 5%–90% of the video, pick random point in each
+  const lo = duration * 0.05
+  const hi = duration * 0.90
+  const bucketSize = (hi - lo) / 6
   return Array.from({ length: 6 }, (_, i) => {
-    const lo = 3 + i * 15
-    const hi = lo + 13
-    return `${Math.round(lo + Math.random() * (hi - lo))}%`
+    const bucketStart = lo + i * bucketSize
+    const t = bucketStart + Math.random() * bucketSize
+    return `${Math.round(t)}s`
   })
 }
 
@@ -40,6 +47,7 @@ interface Props {
   videoId: string
   username: string
   streamId: string | null
+  streamDuration?: number | null
   initialTitle: string
   initialDescription: string
   initialTags: string[]
@@ -55,6 +63,7 @@ export function VideoOwnerActions({
   videoId,
   username,
   streamId,
+  streamDuration,
   initialTitle,
   initialDescription,
   initialTags,
@@ -83,7 +92,7 @@ export function VideoOwnerActions({
   const [thumbnailUrl,   setThumbnailUrl]  = useState(initialThumbnailUrl ?? "")
   const [isPublic,       setIsPublic]      = useState(initialIsPublic)
   const [thumbMode,      setThumbMode]     = useState<"default" | "frames">("default")
-  const [framePercents,  setFramePercents] = useState(randomFramePercents)
+  const [framePercents,  setFramePercents] = useState(() => randomFrameTimes(streamDuration ?? null))
   const [uploadingThumb, setUploadingThumb] = useState(false)
   const [selectedFrame,  setSelectedFrame] = useState<number | null>(null)
 
@@ -316,7 +325,7 @@ export function VideoOwnerActions({
                         </button>
                         <button
                           type="button"
-                          onClick={() => { setFramePercents(randomFramePercents()); setThumbMode("frames") }}
+                          onClick={() => { setFramePercents(randomFrameTimes(streamDuration ?? null)); setThumbMode("frames") }}
                           disabled={!streamId}
                           className="flex h-10 w-full items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-core-black transition-colors hover:border-foreground/30 disabled:opacity-40 disabled:cursor-not-allowed"
                         >
