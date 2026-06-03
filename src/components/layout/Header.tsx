@@ -167,7 +167,14 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
         {/* ── Right: Actions ── */}
         <div className="flex items-center gap-2 shrink-0">
 
-          {!isLoaded ? null : isSignedIn ? (
+          {!isLoaded ? (
+            <>
+              <div className="hidden md:block h-9 w-[88px] rounded-full bg-black/10 animate-pulse" />
+              <div className="h-9 w-9 rounded-full bg-black/10 animate-pulse" />
+              <div className="h-9 w-9 rounded-full bg-black/10 animate-pulse" />
+              <div className="h-9 w-9 rounded-full bg-black/10 animate-pulse" />
+            </>
+          ) : isSignedIn ? (
             <>
               {/* Upload */}
               <Link
