@@ -33,6 +33,7 @@ interface BulkItem {
   url:          string
   provider:     Provider | null
   title:        string
+  description:  string
   thumbnailUrl: string | null
   status:       "idle" | "loading" | "ready" | "error"
 }
@@ -128,7 +129,7 @@ export function UploadClient({ username }: { username: string }) {
 
   // Import mode — bulk items
   const newBulkItem = (): BulkItem => ({
-    id: crypto.randomUUID(), url: "", provider: null, title: "", thumbnailUrl: null, status: "idle",
+    id: crypto.randomUUID(), url: "", provider: null, title: "", description: "", thumbnailUrl: null, status: "idle",
   })
   const [bulkItems, setBulkItems] = useState<BulkItem[]>(() => [newBulkItem()])
 
@@ -188,12 +189,13 @@ export function UploadClient({ username }: { username: string }) {
     if (provider === "youtube" || provider === "vimeo") {
       try {
         const res  = await fetch(`/api/videos/oembed?url=${encodeURIComponent(url)}`)
-        const data = await res.json() as { title?: string | null; thumbnailUrl?: string | null }
+        const data = await res.json() as { title?: string | null; thumbnailUrl?: string | null; description?: string | null }
         setBulkItems((prev) => prev.map((item) =>
           item.id === id
             ? {
                 ...item,
-                title:        item.title || data.title || "",
+                title:        item.title       || data.title       || "",
+                description:  item.description || data.description || "",
                 thumbnailUrl: data.thumbnailUrl ?? (provider === "youtube" ? getVideoThumbnail(url) : null),
                 status:       "ready",
               }
@@ -391,6 +393,7 @@ export function UploadClient({ username }: { username: string }) {
           items: ready.map((i) => ({
             externalUrl:  i.url,
             title:        i.title.trim(),
+            description:  i.description.trim() || null,
             thumbnailUrl: i.thumbnailUrl,
           })),
         }),

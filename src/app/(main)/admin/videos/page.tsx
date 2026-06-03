@@ -3,6 +3,7 @@ import Link from "next/link"
 import { requireAdminPage } from "@/lib/admin"
 import { prisma } from "@/lib/prisma"
 import { AdminDeleteButton } from "../AdminDeleteButton"
+import { AdminBackfillButton } from "../AdminBackfillButton"
 
 export default async function AdminVideosPage() {
   await requireAdminPage()
@@ -18,8 +19,13 @@ export default async function AdminVideosPage() {
 
   return (
     <div>
-      <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Videos</h1>
-      <p className="font-sans text-sm text-foreground/40 mb-8">{videos.length} most recent</p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Videos</h1>
+          <p className="font-sans text-sm text-foreground/40">{videos.length} most recent</p>
+        </div>
+        <AdminBackfillButton />
+      </div>
 
       <div className="rounded-2xl border border-border overflow-hidden">
         <table className="w-full">

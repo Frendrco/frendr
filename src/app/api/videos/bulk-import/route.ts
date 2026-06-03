@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
   const body = await req.json() as {
-    items: { externalUrl: string; title: string; thumbnailUrl?: string | null }[]
+    items: { externalUrl: string; title: string; description?: string | null; thumbnailUrl?: string | null }[]
   }
 
   if (!Array.isArray(body.items) || body.items.length === 0 || body.items.length > 10) {
@@ -30,6 +30,7 @@ export async function POST(req: Request) {
           data: {
             externalUrl:  item.externalUrl.trim(),
             title:        item.title.trim(),
+            description:  item.description?.trim() || null,
             thumbnailUrl: item.thumbnailUrl ?? null,
             isPublic:     true,
             userId:       user.id,
