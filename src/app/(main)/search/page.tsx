@@ -278,12 +278,7 @@ export default async function SearchPage({ searchParams }: Props) {
               href="/rive"
               className="group flex items-center justify-between gap-6 rounded-2xl bg-bloom-lavender px-8 py-10 transition-all duration-300 hover:brightness-95 hover:scale-[1.005]"
             >
-              <div>
-                <p className="font-sans font-bold text-xl text-core-black">Interactive work from the community</p>
-                <p className="mt-1 font-sans text-sm text-core-black/60">
-                  Hover to play — share your Rive projects and explore others
-                </p>
-              </div>
+              <p className="font-sans font-bold text-xl text-core-black">Interactive work from the community</p>
               <span className="shrink-0 font-sans font-medium text-sm text-core-black/60 group-hover:text-core-black transition-colors">
                 Explore →
               </span>
