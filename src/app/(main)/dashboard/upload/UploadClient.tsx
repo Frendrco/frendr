@@ -27,6 +27,15 @@ const FRAME_COUNT = 6
 
 type Mode       = "upload" | "import"
 type Tab        = "basics" | "privacy" | "embed"
+
+interface BulkItem {
+  id:           string
+  url:          string
+  provider:     Provider | null
+  title:        string
+  thumbnailUrl: string | null
+  status:       "idle" | "loading" | "ready" | "error"
+}
 type Visibility = "public" | "followers" | "private"
 type ThumbMode  = "upload" | "frame"
 
@@ -117,12 +126,11 @@ export function UploadClient({ username }: { username: string }) {
   const [extracting, setExtracting]       = useState(false)
   const thumbInputRef                     = useRef<HTMLInputElement>(null)
 
-  // Import mode
-  const [importUrl, setImportUrl]           = useState("")
-  const [importProvider, setImportProvider] = useState<Provider | null>(null)
-  const [importEmbedUrl, setImportEmbedUrl] = useState<string | null>(null)
-  const [oEmbedLoading, setOEmbedLoading]   = useState(false)
-  const [oEmbedSource, setOEmbedSource]     = useState<string | null>(null)
+  // Import mode — bulk items
+  const newBulkItem = (): BulkItem => ({
+    id: crypto.randomUUID(), url: "", provider: null, title: "", thumbnailUrl: null, status: "idle",
+  })
+  const [bulkItems, setBulkItems] = useState<BulkItem[]>(() => [newBulkItem()])
 
   // Shared metadata
   const [title, setTitle]               = useState("")
@@ -153,6 +161,7 @@ export function UploadClient({ username }: { username: string }) {
   const [collabResults, setCollabResults] = useState<Omit<CollabUser, "role">[]>([])
   const [collabLoading, setCollabLoading] = useState(false)
   const collabDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const bulkDebounce   = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
 
   // Submit state
   const [uploading, setUploading]     = useState(false)
@@ -170,51 +179,59 @@ export function UploadClient({ username }: { username: string }) {
       .catch(() => setExtracting(false))
   }, [file])
 
-  // Parse import URL as user types, then fetch oEmbed metadata
-  useEffect(() => {
-    if (!importUrl.trim()) {
-      setImportProvider(null)
-      setImportEmbedUrl(null)
-      setOEmbedSource(null)
-      return
-    }
-    try {
-      new URL(importUrl) // throws if invalid
-    } catch {
-      setImportProvider(null)
-      setImportEmbedUrl(null)
-      setOEmbedSource(null)
-      return
-    }
+  // Fetch oEmbed metadata for a single bulk item
+  async function fetchBulkMeta(id: string, url: string) {
+    try { new URL(url) } catch { return }
+    const provider = detectProvider(url)
+    setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, provider, status: "loading" } : item))
 
-    const provider = detectProvider(importUrl)
-    const embed    = getVideoEmbedUrl(importUrl)
-    setImportProvider(provider)
-    setImportEmbedUrl(embed)
-
-    // Fetch oEmbed for YouTube / Vimeo
     if (provider === "youtube" || provider === "vimeo") {
-      setOEmbedLoading(true)
-      fetch(`/api/videos/oembed?url=${encodeURIComponent(importUrl)}`)
-        .then(r => r.json())
-        .then((data: { title?: string | null; thumbnailUrl?: string | null }) => {
-          if (data.title)        setTitle(t  => t  || data.title!)
-          if (data.thumbnailUrl) setThumbnail(th => th || data.thumbnailUrl!)
-          setOEmbedSource(provider === "youtube" ? "YouTube" : "Vimeo")
-        })
-        .catch(() => {
-          // oEmbed failed — fall back to YouTube CDN thumb
-          if (provider === "youtube") {
-            const autoThumb = getVideoThumbnail(importUrl)
-            if (autoThumb) setThumbnail(th => th || autoThumb)
-          }
-        })
-        .finally(() => setOEmbedLoading(false))
+      try {
+        const res  = await fetch(`/api/videos/oembed?url=${encodeURIComponent(url)}`)
+        const data = await res.json() as { title?: string | null; thumbnailUrl?: string | null }
+        setBulkItems((prev) => prev.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                title:        item.title || data.title || "",
+                thumbnailUrl: data.thumbnailUrl ?? (provider === "youtube" ? getVideoThumbnail(url) : null),
+                status:       "ready",
+              }
+            : item
+        ))
+      } catch {
+        const thumb = provider === "youtube" ? getVideoThumbnail(url) : null
+        setBulkItems((prev) => prev.map((item) =>
+          item.id === id ? { ...item, thumbnailUrl: thumb, status: thumb ? "ready" : "error" } : item
+        ))
+      }
     } else {
-      setOEmbedSource(null)
+      setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, status: "ready" } : item))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [importUrl])
+  }
+
+  function handleBulkUrlChange(id: string, url: string) {
+    setBulkItems((prev) => prev.map((item) =>
+      item.id === id ? { ...item, url, provider: null, thumbnailUrl: null, status: "idle" } : item
+    ))
+    const existing = bulkDebounce.current.get(id)
+    if (existing) clearTimeout(existing)
+    if (!url.trim()) return
+    const timer = setTimeout(() => fetchBulkMeta(id, url), 400)
+    bulkDebounce.current.set(id, timer)
+  }
+
+  function updateBulkTitle(id: string, title: string) {
+    setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, title } : item))
+  }
+
+  function addBulkItem() {
+    setBulkItems((prev) => prev.length < 10 ? [...prev, newBulkItem()] : prev)
+  }
+
+  function removeBulkItem(id: string) {
+    setBulkItems((prev) => prev.length > 1 ? prev.filter((item) => item.id !== id) : prev)
+  }
 
   const searchCollabs = useCallback((q: string) => {
     if (!q.trim()) { setCollabResults([]); return }
@@ -251,12 +268,8 @@ export function UploadClient({ username }: { username: string }) {
     setUploadError(null)
     setProgress(0)
     setUploading(false)
-    if (next === "upload") {
-      setImportUrl("")
-      setImportProvider(null)
-      setImportEmbedUrl(null)
-      setOEmbedSource(null)
-      setOEmbedLoading(false)
+    if (next === "import") {
+      setBulkItems([newBulkItem()])
     }
     // Reset shared fields so users start fresh
     setTitle("")
@@ -366,27 +379,24 @@ export function UploadClient({ username }: { username: string }) {
     }
   }
 
-  async function handleImport() {
-    if (!importUrl.trim() || !title.trim()) return
+  async function handleBulkImport() {
+    const ready = bulkItems.filter((i) => i.status === "ready" && i.title.trim())
+    if (!ready.length) return
     setUploading(true); setUploadError(null)
     try {
-      const saveRes = await fetch("/api/videos", {
+      const res = await fetch("/api/videos/bulk-import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          externalUrl:   importUrl.trim(),
-          title:         title.trim(),
-          description:   description || null,
-          tags:          categories,
-          isPublic,
-          isAiGenerated,
-          thumbnailUrl:  thumbnail || null,
-          collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
+          items: ready.map((i) => ({
+            externalUrl:  i.url,
+            title:        i.title.trim(),
+            thumbnailUrl: i.thumbnailUrl,
+          })),
         }),
       })
-      if (!saveRes.ok) throw new Error("Could not save video")
-      const video = await saveRes.json() as { id: string }
-      router.push(`/v/${video.id}`)
+      if (!res.ok) throw new Error("Could not import videos")
+      router.push(`/${username}`)
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Something went wrong")
       setUploading(false)
@@ -442,7 +452,7 @@ export function UploadClient({ username }: { username: string }) {
 
           <div className="p-4">
             {/* ─ Upload image ─ */}
-            {(mode === "import" || thumbMode === "upload") && (
+            {thumbMode === "upload" && (
               <>
                 <input ref={thumbInputRef} type="file" accept="image/*" className="hidden" onChange={handleThumbInput} />
                 {thumbnail ? (
@@ -469,9 +479,7 @@ export function UploadClient({ username }: { username: string }) {
                   >
                     <ImageIcon size={20} className="text-foreground/25" />
                     <p className="font-sans text-xs text-foreground/40">
-                      {mode === "import" && importProvider === "youtube"
-                        ? "Auto-filled from YouTube — click to replace"
-                        : "Drop an image or click to browse"}
+                      Drop an image or click to browse
                     </p>
                     <p className="font-sans text-[11px] text-foreground/25">JPG, PNG, WebP · any aspect ratio</p>
                   </div>
@@ -527,15 +535,6 @@ export function UploadClient({ username }: { username: string }) {
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
           <label className="font-sans text-xs font-medium text-foreground/50">Video Title</label>
-          {mode === "import" && oEmbedLoading && (
-            <span className="flex items-center gap-1.5 font-sans text-[10px] text-foreground/30">
-              <span className="h-3 w-3 animate-spin rounded-full border border-foreground/20 border-t-foreground/50" />
-              Fetching from {importProvider === "youtube" ? "YouTube" : "Vimeo"}…
-            </span>
-          )}
-          {mode === "import" && !oEmbedLoading && oEmbedSource && title && (
-            <span className="font-sans text-[10px] text-foreground/30">Auto-filled from {oEmbedSource}</span>
-          )}
         </div>
         <input className={field} placeholder="Give your video a name that stands out" value={title} onChange={(e) => setTitle(e.target.value)} />
       </div>
@@ -897,48 +896,94 @@ export function UploadClient({ username }: { username: string }) {
 
         {/* ══ IMPORT MODE ══════════════════════════════════════ */}
         {mode === "import" && (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
 
-            {/* URL input */}
-            <div className="flex flex-col gap-2">
-              <label className="font-sans text-xs font-medium text-foreground/50">Video URL</label>
-              <div className="relative">
-                <Link2 size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/30 pointer-events-none" />
-                <input
-                  className="h-11 w-full rounded-xl border border-border bg-white pl-10 pr-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
-                  placeholder="Paste a YouTube, Vimeo, or Framerate link…"
-                  value={importUrl}
-                  onChange={(e) => setImportUrl(e.target.value)}
-                />
-                {importProvider && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-core-black px-2.5 py-0.5">
-                    <span className="font-sans text-[10px] font-medium text-white">
-                      {getProviderLabel(importProvider)}
-                    </span>
+            <p className="font-sans text-xs text-foreground/50">
+              Paste up to 10 links — titles and thumbnails will be fetched automatically.
+            </p>
+
+            {/* URL rows */}
+            <div className="flex flex-col gap-3">
+              {bulkItems.map((item, idx) => (
+                <div key={item.id} className="rounded-xl border border-border bg-white p-3 flex flex-col gap-2">
+
+                  {/* URL input row */}
+                  <div className="relative flex items-center">
+                    <Link2 size={14} className="absolute left-3 text-foreground/30 pointer-events-none" />
+                    <input
+                      className="h-10 w-full rounded-lg border border-border bg-foreground/[0.02] pl-9 pr-28 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                      placeholder="Paste a YouTube, Vimeo, or Framerate link…"
+                      value={item.url}
+                      onChange={(e) => handleBulkUrlChange(item.id, e.target.value)}
+                    />
+                    <div className="absolute right-2 flex items-center gap-1.5">
+                      {item.status === "loading" && (
+                        <span className="h-3.5 w-3.5 animate-spin rounded-full border border-border border-t-foreground/40" />
+                      )}
+                      {item.provider && item.status !== "loading" && (
+                        <span className="rounded-full bg-core-black px-2 py-0.5 font-sans text-[10px] font-medium text-white">
+                          {getProviderLabel(item.provider)}
+                        </span>
+                      )}
+                      {idx > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => removeBulkItem(item.id)}
+                          className="flex h-6 w-6 items-center justify-center rounded-full text-foreground/30 hover:text-foreground/70 hover:bg-foreground/5 transition-colors"
+                        >
+                          <X size={12} />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                )}
-              </div>
-              {importUrl && !importEmbedUrl && (
-                <p className="font-sans text-xs text-foreground/40">Paste a full YouTube, Vimeo, or Framerate URL to preview.</p>
-              )}
+
+                  {/* Meta row — shown once ready */}
+                  {item.status === "ready" && (
+                    <div className="flex items-center gap-2">
+                      {item.thumbnailUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={item.thumbnailUrl}
+                          alt=""
+                          className="h-[34px] w-[60px] shrink-0 rounded object-cover bg-foreground/5"
+                        />
+                      )}
+                      <input
+                        className="h-9 flex-1 rounded-lg border border-border bg-foreground/[0.02] px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                        placeholder="Video title…"
+                        value={item.title}
+                        onChange={(e) => updateBulkTitle(item.id, e.target.value)}
+                      />
+                    </div>
+                  )}
+
+                  {item.status === "error" && (
+                    <p className="font-sans text-xs text-red-500">Could not load metadata — check the URL and try again.</p>
+                  )}
+                </div>
+              ))}
             </div>
 
-            {/* Live embed preview */}
-            {importEmbedUrl && (
-              <div className="overflow-hidden rounded-xl border border-border">
-                <div className="relative aspect-video w-full bg-core-black">
-                  <iframe
-                    src={importEmbedUrl}
-                    className="absolute inset-0 h-full w-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Metadata — only show once a valid URL is detected */}
-            {importEmbedUrl && metadataFields}
+            {/* Add row + ready count */}
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={addBulkItem}
+                disabled={bulkItems.length >= 10}
+                className="inline-flex items-center gap-1.5 font-sans text-sm text-foreground/50 hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <span className="flex h-5 w-5 items-center justify-center rounded-full border border-current text-xs leading-none">+</span>
+                Add another link
+              </button>
+              {(() => {
+                const n = bulkItems.filter((i) => i.status === "ready" && i.title.trim()).length
+                return n > 0 ? (
+                  <span className="font-sans text-xs text-foreground/40">
+                    {n} {n === 1 ? "video" : "videos"} ready to import
+                  </span>
+                ) : null
+              })()}
+            </div>
 
             {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
 
@@ -946,14 +991,19 @@ export function UploadClient({ username }: { username: string }) {
               <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
                 Cancel
               </Link>
-              <button
-                type="button"
-                onClick={handleImport}
-                disabled={!importEmbedUrl || !title.trim() || uploading}
-                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
-              >
-                {uploading ? "Saving…" : "Import Video"}
-              </button>
+              {(() => {
+                const readyCount = bulkItems.filter((i) => i.status === "ready" && i.title.trim()).length
+                return (
+                  <button
+                    type="button"
+                    onClick={handleBulkImport}
+                    disabled={readyCount === 0 || uploading}
+                    className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                  >
+                    {uploading ? "Importing…" : `Import ${readyCount || ""} Video${readyCount !== 1 ? "s" : ""}`}
+                  </button>
+                )
+              })()}
             </div>
           </div>
         )}
