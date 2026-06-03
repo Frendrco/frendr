@@ -156,9 +156,8 @@ export function VideoOwnerActions({
 
   function pickFrame(i: number) {
     if (!streamId) return
-    const pct = encodeURIComponent(framePercents[i])
     setThumbnailUrl(
-      `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=${pct}`
+      `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=${framePercents[i]}`
     )
     setSelectedFrame(i)
     setThumbMode("default")
@@ -341,7 +340,7 @@ export function VideoOwnerActions({
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={`https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=${encodeURIComponent(pct)}`}
+                              src={`https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=${pct}`}
                               alt={`Frame at ${pct}`}
                               className="w-full h-full object-cover"
                             />
