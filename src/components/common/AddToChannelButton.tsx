@@ -19,6 +19,8 @@ export function AddToChannelButton({ videoId }: { videoId: string }) {
   const [open, setOpen] = useState(false)
   const [channels, setChannels] = useState<Channel[]>([])
   const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchChannels = useCallback(async () => {
     setLoading(true)
@@ -37,15 +39,30 @@ export function AddToChannelButton({ videoId }: { videoId: string }) {
 
   const toggle = async (channel: Channel) => {
     const next = !channel.inChannel
+    setSaving(channel.id)
+    setError(null)
+    // Optimistic update
     setChannels((prev) => prev.map((c) => c.id === channel.id ? { ...c, inChannel: next } : c))
-    if (next) {
-      await fetch(`/api/channels/${channel.id}/videos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ videoId }),
-      })
-    } else {
-      await fetch(`/api/channels/${channel.id}/videos/${videoId}`, { method: "DELETE" })
+    try {
+      const res = next
+        ? await fetch(`/api/channels/${channel.id}/videos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ videoId }),
+          })
+        : await fetch(`/api/channels/${channel.id}/videos/${videoId}`, { method: "DELETE" })
+
+      if (!res.ok) {
+        // Revert on failure
+        setChannels((prev) => prev.map((c) => c.id === channel.id ? { ...c, inChannel: !next } : c))
+        const data = await res.json().catch(() => ({})) as { error?: string }
+        setError(data.error ?? `Failed (${res.status})`)
+      }
+    } catch {
+      setChannels((prev) => prev.map((c) => c.id === channel.id ? { ...c, inChannel: !next } : c))
+      setError("Network error")
+    } finally {
+      setSaving(null)
     }
   }
 
@@ -88,23 +105,31 @@ export function AddToChannelButton({ videoId }: { videoId: string }) {
                 </Link>
               </div>
             ) : (
-              channels.map((ch) => (
-                <button
-                  key={ch.id}
-                  onClick={() => toggle(ch)}
-                  className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors"
-                >
-                  {/* Color dot */}
-                  <span
-                    className="h-4 w-4 shrink-0 rounded-full border border-border"
-                    style={{ background: ch.color ?? "#e5e7eb" }}
-                  />
-                  <span className="flex-1 truncate font-sans text-sm text-left text-core-black">{ch.name}</span>
-                  {ch.inChannel && (
-                    <Check size={13} className="shrink-0 text-spring-green" strokeWidth={2.5} />
-                  )}
-                </button>
-              ))
+              <>
+                {channels.map((ch) => (
+                  <button
+                    key={ch.id}
+                    onClick={() => toggle(ch)}
+                    disabled={saving === ch.id}
+                    className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors disabled:opacity-50"
+                  >
+                    <span
+                      className="h-4 w-4 shrink-0 rounded-full border border-border"
+                      style={{ background: ch.color ?? "#e5e7eb" }}
+                    />
+                    <span className="flex-1 truncate font-sans text-sm text-left text-core-black">{ch.name}</span>
+                    {saving === ch.id
+                      ? <Loader2 size={13} className="shrink-0 animate-spin text-foreground/40" />
+                      : ch.inChannel
+                        ? <Check size={13} className="shrink-0 text-spring-green" strokeWidth={2.5} />
+                        : null
+                    }
+                  </button>
+                ))}
+                {error && (
+                  <p className="px-3 py-2 font-sans text-xs text-red-500 border-t border-border">{error}</p>
+                )}
+              </>
             )}
           </div>
         </PopoverContent>
