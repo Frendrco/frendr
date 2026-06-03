@@ -26,7 +26,7 @@ export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; curren
   return (
     <>
       {/* Sort toggle */}
-      <div className="mb-6 flex gap-2">
+      <div className="mb-6 flex gap-2 justify-center md:justify-start">
         {(["recent", "popular"] as Sort[]).map((s) => (
           <button
             key={s}
