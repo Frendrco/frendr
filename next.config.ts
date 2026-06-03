@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       { hostname: "*.r2.dev"               },
       { hostname: "img.youtube.com"        },
       { hostname: "i.vimeocdn.com"         },
+      { hostname: "*.supabase.co"          },
     ],
   },
 };
