@@ -169,10 +169,10 @@ export function Header({ userMenu }: { userMenu?: React.ReactNode }) {
 
           {!isLoaded ? (
             <>
-              <div className="hidden md:block h-9 w-[88px] rounded-full bg-black/10 animate-pulse" />
-              <div className="h-9 w-9 rounded-full bg-black/10 animate-pulse" />
-              <div className="h-9 w-9 rounded-full bg-black/10 animate-pulse" />
-              <div className="h-9 w-9 rounded-full bg-black/10 animate-pulse" />
+              <div className="hidden md:block h-9 w-[88px]" />
+              <div className="h-9 w-9" />
+              <div className="h-9 w-9" />
+              <div className="h-9 w-9" />
             </>
           ) : isSignedIn ? (
             <>
