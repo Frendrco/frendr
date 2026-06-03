@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useClerk, useUser } from "@clerk/nextjs"
+import { useClerk } from "@clerk/nextjs"
 import { Settings, Tv2, LogOut, Compass, Users, Rss, Upload, X } from "lucide-react"
 import {
   DropdownMenu,
@@ -18,15 +18,13 @@ import { Logo } from "@/components/common/Logo"
 interface Props {
   username: string
   displayName: string
+  avatarUrl?: string
 }
 
-export function UserMenuDropdown({ username, displayName }: Props) {
+export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
   const { signOut } = useClerk()
-  const { user } = useUser()
   const router = useRouter()
   const [open, setOpen] = useState(false)
-
-  const avatarUrl = user?.imageUrl
   const initials = displayName
     .split(" ")
     .map((w: string) => w[0])
