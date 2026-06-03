@@ -14,7 +14,14 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-const FRAME_PERCENTS = ["5%", "20%", "35%", "50%", "65%", "85%"]
+function randomFramePercents(): string[] {
+  // Split 3%–92% into 6 equal buckets, pick a random value within each
+  return Array.from({ length: 6 }, (_, i) => {
+    const lo = 3 + i * 15
+    const hi = lo + 13
+    return `${Math.round(lo + Math.random() * (hi - lo))}%`
+  })
+}
 
 const field =
   "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
@@ -76,6 +83,7 @@ export function VideoOwnerActions({
   const [thumbnailUrl,   setThumbnailUrl]  = useState(initialThumbnailUrl ?? "")
   const [isPublic,       setIsPublic]      = useState(initialIsPublic)
   const [thumbMode,      setThumbMode]     = useState<"default" | "frames">("default")
+  const [framePercents,  setFramePercents] = useState(randomFramePercents)
   const [uploadingThumb, setUploadingThumb] = useState(false)
   const [selectedFrame,  setSelectedFrame] = useState<number | null>(null)
 
@@ -148,7 +156,7 @@ export function VideoOwnerActions({
 
   function pickFrame(i: number) {
     if (!streamId) return
-    const pct = encodeURIComponent(FRAME_PERCENTS[i])
+    const pct = encodeURIComponent(framePercents[i])
     setThumbnailUrl(
       `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=${pct}`
     )
@@ -309,7 +317,7 @@ export function VideoOwnerActions({
                         </button>
                         <button
                           type="button"
-                          onClick={() => setThumbMode("frames")}
+                          onClick={() => { setFramePercents(randomFramePercents()); setThumbMode("frames") }}
                           disabled={!streamId}
                           className="flex h-10 w-full items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-core-black transition-colors hover:border-foreground/30 disabled:opacity-40 disabled:cursor-not-allowed"
                         >
@@ -321,9 +329,9 @@ export function VideoOwnerActions({
                   ) : (
                     <div className="flex flex-col gap-2">
                       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
-                        {FRAME_PERCENTS.map((pct, i) => (
+                        {framePercents.map((pct, i) => (
                           <button
-                            key={pct}
+                            key={i}
                             type="button"
                             onClick={() => pickFrame(i)}
                             className={cn(
