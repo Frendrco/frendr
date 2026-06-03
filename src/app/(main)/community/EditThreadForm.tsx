@@ -2,13 +2,31 @@
 
 import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { Bold, Italic, Link2, Plus, X } from "lucide-react"
+import { Bold, Italic, Link2, Plus, X, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
+import React from "react"
 
 const TAGS = [
   "Discussion", "Help", "Showcase", "News",
   "Tools", "Resources", "Feedback", "Off-topic",
 ]
+
+function parseLine(line: string): React.ReactNode[] {
+  const pattern = /(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))/g
+  const parts = line.split(pattern)
+  return parts.map((part, i) => {
+    const bold = part.match(/^\*\*([^*]+)\*\*$/)
+    if (bold) return <strong key={i} className="font-semibold text-core-black">{bold[1]}</strong>
+    const italic = part.match(/^\*([^*]+)\*$/)
+    if (italic) return <em key={i}>{italic[1]}</em>
+    const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+    if (link) {
+      const href = link[2].startsWith("http") ? link[2] : `https://${link[2]}`
+      return <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:opacity-70 transition-opacity">{link[1]}</a>
+    }
+    return part
+  })
+}
 
 interface InitialValues {
   title: string
@@ -27,6 +45,8 @@ interface Props {
 export function EditThreadForm({ threadId, initial }: Props) {
   const router = useRouter()
   const bodyRef = useRef<HTMLTextAreaElement>(null)
+  const linkInputRef = useRef<HTMLInputElement>(null)
+  const pendingLink = useRef<{ start: number; end: number; sel: string } | null>(null)
 
   const [title, setTitle]         = useState(initial.title)
   const [body, setBody]           = useState(initial.body)
@@ -36,6 +56,8 @@ export function EditThreadForm({ threadId, initial }: Props) {
   const [riveUrls, setRiveUrls]   = useState<string[]>(initial.riveUrls.length ? initial.riveUrls : [""])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError]           = useState<string | null>(null)
+  const [tab, setTab]               = useState<"write" | "preview">("write")
+  const [linkUrl, setLinkUrl]       = useState<string | null>(null)
 
   function applyFormat(format: "bold" | "italic" | "link") {
     const el = bodyRef.current
@@ -44,21 +66,44 @@ export function EditThreadForm({ threadId, initial }: Props) {
     const end   = el.selectionEnd
     const sel   = body.slice(start, end)
 
-    let replacement = ""
-    if (format === "bold")   replacement = `**${sel || "bold text"}**`
-    if (format === "italic") replacement = `*${sel || "italic text"}*`
     if (format === "link") {
-      const url = window.prompt("Enter URL:")
-      if (!url) return
-      replacement = `[${sel || "link text"}](${url})`
+      pendingLink.current = { start, end, sel }
+      setLinkUrl("")
+      setTimeout(() => linkInputRef.current?.focus(), 0)
+      return
     }
 
+    const wrap = format === "bold" ? "**" : "*"
+    const replacement = `${wrap}${sel || (format === "bold" ? "bold text" : "italic text")}${wrap}`
     const next = body.slice(0, start) + replacement + body.slice(end)
     setBody(next)
     setTimeout(() => {
       el.focus()
       el.setSelectionRange(start + replacement.length, start + replacement.length)
     }, 0)
+  }
+
+  function confirmLink() {
+    const url = linkUrl?.trim()
+    if (!url) { setLinkUrl(null); bodyRef.current?.focus(); return }
+    const { start, end, sel } = pendingLink.current ?? { start: body.length, end: body.length, sel: "" }
+    const replacement = `[${sel || "link text"}](${url})`
+    setBody(body.slice(0, start) + replacement + body.slice(end))
+    setLinkUrl(null)
+    pendingLink.current = null
+    setTimeout(() => {
+      const el = bodyRef.current
+      if (!el) return
+      el.focus()
+      el.setSelectionRange(start + replacement.length, start + replacement.length)
+    }, 0)
+  }
+
+  function handleBodyKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.metaKey || e.ctrlKey) {
+      if (e.key === "b") { e.preventDefault(); applyFormat("bold") }
+      if (e.key === "i") { e.preventDefault(); applyFormat("italic") }
+    }
   }
 
   function toggleTag(tag: string) {
@@ -148,36 +193,117 @@ export function EditThreadForm({ threadId, initial }: Props) {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="font-sans text-xs font-medium text-foreground/50">Body</label>
-        <div className="overflow-hidden rounded-xl border border-border focus-within:ring-2 focus-within:ring-spring-green">
-          <div className="flex items-center gap-0.5 border-b border-border bg-foreground/[0.02] px-3 py-2">
-            {[
-              { format: "bold"   as const, icon: <Bold   size={14} />, title: "Bold"   },
-              { format: "italic" as const, icon: <Italic size={14} />, title: "Italic" },
-              { format: "link"   as const, icon: <Link2  size={14} />, title: "Link"   },
-            ].map(({ format, icon, title: t }) => (
+        <div className="flex items-center justify-between">
+          <label className="font-sans text-xs font-medium text-foreground/50">Body</label>
+          <div className="flex items-center gap-0.5 rounded-full border border-border p-0.5">
+            {(["write", "preview"] as const).map(t => (
               <button
-                key={format}
+                key={t}
                 type="button"
-                title={t}
-                onClick={() => applyFormat(format)}
-                className="flex h-7 w-7 items-center justify-center rounded text-foreground/40 transition-colors hover:bg-foreground/10 hover:text-foreground"
+                onClick={() => setTab(t)}
+                className={cn(
+                  "h-5 rounded-full px-2.5 font-sans text-[11px] font-medium capitalize transition-colors",
+                  tab === t
+                    ? "bg-core-black text-white"
+                    : "text-foreground/40 hover:text-foreground"
+                )}
               >
-                {icon}
+                {t}
               </button>
             ))}
           </div>
-          <textarea
-            ref={bodyRef}
-            rows={10}
-            className="w-full resize-none bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
-            placeholder="Share your thoughts…"
-            value={body}
-            onChange={e => setBody(e.target.value)}
-            required
-          />
         </div>
-        <p className="font-sans text-[11px] text-foreground/30">Supports **bold**, *italic*, and [links](url)</p>
+
+        <div className="overflow-hidden rounded-xl border border-border focus-within:ring-2 focus-within:ring-spring-green">
+          {tab === "write" && (
+            <div className="border-b border-border bg-foreground/[0.02]">
+              <div className="flex items-center gap-0.5 px-3 py-2">
+                {[
+                  { format: "bold"   as const, icon: <Bold   size={14} />, title: "Bold (⌘B)"   },
+                  { format: "italic" as const, icon: <Italic size={14} />, title: "Italic (⌘I)" },
+                  { format: "link"   as const, icon: <Link2  size={14} />, title: "Link"         },
+                ].map(({ format, icon, title: t }) => (
+                  <button
+                    key={format}
+                    type="button"
+                    title={t}
+                    onClick={() => applyFormat(format)}
+                    className={cn(
+                      "flex h-7 w-7 items-center justify-center rounded transition-colors",
+                      format === "link" && linkUrl !== null
+                        ? "bg-foreground/10 text-foreground"
+                        : "text-foreground/40 hover:bg-foreground/10 hover:text-foreground"
+                    )}
+                  >
+                    {icon}
+                  </button>
+                ))}
+              </div>
+
+              {linkUrl !== null && (
+                <div className="flex items-center gap-2 border-t border-border px-3 py-2">
+                  <Link2 size={12} className="shrink-0 text-foreground/30" />
+                  <input
+                    ref={linkInputRef}
+                    type="url"
+                    placeholder="https://…"
+                    value={linkUrl}
+                    onChange={e => setLinkUrl(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === "Enter") { e.preventDefault(); confirmLink() }
+                      if (e.key === "Escape") { setLinkUrl(null); bodyRef.current?.focus() }
+                    }}
+                    className="min-w-0 flex-1 bg-transparent font-sans text-xs text-core-black placeholder:text-foreground/30 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={confirmLink}
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-spring-green text-core-black transition-opacity hover:opacity-80"
+                  >
+                    <Check size={11} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setLinkUrl(null); bodyRef.current?.focus() }}
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-foreground/30 transition-colors hover:text-foreground"
+                  >
+                    <X size={11} />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {tab === "write" && (
+            <textarea
+              ref={bodyRef}
+              rows={10}
+              className="w-full resize-none bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+              placeholder="Share your thoughts…"
+              value={body}
+              onChange={e => setBody(e.target.value)}
+              onKeyDown={handleBodyKeyDown}
+              required
+            />
+          )}
+
+          {tab === "preview" && (
+            <div className="min-h-[240px] px-4 py-3">
+              {body.trim() ? (
+                <div className="flex flex-col gap-2">
+                  {body.split("\n").map((line, i) => (
+                    <p key={i} className="font-sans text-sm text-foreground/80 leading-relaxed">
+                      {parseLine(line)}
+                    </p>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-sans text-sm text-foreground/30">Nothing to preview yet.</p>
+              )}
+            </div>
+          )}
+        </div>
+        <p className="font-sans text-[11px] text-foreground/30">Supports **bold**, *italic*, and [links](url) · ⌘B / ⌘I</p>
       </div>
 
       <div className="flex flex-col gap-1.5">
