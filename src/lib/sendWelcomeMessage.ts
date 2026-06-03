@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { createNotification } from "@/lib/notifications"
 
-const SENDER_EMAIL = "ryan@wonderlustmedia.ca"
+const SENDER_EMAIL = "ryan@frendr.co"
 
 export async function sendWelcomeMessage(toUser: { id: string; displayName: string }) {
   const sender = await prisma.user.findFirst({ where: { email: SENDER_EMAIL }, select: { id: true } })

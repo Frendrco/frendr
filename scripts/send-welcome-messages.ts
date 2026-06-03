@@ -3,7 +3,7 @@ import { sendWelcomeMessage } from "../src/lib/sendWelcomeMessage"
 
 async function main() {
   const sender = await prisma.user.findFirst({
-    where: { email: "ryan@wonderlustmedia.ca" },
+    where: { email: "ryan@frendr.co" },
     select: { id: true },
   })
   if (!sender) {
@@ -12,7 +12,7 @@ async function main() {
   }
 
   const users = await prisma.user.findMany({
-    where: { NOT: { email: "ryan@wonderlustmedia.ca" } },
+    where: { NOT: { email: "ryan@frendr.co" } },
     select: { id: true, displayName: true },
   })
 
