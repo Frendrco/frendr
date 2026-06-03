@@ -36,7 +36,7 @@ export default async function DashboardChannelsPage() {
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
 
         <div className="mb-8 flex items-center justify-between">
-          <div>
+          <div className="text-center md:text-left w-full md:w-auto">
             <h1 className="font-sans font-bold text-2xl text-core-black">Your Channels</h1>
             <p className="mt-1 font-sans text-sm text-foreground/40">
               Curate videos from anywhere on Frendr into themed collections
