@@ -78,9 +78,9 @@ export function ShareRiveButton() {
     <>
       <button
         onClick={handleClick}
-        className="inline-flex h-10 w-fit shrink-0 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80"
+        className="inline-flex h-10 w-fit shrink-0 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black"
       >
-        Share Rive
+        Show Your Work
       </button>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
