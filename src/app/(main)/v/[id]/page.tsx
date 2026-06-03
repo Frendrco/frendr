@@ -217,7 +217,7 @@ export default async function VideoPage({ params }: Props) {
             {/* Creator row */}
             <div className="mt-2 flex items-center gap-3">
               <Link href={`/${video.user.username}`} className="inline-flex items-center gap-2 hover:opacity-70 transition-opacity min-w-0">
-                <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
+                <div className={`h-5 w-5 shrink-0 rounded-full overflow-hidden flex items-center justify-center ${video.user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                   {video.user.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={video.user.avatarUrl} alt={video.user.displayName} className="h-full w-full object-cover" />

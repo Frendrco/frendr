@@ -198,7 +198,7 @@ export default async function SearchPage({ searchParams }: Props) {
                     href={`/${creator.username}`}
                     className="flex items-center gap-3 rounded-2xl border border-border px-4 py-3 transition-colors hover:border-foreground/20"
                   >
-                    <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
+                    <div className={`h-10 w-10 shrink-0 overflow-hidden rounded-full flex items-center justify-center ${creator.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                       {creator.avatarUrl ? (
                         <Image src={creator.avatarUrl} alt={creator.displayName} width={40} height={40} className="h-full w-full object-cover" />
                       ) : (

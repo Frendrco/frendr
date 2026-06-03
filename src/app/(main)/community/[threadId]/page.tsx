@@ -84,7 +84,7 @@ export default async function ThreadPage({ params }: Props) {
 
         <div className="mt-3 flex items-center gap-3">
           <Link href={`/${thread.user.username}`} className="flex items-center gap-2 hover:opacity-70 transition-opacity">
-            <div className="h-6 w-6 overflow-hidden rounded-full bg-spring-green flex items-center justify-center shrink-0">
+            <div className={`h-6 w-6 overflow-hidden rounded-full flex items-center justify-center shrink-0 ${thread.user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
               {thread.user.avatarUrl ? (
                 <Image src={thread.user.avatarUrl} alt={thread.user.displayName} width={24} height={24} className="h-full w-full object-cover" />
               ) : (

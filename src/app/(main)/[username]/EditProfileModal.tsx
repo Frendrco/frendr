@@ -209,7 +209,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
 
               {/* Avatar */}
               <div className="flex items-center gap-4">
-                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
+                <div className={`h-16 w-16 shrink-0 overflow-hidden rounded-full flex items-center justify-center ${avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                   {avatarUrl ? (
                     <Image src={avatarUrl} alt={displayName} width={64} height={64} className="h-full w-full object-cover" />
                   ) : (

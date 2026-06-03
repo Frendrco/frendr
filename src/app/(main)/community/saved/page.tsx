@@ -96,7 +96,7 @@ export default async function SavedPage() {
 
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5">
                     <Link href={`/${thread.user.username}`} className="flex items-center gap-2 hover:opacity-70 transition-opacity">
-                      <div className="h-5 w-5 overflow-hidden rounded-full bg-spring-green shrink-0 flex items-center justify-center">
+                      <div className={`h-5 w-5 overflow-hidden rounded-full shrink-0 flex items-center justify-center ${thread.user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                         {thread.user.avatarUrl ? (
                           <Image src={thread.user.avatarUrl} alt={thread.user.displayName} width={20} height={20} className="h-full w-full object-cover" />
                         ) : (

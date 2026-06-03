@@ -38,7 +38,7 @@ export interface VideoCommentData {
 function Avatar({ user, size }: { user: CommentUser; size: number }) {
   return (
     <div
-      className="shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center"
+      className={`shrink-0 overflow-hidden rounded-full flex items-center justify-center ${user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}
       style={{ width: size, height: size }}
     >
       {user.avatarUrl ? (

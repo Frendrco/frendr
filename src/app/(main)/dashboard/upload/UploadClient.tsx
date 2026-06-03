@@ -562,7 +562,7 @@ export function UploadClient({ username }: { username: string }) {
           <div className="flex flex-col gap-1.5">
             {collabs.map((c) => (
               <span key={c.id} className="inline-flex items-center gap-2 rounded-full border border-border bg-foreground/[0.06] pl-1.5 pr-2.5 py-1 font-sans text-xs text-core-black self-start">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden bg-spring-green">
+                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden ${c.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                   {c.avatarUrl
                     // eslint-disable-next-line @next/next/no-img-element
                     ? <img src={c.avatarUrl} alt={c.displayName} className="h-full w-full object-cover" />
@@ -605,7 +605,7 @@ export function UploadClient({ username }: { username: string }) {
                     onClick={() => addCollab(r)}
                     className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors"
                   >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full overflow-hidden bg-spring-green">
+                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full overflow-hidden ${r.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                       {r.avatarUrl
                         // eslint-disable-next-line @next/next/no-img-element
                         ? <img src={r.avatarUrl} alt={r.displayName} className="h-full w-full object-cover" />

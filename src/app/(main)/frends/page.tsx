@@ -55,7 +55,7 @@ export default async function FrendsPage() {
             return (
               <div key={member.id} className="flex flex-col items-center gap-2">
                 <Link href={`/${member.username}`} className="group w-full">
-                  <div className="relative w-full overflow-hidden rounded-3xl bg-spring-green aspect-square transition-opacity group-hover:opacity-90">
+                  <div className={`relative w-full overflow-hidden rounded-3xl aspect-square transition-opacity group-hover:opacity-90 ${member.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                     {member.avatarUrl ? (
                       <Image src={member.avatarUrl} alt={member.displayName} fill className="object-cover" />
                     ) : (

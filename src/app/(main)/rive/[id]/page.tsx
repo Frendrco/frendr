@@ -114,7 +114,7 @@ export default async function RiveDetailPage({ params }: Props) {
               href={`/${thread.user.username}`}
               className="flex items-center gap-2 hover:opacity-70 transition-opacity"
             >
-              <div className="h-6 w-6 overflow-hidden rounded-full bg-spring-green flex items-center justify-center shrink-0">
+              <div className={`h-6 w-6 overflow-hidden rounded-full flex items-center justify-center shrink-0 ${thread.user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                 {thread.user.avatarUrl ? (
                   <Image
                     src={thread.user.avatarUrl}

@@ -68,7 +68,7 @@ export function ActiveConversation({ conversationId, initialMessages, currentUse
         </Link>
         {other && (
           <Link href={`/${other.username}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <div className="h-7 w-7 shrink-0 rounded-full overflow-hidden bg-spring-green flex items-center justify-center">
+            <div className={`h-7 w-7 shrink-0 rounded-full overflow-hidden flex items-center justify-center ${other.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
               {other.avatarUrl ? (
                 <Image src={other.avatarUrl} alt={other.displayName} width={28} height={28} className="h-full w-full object-cover" />
               ) : (
