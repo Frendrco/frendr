@@ -82,12 +82,6 @@ export default async function ThreadPage({ params }: Props) {
       <div className="mb-10">
         <h2 className="font-sans font-bold text-xl text-core-black leading-snug">{thread.title}</h2>
 
-        {isOwner && (
-          <div className="mt-2">
-            <ThreadActions threadId={thread.id} />
-          </div>
-        )}
-
         <div className="mt-3 flex items-center gap-3">
           <Link href={`/${thread.user.username}`} className="flex items-center gap-2 hover:opacity-70 transition-opacity">
             <div className="h-6 w-6 overflow-hidden rounded-full bg-spring-green flex items-center justify-center shrink-0">
@@ -102,6 +96,11 @@ export default async function ThreadPage({ params }: Props) {
             <span className="font-sans text-xs font-medium text-foreground/60">{thread.user.displayName}</span>
           </Link>
           <span className="font-sans text-xs text-foreground/30">{timeAgo(thread.createdAt)}</span>
+          {isOwner && (
+            <div className="ml-auto">
+              <ThreadActions threadId={thread.id} />
+            </div>
+          )}
         </div>
 
         {thread.tags.length > 0 && (
