@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Bell } from "lucide-react"
+import { Bell, Megaphone } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -14,11 +14,13 @@ type Notification = {
   fromUser?: NotifFromUser | null
   contentId?: string | null
   contentType?: string | null
+  message?: string | null
   read: boolean
   createdAt: string
 }
 
 function notifMessage(n: Notification) {
+  if (n.type === "announcement") return n.message ?? "New announcement"
   const name = n.fromUser?.displayName ?? "Someone"
   switch (n.type) {
     case "follow":  return `${name} started following you`
@@ -32,6 +34,7 @@ function notifMessage(n: Notification) {
 
 function notifUrl(n: Notification) {
   switch (n.type) {
+    case "announcement": return "#"
     case "follow":  return n.fromUser?.username ? `/${n.fromUser.username}` : "/"
     case "message": return "/messages"
     case "comment":
@@ -81,6 +84,7 @@ export function NotificationsBell() {
       await fetch("/api/notifications", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: n.id }) })
       setNotifications((prev) => prev.map((x) => x.id === n.id ? { ...x, read: true } : x))
     }
+    if (n.type === "announcement") return
     setOpen(false)
     router.push(notifUrl(n))
   }
@@ -153,7 +157,11 @@ export function NotificationsBell() {
                 >
                   {/* Avatar */}
                   <div className="shrink-0 h-8 w-8 rounded-full overflow-hidden bg-foreground/10">
-                    {n.fromUser?.avatarUrl ? (
+                    {n.type === "announcement" ? (
+                      <div className="flex h-full w-full items-center justify-center bg-spring-green">
+                        <Megaphone size={14} className="text-core-black" />
+                      </div>
+                    ) : n.fromUser?.avatarUrl ? (
                       <Image src={n.fromUser.avatarUrl} alt={n.fromUser.displayName} width={32} height={32} className="h-full w-full object-cover" />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-spring-green font-sans font-bold text-xs text-core-black">

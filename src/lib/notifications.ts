@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 
-type NotificationType = "follow" | "comment" | "reply" | "message" | "vote"
+type NotificationType = "follow" | "comment" | "reply" | "message" | "vote" | "announcement"
 
 type CreateParams = {
   userId: string
@@ -8,6 +8,7 @@ type CreateParams = {
   fromUserId?: string
   contentId?: string
   contentType?: string
+  message?: string
 }
 
 export async function createNotification(params: CreateParams) {
@@ -17,7 +18,7 @@ export async function createNotification(params: CreateParams) {
 }
 
 async function enqueueEmail(params: CreateParams) {
-  if (params.type === "vote") return
+  if (params.type === "vote" || params.type === "announcement") return
 
   const actor = params.fromUserId
     ? await prisma.user.findUnique({
