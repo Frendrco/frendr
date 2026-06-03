@@ -29,9 +29,16 @@ function getEmbedUrl(video: VideoData): string | null {
   return null
 }
 
+function cfThumb(url: string | null): string | null {
+  if (!url || !url.includes("videodelivery.net")) return url
+  if (url.includes("width=")) return url
+  return url + (url.includes("?") ? "&" : "?") + "width=1280"
+}
+
 export function PinnedVideo({ video, isOwn }: Props) {
   const [playing, setPlaying] = useState(false)
   const embedUrl = getEmbedUrl(video)
+  const thumb = cfThumb(video.thumbnailUrl)
 
   return (
     <div className="mb-8">
@@ -59,12 +66,12 @@ export function PinnedVideo({ video, isOwn }: Props) {
             onClick={() => setPlaying(true)}
             className="absolute inset-0 h-full w-full group"
           >
-            {video.thumbnailUrl && (
+            {thumb && (
               <Image
-                src={video.thumbnailUrl}
+                src={thumb}
                 alt={video.title}
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 75vw"
                 className="object-cover"
               />
             )}
@@ -75,8 +82,8 @@ export function PinnedVideo({ video, isOwn }: Props) {
             </div>
           </button>
         ) : (
-          video.thumbnailUrl && (
-            <Image src={video.thumbnailUrl} alt={video.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+          thumb && (
+            <Image src={thumb} alt={video.title} fill sizes="(max-width: 768px) 100vw, 75vw" className="object-cover" />
           )
         )}
       </div>
