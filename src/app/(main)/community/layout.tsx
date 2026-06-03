@@ -22,8 +22,8 @@ export default async function CommunityLayout({ children }: { children: React.Re
 
       <div className="mx-auto max-w-screen-lg px-4 md:px-6">
 
-        <div className="flex flex-col gap-4 py-10 md:flex-row md:items-end md:justify-between">
-          <div>
+        <div className="flex flex-col items-center gap-4 py-10 md:flex-row md:items-end md:justify-between">
+          <div className="text-center md:text-left">
             <h1 className="display-sm text-core-black">Frend Zone</h1>
             <p className="mt-1 font-sans text-sm text-foreground/40">
               All the good stuff, none of the LinkedIn energy. Leave your ego at the door.
