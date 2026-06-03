@@ -18,6 +18,7 @@ export default async function CommunityPage({ searchParams }: Props) {
     : null
 
   const threads = await prisma.thread.findMany({
+    where: { source: "community" },
     orderBy: sort === "top" ? { voteCount: "desc" } : { createdAt: "desc" },
     include: {
       user: { select: { username: true, displayName: true, avatarUrl: true } },
