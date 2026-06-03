@@ -28,7 +28,7 @@ export function FrendrSelectsMarquee({ videos }: { videos: Video[] }) {
           <Link
             key={`${video.id}-${i}`}
             href={`/v/${video.id}`}
-            className="shrink-0 group px-2 w-64"
+            className="shrink-0 group px-2 w-52 sm:w-64"
           >
             <div className="aspect-video w-full overflow-hidden rounded-xl mb-3 bg-mist-grey relative transition-opacity group-hover:opacity-90">
               {video.thumbnailUrl ? (

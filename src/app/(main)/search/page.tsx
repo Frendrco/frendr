@@ -251,7 +251,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   <Link
                     key={ch.slug}
                     href={`/channels/${ch.slug}`}
-                    className="group shrink-0 w-60 snap-start"
+                    className="group shrink-0 w-44 sm:w-60 snap-start"
                   >
                     <div className="relative aspect-video overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.02]">
                       {cover ? (
