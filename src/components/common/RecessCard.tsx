@@ -55,7 +55,7 @@ export function RecessCard({ video, fixedWidth = false }: Props) {
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   return (
-    <div className={fixedWidth ? "w-[168px] shrink-0" : "group flex flex-col gap-1.5"}>
+    <div className={fixedWidth ? "w-[136px] sm:w-[168px] shrink-0" : "group flex flex-col gap-1.5"}>
       {/* Square thumbnail */}
       <Link href={`/v/${video.id}`} className="relative block aspect-square overflow-hidden rounded-xl bg-[#111] group">
         {video.thumbnailUrl ? (
@@ -81,7 +81,7 @@ export function RecessCard({ video, fixedWidth = false }: Props) {
       {/* Meta row */}
       <div className="flex items-center gap-1.5">
         <Link href={`/${video.user.username}`} className="shrink-0">
-          <div className="h-5 w-5 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
+          <div className="h-4 w-4 sm:h-5 sm:w-5 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
             {video.user.avatarUrl ? (
               <Image
                 src={video.user.avatarUrl}

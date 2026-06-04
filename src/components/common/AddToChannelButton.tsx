@@ -14,7 +14,7 @@ type Channel = {
   inChannel: boolean
 }
 
-export function AddToChannelButton({ videoId }: { videoId: string }) {
+export function AddToChannelButton({ videoId, triggerClassName }: { videoId: string; triggerClassName?: string }) {
   const { isSignedIn } = useAuth()
   const [open, setOpen] = useState(false)
   const [channels, setChannels] = useState<Channel[]>([])
@@ -72,7 +72,7 @@ export function AddToChannelButton({ videoId }: { videoId: string }) {
     <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
+          className={triggerClassName ?? "flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"}
           title="Add to channel"
         >
           <Monitor size={14} />

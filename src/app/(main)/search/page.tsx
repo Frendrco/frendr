@@ -301,12 +301,12 @@ export default async function SearchPage({ searchParams }: Props) {
         {/* ── Recess section (browse only, not when in recess view) ── */}
         {!isSearching && !isRecessView && (
           <section>
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-baseline gap-2">
-                <h2 className="font-sans font-bold text-base text-core-black">Recess</h2>
-                <span className="font-sans text-sm text-foreground/40">Making things for the fun of it</span>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div className="flex items-baseline gap-2 min-w-0">
+                <h2 className="font-sans font-bold text-base text-core-black shrink-0">Recess</h2>
+                <span className="hidden sm:inline font-sans text-sm text-foreground/40 truncate">Making things for the fun of it</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 {recessVideos.length > 0 && (
                   <Link
                     href="/search?type=recess"
@@ -317,7 +317,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 )}
                 <Link
                   href="/dashboard/upload?type=recess"
-                  className="inline-flex h-9 items-center gap-1.5 rounded-full bg-spring-green px-4 font-sans font-medium text-sm text-core-black hover:bg-spring-green/90 transition-colors"
+                  className="inline-flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-full bg-spring-green px-3 sm:px-4 font-sans font-medium text-xs sm:text-sm text-core-black hover:bg-spring-green/90 transition-colors"
                 >
                   + Drop something
                 </Link>

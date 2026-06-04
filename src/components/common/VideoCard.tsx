@@ -113,7 +113,7 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
           {/* Action buttons — top-right corner (desktop hover only) */}
           <div className="absolute top-2 right-2 z-30 hidden sm:flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
-            <AddToChannelButton videoId={video.id} />
+            <AddToChannelButton videoId={video.id} triggerClassName="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors" />
             <AddToPlaylistButton videoId={video.id} />
           </div>
 
