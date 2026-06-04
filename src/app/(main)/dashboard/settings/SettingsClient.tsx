@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
@@ -139,17 +139,16 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
 
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(profile.avatarUrl)
 
-  const fileInputRef   = useRef<HTMLInputElement>(null)
   const displayAvatar  = currentAvatarUrl ?? user?.imageUrl ?? null
   const initials       = displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
+    const input = e.target
     if (!file || !user) return
     await user.setProfileImage({ file })
-    // user.imageUrl updates in the hook after setProfileImage
-    setCurrentAvatarUrl(user.imageUrl ?? null)
-    e.target.value = "" // reset so the same file can be re-selected later
+    setCurrentAvatarUrl(null)
+    input.value = ""
     // Sync new Clerk URL to DB — hasImage is now true so PATCH will save it
     await fetch("/api/users", {
       method: "PATCH",
@@ -242,26 +241,16 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
               </div>
             )}
           </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleAvatarChange}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              if (fileInputRef.current) {
-                fileInputRef.current.value = ""
-                fileInputRef.current.click()
-              }
-            }}
-            className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors"
-          >
+          <label className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
             <Camera size={12} />
             Replace
-          </button>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarChange}
+            />
+          </label>
           <span className="font-sans text-[10px] text-foreground/35">or choose an avatar</span>
           <div className="flex gap-2">
             {DEFAULT_AVATARS.map((src) => (

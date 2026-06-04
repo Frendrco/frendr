@@ -28,6 +28,7 @@ const CREATOR_TYPES   = ["Freelancer", "Studio", "Student", "In-house"]
 
 interface Profile {
   displayName: string
+  avatarUrl:   string | null
   location:    string | null
   bio:         string | null
   website:     string | null
@@ -128,15 +129,21 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
-  const avatarUrl   = user?.imageUrl
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(profile.avatarUrl)
+  const avatarUrl   = currentAvatarUrl ?? user?.imageUrl ?? null
   const initials    = displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file || !user) return
     await user.setProfileImage({ file })
-    router.refresh()
+    setCurrentAvatarUrl(null) // fall back to hook's fresh user.imageUrl
     e.target.value = ""
+    await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    })
   }
 
   function toggleTag(tag: string) {
@@ -227,13 +234,10 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                   )}
                 </div>
                 <div>
-                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors"
-                  >
+                  <label className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
                     <Camera size={12} /> Change photo
-                  </button>
+                    <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                  </label>
                 </div>
               </div>
 

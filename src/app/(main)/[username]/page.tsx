@@ -264,6 +264,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               <EditProfileModal
                 profile={{
                   displayName: user.displayName,
+                  avatarUrl:   user.avatarUrl,
                   location:    user.location,
                   bio:         user.bio,
                   website:     user.website,
