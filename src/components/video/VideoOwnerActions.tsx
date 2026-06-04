@@ -68,6 +68,10 @@ interface Props {
   initialIsPublic: boolean
   initialAllowDownloads: boolean
   initialCollaborators: CollabEntry[]
+  initialEmbedAutoplay?: boolean
+  initialEmbedLoop?: boolean
+  initialEmbedShowControls?: boolean
+  initialAllowEmbedding?: boolean
   externalEditOpen?: boolean
   onExternalEditOpenChange?: (open: boolean) => void
 }
@@ -85,6 +89,10 @@ export function VideoOwnerActions({
   initialIsPublic,
   initialAllowDownloads,
   initialCollaborators,
+  initialEmbedAutoplay = false,
+  initialEmbedLoop = false,
+  initialEmbedShowControls = true,
+  initialAllowEmbedding = true,
   externalEditOpen,
   onExternalEditOpenChange,
 }: Props) {
@@ -120,11 +128,11 @@ export function VideoOwnerActions({
   const collabDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Embed tab state
-  const [allowEmbedding, setAllowEmbedding] = useState(true)
+  const [allowEmbedding, setAllowEmbedding] = useState(initialAllowEmbedding)
   const [allowDownloads, setAllowDownloads] = useState(initialAllowDownloads)
-  const [embedAutoplay,  setEmbedAutoplay]  = useState(false)
-  const [embedLoop,      setEmbedLoop]      = useState(false)
-  const [showControls,   setShowControls]   = useState(true)
+  const [embedAutoplay,  setEmbedAutoplay]  = useState(initialEmbedAutoplay)
+  const [embedLoop,      setEmbedLoop]      = useState(initialEmbedLoop)
+  const [showControls,   setShowControls]   = useState(initialEmbedShowControls)
   const [copied,         setCopied]         = useState(false)
 
   // Re-sync credits when modal opens (in case initial data changed)
@@ -194,13 +202,17 @@ export function VideoOwnerActions({
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title:          title.trim(),
-        description:    description.trim() || null,
+        title:             title.trim(),
+        description:       description.trim() || null,
         tags,
-        thumbnailUrl:   thumbnailUrl.trim() || null,
+        thumbnailUrl:      thumbnailUrl.trim() || null,
         isPublic,
-        allowDownloads: streamId ? allowDownloads : undefined,
-        collaborators:  collabs.map((c) => ({ userId: c.userId, role: (c.role ?? "").trim() || null })),
+        allowDownloads:    streamId ? allowDownloads : undefined,
+        collaborators:     collabs.map((c) => ({ userId: c.userId, role: (c.role ?? "").trim() || null })),
+        allowEmbedding,
+        embedAutoplay,
+        embedLoop,
+        embedShowControls: showControls,
       }),
     })
     setSaving(false)

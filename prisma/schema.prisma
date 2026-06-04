@@ -85,6 +85,10 @@ model Video {
   tags          String[]
   categories    String[]
   isPublic       Boolean        @default(true)
+  embedAutoplay  Boolean        @default(false)
+  embedLoop      Boolean        @default(false)
+  embedShowControls Boolean     @default(true)
+  allowEmbedding Boolean        @default(true)
   allowDownloads Boolean        @default(false)
   featured       Boolean        @default(false)
   isAiGenerated  Boolean        @default(false)

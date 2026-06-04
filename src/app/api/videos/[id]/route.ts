@@ -17,27 +17,36 @@ export async function PATCH(req: Request, { params }: Params) {
   if (video.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const body = await req.json() as {
-    title?:          string
-    description?:    string | null
-    tags?:           string[]
-    thumbnailUrl?:   string | null
-    isPublic?:       boolean
-    allowDownloads?: boolean
-    videoType?:      "PORTFOLIO" | "RECESS"
-    collaborators?:  { userId: string; role?: string | null }[]
+    title?:             string
+    description?:       string | null
+    tags?:              string[]
+    thumbnailUrl?:      string | null
+    isPublic?:          boolean
+    allowDownloads?:    boolean
+    videoType?:         "PORTFOLIO" | "RECESS"
+    collaborators?:     { userId: string; role?: string | null }[]
+    embedAutoplay?:     boolean
+    embedLoop?:         boolean
+    embedShowControls?: boolean
+    allowEmbedding?:    boolean
   }
-  const { title, description, tags, thumbnailUrl, isPublic, allowDownloads, videoType, collaborators } = body
+  const { title, description, tags, thumbnailUrl, isPublic, allowDownloads, videoType, collaborators,
+          embedAutoplay, embedLoop, embedShowControls, allowEmbedding } = body
 
   const updated = await prisma.video.update({
     where: { id },
     data: {
-      ...(title          !== undefined && { title }),
-      ...(description    !== undefined && { description }),
-      ...(tags           !== undefined && { tags }),
-      ...(thumbnailUrl   !== undefined && { thumbnailUrl }),
-      ...(isPublic       !== undefined && { isPublic }),
-      ...(allowDownloads !== undefined && { allowDownloads }),
-      ...(videoType      !== undefined && { videoType }),
+      ...(title             !== undefined && { title }),
+      ...(description       !== undefined && { description }),
+      ...(tags              !== undefined && { tags }),
+      ...(thumbnailUrl      !== undefined && { thumbnailUrl }),
+      ...(isPublic          !== undefined && { isPublic }),
+      ...(allowDownloads    !== undefined && { allowDownloads }),
+      ...(videoType         !== undefined && { videoType }),
+      ...(embedAutoplay     !== undefined && { embedAutoplay }),
+      ...(embedLoop         !== undefined && { embedLoop }),
+      ...(embedShowControls !== undefined && { embedShowControls }),
+      ...(allowEmbedding    !== undefined && { allowEmbedding }),
     },
   })
 
