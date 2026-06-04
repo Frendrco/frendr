@@ -65,6 +65,7 @@ interface Props {
   initialTitle: string
   initialDescription: string
   initialTags: string[]
+  initialCategories: string[]
   initialThumbnailUrl: string | null
   initialIsPublic: boolean
   initialAllowDownloads: boolean
@@ -86,6 +87,7 @@ export function VideoOwnerActions({
   initialTitle,
   initialDescription,
   initialTags,
+  initialCategories,
   initialThumbnailUrl,
   initialIsPublic,
   initialAllowDownloads,
@@ -112,6 +114,7 @@ export function VideoOwnerActions({
   const [title,          setTitle]         = useState(initialTitle)
   const [description,    setDescription]   = useState(initialDescription)
   const [tags,           setTags]          = useState<string[]>(initialTags)
+  const [recessTools,    setRecessTools]   = useState<string[]>(initialCategories)
   const [categorySearch, setCategorySearch] = useState("")
   const [thumbnailUrl,   setThumbnailUrl]  = useState(initialThumbnailUrl ?? "")
   const [isPublic,       setIsPublic]      = useState(initialIsPublic)
@@ -206,6 +209,7 @@ export function VideoOwnerActions({
         title:             title.trim(),
         description:       description.trim() || null,
         tags,
+        ...(isRecess && { categories: recessTools }),
         thumbnailUrl:      thumbnailUrl.trim() || null,
         isPublic,
         allowDownloads:    streamId ? allowDownloads : undefined,
@@ -328,15 +332,15 @@ export function VideoOwnerActions({
                   <div className="flex flex-col gap-2">
                     <div className="flex items-baseline justify-between">
                       <label className="font-sans text-sm font-medium text-core-black">Tools used</label>
-                      <span className="font-sans text-xs text-foreground/40">{tags.length}/{MAX_RECESS_TOOLS}</span>
+                      <span className="font-sans text-xs text-foreground/40">{recessTools.length}/{MAX_RECESS_TOOLS}</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {RECESS_TOOLS.map((tool) => {
-                        const on    = tags.includes(tool)
-                        const maxed = !on && tags.length >= MAX_RECESS_TOOLS
+                        const on    = recessTools.includes(tool)
+                        const maxed = !on && recessTools.length >= MAX_RECESS_TOOLS
                         return (
                           <button key={tool} type="button"
-                            onClick={() => setTags((prev) => on ? prev.filter((t) => t !== tool) : maxed ? prev : [...prev, tool])}
+                            onClick={() => setRecessTools((prev) => on ? prev.filter((t) => t !== tool) : maxed ? prev : [...prev, tool])}
                             disabled={maxed}
                             className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
                               on    ? "border-core-black bg-core-black text-white"

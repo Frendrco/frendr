@@ -20,6 +20,7 @@ export async function PATCH(req: Request, { params }: Params) {
     title?:             string
     description?:       string | null
     tags?:              string[]
+    categories?:        string[]
     thumbnailUrl?:      string | null
     isPublic?:          boolean
     allowDownloads?:    boolean
@@ -30,7 +31,7 @@ export async function PATCH(req: Request, { params }: Params) {
     embedShowControls?: boolean
     allowEmbedding?:    boolean
   }
-  const { title, description, tags, thumbnailUrl, isPublic, allowDownloads, videoType, collaborators,
+  const { title, description, tags, categories, thumbnailUrl, isPublic, allowDownloads, videoType, collaborators,
           embedAutoplay, embedLoop, embedShowControls, allowEmbedding } = body
 
   const updated = await prisma.video.update({
@@ -39,6 +40,7 @@ export async function PATCH(req: Request, { params }: Params) {
       ...(title             !== undefined && { title }),
       ...(description       !== undefined && { description }),
       ...(tags              !== undefined && { tags }),
+      ...(categories        !== undefined && { categories }),
       ...(thumbnailUrl      !== undefined && { thumbnailUrl }),
       ...(isPublic          !== undefined && { isPublic }),
       ...(allowDownloads    !== undefined && { allowDownloads }),

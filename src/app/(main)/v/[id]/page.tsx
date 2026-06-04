@@ -194,6 +194,7 @@ export default async function VideoPage({ params }: Props) {
                     initialTitle={video.title}
                     initialDescription={video.description ?? ""}
                     initialTags={video.tags}
+                    initialCategories={video.categories}
                     initialThumbnailUrl={video.thumbnailUrl}
                     initialIsPublic={video.isPublic}
                     initialAllowDownloads={video.allowDownloads}
