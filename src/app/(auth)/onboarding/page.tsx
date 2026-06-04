@@ -34,6 +34,7 @@ const RULES = [
   "Only upload work you own the rights to.",
   "Tag any AI-generated content honestly.",
   "No AI slop — quality and craft matter here.",
+  "Frendr is for everyone. Hate, harassment, and discrimination of any kind will result in immediate removal.",
 ]
 
 function toSlug(val: string) {
