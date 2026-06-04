@@ -18,14 +18,16 @@ export type RecessCardData = {
 }
 
 const TOOL_COLORS: Record<string, string> = {
-  "Blender":         "bg-winter-green text-core-black",
-  "Cinema 4D":       "bg-spring-green text-core-black",
-  "After Effects":   "bg-bloom-lavender text-core-black",
-  "Cavalry":         "bg-hyper-blue text-white",
-  "Houdini":         "bg-sunny-yellow text-core-black",
-  "Rive":            "bg-sky-blue text-core-black",
-  "Nuke":            "bg-dream-lilac text-core-black",
-  "DaVinci Resolve": "bg-winter-green/70 text-core-black",
+  "Blender":          "bg-winter-green text-core-black",
+  "Cinema 4D":        "bg-spring-green text-core-black",
+  "After Effects":    "bg-bloom-lavender text-core-black",
+  "Cavalry":          "bg-hyper-blue text-white",
+  "Houdini":          "bg-sunny-yellow text-core-black",
+  "Rive":             "bg-sky-blue text-core-black",
+  "Nuke":             "bg-dream-lilac text-core-black",
+  "DaVinci Resolve":  "bg-winter-green/70 text-core-black",
+  "TouchDesigner":    "bg-bloom-lavender/60 text-core-black",
+  "AI":               "bg-core-black text-white",
 }
 
 const TOOL_NAMES = Object.keys(TOOL_COLORS)
