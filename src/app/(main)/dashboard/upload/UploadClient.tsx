@@ -300,12 +300,12 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
   function handleVideoDrop(e: React.DragEvent) {
     e.preventDefault(); setDragging(false)
     const f = e.dataTransfer.files[0]
-    if (f?.type.startsWith("video/")) setFile(f)
+    if (f?.type === "video/mp4") setFile(f)
   }
 
   function handleVideoInput(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
-    if (f) setFile(f)
+    if (f?.type === "video/mp4") setFile(f)
   }
 
   function handleThumbDrop(e: React.DragEvent) {
@@ -896,7 +896,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {videoType === "RECESS" && (
               <div className="flex flex-col gap-6">
                 <div>
-                  <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={handleVideoInput} />
+                  <input ref={fileInputRef} type="file" accept="video/mp4" className="hidden" onChange={handleVideoInput} />
                   <div
                     onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                     onDragLeave={() => setDragging(false)}
@@ -955,7 +955,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       </div>
                     )}
                   </div>
-                  <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">Up to 2 GB · MP4, MOV, AVI, WMV</p>
+                  <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 only · up to 2 GB</p>
                 </div>
 
                 {recessMetadataFields}
@@ -983,7 +983,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                   <div className="flex flex-col gap-6">
                     {/* Video drop zone */}
                     <div>
-                      <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={handleVideoInput} />
+                      <input ref={fileInputRef} type="file" accept="video/mp4" className="hidden" onChange={handleVideoInput} />
                       <div
                         onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                         onDragLeave={() => setDragging(false)}
@@ -1042,7 +1042,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                           </div>
                         )}
                       </div>
-                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">Up to 2 GB · MP4, MOV, AVI, WMV</p>
+                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 only · up to 2 GB</p>
                     </div>
 
                     {metadataFields}
