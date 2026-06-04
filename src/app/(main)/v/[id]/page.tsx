@@ -7,6 +7,7 @@ import { VideoPlayer } from "./VideoPlayer"
 import { FeatureButton } from "./FeatureButton"
 import { UpvoteButton } from "./UpvoteButton"
 import { AddToPlaylistButton } from "@/components/common/AddToPlaylistButton"
+import { AddToChannelButton } from "@/components/common/AddToChannelButton"
 import { ShareButton } from "./ShareButton"
 import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
 import { VideoCommentSection, type VideoCommentData } from "./VideoCommentSection"
@@ -172,6 +173,9 @@ export default async function VideoPage({ params }: Props) {
                   initialSaved={!!savedData}
                   triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
                 />
+                {currentUser && (
+                  <AddToChannelButton videoId={video.id} />
+                )}
                 {video.allowDownloads && video.streamId && (
                   <a
                     href={`https://videodelivery.net/${video.streamId}/downloads/default.mp4`}
