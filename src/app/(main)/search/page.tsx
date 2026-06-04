@@ -309,7 +309,7 @@ export default async function SearchPage({ searchParams }: Props) {
               <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 <Link
                   href="/dashboard/upload?type=recess"
-                  className="inline-flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-full bg-spring-green px-3 sm:px-4 font-sans font-medium text-xs sm:text-sm text-core-black hover:bg-spring-green/90 transition-colors"
+                  className="inline-flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-full bg-spring-green px-3 sm:px-4 font-sans font-medium text-xs sm:text-sm text-core-black transition-colors hover:bg-core-black hover:text-white"
                 >
                   + Drop something
                 </Link>
