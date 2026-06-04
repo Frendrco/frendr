@@ -13,6 +13,16 @@ import {
 
 type UserResult = { id: string; username: string; displayName: string; avatarUrl: string | null }
 
+const CHANNEL_COLORS: { key: string; bg: string }[] = [
+  { key: "bloom-lavender", bg: "bg-bloom-lavender" },
+  { key: "spring-green",   bg: "bg-spring-green" },
+  { key: "winter-green",   bg: "bg-winter-green" },
+  { key: "sky-blue",       bg: "bg-sky-blue" },
+  { key: "sunny-yellow",   bg: "bg-sunny-yellow" },
+  { key: "hyper-blue",     bg: "bg-hyper-blue" },
+  { key: "dream-lilac",    bg: "bg-dream-lilac" },
+]
+
 type Props = {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -33,6 +43,8 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
   const [searching, setSearching] = useState(false)
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const [color, setColor] = useState("bloom-lavender")
+
   const [coverPreview, setCoverPreview] = useState<string | null>(null)
   const [coverUrl, setCoverUrl] = useState<string | null>(null)
   const [coverUploading, setCoverUploading] = useState(false)
@@ -51,6 +63,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
     setAdminSearch("")
     setSearchResults([])
     setSelectedAdmins([])
+    setColor("bloom-lavender")
     setCoverPreview(null)
     setCoverUrl(null)
     setCoverUploading(false)
@@ -140,6 +153,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
           isPublic,
           type: isFrendrPick ? "admin" : "user",
           coverUrl: coverUrl ?? undefined,
+          color,
           admins: selectedAdmins.map((u) => u.id),
         }),
       })
@@ -286,6 +300,29 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
                 {coverError && (
                   <p className="font-sans text-xs text-red-500">{coverError}</p>
                 )}
+              </div>
+
+              {/* Background colour */}
+              <div className="flex flex-col gap-2">
+                <label className="font-sans text-xs font-medium text-core-black">
+                  Background colour
+                  <span className="ml-1 font-normal text-foreground/40">— used when no cover image is set</span>
+                </label>
+                <div className="flex gap-2">
+                  {CHANNEL_COLORS.map(({ key, bg }) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setColor(key)}
+                      aria-label={key}
+                      className={`h-8 w-8 rounded-full ${bg} transition-all duration-150 ${
+                        color === key
+                          ? "ring-2 ring-core-black ring-offset-2"
+                          : "hover:scale-110"
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           )}
