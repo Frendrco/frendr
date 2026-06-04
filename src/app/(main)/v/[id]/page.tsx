@@ -189,6 +189,7 @@ export default async function VideoPage({ params }: Props) {
                     username={video.user.username}
                     streamId={video.streamId}
                     streamDuration={streamInfo.duration}
+                    videoType={video.videoType}
                     initialTitle={video.title}
                     initialDescription={video.description ?? ""}
                     initialTags={video.tags}

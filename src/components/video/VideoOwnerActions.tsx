@@ -33,6 +33,18 @@ function randomFrameTimes(duration: number | null): string[] {
 const field =
   "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
+const CATEGORIES = [
+  "Motion Design", "Animation", "3D", "Motion Graphics", "VFX",
+  "2D Animation", "3D Animation", "3D Type", "Typography",
+  "Branding", "Commercial", "Music Video", "Short Film", "Film",
+  "Loop", "Experimental", "Stop Motion", "Sound",
+  "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini",
+  "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI",
+]
+const MAX_CATEGORIES = 5
+const RECESS_TOOLS = ["Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI"]
+const MAX_RECESS_TOOLS = 3
+
 type EditTab = "basics" | "credits" | "embed"
 
 interface CollabEntry {
@@ -48,6 +60,7 @@ interface Props {
   username: string
   streamId: string | null
   streamDuration?: number | null
+  videoType?: string
   initialTitle: string
   initialDescription: string
   initialTags: string[]
@@ -64,6 +77,7 @@ export function VideoOwnerActions({
   username,
   streamId,
   streamDuration,
+  videoType,
   initialTitle,
   initialDescription,
   initialTags,
@@ -74,6 +88,7 @@ export function VideoOwnerActions({
   externalEditOpen,
   onExternalEditOpenChange,
 }: Props) {
+  const isRecess = videoType === "RECESS"
   const router = useRouter()
   const thumbInputRef = useRef<HTMLInputElement>(null)
 
@@ -88,7 +103,8 @@ export function VideoOwnerActions({
   // Basics tab state
   const [title,          setTitle]         = useState(initialTitle)
   const [description,    setDescription]   = useState(initialDescription)
-  const [tags,           setTags]          = useState(initialTags.join(", "))
+  const [tags,           setTags]          = useState<string[]>(initialTags)
+  const [categorySearch, setCategorySearch] = useState("")
   const [thumbnailUrl,   setThumbnailUrl]  = useState(initialThumbnailUrl ?? "")
   const [isPublic,       setIsPublic]      = useState(initialIsPublic)
   const [thumbMode,      setThumbMode]     = useState<"default" | "frames">("default")
@@ -180,7 +196,7 @@ export function VideoOwnerActions({
       body: JSON.stringify({
         title:          title.trim(),
         description:    description.trim() || null,
-        tags:           tags.split(",").map((t) => t.trim()).filter(Boolean),
+        tags,
         thumbnailUrl:   thumbnailUrl.trim() || null,
         isPublic,
         allowDownloads: streamId ? allowDownloads : undefined,
@@ -287,17 +303,75 @@ export function VideoOwnerActions({
                   />
                 </div>
 
-                {/* Tags */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-sm font-medium text-core-black">Tags</label>
-                  <input
-                    className={field}
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    placeholder="motion, 3d, loop"
-                  />
-                  <p className="font-sans text-xs text-foreground/40">Comma-separated</p>
-                </div>
+                {/* Tags / Tools */}
+                {isRecess ? (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-baseline justify-between">
+                      <label className="font-sans text-sm font-medium text-core-black">Tools used</label>
+                      <span className="font-sans text-xs text-foreground/40">{tags.length}/{MAX_RECESS_TOOLS}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {RECESS_TOOLS.map((tool) => {
+                        const on    = tags.includes(tool)
+                        const maxed = !on && tags.length >= MAX_RECESS_TOOLS
+                        return (
+                          <button key={tool} type="button"
+                            onClick={() => setTags((prev) => on ? prev.filter((t) => t !== tool) : maxed ? prev : [...prev, tool])}
+                            disabled={maxed}
+                            className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                              on    ? "border-core-black bg-core-black text-white"
+                                : maxed ? "border-border text-foreground/25 cursor-not-allowed"
+                                : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                            )}
+                          >{tool}</button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-baseline justify-between">
+                      <label className="font-sans text-sm font-medium text-core-black">Categories</label>
+                      <span className="font-sans text-xs text-foreground/40">{tags.length}/{MAX_CATEGORIES}</span>
+                    </div>
+                    {tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {tags.map((cat) => (
+                          <span key={cat} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black px-3 py-0.5 font-sans text-xs font-medium text-white">
+                            {cat}
+                            <button type="button" onClick={() => setTags((prev) => prev.filter((t) => t !== cat))} className="hover:opacity-60 transition-opacity">
+                              <X size={10} />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-2 rounded-xl border border-border bg-white p-3">
+                      <div className="flex items-center gap-2 rounded-lg border border-border px-3 h-9">
+                        <Search size={13} className="shrink-0 text-foreground/30" />
+                        <input className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                          placeholder="Search categories…" value={categorySearch} onChange={(e) => setCategorySearch(e.target.value)} />
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto">
+                        {CATEGORIES.filter((c) => c.toLowerCase().includes(categorySearch.toLowerCase())).map((cat) => {
+                          const on    = tags.includes(cat)
+                          const maxed = !on && tags.length >= MAX_CATEGORIES
+                          return (
+                            <button key={cat} type="button"
+                              onClick={() => setTags((prev) => on ? prev.filter((t) => t !== cat) : maxed ? prev : [...prev, cat])}
+                              disabled={maxed}
+                              className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                                on    ? "border-core-black bg-core-black text-white"
+                                  : maxed ? "border-border text-foreground/25 cursor-not-allowed"
+                                  : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                              )}
+                            >{cat}</button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Thumbnail */}
                 <div className="flex flex-col gap-2">
