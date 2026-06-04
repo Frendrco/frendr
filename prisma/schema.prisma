@@ -82,6 +82,7 @@ model Video {
   externalUrl   String?
   thumbnailUrl  String?
   tags          String[]
+  categories    String[]
   isPublic       Boolean        @default(true)
   allowDownloads Boolean        @default(false)
   featured       Boolean        @default(false)

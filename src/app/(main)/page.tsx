@@ -3,6 +3,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { HeroSection } from "./HeroSection"
 import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore"
+import { CONTENT_TAGS } from "@/lib/categories"
 
 // ── Constants ─────────────────────────────────────────────
 
@@ -12,10 +13,7 @@ const PLACEHOLDER_COLOURS = [
   "bg-sky-blue/70", "bg-sunny-yellow/60", "bg-winter-green/70", "bg-dream-lilac/80",
 ]
 
-const FILTER_PILLS = [
-  "All", "Motion Design", "2D", "3D", "Live Action", "VFX",
-  "Music Video", "Typography", "Experimental",
-]
+const FILTER_PILLS = ["All", ...CONTENT_TAGS]
 
 
 type Sort = "newest" | "trending"

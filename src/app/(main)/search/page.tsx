@@ -10,6 +10,7 @@ import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore
 import { RecessCard } from "@/components/common/RecessCard"
 import { ExploreSort } from "./ExploreSort"
 import { FollowButton } from "@/components/common/FollowButton"
+import { CONTENT_TAGS } from "@/lib/categories"
 
 const COLOR_MAP: Record<string, string> = {
   "spring-green":   "bg-spring-green/60",
@@ -23,11 +24,7 @@ const COLOR_MAP: Record<string, string> = {
 
 const FALLBACK_COLORS = Object.values(COLOR_MAP)
 
-const TAGS = [
-  "All", "Motion Design", "Animation", "3D", "Typography",
-  "Branding", "Film", "VFX", "Experimental", "Abstract",
-  "Loop", "Sound", "Documentary",
-]
+const TAGS = ["All", ...CONTENT_TAGS]
 
 const PLACEHOLDER_COLOURS = [
   "bg-bloom-lavender", "bg-sky-blue", "bg-sunny-yellow", "bg-winter-green",
@@ -69,9 +66,9 @@ export default async function SearchPage({ searchParams }: Props) {
     : isRecessView
     ? { isPublic: true, videoType: "RECESS" as const }
     : activeSort === "following"
-    ? { userId: { in: followingIds }, videoType: "PORTFOLIO" as const, ...(activeTag !== "All" ? { tags: { has: activeTag } } : {}) }
+    ? { userId: { in: followingIds }, videoType: "PORTFOLIO" as const, ...(activeTag !== "All" ? { categories: { has: activeTag } } : {}) }
     : activeTag !== "All"
-    ? { tags: { has: activeTag }, videoType: "PORTFOLIO" as const }
+    ? { categories: { has: activeTag }, videoType: "PORTFOLIO" as const }
     : { videoType: "PORTFOLIO" as const, isPublic: true }
 
   const videoOrderBy =

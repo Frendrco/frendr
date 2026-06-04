@@ -12,18 +12,10 @@ import {
   getVideoThumbnail,
   type Provider,
 } from "@/lib/videoEmbed"
+import { CONTENT_TAGS, TOOL_TAGS, VIDEO_TAGS } from "@/lib/categories"
 
-const CATEGORIES = [
-  "Motion Design", "Animation", "3D", "Motion Graphics", "VFX",
-  "2D Animation", "3D Animation", "3D Type", "Typography",
-  "Branding", "Commercial", "Music Video", "Short Film", "Film",
-  "Loop", "Experimental", "Stop Motion", "Sound",
-  "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini",
-  "Moho", "Toon Boom", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI",
-]
-
-const MAX_CATEGORIES = 5
-const RECESS_TOOLS = ["Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Moho", "Toon Boom", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI"]
+const MAX_CATEGORIES = 3
+const MAX_TAGS = 5
 const MAX_RECESS_TOOLS = 3
 const DESC_MAX = 500
 const FRAME_COUNT = 6
@@ -142,7 +134,8 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
   const [title, setTitle]               = useState("")
   const [description, setDescription]   = useState("")
   const [categories, setCategories]     = useState<string[]>([])
-  const [categorySearch, setCategorySearch] = useState("")
+  const [tags, setTags]                 = useState<string[]>([])
+  const [tagSearch, setTagSearch]       = useState("")
   const [isPublic, setIsPublic]         = useState(true)
   const [isAiGenerated, setIsAiGenerated] = useState(false)
   const [riveUrl, setRiveUrl]           = useState("")
@@ -283,19 +276,24 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     setTitle("")
     setDescription("")
     setCategories([])
+    setTags([])
+    setTagSearch("")
     setThumbnail(null)
     setSelectedFrame(null)
     setTab("basics")
   }
 
-  const filteredCategories = CATEGORIES.filter(
-    (c) => c.toLowerCase().includes(categorySearch.toLowerCase())
-  )
-
   function toggleCategory(cat: string) {
     setCategories((prev) =>
       prev.includes(cat) ? prev.filter((c) => c !== cat)
         : prev.length < MAX_CATEGORIES ? [...prev, cat] : prev
+    )
+  }
+
+  function toggleTag(tag: string) {
+    setTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag)
+        : prev.length < MAX_TAGS ? [...prev, tag] : prev
     )
   }
 
@@ -372,7 +370,8 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
           streamId:      uid,
           title:         title.trim(),
           description:   description || null,
-          tags:          categories,
+          categories,
+          tags,
           isPublic,
           allowDownloads,
           isAiGenerated,
@@ -651,18 +650,42 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         </div>
       </div>
 
-      {/* Categories */}
+      {/* Category — guided discovery */}
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline justify-between">
-          <label className="font-sans text-xs font-medium text-foreground/50">Categories</label>
+          <label className="font-sans text-xs font-medium text-foreground/50">Category</label>
           <span className="font-sans text-xs text-foreground/30">{categories.length}/{MAX_CATEGORIES}</span>
         </div>
-        {categories.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {CONTENT_TAGS.map((cat) => {
+            const on    = categories.includes(cat)
+            const maxed = !on && categories.length >= MAX_CATEGORIES
+            return (
+              <button key={cat} type="button" onClick={() => toggleCategory(cat)} disabled={maxed}
+                className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                  on ? "border-core-black bg-core-black text-white"
+                    : maxed ? "border-border text-foreground/25 cursor-not-allowed"
+                    : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                )}
+              >{cat}</button>
+            )
+          })}
+        </div>
+        <p className="font-sans text-xs text-foreground/30">Helps people find your work in discovery. Pick up to {MAX_CATEGORIES}.</p>
+      </div>
+
+      {/* Tags — free-form search tags */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-baseline justify-between">
+          <label className="font-sans text-xs font-medium text-foreground/50">Tags <span className="text-foreground/30">(optional)</span></label>
+          <span className="font-sans text-xs text-foreground/30">{tags.length}/{MAX_TAGS}</span>
+        </div>
+        {tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {categories.map((cat) => (
-              <span key={cat} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black px-3 py-0.5 font-sans text-xs font-medium text-white">
-                {cat}
-                <button type="button" onClick={() => toggleCategory(cat)} className="hover:opacity-60 transition-opacity"><X size={10} /></button>
+            {tags.map((t) => (
+              <span key={t} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black px-3 py-0.5 font-sans text-xs font-medium text-white">
+                {t}
+                <button type="button" onClick={() => toggleTag(t)} className="hover:opacity-60 transition-opacity"><X size={10} /></button>
               </span>
             ))}
           </div>
@@ -671,20 +694,20 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
           <div className="flex items-center gap-2 rounded-lg border border-border px-3 h-9">
             <Search size={13} className="shrink-0 text-foreground/30" />
             <input className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
-              placeholder="Search categories…" value={categorySearch} onChange={(e) => setCategorySearch(e.target.value)} />
+              placeholder="Search tags…" value={tagSearch} onChange={(e) => setTagSearch(e.target.value)} />
           </div>
           <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
-            {filteredCategories.map((cat) => {
-              const on    = categories.includes(cat)
-              const maxed = !on && categories.length >= MAX_CATEGORIES
+            {VIDEO_TAGS.filter((t) => t.toLowerCase().includes(tagSearch.toLowerCase())).map((t) => {
+              const on    = tags.includes(t)
+              const maxed = !on && tags.length >= MAX_TAGS
               return (
-                <button key={cat} type="button" onClick={() => toggleCategory(cat)} disabled={maxed}
+                <button key={t} type="button" onClick={() => toggleTag(t)} disabled={maxed}
                   className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
                     on ? "border-core-black bg-core-black text-white"
                       : maxed ? "border-border text-foreground/25 cursor-not-allowed"
                       : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
                   )}
-                >{cat}</button>
+                >{t}</button>
               )
             })}
           </div>
@@ -716,7 +739,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
           <span className="font-sans text-xs text-foreground/30">{categories.length}/{MAX_RECESS_TOOLS}</span>
         </div>
         <div className="flex flex-wrap gap-2">
-          {RECESS_TOOLS.map((tool) => {
+          {TOOL_TAGS.map((tool) => {
             const on    = categories.includes(tool)
             const maxed = !on && categories.length >= MAX_RECESS_TOOLS
             return (
@@ -777,7 +800,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             <button
               key={value}
               type="button"
-              onClick={() => { setVideoType(value); setCategories([]); setRiveUrl("") }}
+              onClick={() => { setVideoType(value); setCategories([]); setTags([]); setTagSearch(""); setRiveUrl("") }}
               className={cn(
                 "flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-colors",
                 videoType === value
