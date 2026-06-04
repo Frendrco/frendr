@@ -8,9 +8,18 @@ import { Camera, X, Globe, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Switch } from "@/components/ui/switch"
 
+const DEFAULT_AVATARS = [
+  "/images/ava-01.png",
+  "/images/ava-02.png",
+  "/images/ava-03.png",
+  "/images/ava-04.png",
+  "/images/ava-05.png",
+]
+
 interface ProfileData {
   username: string
   displayName: string
+  avatarUrl: string | null
   location: string | null
   age: number | null
   bio: string | null
@@ -128,15 +137,27 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
     })
   }
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const avatarUrl    = user?.imageUrl
-  const initials     = displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(profile.avatarUrl)
+
+  const fileInputRef   = useRef<HTMLInputElement>(null)
+  const displayAvatar  = currentAvatarUrl ?? user?.imageUrl ?? null
+  const initials       = displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file || !user) return
     await user.setProfileImage({ file })
+    setCurrentAvatarUrl(null) // let Clerk's real photo take over
     router.refresh()
+  }
+
+  async function pickAvatar(url: string) {
+    setCurrentAvatarUrl(url)
+    await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ customAvatarUrl: url }),
+    })
   }
 
   function toggleTag(tag: string) {
@@ -206,8 +227,8 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
         {/* Avatar */}
         <div className="flex flex-col items-center gap-3 px-6 py-6 md:py-8 w-full">
           <div className="h-24 w-24 overflow-hidden rounded-full">
-            {avatarUrl ? (
-              <Image src={avatarUrl} alt={displayName} width={96} height={96} className="h-full w-full object-cover" />
+            {displayAvatar ? (
+              <Image src={displayAvatar} alt={displayName} width={96} height={96} className="h-full w-full object-cover" />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-spring-green font-sans font-bold text-2xl text-core-black">
                 {initials}
@@ -230,12 +251,19 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
           </button>
           <span className="font-sans text-[10px] text-foreground/35">or choose an avatar</span>
           <div className="flex gap-2">
-            {EMOJI_AVATARS.map((emoji) => (
+            {DEFAULT_AVATARS.map((src) => (
               <button
-                key={emoji}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-white text-lg hover:border-foreground/30 transition-colors"
+                key={src}
+                type="button"
+                onClick={() => pickAvatar(src)}
+                className={cn(
+                  "h-10 w-10 overflow-hidden rounded-xl border-2 transition-all",
+                  currentAvatarUrl === src
+                    ? "border-core-black scale-105"
+                    : "border-border hover:border-foreground/30"
+                )}
               >
-                {emoji}
+                <Image src={src} alt="Default avatar" width={40} height={40} className="h-full w-full object-cover" />
               </button>
             ))}
           </div>

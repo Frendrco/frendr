@@ -64,7 +64,7 @@ export async function PATCH(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { displayName, username, location, age, bio, website, role, pronouns, creatorType, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, openToWork, coverImageUrl, emailNotifyMessages, emailNotifyComments, emailNotifyReplies, emailNotifyFollows, emailNotifyTrending } = await req.json()
+  const { displayName, username, location, age, bio, website, role, pronouns, creatorType, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, openToWork, coverImageUrl, emailNotifyMessages, emailNotifyComments, emailNotifyReplies, emailNotifyFollows, emailNotifyTrending, customAvatarUrl } = await req.json()
 
   if (username !== undefined) {
     if (!USERNAME_RE.test(username)) {
@@ -78,12 +78,16 @@ export async function PATCH(req: Request) {
 
   const clerk = await clerkClient()
   const clerkUser = await clerk.users.getUser(userId)
-  const avatarUrl = clerkUser.imageUrl ?? null
+  // Only sync Clerk's imageUrl when they have a real uploaded photo.
+  // Custom default picks (customAvatarUrl) and existing DB values are preserved otherwise.
+  const clerkAvatarUrl = clerkUser.hasImage ? clerkUser.imageUrl : undefined
+  const isValidCustomAvatar = typeof customAvatarUrl === "string" && customAvatarUrl.startsWith("/images/ava-")
 
   const user = await prisma.user.update({
     where: { clerkId: userId },
     data: {
-      avatarUrl,
+      ...(clerkAvatarUrl    !== undefined  && { avatarUrl: clerkAvatarUrl }),
+      ...(isValidCustomAvatar              && { avatarUrl: customAvatarUrl }),
       ...(displayName && { displayName }),
       ...(username   !== undefined && { username }),
       ...(location   !== undefined && { location:  location  ?? null }),
