@@ -29,28 +29,25 @@ export default async function HomePage({
   const sort: Sort = sortParam === "newest" ? "newest" : "trending"
 
   const videos = await prisma.video.findMany({
+    where: { isPublic: true, videoType: "PORTFOLIO" },
     orderBy: sort === "newest"
       ? { createdAt: "desc" }
-      : [{ channels: { _count: "desc" } }, { createdAt: "desc" }],
-    take: 48,
+      : [{ featured: "desc" }, { createdAt: "desc" }],
+    take: 24,
     include: { user: { select: { username: true, displayName: true, avatarUrl: true, clerkId: true } } },
   }).catch(() => [])
 
-  // Backfill missing avatarUrls
-  if (videos.length > 0) {
-    const missing = videos.map(v => v.user).filter(u => !u.avatarUrl)
-    if (missing.length > 0) {
-      const clerk = await clerkClient()
-      await Promise.all(
-        missing.map(async (u) => {
-          const clerkUser = await clerk.users.getUser(u.clerkId)
-          if (clerkUser.imageUrl) {
-            await prisma.user.update({ where: { clerkId: u.clerkId }, data: { avatarUrl: clerkUser.imageUrl } })
-            u.avatarUrl = clerkUser.imageUrl
-          }
-        })
-      )
-    }
+  // Fire-and-forget avatar backfill — don't block page render
+  const missing = videos.map(v => v.user).filter(u => !u.avatarUrl)
+  if (missing.length > 0) {
+    clerkClient().then(clerk =>
+      Promise.all(missing.map(async (u) => {
+        const clerkUser = await clerk.users.getUser(u.clerkId)
+        if (clerkUser.imageUrl) {
+          await prisma.user.update({ where: { clerkId: u.clerkId }, data: { avatarUrl: clerkUser.imageUrl } })
+        }
+      }))
+    ).catch(() => {})
   }
 
   return (
