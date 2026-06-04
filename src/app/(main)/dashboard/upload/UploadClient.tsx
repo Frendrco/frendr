@@ -721,6 +721,12 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
       {/* AI content */}
       <Toggle on={isAiGenerated} onToggle={() => setIsAiGenerated((v) => !v)} label="AI Generated Content"
         description="Let viewers know if this video was created with the help of AI tools." />
+
+      {/* Playback */}
+      <Toggle on={autoplay} onToggle={() => setAutoplay((v) => !v)} label="Autoplay"
+        description="Video starts playing as soon as it loads." />
+      <Toggle on={loop} onToggle={() => setLoop((v) => !v)} label="Loop"
+        description="Replay automatically when the video ends." />
     </>
   )
 
@@ -754,6 +760,12 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
           })}
         </div>
       </div>
+
+      {/* Playback */}
+      <Toggle on={autoplay} onToggle={() => setAutoplay((v) => !v)} label="Autoplay"
+        description="Video starts playing as soon as it loads." />
+      <Toggle on={loop} onToggle={() => setLoop((v) => !v)} label="Loop"
+        description="Replay automatically when the video ends." />
 
       {/* Make public */}
       <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
