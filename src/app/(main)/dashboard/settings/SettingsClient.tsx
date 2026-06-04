@@ -147,8 +147,15 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
     const file = e.target.files?.[0]
     if (!file || !user) return
     await user.setProfileImage({ file })
-    setCurrentAvatarUrl(null) // let Clerk's real photo take over
-    router.refresh()
+    // user.imageUrl updates in the hook after setProfileImage
+    setCurrentAvatarUrl(user.imageUrl ?? null)
+    e.target.value = "" // reset so the same file can be re-selected later
+    // Sync new Clerk URL to DB — hasImage is now true so PATCH will save it
+    await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    })
   }
 
   async function pickAvatar(url: string) {
@@ -243,7 +250,13 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
             onChange={handleAvatarChange}
           />
           <button
-            onClick={() => fileInputRef.current?.click()}
+            type="button"
+            onClick={() => {
+              if (fileInputRef.current) {
+                fileInputRef.current.value = ""
+                fileInputRef.current.click()
+              }
+            }}
             className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors"
           >
             <Camera size={12} />
