@@ -309,7 +309,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
             {/* Tab bar */}
             <div className="mb-6 border-b border-border pb-0">
-              <div className="flex gap-6">
+              <div className="flex gap-6 justify-center sm:justify-start">
                 <Link
                   href={`/${username}`}
                   className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
