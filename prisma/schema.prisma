@@ -118,6 +118,7 @@ model VideoCollaborator {
   videoId String
   userId  String
   role    String?
+  status  String   @default("PENDING") // "PENDING" | "ACCEPTED" | "DECLINED"
   addedAt DateTime @default(now())
   video   Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)

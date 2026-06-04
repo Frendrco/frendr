@@ -63,15 +63,57 @@ export async function PATCH(req: Request, { params }: Params) {
   }
 
   if (collaborators !== undefined) {
+    const existing = await prisma.videoCollaborator.findMany({ where: { videoId: id } })
+    const existingMap = new Map(existing.map((c) => [c.userId, c]))
+    const incomingIds = new Set(collaborators.map((c) => c.userId))
+
+    const toRemove = existing.filter((c) => !incomingIds.has(c.userId))
+    const toAdd    = collaborators.filter((c) => !existingMap.has(c.userId))
+    const toUpdate = collaborators.filter((c) =>  existingMap.has(c.userId))
+
     await prisma.$transaction([
-      prisma.videoCollaborator.deleteMany({ where: { videoId: id } }),
-      ...(collaborators.length > 0
+      ...(toRemove.length > 0
+        ? [prisma.videoCollaborator.deleteMany({ where: { id: { in: toRemove.map((c) => c.id) } } })]
+        : []),
+      ...(toAdd.length > 0
         ? [prisma.videoCollaborator.createMany({
-            data: collaborators.map((c) => ({ videoId: id, userId: c.userId, role: c.role ?? null })),
+            data: toAdd.map((c) => ({ videoId: id, userId: c.userId, role: c.role ?? null, status: "PENDING" })),
             skipDuplicates: true,
           })]
         : []),
+      ...toUpdate.map((c) =>
+        prisma.videoCollaborator.updateMany({
+          where: { videoId: id, userId: c.userId },
+          data: { role: c.role ?? null },
+        })
+      ),
     ])
+
+    if (toAdd.length > 0) {
+      const [videoData, owner] = await Promise.all([
+        prisma.video.findUnique({ where: { id }, select: { title: true } }),
+        prisma.user.findUnique({ where: { id: user.id }, select: { displayName: true } }),
+      ])
+      const newCollabs = await prisma.videoCollaborator.findMany({
+        where: { videoId: id, userId: { in: toAdd.map((c) => c.userId) } },
+        select: { id: true, userId: true, role: true },
+      })
+      await prisma.notification.createMany({
+        data: newCollabs.map((c) => ({
+          userId: c.userId,
+          type: "credit_request",
+          fromUserId: user.id,
+          contentId: c.id,
+          contentType: "credit_request",
+          message: JSON.stringify({
+            videoTitle: videoData?.title ?? "a video",
+            role: c.role,
+            videoId: id,
+            ownerName: owner?.displayName ?? "Someone",
+          }),
+        })),
+      })
+    }
   }
 
   return NextResponse.json(updated)

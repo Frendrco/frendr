@@ -19,8 +19,19 @@ type Notification = {
   createdAt: string
 }
 
+function parseCreditRequest(n: Notification): { videoTitle: string; role: string | null; videoId: string; ownerName: string } | null {
+  try { return n.message ? JSON.parse(n.message) : null } catch { return null }
+}
+
 function notifMessage(n: Notification) {
   if (n.type === "announcement") return n.message ?? "New announcement"
+  if (n.type === "credit_request") {
+    const data = parseCreditRequest(n)
+    const name = data?.ownerName ?? n.fromUser?.displayName ?? "Someone"
+    const role = data?.role ? ` as ${data.role}` : ""
+    const title = data?.videoTitle ? ` on "${data.videoTitle}"` : ""
+    return `${name} wants to credit you${role}${title}`
+  }
   const name = n.fromUser?.displayName ?? "Someone"
   switch (n.type) {
     case "follow":  return `${name} started following you`
@@ -37,6 +48,10 @@ function notifUrl(n: Notification) {
     case "announcement": return "#"
     case "follow":  return n.fromUser?.username ? `/${n.fromUser.username}` : "/"
     case "message": return "/messages"
+    case "credit_request": {
+      const data = parseCreditRequest(n)
+      return data?.videoId ? `/v/${data.videoId}` : "/"
+    }
     case "comment":
     case "reply":
     case "vote":
@@ -80,6 +95,7 @@ export function NotificationsBell() {
   }
 
   async function handleClick(n: Notification) {
+    if (n.type === "credit_request") return
     if (!n.read) {
       await fetch("/api/notifications", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: n.id }) })
       setNotifications((prev) => prev.map((x) => x.id === n.id ? { ...x, read: true } : x))
@@ -87,6 +103,16 @@ export function NotificationsBell() {
     if (n.type === "announcement") return
     setOpen(false)
     router.push(notifUrl(n))
+  }
+
+  async function respondToCredit(n: Notification, action: "accept" | "decline") {
+    if (!n.contentId) return
+    await fetch(`/api/credit-requests/${n.contentId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action }),
+    })
+    setNotifications((prev) => prev.filter((x) => x.id !== n.id))
   }
 
   // Initial fetch + polling
@@ -147,13 +173,14 @@ export function NotificationsBell() {
               </div>
             ) : (
               notifications.map((n) => (
-                <button
+                <div
                   key={n.id}
-                  onClick={() => handleClick(n)}
                   className={cn(
-                    "flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-foreground/5",
+                    "flex w-full items-start gap-3 px-4 py-3 transition-colors",
+                    n.type !== "credit_request" && "hover:bg-foreground/5 cursor-pointer",
                     !n.read && "bg-spring-green/5"
                   )}
+                  onClick={n.type !== "credit_request" ? () => handleClick(n) : undefined}
                 >
                   {/* Avatar */}
                   <div className="shrink-0 h-8 w-8 rounded-full overflow-hidden bg-foreground/10">
@@ -170,15 +197,31 @@ export function NotificationsBell() {
                     )}
                   </div>
 
-                  {/* Text */}
+                  {/* Text + actions */}
                   <div className="flex-1 min-w-0">
                     <p className="font-sans text-sm text-core-black leading-snug">{notifMessage(n)}</p>
                     <p className="font-sans text-xs text-foreground/40 mt-0.5">{timeAgo(n.createdAt)}</p>
+                    {n.type === "credit_request" && (
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          onClick={() => respondToCredit(n, "accept")}
+                          className="inline-flex h-7 items-center rounded-full bg-spring-green px-3 font-sans text-xs font-medium text-core-black transition-colors hover:bg-spring-green/80"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => respondToCredit(n, "decline")}
+                          className="inline-flex h-7 items-center rounded-full border border-border px-3 font-sans text-xs font-medium text-foreground/60 transition-colors hover:border-foreground/30 hover:text-foreground"
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Unread dot */}
                   {!n.read && <span className="shrink-0 mt-1 h-2 w-2 rounded-full bg-spring-green" />}
-                </button>
+                </div>
               ))
             )}
           </div>

@@ -210,6 +210,7 @@ export default async function VideoPage({ params }: Props) {
                       displayName: c.user.displayName,
                       avatarUrl: c.user.avatarUrl,
                       role: c.role,
+                      status: c.status,
                     }))}
                   />
                 ) : (
@@ -277,12 +278,12 @@ export default async function VideoPage({ params }: Props) {
               </div>
             )}
 
-            {/* Credits */}
-            {video.collaborators.length > 0 && (
+            {/* Credits — only show accepted */}
+            {video.collaborators.some((c) => c.status === "ACCEPTED") && (
               <div className="mt-6 border-t border-border pt-6">
                 <p className="font-sans font-medium text-xs uppercase tracking-widest text-foreground/30 mb-3">Credits</p>
                 <div className="flex flex-col gap-2">
-                  {video.collaborators.map(({ user: collab, role }) => (
+                  {video.collaborators.filter((c) => c.status === "ACCEPTED").map(({ user: collab, role }) => (
                     <div key={collab.username} className="flex items-baseline gap-3">
                       <Link
                         href={`/${collab.username}`}

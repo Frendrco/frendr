@@ -53,6 +53,7 @@ interface CollabEntry {
   displayName: string
   avatarUrl: string | null
   role: string | null
+  status?: string // "PENDING" | "ACCEPTED" | "DECLINED"
 }
 
 interface Props {
@@ -159,9 +160,9 @@ export function VideoOwnerActions({
     return () => { if (collabDebounce.current) clearTimeout(collabDebounce.current) }
   }, [collabSearch, searchCollabs])
 
-  function addCollab(user: Omit<CollabEntry, "role">) {
+  function addCollab(user: Omit<CollabEntry, "role" | "status">) {
     if (!collabs.find((c) => c.userId === user.userId))
-      setCollabs((prev) => [...prev, { ...user, role: "" }])
+      setCollabs((prev) => [...prev, { ...user, role: "", status: "PENDING" }])
     setCollabSearch("")
     setCollabResults([])
   }
@@ -598,7 +599,15 @@ export function VideoOwnerActions({
                 {collabs.length > 0 && (
                   <div className="flex flex-col gap-1.5">
                     {collabs.map((c) => (
-                      <span key={c.userId} className="inline-flex items-center gap-2 rounded-full border border-border bg-foreground/[0.06] pl-1.5 pr-2.5 py-1 font-sans text-xs text-core-black self-start">
+                      <span
+                        key={c.userId}
+                        className={cn(
+                          "inline-flex items-center gap-2 rounded-full border pl-1.5 pr-2.5 py-1 font-sans text-xs text-core-black self-start",
+                          c.status === "DECLINED"
+                            ? "border-destructive/30 bg-destructive/5 opacity-60"
+                            : "border-border bg-foreground/[0.06]"
+                        )}
+                      >
                         <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden bg-spring-green">
                           {c.avatarUrl
                             // eslint-disable-next-line @next/next/no-img-element
@@ -615,6 +624,16 @@ export function VideoOwnerActions({
                           placeholder="Role…"
                           className="w-20 bg-transparent placeholder:text-foreground/35 text-core-black focus:outline-none"
                         />
+                        {c.status === "PENDING" && (
+                          <span className="rounded-full bg-amber-100 px-1.5 py-0.5 font-sans text-[10px] font-medium text-amber-700">
+                            Pending
+                          </span>
+                        )}
+                        {c.status === "DECLINED" && (
+                          <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 font-sans text-[10px] font-medium text-destructive">
+                            Declined
+                          </span>
+                        )}
                         <button type="button" onClick={() => removeCollab(c.userId)} className="text-foreground/40 hover:text-foreground transition-colors">
                           <X size={11} />
                         </button>
