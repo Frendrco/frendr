@@ -47,17 +47,19 @@ export default async function RecessPage({ searchParams }: Props) {
       <div className="mx-auto max-w-screen-xl px-4 md:px-6">
 
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 pt-8 pb-6 border-b border-border">
-          <div>
-            <h1 className="font-sans font-bold text-2xl text-core-black">Recess</h1>
-            <p className="mt-1 font-sans text-sm text-foreground/40">Making things for the fun of it</p>
+        <div className="pt-8 pb-6 border-b border-border">
+          <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:justify-between sm:text-left gap-3">
+            <div>
+              <h1 className="font-sans font-bold text-2xl text-core-black">Recess</h1>
+              <p className="mt-1 font-sans text-sm text-foreground/40">Making things for the fun of it</p>
+            </div>
+            <Link
+              href="/dashboard/upload?type=recess"
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-spring-green px-4 font-sans font-medium text-sm text-core-black transition-colors hover:bg-core-black hover:text-white"
+            >
+              + Drop something
+            </Link>
           </div>
-          <Link
-            href="/dashboard/upload?type=recess"
-            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-spring-green px-4 font-sans font-medium text-sm text-core-black transition-colors hover:bg-spring-green/90"
-          >
-            + Drop something
-          </Link>
         </div>
 
         {/* Search */}
