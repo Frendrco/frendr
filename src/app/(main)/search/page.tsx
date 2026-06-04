@@ -233,60 +233,6 @@ export default async function SearchPage({ searchParams }: Props) {
           </section>
         )}
 
-        {/* ── Recess section (browse only, not when in recess view) ── */}
-        {!isSearching && !isRecessView && (
-          <section>
-            <div className="rounded-2xl bg-mist-grey px-6 py-5">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-baseline gap-2">
-                  <h2 className="font-sans font-bold text-lg text-core-black">Recess</h2>
-                  <span className="font-sans text-sm text-foreground/40">what people are making right now</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  {recessVideos.length > 0 && (
-                    <Link
-                      href="/search?type=recess"
-                      className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
-                    >
-                      See all →
-                    </Link>
-                  )}
-                  <Link
-                    href="/dashboard/upload?type=recess"
-                    className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border/60 bg-white px-4 font-sans font-medium text-sm text-core-black hover:border-core-black transition-colors"
-                  >
-                    + Drop something
-                  </Link>
-                </div>
-              </div>
-              {recessVideos.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  {recessVideos.map((v) => (
-                    <RecessCard
-                      key={v.id}
-                      video={{
-                        id: v.id,
-                        title: v.title,
-                        thumbnailUrl: v.thumbnailUrl,
-                        streamId: v.streamId,
-                        externalUrl: v.externalUrl,
-                        tags: v.tags,
-                        likeCount: v._count.likes,
-                        user: v.user,
-                      }}
-                      fixedWidth
-                    />
-                  ))}
-                </div>
-              ) : (
-                <p className="font-sans text-sm text-foreground/40">
-                  No one has dropped anything yet — be the first.
-                </p>
-              )}
-            </div>
-          </section>
-        )}
-
         {/* ── Frendr Selects (browse only) ── */}
         {!isSearching && featuredVideos.length > 0 && (
           <section>
@@ -352,6 +298,60 @@ export default async function SearchPage({ searchParams }: Props) {
                 Explore →
               </span>
             </Link>
+          </section>
+        )}
+
+        {/* ── Recess section (browse only, not when in recess view) ── */}
+        {!isSearching && !isRecessView && (
+          <section>
+            <div className="rounded-2xl bg-mist-grey px-6 py-5">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-baseline gap-2">
+                  <h2 className="font-sans font-bold text-lg text-core-black">Recess</h2>
+                  <span className="font-sans text-sm text-foreground/40">what people are making right now</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {recessVideos.length > 0 && (
+                    <Link
+                      href="/search?type=recess"
+                      className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
+                    >
+                      See all →
+                    </Link>
+                  )}
+                  <Link
+                    href="/dashboard/upload?type=recess"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border/60 bg-white px-4 font-sans font-medium text-sm text-core-black hover:border-core-black transition-colors"
+                  >
+                    + Drop something
+                  </Link>
+                </div>
+              </div>
+              {recessVideos.length > 0 ? (
+                <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {recessVideos.map((v) => (
+                    <RecessCard
+                      key={v.id}
+                      video={{
+                        id: v.id,
+                        title: v.title,
+                        thumbnailUrl: v.thumbnailUrl,
+                        streamId: v.streamId,
+                        externalUrl: v.externalUrl,
+                        tags: v.tags,
+                        likeCount: v._count.likes,
+                        user: v.user,
+                      }}
+                      fixedWidth
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="font-sans text-sm text-foreground/40">
+                  No one has dropped anything yet — be the first.
+                </p>
+              )}
+            </div>
           </section>
         )}
 
