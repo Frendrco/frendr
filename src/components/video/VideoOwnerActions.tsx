@@ -214,9 +214,18 @@ export function VideoOwnerActions({
     router.push(`/${username}`)
   }
 
+  const embedParams = new URLSearchParams()
+  if (embedAutoplay) { embedParams.set("autoplay", "true"); embedParams.set("muted", "true") }
+  if (embedLoop)      embedParams.set("loop", "true")
+  if (!showControls)  embedParams.set("controls", "false")
+  const embedParamStr = embedParams.toString()
+  const embedSrc = streamId
+    ? `https://iframe.videodelivery.net/${streamId}${embedParamStr ? `?${embedParamStr}` : ""}`
+    : `https://frendr.com/embed/${videoId}`
+
   function copyEmbed() {
     navigator.clipboard.writeText(
-      `<iframe src="https://frendr.com/embed/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
+      `<iframe src="${embedSrc}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
     ).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
   }
 
@@ -551,7 +560,7 @@ export function VideoOwnerActions({
                 <div className={cn("flex flex-col gap-2 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
                   <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Embed code</p>
                   <div className="relative">
-                    <pre className="w-full overflow-x-auto rounded-xl border border-border bg-foreground/[0.02] px-4 py-4 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre">{`<iframe\n  src="https://frendr.com/embed/${videoId}"\n  width="640" height="360"\n  frameborder="0"\n  allowfullscreen\n></iframe>`}</pre>
+                    <pre className="w-full overflow-x-auto rounded-xl border border-border bg-foreground/[0.02] px-4 py-4 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre">{`<iframe\n  src="${embedSrc}"\n  width="640" height="360"\n  frameborder="0"\n  allowfullscreen\n></iframe>`}</pre>
                     <button
                       type="button"
                       onClick={copyEmbed}
