@@ -5,6 +5,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { Pin, Play } from "lucide-react"
 import { UnpinButton } from "./UnpinButton"
+import { UpvoteButton } from "@/components/common/UpvoteButton"
+import { AddToPlaylistButton } from "@/components/common/AddToPlaylistButton"
+import { AddToChannelButton } from "@/components/common/AddToChannelButton"
 import { getVideoEmbedUrl } from "@/lib/videoEmbed"
 
 interface VideoData {
@@ -13,11 +16,13 @@ interface VideoData {
   thumbnailUrl: string | null
   streamId: string | null
   externalUrl: string | null
+  likeCount: number
 }
 
 interface Props {
   video: VideoData
   isOwn: boolean
+  initialUpvoted: boolean
 }
 
 function getEmbedUrl(video: VideoData): string | null {
@@ -35,7 +40,7 @@ function cfThumb(url: string | null): string | null {
   return url + (url.includes("?") ? "&" : "?") + "width=1280"
 }
 
-export function PinnedVideo({ video, isOwn }: Props) {
+export function PinnedVideo({ video, isOwn, initialUpvoted }: Props) {
   const [playing, setPlaying] = useState(false)
   const embedUrl = getEmbedUrl(video)
   const thumb = cfThumb(video.thumbnailUrl)
@@ -88,13 +93,28 @@ export function PinnedVideo({ video, isOwn }: Props) {
         )}
       </div>
 
-      {/* Title — links to video page */}
-      <Link
-        href={`/v/${video.id}`}
-        className="mt-2 inline-block font-sans font-medium text-sm text-core-black hover:underline"
-      >
-        {video.title}
-      </Link>
+      {/* Title + actions row */}
+      <div className="mt-3 flex items-start justify-between gap-3">
+        <Link
+          href={`/v/${video.id}`}
+          className="font-sans font-semibold text-base text-core-black hover:underline leading-snug"
+        >
+          {video.title}
+        </Link>
+
+        <div className="flex shrink-0 items-center gap-1.5">
+          <UpvoteButton
+            videoId={video.id}
+            initialUpvoted={initialUpvoted}
+            initialCount={video.likeCount}
+          />
+          <AddToPlaylistButton
+            videoId={video.id}
+            triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
+          />
+          <AddToChannelButton videoId={video.id} />
+        </div>
+      </div>
     </div>
   )
 }

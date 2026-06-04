@@ -42,7 +42,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   const user = await prisma.user.findUnique({
     where: { username },
     include: {
-      videos:   { orderBy: [{ position: "asc" }, { createdAt: "desc" }], take: 96 },
+      videos:   { orderBy: [{ position: "asc" }, { createdAt: "desc" }], take: 96, include: { _count: { select: { likes: true } } } },
       _count:   { select: { followers: true, following: true } },
     },
   })
@@ -116,6 +116,13 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   const pinnedVideo = user.pinnedVideoId
     ? (user.videos.find((v) => v.id === user.pinnedVideoId) ?? null)
     : null
+
+  const pinnedVideoUpvoted = pinnedVideo && clerkId
+    ? !!(await prisma.videoLike.findFirst({
+        where: { videoId: pinnedVideo.id, user: { clerkId } },
+        select: { id: true },
+      }))
+    : false
 
   const allGridVideos = pinnedVideo
     ? user.videos.filter((v) => v.id !== user.pinnedVideoId)
@@ -387,7 +394,11 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               <>
                 {/* Pinned video slot */}
                 {pinnedVideo ? (
-                  <PinnedVideo video={pinnedVideo} isOwn={isOwn} />
+                  <PinnedVideo
+                    video={{ ...pinnedVideo, likeCount: pinnedVideo._count.likes }}
+                    isOwn={isOwn}
+                    initialUpvoted={pinnedVideoUpvoted}
+                  />
                 ) : isOwn && portfolioVideos.length > 0 ? (
                   <div className="mb-6 flex items-center gap-2 rounded-xl border border-dashed border-border px-4 py-3">
                     <p className="font-sans text-xs text-foreground/40">
