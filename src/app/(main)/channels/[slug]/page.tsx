@@ -133,7 +133,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
             {isSiteAdmin && (
               <ChannelFeatureButton channelId={channel.id} initialFeatured={channel.featured} />
             )}
-            {isOwner && (
+            {(isOwner || isSiteAdmin) && (
               <ChannelSettings
                 channel={{
                   id: channel.id,
@@ -145,7 +145,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
                   isPublic: channel.isPublic,
                   shareToken: channel.shareToken,
                 }}
-                canDelete={isOwner || isSiteAdmin}
+                canDelete={isOwner || !!isSiteAdmin}
                 isOwner={isOwner}
               />
             )}

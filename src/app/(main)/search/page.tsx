@@ -114,7 +114,7 @@ export default async function SearchPage({ searchParams }: Props) {
     !isSearching
       ? prisma.channel.findMany({
           where: { featured: true, isPublic: true },
-          orderBy: { updatedAt: "asc" },
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
           take: 10,
           select: {
             id: true, name: true, slug: true, description: true,
