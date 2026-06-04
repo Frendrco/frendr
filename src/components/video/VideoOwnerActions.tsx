@@ -259,7 +259,7 @@ export function VideoOwnerActions({
       {/* ── Edit dialog ─────────────────────────────────────────── */}
       <Dialog open={effectiveEditOpen} onOpenChange={setEffectiveEditOpen}>
         <DialogContent
-          className="sm:max-w-lg p-0 gap-0 max-h-[90dvh] overflow-hidden flex flex-col"
+          className="sm:max-w-lg md:max-w-2xl p-0 gap-0 max-h-[90dvh] overflow-hidden flex flex-col"
           showCloseButton={false}
         >
           {/* Pinned header */}
