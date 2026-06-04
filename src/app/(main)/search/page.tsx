@@ -307,20 +307,20 @@ export default async function SearchPage({ searchParams }: Props) {
                 <span className="hidden sm:inline font-sans text-sm text-foreground/40 truncate">Making things for the fun of it</span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                {recessVideos.length > 0 && (
-                  <Link
-                    href="/search?type=recess"
-                    className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
-                  >
-                    See all →
-                  </Link>
-                )}
                 <Link
                   href="/dashboard/upload?type=recess"
                   className="inline-flex h-8 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-full bg-spring-green px-3 sm:px-4 font-sans font-medium text-xs sm:text-sm text-core-black hover:bg-spring-green/90 transition-colors"
                 >
                   + Drop something
                 </Link>
+                {recessVideos.length > 0 && (
+                  <Link
+                    href="/recess"
+                    className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
+                  >
+                    See all →
+                  </Link>
+                )}
               </div>
             </div>
             {recessVideos.length > 0 ? (
