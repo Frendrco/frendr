@@ -141,6 +141,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
                   name: channel.name,
                   description: channel.description,
                   coverUrl: channel.coverUrl,
+                  color: channel.color,
                   isPublic: channel.isPublic,
                   shareToken: channel.shareToken,
                 }}

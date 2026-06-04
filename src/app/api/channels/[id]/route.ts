@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const ctx = await getAuthorizedChannel(clerkId, id)
   if (!ctx) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const { name, description, isPublic, coverUrl } = await req.json()
+  const { name, description, isPublic, coverUrl, color } = await req.json()
   const updated = await prisma.channel.update({
     where: { id },
     data: {
@@ -35,6 +35,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       ...(description !== undefined && { description }),
       ...(isPublic !== undefined && { isPublic: Boolean(isPublic) }),
       ...(coverUrl !== undefined && { coverUrl }),
+      ...(color !== undefined && { color }),
     },
   })
 

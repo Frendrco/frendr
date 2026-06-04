@@ -18,6 +18,16 @@ type AdminUser = {
   avatarUrl: string | null
 }
 
+const CHANNEL_COLORS: { key: string; bg: string }[] = [
+  { key: "bloom-lavender", bg: "bg-bloom-lavender" },
+  { key: "spring-green",   bg: "bg-spring-green" },
+  { key: "winter-green",   bg: "bg-winter-green" },
+  { key: "sky-blue",       bg: "bg-sky-blue" },
+  { key: "sunny-yellow",   bg: "bg-sunny-yellow" },
+  { key: "hyper-blue",     bg: "bg-hyper-blue" },
+  { key: "dream-lilac",    bg: "bg-dream-lilac" },
+]
+
 type Props = {
   channel: {
     id: string
@@ -25,6 +35,7 @@ type Props = {
     name: string
     description: string | null
     coverUrl: string | null
+    color: string | null
     isPublic: boolean
     shareToken: string | null
   }
@@ -41,6 +52,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
   const [description, setDescription] = useState(channel.description ?? "")
   const [coverPreview, setCoverPreview] = useState<string | null>(channel.coverUrl)
   const [coverUrl, setCoverUrl] = useState<string | null>(channel.coverUrl)
+  const [color, setColor] = useState(channel.color ?? "bloom-lavender")
   const [coverUploading, setCoverUploading] = useState(false)
   const [coverError, setCoverError] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -120,6 +132,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
   function handleOpen() {
     setName(channel.name)
     setDescription(channel.description ?? "")
+    setColor(channel.color ?? "bloom-lavender")
     setCoverPreview(channel.coverUrl)
     setCoverUrl(channel.coverUrl)
     setCoverError("")
@@ -176,6 +189,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
           name: name.trim(),
           description: description.trim() || null,
           coverUrl,
+          color,
         }),
       })
       if (!res.ok) {
@@ -294,6 +308,29 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
               )}
 
               {coverError && <p className="font-sans text-xs text-red-500">{coverError}</p>}
+            </div>
+
+            {/* Background colour */}
+            <div className="flex flex-col gap-2">
+              <label className="font-sans text-xs font-medium text-core-black">
+                Background colour
+                <span className="ml-1 font-normal text-foreground/40">— used when no cover image is set</span>
+              </label>
+              <div className="flex gap-2">
+                {CHANNEL_COLORS.map(({ key, bg }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setColor(key)}
+                    aria-label={key}
+                    className={`h-8 w-8 rounded-full ${bg} transition-all duration-150 ${
+                      color === key
+                        ? "ring-2 ring-core-black ring-offset-2"
+                        : "hover:scale-110"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Administrators */}
