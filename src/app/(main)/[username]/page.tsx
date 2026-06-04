@@ -12,6 +12,7 @@ import { PinnedVideo } from "./PinnedVideo"
 import { EditProfileModal } from "./EditProfileModal"
 import { ProfileVideoGrid } from "./ProfileVideoGrid"
 import { RecessProfileGrid } from "./RecessProfileGrid"
+import { RiveCard } from "@/components/common/RiveCard"
 import { AdminDeleteButton } from "@/app/(main)/admin/AdminDeleteButton"
 import type { Metadata } from "next"
 
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProfilePage({ params, searchParams }: Props) {
   const [{ username }, { tab: tabParam }] = await Promise.all([params, searchParams])
-  const activeTab = tabParam === "recess" ? "recess" : "videos"
+  const activeTab = tabParam === "recess" ? "recess" : tabParam === "interactive" ? "interactive" : "videos"
   const { userId: clerkId } = await auth()
 
   const user = await prisma.user.findUnique({
@@ -58,6 +59,16 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   }
 
   if (!user) notFound()
+
+  const riveThreads = await prisma.thread.findMany({
+    where: { userId: user.id, source: "rive_world" },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, title: true, riveUrls: true, voteCount: true, userId: true,
+      user: { select: { username: true, displayName: true, avatarUrl: true } },
+      _count: { select: { comments: true } },
+    },
+  })
 
   const isOwn = clerkId === user.clerkId
 
@@ -306,6 +317,21 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   )}
                 </Link>
                 <Link
+                  href={`/${username}?tab=interactive`}
+                  className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
+                    activeTab === "interactive"
+                      ? "border-core-black text-core-black"
+                      : "border-transparent text-foreground/40 hover:text-foreground/70"
+                  }`}
+                >
+                  Interactive
+                  {riveThreads.length > 0 && (
+                    <span className={`ml-1.5 font-normal ${activeTab === "interactive" ? "text-foreground/40" : "text-foreground/30"}`}>
+                      ({riveThreads.length})
+                    </span>
+                  )}
+                </Link>
+                <Link
                   href={`/${username}/playlists`}
                   className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/40 hover:text-foreground/70 transition-colors"
                 >
@@ -314,8 +340,32 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               </div>
             </div>
 
-            {/* Recess tab */}
-            {activeTab === "recess" ? (
+            {/* Interactive tab */}
+            {activeTab === "interactive" && (
+              riveThreads.length === 0 ? (
+                <p className="font-sans text-sm text-foreground/40 py-8">
+                  No interactive work yet. Rive animations and interactive pieces will live here.
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+                  {riveThreads.map((t) => (
+                    <RiveCard
+                      key={t.id}
+                      id={t.id}
+                      title={t.title}
+                      riveUrl={t.riveUrls[0]}
+                      voteCount={t.voteCount}
+                      commentCount={t._count.comments}
+                      user={t.user}
+                      isOwner={isOwn}
+                    />
+                  ))}
+                </div>
+              )
+            )}
+
+            {/* Recess / Videos tabs */}
+            {activeTab !== "interactive" && (activeTab === "recess" ? (
               <RecessProfileGrid
                 videos={recessVideos.map((v) => ({
                   id: v.id,
@@ -393,7 +443,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   />
                 )}
               </>
-            )}
+            ))}
           </main>
 
         </div>

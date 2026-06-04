@@ -30,7 +30,7 @@ const FRAME_COUNT = 6
 
 type Mode       = "upload" | "import"
 type Tab        = "basics" | "privacy" | "embed"
-type VideoType  = "PORTFOLIO" | "RECESS"
+type VideoType  = "PORTFOLIO" | "RECESS" | "INTERACTIVE"
 
 interface BulkItem {
   id:           string
@@ -145,6 +145,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
   const [categorySearch, setCategorySearch] = useState("")
   const [isPublic, setIsPublic]         = useState(true)
   const [isAiGenerated, setIsAiGenerated] = useState(false)
+  const [riveUrl, setRiveUrl]           = useState("")
 
   // Privacy (upload mode only)
   const [visibility, setVisibility]         = useState<Visibility>("public")
@@ -410,6 +411,23 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
       })
       if (!res.ok) throw new Error("Could not import videos")
       router.push(`/${username}`)
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Something went wrong")
+      setUploading(false)
+    }
+  }
+
+  async function handleRivePost() {
+    if (!riveUrl.trim() || !title.trim()) return
+    setUploading(true); setUploadError(null)
+    try {
+      const res = await fetch("/api/threads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: title.trim(), riveUrls: [riveUrl.trim()], source: "rive_world", body: "" }),
+      })
+      if (!res.ok) throw new Error("Could not post to Rive World")
+      router.push("/rive")
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Something went wrong")
       setUploading(false)
@@ -732,12 +750,16 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         {/* Heading */}
         <div className="mb-6">
           <h1 className="font-sans font-bold text-2xl text-core-black">
-            {videoType === "RECESS"
+            {videoType === "INTERACTIVE"
+              ? "Share to Rive World"
+              : videoType === "RECESS"
               ? "Drop something into Recess"
               : mode === "upload" ? "Upload a new video" : "Import from another platform"}
           </h1>
           <p className="mt-1 font-sans text-sm text-foreground/50">
-            {videoType === "RECESS"
+            {videoType === "INTERACTIVE"
+              ? "Share your Rive work with the community."
+              : videoType === "RECESS"
               ? "Quick loops, tool tests, and explorations — no polish required."
               : mode === "upload"
               ? "Share your work with the frendr community."
@@ -746,15 +768,16 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         </div>
 
         {/* Type selector */}
-        <div className="mb-6 grid grid-cols-2 gap-2">
+        <div className="mb-6 grid grid-cols-3 gap-2">
           {([
-            { value: "PORTFOLIO" as VideoType, label: "Portfolio", desc: "Finished work you're proud of." },
-            { value: "RECESS"    as VideoType, label: "Recess",    desc: "A quick loop, tool test, or WIP." },
+            { value: "PORTFOLIO"   as VideoType, label: "Portfolio",   desc: "Finished work you're proud of." },
+            { value: "RECESS"      as VideoType, label: "Recess",      desc: "A quick loop, tool test, or WIP." },
+            { value: "INTERACTIVE" as VideoType, label: "Interactive", desc: "A Rive animation or interactive piece." },
           ]).map(({ value, label, desc }) => (
             <button
               key={value}
               type="button"
-              onClick={() => { setVideoType(value); setCategories([]) }}
+              onClick={() => { setVideoType(value); setCategories([]); setRiveUrl("") }}
               className={cn(
                 "flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-colors",
                 videoType === value
@@ -768,30 +791,71 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
           ))}
         </div>
 
-        {/* Source toggle */}
-        <div className="mb-8 inline-flex rounded-full border border-border p-1 gap-1">
-          {([
-            { value: "upload" as Mode, icon: <Upload size={13} />,  label: "Upload Video" },
-            { value: "import" as Mode, icon: <Link2 size={13} />,   label: "Import from URL" },
-          ]).map(({ value, icon, label }) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => mode !== value && switchMode(value)}
-              className={cn(
-                "inline-flex h-8 items-center gap-1.5 rounded-full px-4 font-sans font-medium text-sm transition-colors",
-                mode === value
-                  ? "bg-core-black text-white"
-                  : "text-foreground/50 hover:text-foreground"
-              )}
-            >
-              {icon}{label}
-            </button>
-          ))}
-        </div>
+        {/* Source toggle — hidden for Interactive (always URL-based) */}
+        {videoType !== "INTERACTIVE" && (
+          <div className="mb-8 inline-flex rounded-full border border-border p-1 gap-1">
+            {([
+              { value: "upload" as Mode, icon: <Upload size={13} />,  label: "Upload Video" },
+              { value: "import" as Mode, icon: <Link2 size={13} />,   label: "Import from URL" },
+            ]).map(({ value, icon, label }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => mode !== value && switchMode(value)}
+                className={cn(
+                  "inline-flex h-8 items-center gap-1.5 rounded-full px-4 font-sans font-medium text-sm transition-colors",
+                  mode === value
+                    ? "bg-core-black text-white"
+                    : "text-foreground/50 hover:text-foreground"
+                )}
+              >
+                {icon}{label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ══ INTERACTIVE MODE ═════════════════════════════════ */}
+        {videoType === "INTERACTIVE" && (
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-medium text-foreground/50">Rive URL</label>
+              <input
+                className={field}
+                placeholder="https://rive.app/community/…"
+                value={riveUrl}
+                onChange={(e) => setRiveUrl(e.target.value)}
+              />
+              <p className="font-sans text-[11px] text-foreground/30">Paste the share link from rive.app</p>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-medium text-foreground/50">Title</label>
+              <input
+                className={field}
+                placeholder="Give this a title…"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
+            <div className="flex items-center justify-end gap-3 border-t border-border pt-5">
+              <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
+                Cancel
+              </Link>
+              <button
+                type="button"
+                onClick={handleRivePost}
+                disabled={!riveUrl.trim() || !title.trim() || uploading}
+                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+              >
+                {uploading ? "Posting…" : "Post to Rive World"}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* ══ UPLOAD MODE ══════════════════════════════════════ */}
-        {mode === "upload" && (
+        {videoType !== "INTERACTIVE" && mode === "upload" && (
           <>
             {/* ── Recess: flat form, no tabs ── */}
             {videoType === "RECESS" && (
@@ -1028,7 +1092,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         )}
 
         {/* ══ IMPORT MODE ══════════════════════════════════════ */}
-        {mode === "import" && (
+        {videoType !== "INTERACTIVE" && mode === "import" && (
           <div className="flex flex-col gap-4">
 
             <p className="font-sans text-xs text-foreground/50">
