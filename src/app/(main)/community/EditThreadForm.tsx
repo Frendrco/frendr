@@ -87,7 +87,7 @@ export function EditThreadForm({ threadId, initial }: Props) {
     const url = linkUrl?.trim()
     if (!url) { setLinkUrl(null); bodyRef.current?.focus(); return }
     const { start, end, sel } = pendingLink.current ?? { start: body.length, end: body.length, sel: "" }
-    const replacement = `[${sel || "link text"}](${url})`
+    const replacement = `[${sel || url}](${url})`
     setBody(body.slice(0, start) + replacement + body.slice(end))
     setLinkUrl(null)
     pendingLink.current = null
