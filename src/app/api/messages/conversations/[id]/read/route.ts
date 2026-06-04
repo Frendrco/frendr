@@ -12,10 +12,16 @@ export async function PATCH(_req: Request, { params }: Params) {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
-  const updated = await prisma.conversationParticipant.updateMany({
-    where: { conversationId: id, userId: user.id },
-    data: { lastReadAt: new Date() },
-  })
+  const [updated] = await prisma.$transaction([
+    prisma.conversationParticipant.updateMany({
+      where: { conversationId: id, userId: user.id },
+      data: { lastReadAt: new Date() },
+    }),
+    prisma.notification.updateMany({
+      where: { userId: user.id, type: "message", contentId: id, read: false },
+      data: { read: true },
+    }),
+  ])
 
   if (updated.count === 0) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
