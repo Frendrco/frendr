@@ -275,6 +275,7 @@ model Channel {
   isPublic    Boolean         @default(true)
   shareToken  String?         @unique
   featured    Boolean         @default(false)
+  sortOrder   Int             @default(0)
   type        String          @default("user")
   userId      String?
   user        User?           @relation(fields: [userId], references: [id], onDelete: SetNull)

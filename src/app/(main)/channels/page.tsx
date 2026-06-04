@@ -11,10 +11,10 @@ export default async function ChannelsPage() {
 
   const channels = await prisma.channel.findMany({
     where: { isPublic: true },
-    orderBy: [{ type: "asc" }, { createdAt: "desc" }],
+    orderBy: [{ type: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" }],
     select: {
       id: true, name: true, slug: true, description: true,
-      coverUrl: true, color: true, type: true, featured: true,
+      coverUrl: true, color: true, type: true, featured: true, sortOrder: true,
       _count: { select: { videos: true, followers: true } },
       videos: {
         take: 1,

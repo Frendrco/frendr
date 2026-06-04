@@ -91,6 +91,17 @@ export async function POST(req: NextRequest) {
     slug = `${baseSlug}-${counter++}`
   }
 
+  // For admin channels, place at the end of the current order
+  let sortOrder = 0
+  if (type === "admin") {
+    const last = await prisma.channel.findFirst({
+      where: { type: "admin" },
+      orderBy: { sortOrder: "desc" },
+      select: { sortOrder: true },
+    })
+    sortOrder = (last?.sortOrder ?? -1) + 1
+  }
+
   const channel = await prisma.channel.create({
     data: {
       name: name.trim(),
@@ -101,6 +112,7 @@ export async function POST(req: NextRequest) {
       coverUrl: coverUrl ?? null,
       color: color ?? null,
       userId: user.id,
+      sortOrder,
     },
   })
 

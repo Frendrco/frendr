@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Sparkles, Star, Users, Plus } from "lucide-react"
+import { Sparkles, Star, Users, Plus, ChevronUp, ChevronDown } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { CreateChannelSheet } from "./CreateChannelSheet"
 import { cn } from "@/lib/utils"
@@ -32,6 +32,7 @@ type ChannelData = {
   color: string | null
   type: string
   featured: boolean
+  sortOrder: number
   _count: { videos: number; followers: number }
   videos: { video: { thumbnailUrl: string | null; streamId: string | null } }[]
 }
@@ -43,8 +44,26 @@ type Props = {
   isAdmin?: boolean
 }
 
-export function ChannelsClient({ adminChannels, userChannels, isSignedIn, isAdmin = false }: Props) {
+export function ChannelsClient({ adminChannels: initialAdminChannels, userChannels, isSignedIn, isAdmin = false }: Props) {
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [adminChannels, setAdminChannels] = useState(initialAdminChannels)
+
+  const moveChannel = useCallback(async (id: string, direction: "up" | "down") => {
+    const idx = adminChannels.findIndex((c) => c.id === id)
+    const swapIdx = direction === "up" ? idx - 1 : idx + 1
+    if (swapIdx < 0 || swapIdx >= adminChannels.length) return
+
+    // Optimistic local swap
+    const next = [...adminChannels]
+    ;[next[idx], next[swapIdx]] = [next[swapIdx], next[idx]]
+    setAdminChannels(next)
+
+    await fetch(`/api/channels/${id}/reorder`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ direction }),
+    })
+  }, [adminChannels])
 
   return (
     <div className="min-h-screen bg-background">
@@ -88,7 +107,17 @@ export function ChannelsClient({ adminChannels, userChannels, isSignedIn, isAdmi
             {adminChannels.length > 0 ? (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {adminChannels.map((channel, i) => (
-                  <ChannelCard key={channel.id} channel={channel} index={i} isFrendrPick isAdmin={isAdmin} />
+                  <ChannelCard
+                    key={channel.id}
+                    channel={channel}
+                    index={i}
+                    isFrendrPick
+                    isAdmin={isAdmin}
+                    isFirst={i === 0}
+                    isLast={i === adminChannels.length - 1}
+                    onMoveUp={() => moveChannel(channel.id, "up")}
+                    onMoveDown={() => moveChannel(channel.id, "down")}
+                  />
                 ))}
               </div>
             ) : (
@@ -124,11 +153,19 @@ function ChannelCard({
   channel,
   isFrendrPick = false,
   isAdmin = false,
+  isFirst = false,
+  isLast = false,
+  onMoveUp,
+  onMoveDown,
   index,
 }: {
   channel: ChannelData
   isFrendrPick?: boolean
   isAdmin?: boolean
+  isFirst?: boolean
+  isLast?: boolean
+  onMoveUp?: () => void
+  onMoveDown?: () => void
   index: number
 }) {
   const [featuredState, setFeaturedState] = useState(channel.featured)
@@ -168,20 +205,42 @@ function ChannelCard({
           <div className={`h-full w-full ${colorClass} transition-opacity group-hover:opacity-90`} />
         )}
         {isAdmin && (
-          <button
-            onClick={toggleFeature}
-            disabled={toggling}
-            aria-label={featuredState ? "Remove from discover page" : "Feature on discover page"}
-            title={featuredState ? "Remove from discover page" : "Feature on discover page"}
-            className={cn(
-              "absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full border backdrop-blur-sm transition-all disabled:opacity-50",
-              featuredState
-                ? "border-spring-green bg-spring-green/20 text-spring-green"
-                : "border-white/30 bg-black/30 text-white opacity-0 group-hover:opacity-100"
+          <>
+            <button
+              onClick={toggleFeature}
+              disabled={toggling}
+              aria-label={featuredState ? "Remove from discover page" : "Feature on discover page"}
+              title={featuredState ? "Remove from discover page" : "Feature on discover page"}
+              className={cn(
+                "absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full border backdrop-blur-sm transition-all disabled:opacity-50",
+                featuredState
+                  ? "border-spring-green bg-spring-green/20 text-spring-green"
+                  : "border-white/30 bg-black/30 text-white opacity-0 group-hover:opacity-100"
+              )}
+            >
+              <Star size={12} className={cn(featuredState && "fill-current")} />
+            </button>
+            {isFrendrPick && (
+              <div className="absolute bottom-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); onMoveUp?.() }}
+                  disabled={isFirst}
+                  title="Move up"
+                  className="flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm disabled:opacity-30 hover:bg-black/70 transition-colors"
+                >
+                  <ChevronUp size={12} />
+                </button>
+                <button
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); onMoveDown?.() }}
+                  disabled={isLast}
+                  title="Move down"
+                  className="flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm disabled:opacity-30 hover:bg-black/70 transition-colors"
+                >
+                  <ChevronDown size={12} />
+                </button>
+              </div>
             )}
-          >
-            <Star size={12} className={cn(featuredState && "fill-current")} />
-          </button>
+          </>
         )}
       </div>
 

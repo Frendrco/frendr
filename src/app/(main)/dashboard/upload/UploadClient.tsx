@@ -19,11 +19,11 @@ const CATEGORIES = [
   "Branding", "Commercial", "Music Video", "Short Film", "Film",
   "Loop", "Experimental", "Stop Motion", "Sound",
   "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini",
-  "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI",
+  "Moho", "Toon Boom", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI",
 ]
 
 const MAX_CATEGORIES = 5
-const RECESS_TOOLS = ["Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI"]
+const RECESS_TOOLS = ["Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Moho", "Toon Boom", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI"]
 const MAX_RECESS_TOOLS = 3
 const DESC_MAX = 500
 const FRAME_COUNT = 6
