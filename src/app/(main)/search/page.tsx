@@ -307,7 +307,7 @@ export default async function SearchPage({ searchParams }: Props) {
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-baseline gap-2">
                 <h2 className="font-sans font-bold text-base text-core-black">Recess</h2>
-                <span className="font-sans text-sm text-foreground/40">what people are making right now</span>
+                <span className="font-sans text-sm text-foreground/40">Making things for the fun of it</span>
               </div>
               <div className="flex items-center gap-3">
                 {recessVideos.length > 0 && (
@@ -326,32 +326,30 @@ export default async function SearchPage({ searchParams }: Props) {
                 </Link>
               </div>
             </div>
-            <div className="rounded-2xl bg-mist-grey px-6 py-4">
-              {recessVideos.length > 0 ? (
-                <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  {recessVideos.map((v) => (
-                    <RecessCard
-                      key={v.id}
-                      video={{
-                        id: v.id,
-                        title: v.title,
-                        thumbnailUrl: v.thumbnailUrl,
-                        streamId: v.streamId,
-                        externalUrl: v.externalUrl,
-                        tags: v.tags,
-                        likeCount: v._count.likes,
-                        user: v.user,
-                      }}
-                      fixedWidth
-                    />
-                  ))}
-                </div>
-              ) : (
-                <p className="font-sans text-sm text-foreground/40">
-                  No one has dropped anything yet — be the first.
-                </p>
-              )}
-            </div>
+            {recessVideos.length > 0 ? (
+              <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {recessVideos.map((v) => (
+                  <RecessCard
+                    key={v.id}
+                    video={{
+                      id: v.id,
+                      title: v.title,
+                      thumbnailUrl: v.thumbnailUrl,
+                      streamId: v.streamId,
+                      externalUrl: v.externalUrl,
+                      tags: v.tags,
+                      likeCount: v._count.likes,
+                      user: v.user,
+                    }}
+                    fixedWidth
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="font-sans text-sm text-foreground/40">
+                No one has dropped anything yet — be the first.
+              </p>
+            )}
           </section>
         )}
 
