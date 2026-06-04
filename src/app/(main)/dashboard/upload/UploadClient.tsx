@@ -22,6 +22,8 @@ const CATEGORIES = [
 ]
 
 const MAX_CATEGORIES = 5
+const RECESS_TOOLS = ["Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini"]
+const MAX_RECESS_TOOLS = 3
 const DESC_MAX = 500
 const FRAME_COUNT = 6
 
@@ -358,6 +360,9 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         xhr.send(form)
       })
 
+      const effectiveThumbnail = videoType === "RECESS" && !thumbnail && videoFrames.length > 0
+        ? videoFrames[0]
+        : thumbnail
       const saveRes = await fetch("/api/videos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -370,7 +375,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
           allowDownloads,
           isAiGenerated,
           videoType,
-          thumbnailUrl:  thumbnail || null,
+          thumbnailUrl:  effectiveThumbnail || null,
           collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
         }),
       })
@@ -677,6 +682,43 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     </>
   )
 
+  const recessMetadataFields = (
+    <>
+      {/* Title */}
+      <div className="flex flex-col gap-1.5">
+        <label className="font-sans text-xs font-medium text-foreground/50">Title</label>
+        <input className={field} placeholder="Name this experiment…" value={title} onChange={(e) => setTitle(e.target.value)} />
+      </div>
+
+      {/* Tools used */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-baseline justify-between">
+          <label className="font-sans text-xs font-medium text-foreground/50">Tools used</label>
+          <span className="font-sans text-xs text-foreground/30">{categories.length}/{MAX_RECESS_TOOLS}</span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {RECESS_TOOLS.map((tool) => {
+            const on    = categories.includes(tool)
+            const maxed = !on && categories.length >= MAX_RECESS_TOOLS
+            return (
+              <button key={tool} type="button" onClick={() => toggleCategory(tool)} disabled={maxed}
+                className={cn("inline-flex h-8 items-center rounded-full border px-4 font-sans text-sm font-medium transition-colors",
+                  on    ? "border-core-black bg-core-black text-white"
+                    : maxed ? "border-border text-foreground/25 cursor-not-allowed"
+                    : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                )}
+              >{tool}</button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Make public */}
+      <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
+        description="Your video will appear in the Discover feed and on your profile." />
+    </>
+  )
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-3xl px-4 md:px-6 py-10">
@@ -711,7 +753,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             <button
               key={value}
               type="button"
-              onClick={() => setVideoType(value)}
+              onClick={() => { setVideoType(value); setCategories([]) }}
               className={cn(
                 "flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-colors",
                 videoType === value
@@ -750,23 +792,9 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         {/* ══ UPLOAD MODE ══════════════════════════════════════ */}
         {mode === "upload" && (
           <>
-            {/* Tabs */}
-            <div className="mb-8 flex gap-8 border-b border-border">
-              {(["basics", "privacy", "embed"] as Tab[]).map((t) => (
-                <button key={t} onClick={() => setTab(t)}
-                  className={cn("pb-3 font-sans font-medium text-sm capitalize border-b-2 -mb-px transition-colors",
-                    tab === t ? "border-core-black text-core-black" : "border-transparent text-foreground/40 hover:text-foreground/70"
-                  )}
-                >
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
-                </button>
-              ))}
-            </div>
-
-            {/* ── Basics ── */}
-            {tab === "basics" && (
+            {/* ── Recess: flat form, no tabs ── */}
+            {videoType === "RECESS" && (
               <div className="flex flex-col gap-6">
-                {/* Video drop zone */}
                 <div>
                   <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={handleVideoInput} />
                   <div
@@ -811,84 +839,154 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                   <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">Up to 2 GB · MP4, MOV, AVI, WMV</p>
                 </div>
 
-                {metadataFields}
+                {recessMetadataFields}
               </div>
             )}
 
-            {/* ── Privacy ── */}
-            {tab === "privacy" && (
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-3">
-                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Who can see this</p>
-                  {([
-                    { value: "public",    label: "Everyone",       desc: "Visible to all visitors and in the Discover feed" },
-                    { value: "followers", label: "Followers only", desc: "Only people who follow you can watch" },
-                    { value: "private",   label: "Only me",        desc: "Hidden from everyone except you" },
-                  ] as const).map(({ value, label, desc }) => (
-                    <button key={value} type="button" onClick={() => setVisibility(value)}
-                      className={cn("flex items-start gap-3 rounded-xl border p-4 text-left transition-colors",
-                        visibility === value ? "border-core-black bg-foreground/[0.02]" : "border-border hover:border-foreground/30"
+            {/* ── Portfolio: full tabbed form ── */}
+            {videoType === "PORTFOLIO" && (
+              <>
+                {/* Tabs */}
+                <div className="mb-8 flex gap-8 border-b border-border">
+                  {(["basics", "privacy", "embed"] as Tab[]).map((t) => (
+                    <button key={t} onClick={() => setTab(t)}
+                      className={cn("pb-3 font-sans font-medium text-sm capitalize border-b-2 -mb-px transition-colors",
+                        tab === t ? "border-core-black text-core-black" : "border-transparent text-foreground/40 hover:text-foreground/70"
                       )}
                     >
-                      <div className={cn("mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                        visibility === value ? "border-core-black bg-core-black" : "border-border"
-                      )}>
-                        {visibility === value && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
-                      </div>
-                      <div>
-                        <p className="font-sans font-medium text-sm text-core-black">{label}</p>
-                        <p className="font-sans text-xs text-foreground/40 mt-0.5">{desc}</p>
-                      </div>
+                      {t.charAt(0).toUpperCase() + t.slice(1)}
                     </button>
                   ))}
                 </div>
-                <div className="flex flex-col gap-2">
-                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Password protection</p>
-                  <input className={field} type="password" placeholder="Leave blank to disable" value={password} onChange={(e) => setPassword(e.target.value)} />
-                  <p className="font-sans text-xs text-foreground/30">Anyone with the link will need this password to watch, regardless of visibility.</p>
-                </div>
-                <div className="flex flex-col gap-5">
-                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Permissions</p>
-                  <Toggle on={hideFromFeeds}  onToggle={() => setHideFromFeeds((v) => !v)}  label="Hide from Discover feed" description="Your video won't appear in feeds but can still be shared via link." />
-                  <Toggle on={allowComments}  onToggle={() => setAllowComments((v) => !v)}  label="Allow comments" />
-                  <Toggle on={allowDownloads} onToggle={() => setAllowDownloads((v) => !v)} label="Allow downloads" description="Viewers can download the original file." />
-                </div>
-              </div>
-            )}
 
-            {/* ── Embed ── */}
-            {tab === "embed" && (
-              <div className="flex flex-col gap-8">
-                <div className="rounded-xl border border-border p-5">
-                  <Toggle on={allowEmbedding} onToggle={() => setAllowEmbedding((v) => !v)}
-                    label="Allow embedding on other sites"
-                    description="Let anyone embed your video player on their website or blog." />
-                </div>
-                <div className={cn("flex flex-col gap-5 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
-                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Player options</p>
-                  <Toggle on={autoplay}     onToggle={() => setAutoplay((v) => !v)}     label="Autoplay"             description="Video starts playing as soon as it loads." />
-                  <Toggle on={loop}         onToggle={() => setLoop((v) => !v)}          label="Loop"                 description="Replay automatically when the video ends." />
-                  <Toggle on={showControls} onToggle={() => setShowControls((v) => !v)} label="Show player controls" description="Display play, pause, and volume controls to viewers." />
-                </div>
-                <div className={cn("flex flex-col gap-2 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
-                  <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Embed code</p>
-                  <div className="relative">
-                    <pre className="w-full overflow-x-auto rounded-xl border border-border bg-foreground/[0.02] px-4 py-4 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre">{`<iframe
+                {/* ── Basics ── */}
+                {tab === "basics" && (
+                  <div className="flex flex-col gap-6">
+                    {/* Video drop zone */}
+                    <div>
+                      <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={handleVideoInput} />
+                      <div
+                        onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+                        onDragLeave={() => setDragging(false)}
+                        onDrop={handleVideoDrop}
+                        onClick={() => !file && fileInputRef.current?.click()}
+                        className={cn(
+                          "relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150",
+                          file ? "border-border cursor-default"
+                            : dragging ? "border-spring-green bg-spring-green/5 scale-[1.005] cursor-copy"
+                            : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03] cursor-pointer"
+                        )}
+                      >
+                        {file ? (
+                          <div className="flex flex-col items-center gap-3 px-8 text-center">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
+                              <Upload size={20} className="text-spring-green" />
+                            </div>
+                            <div>
+                              <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
+                              <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
+                            </div>
+                            <button type="button" onClick={(e) => { e.stopPropagation(); setFile(null); setThumbnail(null) }}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
+                            >
+                              <X size={11} /> Change file
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center gap-3">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
+                              <Upload size={20} className="text-foreground/35" />
+                            </div>
+                            <div className="text-center">
+                              <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
+                              <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">Up to 2 GB · MP4, MOV, AVI, WMV</p>
+                    </div>
+
+                    {metadataFields}
+                  </div>
+                )}
+
+                {/* ── Privacy ── */}
+                {tab === "privacy" && (
+                  <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-3">
+                      <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Who can see this</p>
+                      {([
+                        { value: "public",    label: "Everyone",       desc: "Visible to all visitors and in the Discover feed" },
+                        { value: "followers", label: "Followers only", desc: "Only people who follow you can watch" },
+                        { value: "private",   label: "Only me",        desc: "Hidden from everyone except you" },
+                      ] as const).map(({ value, label, desc }) => (
+                        <button key={value} type="button" onClick={() => setVisibility(value)}
+                          className={cn("flex items-start gap-3 rounded-xl border p-4 text-left transition-colors",
+                            visibility === value ? "border-core-black bg-foreground/[0.02]" : "border-border hover:border-foreground/30"
+                          )}
+                        >
+                          <div className={cn("mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+                            visibility === value ? "border-core-black bg-core-black" : "border-border"
+                          )}>
+                            {visibility === value && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
+                          </div>
+                          <div>
+                            <p className="font-sans font-medium text-sm text-core-black">{label}</p>
+                            <p className="font-sans text-xs text-foreground/40 mt-0.5">{desc}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Password protection</p>
+                      <input className={field} type="password" placeholder="Leave blank to disable" value={password} onChange={(e) => setPassword(e.target.value)} />
+                      <p className="font-sans text-xs text-foreground/30">Anyone with the link will need this password to watch, regardless of visibility.</p>
+                    </div>
+                    <div className="flex flex-col gap-5">
+                      <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Permissions</p>
+                      <Toggle on={hideFromFeeds}  onToggle={() => setHideFromFeeds((v) => !v)}  label="Hide from Discover feed" description="Your video won't appear in feeds but can still be shared via link." />
+                      <Toggle on={allowComments}  onToggle={() => setAllowComments((v) => !v)}  label="Allow comments" />
+                      <Toggle on={allowDownloads} onToggle={() => setAllowDownloads((v) => !v)} label="Allow downloads" description="Viewers can download the original file." />
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Embed ── */}
+                {tab === "embed" && (
+                  <div className="flex flex-col gap-8">
+                    <div className="rounded-xl border border-border p-5">
+                      <Toggle on={allowEmbedding} onToggle={() => setAllowEmbedding((v) => !v)}
+                        label="Allow embedding on other sites"
+                        description="Let anyone embed your video player on their website or blog." />
+                    </div>
+                    <div className={cn("flex flex-col gap-5 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
+                      <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Player options</p>
+                      <Toggle on={autoplay}     onToggle={() => setAutoplay((v) => !v)}     label="Autoplay"             description="Video starts playing as soon as it loads." />
+                      <Toggle on={loop}         onToggle={() => setLoop((v) => !v)}          label="Loop"                 description="Replay automatically when the video ends." />
+                      <Toggle on={showControls} onToggle={() => setShowControls((v) => !v)} label="Show player controls" description="Display play, pause, and volume controls to viewers." />
+                    </div>
+                    <div className={cn("flex flex-col gap-2 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
+                      <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Embed code</p>
+                      <div className="relative">
+                        <pre className="w-full overflow-x-auto rounded-xl border border-border bg-foreground/[0.02] px-4 py-4 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre">{`<iframe
   src="https://frendr.com/embed/VIDEO_ID"
   width="640" height="360"
   frameborder="0"
   allowfullscreen
 ></iframe>`}</pre>
-                    <button type="button" onClick={copyEmbed}
-                      className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
-                    >
-                      {copied ? <Check size={12} className="text-spring-green" /> : <Copy size={12} />}
-                      {copied ? "Copied!" : "Copy"}
-                    </button>
+                        <button type="button" onClick={copyEmbed}
+                          className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
+                        >
+                          {copied ? <Check size={12} className="text-spring-green" /> : <Copy size={12} />}
+                          {copied ? "Copied!" : "Copy"}
+                        </button>
+                      </div>
+                      <p className="font-sans text-xs text-foreground/30">The embed code becomes active once your video is published.</p>
+                    </div>
                   </div>
-                  <p className="font-sans text-xs text-foreground/30">The embed code becomes active once your video is published.</p>
-                </div>
-              </div>
+                )}
+              </>
             )}
 
             {/* Upload progress */}
@@ -922,7 +1020,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                 disabled={!file || !title.trim() || uploading}
                 className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
               >
-                {uploading ? (progress < 100 ? "Uploading…" : "Processing…") : "Upload Video"}
+                {uploading ? (progress < 100 ? "Uploading…" : "Processing…") : videoType === "RECESS" ? "Drop into Recess" : "Upload Video"}
               </button>
             </div>
           </>
