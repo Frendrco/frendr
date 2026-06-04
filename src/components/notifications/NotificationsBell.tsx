@@ -70,10 +70,34 @@ function timeAgo(iso: string) {
   return `${Math.floor(secs / 86400)}d ago`
 }
 
+function playChime() {
+  try {
+    const ctx = new AudioContext()
+    const notes = [1047, 1319] // C6, E6 — a soft ascending two-note chime
+    notes.forEach((freq, i) => {
+      const osc  = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.type = "sine"
+      osc.frequency.value = freq
+      const t = ctx.currentTime + i * 0.14
+      gain.gain.setValueAtTime(0, t)
+      gain.gain.linearRampToValueAtTime(0.18, t + 0.01)
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.5)
+      osc.start(t)
+      osc.stop(t + 0.5)
+    })
+    setTimeout(() => ctx.close(), 1200)
+  } catch { /* audio not available */ }
+}
+
 export function NotificationsBell() {
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
-  const panelRef = useRef<HTMLDivElement>(null)
+  const panelRef    = useRef<HTMLDivElement>(null)
+  const knownIds    = useRef<Set<string>>(new Set())
+  const initialised = useRef(false)
   const router = useRouter()
 
   const unreadCount = notifications.filter((n) => !n.read).length
@@ -81,7 +105,16 @@ export function NotificationsBell() {
   async function fetchNotifications() {
     const res = await fetch("/api/notifications")
     if (!res.ok) return
-    setNotifications(await res.json())
+    const data: Notification[] = await res.json()
+
+    if (initialised.current) {
+      const newUnread = data.filter((n) => !n.read && !knownIds.current.has(n.id))
+      if (newUnread.length > 0) playChime()
+    }
+
+    data.forEach((n) => knownIds.current.add(n.id))
+    initialised.current = true
+    setNotifications(data)
   }
 
   async function markAllRead() {
