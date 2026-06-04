@@ -16,6 +16,8 @@ interface ProfileData {
   bio: string | null
   website: string | null
   role: string | null
+  pronouns: string | null
+  creatorType: string | null
   instagram: string | null
   linkedin: string | null
   patreon:  string | null
@@ -40,6 +42,8 @@ const SKILLS = [
 
 const MAX_SKILLS = 10
 const BIO_MAX = 150
+const PRONOUN_PRESETS = ["he/him", "she/her", "they/them", "she/they", "he/they"]
+const CREATOR_TYPES   = ["Freelancer", "Studio", "Student", "In-house"]
 const EMOJI_AVATARS = ["🦥", "🐉", "🦀", "🐶"]
 
 // Strip URL prefix to extract just the handle for Instagram / LinkedIn
@@ -93,7 +97,9 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   const [location,      setLocation]      = useState(profile.location ?? "")
 
   // About me
-  const [role,      setRole]      = useState(profile.role ?? "")
+  const [role,        setRole]        = useState(profile.role ?? "")
+  const [pronouns,    setPronouns]    = useState(profile.pronouns ?? "")
+  const [creatorType, setCreatorType] = useState(profile.creatorType ?? "")
   const [website,   setWebsite]   = useState(profile.website ?? "")
   const [bio,       setBio]       = useState(profile.bio ?? "")
   // Instagram / LinkedIn: store just the handle
@@ -154,7 +160,9 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
           location:  location  || null,
           bio:       bio       || null,
           website:   website   || null,
-          role:      role      || null,
+          role:        role        || null,
+          pronouns:    pronouns    || null,
+          creatorType: creatorType || null,
           // Store handle only; profile page constructs full URL
           instagram: instagram || null,
           linkedin:  linkedin  || null,
@@ -300,6 +308,28 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
               <input className={field} placeholder="City, Country" value={location} onChange={(e) => setLocation(e.target.value)} />
             </div>
 
+            {/* Pronouns */}
+            <div className="flex flex-col gap-2">
+              <label className="font-sans text-xs font-medium text-foreground/50">Pronouns <span className="text-foreground/30">(optional)</span></label>
+              <div className="flex flex-wrap gap-1.5">
+                {PRONOUN_PRESETS.map((p) => (
+                  <button key={p} type="button" onClick={() => setPronouns(pronouns === p ? "" : p)}
+                    className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                      pronouns === p
+                        ? "border-core-black bg-core-black text-white"
+                        : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                    )}
+                  >{p}</button>
+                ))}
+              </div>
+              <input
+                className={field}
+                placeholder="or type your own…"
+                value={PRONOUN_PRESETS.includes(pronouns) ? "" : pronouns}
+                onChange={(e) => setPronouns(e.target.value)}
+              />
+            </div>
+
             {/* ── About Me divider ── */}
             <div className="flex items-center gap-3 pt-2">
               <span className="font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 shrink-0">About Me</span>
@@ -314,6 +344,22 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
               <div className="flex flex-col gap-1.5">
                 <label className="font-sans text-xs font-medium text-foreground/50">Website</label>
                 <input className={field} placeholder="www.yoursite.com" value={website} onChange={(e) => setWebsite(e.target.value)} />
+              </div>
+            </div>
+
+            {/* Creator type */}
+            <div className="flex flex-col gap-2">
+              <label className="font-sans text-xs font-medium text-foreground/50">I am a <span className="text-foreground/30">(optional)</span></label>
+              <div className="flex flex-wrap gap-1.5">
+                {CREATOR_TYPES.map((t) => (
+                  <button key={t} type="button" onClick={() => setCreatorType(creatorType === t ? "" : t)}
+                    className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                      creatorType === t
+                        ? "border-core-black bg-core-black text-white"
+                        : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                    )}
+                  >{t}</button>
+                ))}
               </div>
             </div>
 

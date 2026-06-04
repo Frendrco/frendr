@@ -16,6 +16,8 @@ model User {
   bio         String?
   website     String?
   role        String?
+  pronouns    String?
+  creatorType String?
   instagram   String?
   linkedin    String?
   twitter     String?

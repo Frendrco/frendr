@@ -20,6 +20,8 @@ export default async function SettingsPage() {
       bio:         true,
       website:     true,
       role:        true,
+      pronouns:    true,
+      creatorType: true,
       instagram:   true,
       linkedin:    true,
       patreon:     true,

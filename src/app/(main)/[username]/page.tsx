@@ -154,7 +154,12 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
             {/* Name + role */}
             <div className="mb-4 flex flex-col gap-1 items-center md:items-start text-center md:text-left">
-              <h1 className="font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
+              <div className="flex flex-wrap items-baseline justify-center md:justify-start gap-x-1.5 gap-y-0">
+                <h1 className="font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
+                {user.pronouns && (
+                  <span className="font-sans text-xs text-foreground/35">{user.pronouns}</span>
+                )}
+              </div>
               {user.role && (
                 <p className="font-sans text-xs text-foreground/50">{user.role}</p>
               )}
@@ -167,6 +172,11 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   </p>
                 ) : null
               })()}
+              {user.creatorType && (
+                <span className="inline-flex h-6 items-center rounded-full border border-border px-2.5 font-sans text-xs text-foreground/50">
+                  {user.creatorType}
+                </span>
+              )}
               <AvailableForWork initial={user.openToWork} isOwn={isOwn} />
             </div>
 
@@ -251,6 +261,8 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   bio:         user.bio,
                   website:     user.website,
                   role:        user.role,
+                  pronouns:    user.pronouns,
+                  creatorType: user.creatorType,
                   instagram:   user.instagram,
                   linkedin:    user.linkedin,
                   patreon:     user.patreon,

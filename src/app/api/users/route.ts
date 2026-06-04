@@ -63,7 +63,7 @@ export async function PATCH(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { displayName, username, location, age, bio, website, role, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, openToWork, coverImageUrl, emailNotifyMessages, emailNotifyComments, emailNotifyReplies, emailNotifyFollows } = await req.json()
+  const { displayName, username, location, age, bio, website, role, pronouns, creatorType, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, openToWork, coverImageUrl, emailNotifyMessages, emailNotifyComments, emailNotifyReplies, emailNotifyFollows } = await req.json()
 
   if (username !== undefined) {
     if (!USERNAME_RE.test(username)) {
@@ -89,7 +89,9 @@ export async function PATCH(req: Request) {
       ...(age        !== undefined && { age:       age ? Number(age) : null }),
       ...(bio        !== undefined && { bio:       bio       ?? null }),
       ...(website    !== undefined && { website:   website   ?? null }),
-      ...(role       !== undefined && { role:      role      ?? null }),
+      ...(role        !== undefined && { role:        role        ?? null }),
+      ...(pronouns    !== undefined && { pronouns:    pronouns    ?? null }),
+      ...(creatorType !== undefined && { creatorType: creatorType ?? null }),
       ...(instagram  !== undefined && { instagram: instagram ?? null }),
       ...(linkedin   !== undefined && { linkedin:  linkedin  ?? null }),
       ...(twitter    !== undefined && { twitter:   twitter   ?? null }),
