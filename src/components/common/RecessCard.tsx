@@ -9,6 +9,7 @@ export type RecessCardData = {
   streamId?: string | null
   externalUrl?: string | null
   tags: string[]
+  categories: string[]
   likeCount?: number
   user: {
     username: string
@@ -32,8 +33,8 @@ const TOOL_COLORS: Record<string, string> = {
 
 const TOOL_NAMES = Object.keys(TOOL_COLORS)
 
-function getToolTag(tags: string[]): string | null {
-  return tags.find((t) => TOOL_NAMES.includes(t)) ?? (tags[0] || null)
+function getToolTag(categories: string[]): string | null {
+  return categories.find((t) => TOOL_NAMES.includes(t)) ?? null
 }
 
 function cfThumb(url: string | null): string | null {
@@ -48,7 +49,7 @@ type Props = {
 }
 
 export function RecessCard({ video, fixedWidth = false }: Props) {
-  const toolTag = getToolTag(video.tags)
+  const toolTag = getToolTag(video.categories)
   const tagColor = toolTag && TOOL_COLORS[toolTag] ? TOOL_COLORS[toolTag] : "bg-white/90 text-core-black"
 
   const initials = video.user.displayName

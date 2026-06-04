@@ -38,6 +38,7 @@ export default async function RecessPage({ searchParams }: Props) {
     streamId: v.streamId,
     externalUrl: v.externalUrl,
     tags: v.tags,
+    categories: v.categories,
     likeCount: v._count.likes,
     user: v.user,
   }))

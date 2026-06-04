@@ -384,6 +384,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   streamId: v.streamId,
                   externalUrl: v.externalUrl,
                   tags: v.tags,
+                  categories: v.categories,
                   user: {
                     username: user.username,
                     displayName: user.displayName,

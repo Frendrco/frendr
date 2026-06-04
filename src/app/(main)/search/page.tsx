@@ -345,6 +345,7 @@ export default async function SearchPage({ searchParams }: Props) {
                       streamId: v.streamId,
                       externalUrl: v.externalUrl,
                       tags: v.tags,
+                      categories: v.categories,
                       likeCount: v._count.likes,
                       user: v.user,
                     }}
@@ -446,6 +447,7 @@ export default async function SearchPage({ searchParams }: Props) {
                       streamId: v.streamId,
                       externalUrl: v.externalUrl,
                       tags: v.tags,
+                      categories: v.categories,
                       user: v.user,
                     }}
                   />

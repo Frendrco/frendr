@@ -99,7 +99,6 @@ export function VideoOwnerActions({
 }: Props) {
   const isRecess = videoType === "RECESS"
   const router = useRouter()
-  const thumbInputRef = useRef<HTMLInputElement>(null)
 
   const [editOpen,   setEditOpen]   = useState(false)
   const effectiveEditOpen    = externalEditOpen    ?? editOpen
@@ -177,6 +176,7 @@ export function VideoOwnerActions({
 
   async function handleThumbFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
+    const input = e.target
     if (!file) return
     setUploadingThumb(true)
     const form = new FormData()
@@ -185,7 +185,7 @@ export function VideoOwnerActions({
     const data = await res.json() as { thumbnailUrl?: string }
     if (data.thumbnailUrl) setThumbnailUrl(data.thumbnailUrl)
     setUploadingThumb(false)
-    e.target.value = ""
+    input.value = ""
   }
 
   function pickFrame(i: number) {
@@ -305,8 +305,6 @@ export function VideoOwnerActions({
             {/* ── Basics tab ── */}
             {tab === "basics" && (
               <div className="flex flex-col gap-5">
-                <input ref={thumbInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleThumbFileChange} />
-
                 {/* Title */}
                 <div className="flex flex-col gap-1.5">
                   <label className="font-sans text-sm font-medium text-core-black">Title</label>
@@ -410,15 +408,11 @@ export function VideoOwnerActions({
                         )}
                       </div>
                       <div className="flex flex-1 flex-col gap-2">
-                        <button
-                          type="button"
-                          onClick={() => thumbInputRef.current?.click()}
-                          disabled={uploadingThumb}
-                          className="flex h-10 w-full items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-core-black transition-colors hover:border-foreground/30 disabled:opacity-50"
-                        >
+                        <label className={cn("flex h-10 w-full cursor-pointer items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-core-black transition-colors hover:border-foreground/30", uploadingThumb && "opacity-50 pointer-events-none")}>
                           <Upload size={14} className="shrink-0" />
                           {uploadingThumb ? "Uploading…" : "Upload image"}
-                        </button>
+                          <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleThumbFileChange} disabled={uploadingThumb} />
+                        </label>
                         <button
                           type="button"
                           onClick={() => { setFramePercents(randomFrameTimes(streamDuration ?? null)); setThumbMode("frames") }}
