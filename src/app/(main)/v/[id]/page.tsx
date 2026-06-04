@@ -141,7 +141,14 @@ export default async function VideoPage({ params }: Props) {
       {/* ── Player ─────────────────────────────────────────── */}
       <div className="bg-core-black w-full">
         <div className="mx-auto max-w-screen-xl">
-          <VideoPlayer streamId={video.streamId} externalUrl={video.externalUrl} title={video.title} streamStatus={streamStatus} />
+          <VideoPlayer
+            streamId={video.streamId}
+            externalUrl={video.externalUrl}
+            title={video.title}
+            streamStatus={streamStatus}
+            autoPlay={video.videoType === "RECESS"}
+            loop={video.videoType === "RECESS"}
+          />
         </div>
       </div>
 

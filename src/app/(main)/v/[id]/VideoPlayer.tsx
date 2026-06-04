@@ -12,9 +12,11 @@ interface Props {
   externalUrl:   string | null
   title:         string
   streamStatus?: StreamStatus
+  autoPlay?:     boolean
+  loop?:         boolean
 }
 
-export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unknown" }: Props) {
+export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unknown", autoPlay = false, loop = false }: Props) {
   const router   = useRouter()
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -113,6 +115,9 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
       <video
         ref={videoRef}
         controls
+        autoPlay={autoPlay}
+        loop={loop}
+        muted={autoPlay}
         className="absolute inset-0 h-full w-full bg-black"
       />
     </div>
