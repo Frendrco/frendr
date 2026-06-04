@@ -794,8 +794,8 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         <div className="mb-6 grid grid-cols-3 gap-2">
           {([
             { value: "PORTFOLIO"   as VideoType, label: "Portfolio",   desc: "Finished work you're proud of." },
-            { value: "RECESS"      as VideoType, label: "Recess",      desc: "A quick loop, tool test, or WIP." },
-            { value: "INTERACTIVE" as VideoType, label: "Interactive", desc: "A Rive animation or interactive piece." },
+            { value: "RECESS"      as VideoType, label: "Recess",      desc: "Personal experiments, not client work." },
+            { value: "INTERACTIVE" as VideoType, label: "Interactive", desc: "Share your Rive work. Let people play with it." },
           ]).map(({ value, label, desc }) => (
             <button
               key={value}

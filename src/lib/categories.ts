@@ -1,7 +1,7 @@
 export const CONTENT_TAGS = [
-  "Motion Design", "2D", "3D", "Motion Graphics", "Animation",
+  "Motion Design", "2D", "3D", "Animation",
   "VFX", "Live Action", "Music Video", "Typography", "Film",
-  "Branding", "Loop", "Experimental", "Sound", "Stop Motion", "Commercial",
+  "Branding", "Experimental", "Sound", "Stop Motion", "Commercial",
 ]
 
 export const TOOL_TAGS = [
@@ -10,9 +10,9 @@ export const TOOL_TAGS = [
 ]
 
 export const VIDEO_TAGS = [
-  "Motion Design", "Animation", "3D", "Motion Graphics", "VFX",
+  "Motion Design", "Animation", "3D", "VFX",
   "2D Animation", "3D Animation", "3D Type", "Typography",
   "Branding", "Commercial", "Music Video", "Short Film", "Film",
-  "Loop", "Experimental", "Stop Motion", "Sound",
+  "Experimental", "Stop Motion", "Sound",
   ...TOOL_TAGS,
 ]

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { Tv2, Check, Loader2 } from "lucide-react"
+import { Monitor, Check, Loader2 } from "lucide-react"
 import { useAuth } from "@clerk/nextjs"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import Link from "next/link"
@@ -72,10 +72,10 @@ export function AddToChannelButton({ videoId }: { videoId: string }) {
     <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground"
           title="Add to channel"
         >
-          <Tv2 size={14} />
+          <Monitor size={14} />
         </PopoverTrigger>
 
         <PopoverContent
@@ -94,7 +94,7 @@ export function AddToChannelButton({ videoId }: { videoId: string }) {
               </div>
             ) : channels.length === 0 ? (
               <div className="flex flex-col items-center gap-1.5 px-3 py-5 text-center">
-                <Tv2 size={18} className="text-foreground/20" />
+                <Monitor size={18} className="text-foreground/20" />
                 <p className="font-sans text-xs text-foreground/40">No channels yet</p>
                 <Link
                   href="/channels"
