@@ -4,6 +4,7 @@ import slugify from "slugify"
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { sendWelcomeMessage } from "@/lib/sendWelcomeMessage"
+import { pickDefaultAvatar } from "@/lib/defaultAvatars"
 
 const USERNAME_RE = /^[a-z0-9-]{3,30}$/
 
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
 
   const clerk = await clerkClient()
   const clerkUser = await clerk.users.getUser(userId)
-  const avatarUrl = clerkUser.imageUrl ?? null
+  const avatarUrl = clerkUser.hasImage ? clerkUser.imageUrl : pickDefaultAvatar()
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? null
 
   let user
