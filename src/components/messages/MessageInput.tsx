@@ -1,8 +1,12 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Send } from "lucide-react"
+import { Send, Smile } from "lucide-react"
 import { cn } from "@/lib/utils"
+import dynamic from "next/dynamic"
+import data from "@emoji-mart/data"
+
+const Picker = dynamic(() => import("@emoji-mart/react"), { ssr: false })
 
 interface Props {
   conversationId: string
@@ -12,6 +16,7 @@ interface Props {
 export function MessageInput({ conversationId, onSent }: Props) {
   const [body, setBody] = useState("")
   const [sending, setSending] = useState(false)
+  const [showPicker, setShowPicker] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   async function handleSend() {
@@ -43,8 +48,48 @@ export function MessageInput({ conversationId, onSent }: Props) {
     }
   }
 
+  function onEmojiSelect(emoji: { native: string }) {
+    const ta = textareaRef.current
+    if (!ta) { setBody((b) => b + emoji.native); setShowPicker(false); return }
+    const start = ta.selectionStart ?? body.length
+    const end   = ta.selectionEnd   ?? body.length
+    const next  = body.slice(0, start) + emoji.native + body.slice(end)
+    setBody(next)
+    setShowPicker(false)
+    // Restore focus + cursor after state update
+    requestAnimationFrame(() => {
+      ta.focus({ preventScroll: true })
+      const pos = start + emoji.native.length
+      ta.setSelectionRange(pos, pos)
+    })
+  }
+
   return (
-    <div className="flex items-end gap-2 border-t border-border p-4">
+    <div className="relative flex items-end gap-2 border-t border-border p-4">
+      {showPicker && (
+        <div className="absolute bottom-full left-4 mb-2 z-50 shadow-lg rounded-xl overflow-hidden">
+          <Picker
+            data={data}
+            onEmojiSelect={onEmojiSelect}
+            theme="light"
+            previewPosition="none"
+            skinTonePosition="none"
+          />
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setShowPicker((v) => !v)}
+        className={cn(
+          "flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full transition-colors",
+          showPicker ? "bg-foreground/10 text-foreground" : "text-foreground/30 hover:text-foreground/60"
+        )}
+        aria-label="Emoji picker"
+      >
+        <Smile size={18} />
+      </button>
+
       <textarea
         ref={textareaRef}
         value={body}

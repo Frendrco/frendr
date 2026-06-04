@@ -107,7 +107,7 @@ export function ConversationList({ initial, activeId }: Props) {
                     {c.lastMessage?.body ?? "No messages yet"}
                   </p>
                   {c.unreadCount > 0 && (
-                    <span className="h-2 w-2 shrink-0 rounded-full bg-spring-green" />
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-red-500" />
                   )}
                 </div>
               </div>

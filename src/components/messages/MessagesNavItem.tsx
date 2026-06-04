@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { MessageCircle } from "lucide-react"
 
 export function MessagesNavItem() {
   const [hasUnread, setHasUnread] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     async function check() {
@@ -20,6 +22,8 @@ export function MessagesNavItem() {
     return () => clearInterval(id)
   }, [])
 
+  const showDot = hasUnread && !pathname.startsWith("/messages")
+
   return (
     <Link
       href="/messages"
@@ -27,8 +31,8 @@ export function MessagesNavItem() {
       aria-label="Messages"
     >
       <MessageCircle size={17} />
-      {hasUnread && (
-        <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-spring-green ring-2 ring-white" />
+      {showDot && (
+        <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
       )}
     </Link>
   )

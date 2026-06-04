@@ -24,6 +24,7 @@ export async function GET(_req: Request, { params }: Params) {
       orderBy: { createdAt: "asc" },
       include: {
         sender: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+        reactions: { select: { emoji: true, userId: true } },
       },
     }),
     prisma.conversation.findUnique({
