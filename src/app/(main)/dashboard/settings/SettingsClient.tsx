@@ -30,6 +30,7 @@ interface ProfileData {
   emailNotifyComments: boolean
   emailNotifyReplies:  boolean
   emailNotifyFollows:  boolean
+  emailNotifyTrending: boolean
 }
 
 const SKILLS = [
@@ -113,10 +114,11 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   const [tags,      setTags]      = useState<string[]>(profile.tags)
 
   // Notification preferences
-  const [notifyMessages, setNotifyMessages] = useState(profile.emailNotifyMessages)
-  const [notifyComments, setNotifyComments] = useState(profile.emailNotifyComments)
-  const [notifyReplies,  setNotifyReplies]  = useState(profile.emailNotifyReplies)
-  const [notifyFollows,  setNotifyFollows]  = useState(profile.emailNotifyFollows)
+  const [notifyMessages,  setNotifyMessages]  = useState(profile.emailNotifyMessages)
+  const [notifyComments,  setNotifyComments]  = useState(profile.emailNotifyComments)
+  const [notifyReplies,   setNotifyReplies]   = useState(profile.emailNotifyReplies)
+  const [notifyFollows,   setNotifyFollows]   = useState(profile.emailNotifyFollows)
+  const [notifyTrending,  setNotifyTrending]  = useState(profile.emailNotifyTrending)
 
   async function saveNotifPref(field: string, value: boolean) {
     await fetch("/api/users", {
@@ -462,11 +464,12 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
 
             <div className="flex flex-col gap-1">
               {([
-                { label: "Messages",  desc: "Email when someone sends you a message",     value: notifyMessages, set: setNotifyMessages, field: "emailNotifyMessages" },
-                { label: "Comments",  desc: "Email when someone comments on your video",  value: notifyComments, set: setNotifyComments, field: "emailNotifyComments" },
-                { label: "Replies",   desc: "Email when someone replies to your comment", value: notifyReplies,  set: setNotifyReplies,  field: "emailNotifyReplies"  },
-                { label: "Follows",   desc: "Email when someone follows you",             value: notifyFollows,  set: setNotifyFollows,  field: "emailNotifyFollows"  },
-              ] as const).map(({ label, desc, value, set, field }) => (
+                { label: "Messages",   desc: "Email when someone sends you a message",          value: notifyMessages,  set: setNotifyMessages,  field: "emailNotifyMessages"  },
+                { label: "Comments",   desc: "Email when someone comments on your video",       value: notifyComments,  set: setNotifyComments,  field: "emailNotifyComments"  },
+                { label: "Replies",    desc: "Email when someone replies to your comment",      value: notifyReplies,   set: setNotifyReplies,   field: "emailNotifyReplies"   },
+                { label: "Follows",    desc: "Email when someone follows you",                  value: notifyFollows,   set: setNotifyFollows,   field: "emailNotifyFollows"   },
+                { label: "Milestones", desc: "Email when your video hits a view milestone",     value: notifyTrending,  set: setNotifyTrending,  field: "emailNotifyTrending"  },
+              ] as { label: string; desc: string; value: boolean; set: (v: boolean) => void; field: string }[]).map(({ label, desc, value, set, field }) => (
                 <div key={field} className="flex items-center justify-between gap-4 rounded-xl border border-border bg-white px-4 py-3">
                   <div>
                     <p className="font-sans text-sm font-medium text-core-black">{label}</p>

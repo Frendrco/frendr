@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma"
+import { resend, FROM, buildFollowEmail, buildTrendingEmail } from "@/lib/email"
 
-type NotificationType = "follow" | "comment" | "reply" | "message" | "vote" | "announcement"
+type NotificationType = "follow" | "comment" | "reply" | "message" | "vote" | "announcement" | "trending"
 
 type CreateParams = {
   userId: string
@@ -17,8 +18,50 @@ export async function createNotification(params: CreateParams) {
   return notif
 }
 
+async function sendImmediateEmail(params: CreateParams) {
+  if (!resend) return
+
+  if (params.type === "follow") {
+    const [recipient, actor] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: params.userId },
+        select: { email: true, displayName: true, emailNotifyFollows: true },
+      }),
+      params.fromUserId
+        ? prisma.user.findUnique({
+            where: { id: params.fromUserId },
+            select: { displayName: true, username: true },
+          })
+        : null,
+    ])
+    if (!recipient?.email || !recipient.emailNotifyFollows || !actor) return
+    const { subject, html } = buildFollowEmail(recipient.displayName, actor.displayName, actor.username)
+    await resend.emails.send({ from: FROM, to: recipient.email, subject, html })
+  }
+
+  if (params.type === "trending") {
+    const [recipient, video] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: params.userId },
+        select: { email: true, displayName: true, emailNotifyTrending: true },
+      }),
+      params.contentId
+        ? prisma.video.findUnique({ where: { id: params.contentId }, select: { title: true } })
+        : null,
+    ])
+    if (!recipient?.email || !recipient.emailNotifyTrending || !video) return
+    const milestone = Number(params.message)
+    const { subject, html } = buildTrendingEmail(recipient.displayName, video.title, milestone, params.contentId!)
+    await resend.emails.send({ from: FROM, to: recipient.email, subject, html })
+  }
+}
+
 async function enqueueEmail(params: CreateParams) {
   if (params.type === "vote" || params.type === "announcement") return
+
+  if (params.type === "follow" || params.type === "trending") {
+    return sendImmediateEmail(params)
+  }
 
   const actor = params.fromUserId
     ? await prisma.user.findUnique({

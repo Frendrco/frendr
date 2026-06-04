@@ -33,7 +33,8 @@ export default async function SettingsPage() {
       emailNotifyMessages: true,
       emailNotifyComments: true,
       emailNotifyReplies:  true,
-      emailNotifyFollows:  true,
+      emailNotifyFollows:   true,
+      emailNotifyTrending:  true,
     },
   })
 

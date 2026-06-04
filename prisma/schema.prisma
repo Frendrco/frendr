@@ -32,7 +32,8 @@ model User {
   emailNotifyMessages Boolean @default(true)
   emailNotifyComments Boolean @default(true)
   emailNotifyReplies  Boolean @default(true)
-  emailNotifyFollows  Boolean @default(true)
+  emailNotifyFollows   Boolean @default(true)
+  emailNotifyTrending  Boolean @default(true)
   avatarUrl     String?
   coverImageUrl String?
   pinnedVideoId String?
