@@ -909,7 +909,26 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                         : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03] cursor-pointer"
                     )}
                   >
-                    {file ? (
+                    {uploading ? (
+                      <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
+                        <p className="font-sans text-sm font-medium text-core-black">
+                          {progress < 100 ? "Uploading…" : "Processing…"}
+                        </p>
+                        <div className="w-full max-w-xs">
+                          <div className="mb-2 flex items-center justify-between">
+                            <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
+                            <span className="font-sans text-xs text-foreground/50">{progress}%</span>
+                          </div>
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+                            {progress === 0 ? (
+                              <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
+                            ) : (
+                              <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : file ? (
                       <div className="flex flex-col items-center gap-3 px-8 text-center">
                         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
                           <Upload size={20} className="text-spring-green" />
@@ -977,7 +996,26 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                             : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03] cursor-pointer"
                         )}
                       >
-                        {file ? (
+                        {uploading ? (
+                          <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
+                            <p className="font-sans text-sm font-medium text-core-black">
+                              {progress < 100 ? "Uploading…" : "Processing…"}
+                            </p>
+                            <div className="w-full max-w-xs">
+                              <div className="mb-2 flex items-center justify-between">
+                                <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
+                                <span className="font-sans text-xs text-foreground/50">{progress}%</span>
+                              </div>
+                              <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+                                {progress === 0 ? (
+                                  <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
+                                ) : (
+                                  <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ) : file ? (
                           <div className="flex flex-col items-center gap-3 px-8 text-center">
                             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
                               <Upload size={20} className="text-spring-green" />
@@ -1087,25 +1125,6 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                   </div>
                 )}
               </>
-            )}
-
-            {/* Upload progress */}
-            {uploading && (
-              <div className="mt-6 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-sans text-xs text-foreground/50">
-                    {progress < 100 ? `Uploading… ${progress}%` : "Processing…"}
-                  </span>
-                  <span className="font-sans text-xs text-foreground/30">{progress}%</span>
-                </div>
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                  {progress === 0 ? (
-                    <div className="h-full w-full rounded-full bg-spring-green/50 animate-pulse" />
-                  ) : (
-                    <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
-                  )}
-                </div>
-              </div>
             )}
 
             {uploadError && <p className="mt-4 font-sans text-xs text-red-500">{uploadError}</p>}
