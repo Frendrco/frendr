@@ -45,15 +45,17 @@ export default async function SearchPage({ searchParams }: Props) {
   const isRecessView = type === "recess"
   const activeSort = (["newest", "trending", "following"].includes(sort) ? sort : "newest") as SortValue
 
-  // Look up current user once — reused for "following" sort and new-member follow status
-  const currentUser = clerkId && !isSearching
-    ? await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
-    : null
-
+  // "following" sort has an unavoidable dependency chain: user → followingIds → video query.
+  // Resolve it up front only for that case; every other sort skips this entirely.
   let followingIds: string[] = []
-  if (currentUser && activeSort === "following") {
-    const follows = await prisma.follow.findMany({ where: { followerId: currentUser.id }, select: { followingId: true } })
-    followingIds = follows.map(f => f.followingId)
+  let prefetchedUserId: string | null = null
+  if (clerkId && !isSearching && activeSort === "following") {
+    const u = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    prefetchedUserId = u?.id ?? null
+    if (prefetchedUserId) {
+      const follows = await prisma.follow.findMany({ where: { followerId: prefetchedUserId }, select: { followingId: true } })
+      followingIds = follows.map(f => f.followingId)
+    }
   }
 
   const videoWhere = isSearching
@@ -76,11 +78,19 @@ export default async function SearchPage({ searchParams }: Props) {
       ? [{ featured: "desc" as const }, { createdAt: "desc" as const }]
       : { createdAt: "desc" as const }
 
-  const [videos, creators, featuredVideos, featuredChannels, newMembers, recessVideos] = await Promise.all([
+  // Everything runs in one parallel batch. currentUser is included here for the non-"following"
+  // sort case so it doesn't add a sequential round-trip before the main queries.
+  const [currentUser, videos, creators, featuredVideos, featuredChannels, newMembers, recessVideos] = await Promise.all([
+    // currentUser — needed for new-member follow status; already resolved for "following" sort
+    prefetchedUserId
+      ? Promise.resolve({ id: prefetchedUserId })
+      : clerkId && !isSearching
+        ? prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+        : Promise.resolve(null),
     prisma.video.findMany({
       where: videoWhere,
       orderBy: videoOrderBy,
-      take: 48,
+      take: 24,
       include: {
         user: { select: { username: true, displayName: true, avatarUrl: true } },
       },
@@ -135,7 +145,7 @@ export default async function SearchPage({ searchParams }: Props) {
       ? prisma.video.findMany({
           where: { isPublic: true, videoType: "RECESS" },
           orderBy: { createdAt: "desc" },
-          take: 12,
+          take: 8,
           include: {
             user: { select: { username: true, displayName: true, avatarUrl: true } },
             _count: { select: { likes: true } },
@@ -144,7 +154,7 @@ export default async function SearchPage({ searchParams }: Props) {
       : Promise.resolve([]),
   ])
 
-  // Follow status for new members — reuse currentUser from above
+  // New-member follow status — one quick lookup after the parallel batch
   const currentUserId = currentUser?.id ?? null
   let newMemberFollowingIds = new Set<string>()
   if (currentUser && newMembers.length > 0) {
