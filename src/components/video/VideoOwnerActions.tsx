@@ -39,10 +39,10 @@ const CATEGORIES = [
   "Branding", "Commercial", "Music Video", "Short Film", "Film",
   "Loop", "Experimental", "Stop Motion", "Sound",
   "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini",
-  "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI",
+  "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "Toon Boom", "Animate", "Moho", "AI",
 ]
 const MAX_CATEGORIES = 5
-const RECESS_TOOLS = ["Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI"]
+const RECESS_TOOLS = ["Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "Toon Boom", "Animate", "Moho", "AI"]
 const MAX_RECESS_TOOLS = 3
 
 type EditTab = "basics" | "credits" | "embed"
