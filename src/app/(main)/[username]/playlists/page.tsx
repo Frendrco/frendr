@@ -50,6 +50,12 @@ export default async function PlaylistsPage({ params }: Props) {
               Videos
             </Link>
             <Link
+              href={`/${username}?tab=recess`}
+              className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/40 hover:text-foreground/70 transition-colors"
+            >
+              Recess
+            </Link>
+            <Link
               href={`/${username}/playlists`}
               className="pb-3 font-sans font-medium text-sm border-b-2 border-core-black text-core-black"
             >

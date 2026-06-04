@@ -23,9 +23,10 @@ export async function PATCH(req: Request, { params }: Params) {
     thumbnailUrl?:   string | null
     isPublic?:       boolean
     allowDownloads?: boolean
+    videoType?:      "PORTFOLIO" | "RECESS"
     collaborators?:  { userId: string; role?: string | null }[]
   }
-  const { title, description, tags, thumbnailUrl, isPublic, allowDownloads, collaborators } = body
+  const { title, description, tags, thumbnailUrl, isPublic, allowDownloads, videoType, collaborators } = body
 
   const updated = await prisma.video.update({
     where: { id },
@@ -36,6 +37,7 @@ export async function PATCH(req: Request, { params }: Params) {
       ...(thumbnailUrl   !== undefined && { thumbnailUrl }),
       ...(isPublic       !== undefined && { isPublic }),
       ...(allowDownloads !== undefined && { allowDownloads }),
+      ...(videoType      !== undefined && { videoType }),
     },
   })
 

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { FrendrSelectsMarquee } from "./FrendrSelectsMarquee"
 import { VideoCard } from "@/components/common/VideoCard"
 import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore"
+import { RecessCard } from "@/components/common/RecessCard"
 import { ExploreSort } from "./ExploreSort"
 import { FollowButton } from "@/components/common/FollowButton"
 
@@ -35,15 +36,16 @@ const PLACEHOLDER_COLOURS = [
 
 type SortValue = "newest" | "trending" | "following"
 
-type Props = { searchParams: Promise<{ q?: string; tag?: string; sort?: string }> }
+type Props = { searchParams: Promise<{ q?: string; tag?: string; sort?: string; type?: string }> }
 
 export default async function SearchPage({ searchParams }: Props) {
   const { userId: clerkId } = await auth()
 
-  const { q = "", tag = "", sort = "newest" } = await searchParams
+  const { q = "", tag = "", sort = "newest", type = "" } = await searchParams
   const query = q.trim()
   const activeTag = tag || "All"
   const isSearching = query.length > 0
+  const isRecessView = type === "recess"
   const activeSort = (["newest", "trending", "following"].includes(sort) ? sort : "newest") as SortValue
 
   // Look up current user once — reused for "following" sort and new-member follow status
@@ -64,18 +66,20 @@ export default async function SearchPage({ searchParams }: Props) {
           { description: { contains: query, mode: "insensitive" as const } },
         ],
       }
+    : isRecessView
+    ? { isPublic: true, videoType: "RECESS" as const }
     : activeSort === "following"
-    ? { userId: { in: followingIds }, ...(activeTag !== "All" ? { tags: { has: activeTag } } : {}) }
+    ? { userId: { in: followingIds }, videoType: "PORTFOLIO" as const, ...(activeTag !== "All" ? { tags: { has: activeTag } } : {}) }
     : activeTag !== "All"
-    ? { tags: { has: activeTag } }
-    : undefined
+    ? { tags: { has: activeTag }, videoType: "PORTFOLIO" as const }
+    : { videoType: "PORTFOLIO" as const, isPublic: true }
 
   const videoOrderBy =
     activeSort === "trending"
       ? [{ featured: "desc" as const }, { createdAt: "desc" as const }]
       : { createdAt: "desc" as const }
 
-  const [videos, creators, featuredVideos, featuredChannels, newMembers] = await Promise.all([
+  const [videos, creators, featuredVideos, featuredChannels, newMembers, recessVideos] = await Promise.all([
     prisma.video.findMany({
       where: videoWhere,
       orderBy: videoOrderBy,
@@ -128,6 +132,17 @@ export default async function SearchPage({ searchParams }: Props) {
           orderBy: { createdAt: "desc" },
           take: 8,
           select: { id: true, username: true, displayName: true, avatarUrl: true, role: true },
+        })
+      : Promise.resolve([]),
+    !isSearching && !isRecessView
+      ? prisma.video.findMany({
+          where: { isPublic: true, videoType: "RECESS" },
+          orderBy: { createdAt: "desc" },
+          take: 12,
+          include: {
+            user: { select: { username: true, displayName: true, avatarUrl: true } },
+            _count: { select: { likes: true } },
+          },
         })
       : Promise.resolve([]),
   ])
@@ -214,6 +229,60 @@ export default async function SearchPage({ searchParams }: Props) {
                   </Link>
                 )
               })}
+            </div>
+          </section>
+        )}
+
+        {/* ── Recess section (browse only, not when in recess view) ── */}
+        {!isSearching && !isRecessView && (
+          <section>
+            <div className="rounded-2xl bg-mist-grey px-6 py-5">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-baseline gap-2">
+                  <h2 className="font-sans font-bold text-lg text-core-black">Recess</h2>
+                  <span className="font-sans text-sm text-foreground/40">what people are making right now</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {recessVideos.length > 0 && (
+                    <Link
+                      href="/search?type=recess"
+                      className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
+                    >
+                      See all →
+                    </Link>
+                  )}
+                  <Link
+                    href="/dashboard/upload?type=recess"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border/60 bg-white px-4 font-sans font-medium text-sm text-core-black hover:border-core-black transition-colors"
+                  >
+                    + Drop something
+                  </Link>
+                </div>
+              </div>
+              {recessVideos.length > 0 ? (
+                <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {recessVideos.map((v) => (
+                    <RecessCard
+                      key={v.id}
+                      video={{
+                        id: v.id,
+                        title: v.title,
+                        thumbnailUrl: v.thumbnailUrl,
+                        streamId: v.streamId,
+                        externalUrl: v.externalUrl,
+                        tags: v.tags,
+                        likeCount: v._count.likes,
+                        user: v.user,
+                      }}
+                      fixedWidth
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="font-sans text-sm text-foreground/40">
+                  No one has dropped anything yet — be the first.
+                </p>
+              )}
             </div>
           </section>
         )}
@@ -338,8 +407,51 @@ export default async function SearchPage({ searchParams }: Props) {
           </section>
         )}
 
+        {/* ── Full Recess grid (when ?type=recess) ── */}
+        {isRecessView && (
+          <section>
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="font-sans font-bold text-base text-core-black">Recess</h2>
+                <p className="mt-0.5 font-sans text-sm text-foreground/40">
+                  Quick explorations, loops, and tool tests from the community.
+                </p>
+              </div>
+              <Link
+                href="/dashboard/upload?type=recess"
+                className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-white px-4 font-sans font-medium text-sm text-core-black hover:border-core-black transition-colors"
+              >
+                + Drop something
+              </Link>
+            </div>
+            {videos.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 py-20 text-center">
+                <p className="font-sans font-semibold text-sm text-core-black">Nothing here yet</p>
+                <p className="font-sans text-sm text-foreground/40">Be the first to drop something.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 md:gap-4">
+                {videos.map((v) => (
+                  <RecessCard
+                    key={v.id}
+                    video={{
+                      id: v.id,
+                      title: v.title,
+                      thumbnailUrl: v.thumbnailUrl,
+                      streamId: v.streamId,
+                      externalUrl: v.externalUrl,
+                      tags: v.tags,
+                      user: v.user,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
         {/* ── Video results / Explore grid ── */}
-        {!noResults && (
+        {!noResults && !isRecessView && (
           <section>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="font-sans font-bold text-base text-core-black">

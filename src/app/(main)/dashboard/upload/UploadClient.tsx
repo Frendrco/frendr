@@ -27,6 +27,7 @@ const FRAME_COUNT = 6
 
 type Mode       = "upload" | "import"
 type Tab        = "basics" | "privacy" | "embed"
+type VideoType  = "PORTFOLIO" | "RECESS"
 
 interface BulkItem {
   id:           string
@@ -104,7 +105,7 @@ async function extractVideoFrames(videoFile: File): Promise<string[]> {
   })
 }
 
-export function UploadClient({ username }: { username: string }) {
+export function UploadClient({ username, initialType = "PORTFOLIO" }: { username: string; initialType?: VideoType }) {
   const router = useRouter()
 
   // Source mode
@@ -134,6 +135,7 @@ export function UploadClient({ username }: { username: string }) {
   const [bulkItems, setBulkItems] = useState<BulkItem[]>(() => [newBulkItem()])
 
   // Shared metadata
+  const [videoType, setVideoType]       = useState<VideoType>(initialType)
   const [title, setTitle]               = useState("")
   const [description, setDescription]   = useState("")
   const [categories, setCategories]     = useState<string[]>([])
@@ -367,6 +369,7 @@ export function UploadClient({ username }: { username: string }) {
           isPublic,
           allowDownloads,
           isAiGenerated,
+          videoType,
           thumbnailUrl:  thumbnail || null,
           collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
         }),
@@ -395,6 +398,7 @@ export function UploadClient({ username }: { username: string }) {
             title:        i.title.trim(),
             description:  i.description.trim() || null,
             thumbnailUrl: i.thumbnailUrl,
+            videoType,
           })),
         }),
       })
@@ -685,13 +689,40 @@ export function UploadClient({ username }: { username: string }) {
         {/* Heading */}
         <div className="mb-6">
           <h1 className="font-sans font-bold text-2xl text-core-black">
-            {mode === "upload" ? "Upload a new video" : "Import from another platform"}
+            {videoType === "RECESS"
+              ? "Drop something into Recess"
+              : mode === "upload" ? "Upload a new video" : "Import from another platform"}
           </h1>
           <p className="mt-1 font-sans text-sm text-foreground/50">
-            {mode === "upload"
+            {videoType === "RECESS"
+              ? "Quick loops, tool tests, and explorations — no polish required."
+              : mode === "upload"
               ? "Share your work with the frendr community."
               : "Bring your Vimeo, YouTube, or Framerate work to your Frendr profile."}
           </p>
+        </div>
+
+        {/* Type selector */}
+        <div className="mb-6 grid grid-cols-2 gap-2">
+          {([
+            { value: "PORTFOLIO" as VideoType, label: "Portfolio", desc: "Finished work you're proud of." },
+            { value: "RECESS"    as VideoType, label: "Recess",    desc: "A quick loop, tool test, or WIP." },
+          ]).map(({ value, label, desc }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setVideoType(value)}
+              className={cn(
+                "flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition-colors",
+                videoType === value
+                  ? "border-core-black bg-foreground/[0.015]"
+                  : "border-border hover:border-foreground/30"
+              )}
+            >
+              <p className="font-sans font-medium text-sm text-core-black">{label}</p>
+              <p className="font-sans text-xs text-foreground/40">{desc}</p>
+            </button>
+          ))}
         </div>
 
         {/* Source toggle */}

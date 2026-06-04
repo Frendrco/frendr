@@ -20,11 +20,12 @@ export async function POST(req: Request) {
     isPublic?:        boolean
     allowDownloads?:  boolean
     isAiGenerated?:   boolean
+    videoType?:       "PORTFOLIO" | "RECESS"
     thumbnailUrl?:    string
     collaborators?:   { userId: string; role?: string | null }[]
   }
 
-  const { streamId, externalUrl, title, description, tags, isPublic, allowDownloads, isAiGenerated, thumbnailUrl, collaborators } = body
+  const { streamId, externalUrl, title, description, tags, isPublic, allowDownloads, isAiGenerated, videoType, thumbnailUrl, collaborators } = body
 
   if (!title) return NextResponse.json({ error: "title is required" }, { status: 400 })
   if (!streamId && !externalUrl) {
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
         isPublic:      isPublic       ?? true,
         allowDownloads: allowDownloads ?? false,
         isAiGenerated: isAiGenerated  ?? false,
+        videoType:     videoType      ?? "PORTFOLIO",
         userId: user.id,
       },
     })

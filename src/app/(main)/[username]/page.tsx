@@ -11,6 +11,7 @@ import { CoverImage } from "./CoverImage"
 import { PinnedVideo } from "./PinnedVideo"
 import { EditProfileModal } from "./EditProfileModal"
 import { ProfileVideoGrid } from "./ProfileVideoGrid"
+import { RecessProfileGrid } from "./RecessProfileGrid"
 import { AdminDeleteButton } from "@/app/(main)/admin/AdminDeleteButton"
 import type { Metadata } from "next"
 
@@ -23,7 +24,7 @@ const PLACEHOLDER_CARDS = [
   { id: 6, bg: "bg-hyper-blue/40" },
 ]
 
-type Props = { params: Promise<{ username: string }> }
+type Props = { params: Promise<{ username: string }>; searchParams: Promise<{ tab?: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params
@@ -32,14 +33,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${user.displayName} (@${user.username}) — frendr` }
 }
 
-export default async function ProfilePage({ params }: Props) {
-  const { username } = await params
+export default async function ProfilePage({ params, searchParams }: Props) {
+  const [{ username }, { tab: tabParam }] = await Promise.all([params, searchParams])
+  const activeTab = tabParam === "recess" ? "recess" : "videos"
   const { userId: clerkId } = await auth()
 
   const user = await prisma.user.findUnique({
     where: { username },
     include: {
-      videos:   { orderBy: [{ position: "asc" }, { createdAt: "desc" }], take: 48 },
+      videos:   { orderBy: [{ position: "asc" }, { createdAt: "desc" }], take: 96 },
       _count:   { select: { followers: true, following: true } },
     },
   })
@@ -104,9 +106,13 @@ export default async function ProfilePage({ params }: Props) {
     ? (user.videos.find((v) => v.id === user.pinnedVideoId) ?? null)
     : null
 
-  const gridVideos = pinnedVideo
+  const allGridVideos = pinnedVideo
     ? user.videos.filter((v) => v.id !== user.pinnedVideoId)
     : user.videos
+
+  const portfolioVideos = allGridVideos.filter((v) => v.videoType !== "RECESS")
+  const recessVideos = allGridVideos.filter((v) => v.videoType === "RECESS")
+  const gridVideos = activeTab === "recess" ? recessVideos : portfolioVideos
 
   return (
     <div className="min-h-screen bg-white">
@@ -276,9 +282,28 @@ export default async function ProfilePage({ params }: Props) {
               <div className="flex gap-6">
                 <Link
                   href={`/${username}`}
-                  className="pb-3 font-sans font-medium text-sm border-b-2 border-core-black text-core-black"
+                  className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
+                    activeTab === "videos"
+                      ? "border-core-black text-core-black"
+                      : "border-transparent text-foreground/40 hover:text-foreground/70"
+                  }`}
                 >
                   Videos
+                </Link>
+                <Link
+                  href={`/${username}?tab=recess`}
+                  className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
+                    activeTab === "recess"
+                      ? "border-core-black text-core-black"
+                      : "border-transparent text-foreground/40 hover:text-foreground/70"
+                  }`}
+                >
+                  Recess
+                  {recessVideos.length > 0 && (
+                    <span className={`ml-1.5 font-normal ${activeTab === "recess" ? "text-foreground/40" : "text-foreground/30"}`}>
+                      ({recessVideos.length})
+                    </span>
+                  )}
                 </Link>
                 <Link
                   href={`/${username}/playlists`}
@@ -289,64 +314,85 @@ export default async function ProfilePage({ params }: Props) {
               </div>
             </div>
 
-            {/* Pinned video slot */}
-            {pinnedVideo ? (
-              <PinnedVideo video={pinnedVideo} isOwn={isOwn} />
-            ) : isOwn && user.videos.length > 0 ? (
-              <div className="mb-6 flex items-center gap-2 rounded-xl border border-dashed border-border px-4 py-3">
-                <p className="font-sans text-xs text-foreground/40">
-                  Hover any video and click the pin icon to feature it here.
-                </p>
-              </div>
-            ) : null}
-
-            {/* All videos heading */}
-            <div className="mb-4">
-              <h2 className="font-sans font-bold text-sm text-core-black">
-                All Videos
-                {gridVideos.length > 0 && (
-                  <span className="ml-2 font-normal text-foreground/40">({gridVideos.length})</span>
-                )}
-              </h2>
-              {isOwn && gridVideos.length > 1 && (
-                <p className="font-sans text-xs text-foreground/30 mt-0.5">Drag to reorder</p>
-              )}
-            </div>
-
-            {/* Video grid or colour placeholders */}
-            {gridVideos.length === 0 && !pinnedVideo ? (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
-                {PLACEHOLDER_CARDS.map((card) => (
-                  <div key={card.id}>
-                    <div className={`mb-2 aspect-video overflow-hidden rounded-xl ${card.bg}`} />
-                    <div className="h-3 w-3/4 rounded-full bg-foreground/10" />
-                    <div className="mt-1.5 h-2.5 w-1/3 rounded-full bg-foreground/6" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <ProfileVideoGrid
-                initialVideos={gridVideos.map((v) => ({
+            {/* Recess tab */}
+            {activeTab === "recess" ? (
+              <RecessProfileGrid
+                videos={recessVideos.map((v) => ({
                   id: v.id,
                   title: v.title,
                   thumbnailUrl: v.thumbnailUrl,
                   streamId: v.streamId,
                   externalUrl: v.externalUrl,
-                  featured: v.featured,
                   tags: v.tags,
-                  createdAt: v.createdAt,
                   user: {
                     username: user.username,
                     displayName: user.displayName,
                     avatarUrl: user.avatarUrl,
                   },
                 }))}
-                pinnedVideoId={user.pinnedVideoId}
-                username={user.username}
-                displayName={user.displayName}
-                avatarUrl={user.avatarUrl}
-                isOwn={isOwn}
               />
+            ) : (
+              <>
+                {/* Pinned video slot */}
+                {pinnedVideo ? (
+                  <PinnedVideo video={pinnedVideo} isOwn={isOwn} />
+                ) : isOwn && portfolioVideos.length > 0 ? (
+                  <div className="mb-6 flex items-center gap-2 rounded-xl border border-dashed border-border px-4 py-3">
+                    <p className="font-sans text-xs text-foreground/40">
+                      Hover any video and click the pin icon to feature it here.
+                    </p>
+                  </div>
+                ) : null}
+
+                {/* All videos heading */}
+                <div className="mb-4">
+                  <h2 className="font-sans font-bold text-sm text-core-black">
+                    All Videos
+                    {portfolioVideos.length > 0 && (
+                      <span className="ml-2 font-normal text-foreground/40">({portfolioVideos.length})</span>
+                    )}
+                  </h2>
+                  {isOwn && portfolioVideos.length > 1 && (
+                    <p className="font-sans text-xs text-foreground/30 mt-0.5">Drag to reorder</p>
+                  )}
+                </div>
+
+                {/* Video grid or colour placeholders */}
+                {portfolioVideos.length === 0 && !pinnedVideo ? (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
+                    {PLACEHOLDER_CARDS.map((card) => (
+                      <div key={card.id}>
+                        <div className={`mb-2 aspect-video overflow-hidden rounded-xl ${card.bg}`} />
+                        <div className="h-3 w-3/4 rounded-full bg-foreground/10" />
+                        <div className="mt-1.5 h-2.5 w-1/3 rounded-full bg-foreground/6" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <ProfileVideoGrid
+                    initialVideos={portfolioVideos.map((v) => ({
+                      id: v.id,
+                      title: v.title,
+                      thumbnailUrl: v.thumbnailUrl,
+                      streamId: v.streamId,
+                      externalUrl: v.externalUrl,
+                      featured: v.featured,
+                      tags: v.tags,
+                      createdAt: v.createdAt,
+                      user: {
+                        username: user.username,
+                        displayName: user.displayName,
+                        avatarUrl: user.avatarUrl,
+                      },
+                    }))}
+                    pinnedVideoId={user.pinnedVideoId}
+                    username={user.username}
+                    displayName={user.displayName}
+                    avatarUrl={user.avatarUrl}
+                    isOwn={isOwn}
+                  />
+                )}
+              </>
             )}
           </main>
 
