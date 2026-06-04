@@ -310,11 +310,6 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   }`}
                 >
                   Recess
-                  {recessVideos.length > 0 && (
-                    <span className={`ml-1.5 font-normal ${activeTab === "recess" ? "text-foreground/40" : "text-foreground/30"}`}>
-                      ({recessVideos.length})
-                    </span>
-                  )}
                 </Link>
                 <Link
                   href={`/${username}?tab=interactive`}
@@ -325,11 +320,6 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   }`}
                 >
                   Interactive
-                  {riveThreads.length > 0 && (
-                    <span className={`ml-1.5 font-normal ${activeTab === "interactive" ? "text-foreground/40" : "text-foreground/30"}`}>
-                      ({riveThreads.length})
-                    </span>
-                  )}
                 </Link>
                 <Link
                   href={`/${username}/playlists`}
