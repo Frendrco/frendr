@@ -152,14 +152,11 @@ export default async function VideoPage({ params }: Props) {
           {/* ── Main column ── */}
           <div className="min-w-0 flex-1">
 
-            {/* Title row */}
-            <div className="flex items-start justify-between gap-4">
-              <h1 className="font-sans font-bold text-xl md:text-2xl text-core-black leading-snug">
-                {video.title}
-              </h1>
+            {/* Title + action buttons — on mobile: centered column, buttons first; on md+: row with title left, buttons right */}
+            <div className="flex flex-col items-center gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
 
-              {/* Action buttons */}
-              <div className="flex shrink-0 items-center gap-1">
+              {/* Action buttons — first on mobile, last on desktop */}
+              <div className="flex shrink-0 items-center gap-1 order-first md:order-last">
                 {isAdmin && (
                   <FeatureButton videoId={video.id} initialFeatured={video.featured} />
                 )}
@@ -222,10 +219,15 @@ export default async function VideoPage({ params }: Props) {
                   </button>
                 )}
               </div>
+
+              {/* Title — second on mobile, first on desktop */}
+              <h1 className="font-sans font-bold text-xl md:text-2xl text-core-black leading-snug text-center md:text-left order-last md:order-first">
+                {video.title}
+              </h1>
             </div>
 
             {/* Creator row */}
-            <div className="mt-2 flex items-center gap-3">
+            <div className="mt-2 flex items-center justify-center md:justify-start gap-3">
               <Link href={`/${video.user.username}`} className="inline-flex items-center gap-2 hover:opacity-70 transition-opacity min-w-0">
                 <div className={`h-5 w-5 shrink-0 rounded-full overflow-hidden flex items-center justify-center ${video.user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                   {video.user.avatarUrl ? (
@@ -247,7 +249,7 @@ export default async function VideoPage({ params }: Props) {
             </div>
 
             {/* Meta row */}
-            <div className="mt-2 flex items-center gap-3 text-foreground/40">
+            <div className="mt-2 flex items-center justify-center md:justify-start gap-3 text-foreground/40">
               <span className="flex items-center gap-1 font-sans text-xs">
                 <Eye size={12} /> {video.viewCount.toLocaleString()} {video.viewCount === 1 ? "view" : "views"}
               </span>
@@ -257,7 +259,7 @@ export default async function VideoPage({ params }: Props) {
 
             {/* Tags */}
             {video.tags.length > 0 && (
-              <div className="mt-5 flex flex-wrap gap-1.5">
+              <div className="mt-5 flex flex-wrap justify-center md:justify-start gap-1.5">
                 {video.tags.map((tag) => (
                   <span
                     key={tag}
