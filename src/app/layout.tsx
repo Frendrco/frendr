@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   },
   description:
     "The new home for creative video. Discover, share, and showcase your best work.",
+  themeColor: "#ffffff",
 }
 
 export default function RootLayout({
@@ -26,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning style={{ backgroundColor: "#ffffff" }}>
         <head>
           <link rel="preload" href="/fonts/205TF-Louize-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
           <link rel="preload" href="/fonts/205TF-Louize-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
