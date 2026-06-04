@@ -17,6 +17,7 @@ import { CONTENT_TAGS, TOOL_TAGS, VIDEO_TAGS } from "@/lib/categories"
 const MAX_CATEGORIES = 3
 const MAX_TAGS = 5
 const MAX_RECESS_TOOLS = 3
+const MAX_FILE_BYTES = 200 * 1024 * 1024 // 200 MB
 const DESC_MAX = 500
 const FRAME_COUNT = 6
 
@@ -300,12 +301,14 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
   function handleVideoDrop(e: React.DragEvent) {
     e.preventDefault(); setDragging(false)
     const f = e.dataTransfer.files[0]
-    if (f?.type === "video/mp4") setFile(f)
+    if (f?.type === "video/mp4" && f.size <= MAX_FILE_BYTES) setFile(f)
+    else if (f?.size > MAX_FILE_BYTES) alert("File exceeds the 200 MB limit.")
   }
 
   function handleVideoInput(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
-    if (f?.type === "video/mp4") setFile(f)
+    if (f?.type === "video/mp4" && f.size <= MAX_FILE_BYTES) setFile(f)
+    else if (f && f.size > MAX_FILE_BYTES) alert("File exceeds the 200 MB limit.")
   }
 
   function handleThumbDrop(e: React.DragEvent) {
@@ -955,7 +958,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       </div>
                     )}
                   </div>
-                  <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 only · up to 2 GB</p>
+                  <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 only · up to 200 MB</p>
                 </div>
 
                 {recessMetadataFields}
@@ -1042,7 +1045,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                           </div>
                         )}
                       </div>
-                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 only · up to 2 GB</p>
+                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 only · up to 200 MB</p>
                     </div>
 
                     {metadataFields}
