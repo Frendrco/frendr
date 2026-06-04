@@ -13,6 +13,7 @@ export function NewEventForm() {
   const [location, setLocation] = useState("")
   const [onlineUrl, setOnlineUrl] = useState("")
   const [maxAttendees, setMaxAttendees] = useState("")
+  const [lgbtqFriendly, setLgbtqFriendly] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -34,6 +35,7 @@ export function NewEventForm() {
         location: isOnline ? null : location,
         onlineUrl: isOnline ? onlineUrl : null,
         maxAttendees: maxAttendees || null,
+        lgbtqFriendly,
       }),
     })
 
@@ -112,6 +114,16 @@ export function NewEventForm() {
           required
         />
       </div>
+
+      <label className="flex items-center gap-3 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={lgbtqFriendly}
+          onChange={e => setLgbtqFriendly(e.target.checked)}
+          className="h-4 w-4 rounded border-border accent-spring-green"
+        />
+        <span className="font-sans text-sm text-foreground/70">🏳️‍🌈 This is an LGBTQ+ friendly event</span>
+      </label>
 
       {error && <p className="font-sans text-xs text-red-500">{error}</p>}
 

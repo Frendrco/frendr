@@ -99,6 +99,9 @@ export default async function EventsPage() {
                               <Users size={11} /> {event._count.rsvps} / {event.maxAttendees} spots
                             </span>
                           )}
+                          {event.lgbtqFriendly && (
+                            <span className="font-sans text-xs text-foreground/60">🏳️‍🌈 LGBTQ+ friendly</span>
+                          )}
                         </div>
 
                         <p className="mt-3 font-sans text-xs text-foreground/50 line-clamp-2 leading-relaxed">

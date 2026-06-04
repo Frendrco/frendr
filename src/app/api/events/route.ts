@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
-  const { title, description, date, location, onlineUrl, maxAttendees } = await req.json()
+  const { title, description, date, location, onlineUrl, maxAttendees, lgbtqFriendly } = await req.json()
   if (!title?.trim() || !description?.trim() || !date) {
     return NextResponse.json({ error: "Required fields missing" }, { status: 400 })
   }
@@ -22,6 +22,7 @@ export async function POST(req: Request) {
       location: location?.trim() || null,
       onlineUrl: onlineUrl?.trim() || null,
       maxAttendees: maxAttendees ? parseInt(maxAttendees) : null,
+      lgbtqFriendly: lgbtqFriendly === true,
       userId: user.id,
     },
   })

@@ -329,8 +329,9 @@ model Event {
   date         DateTime
   location     String?
   onlineUrl    String?
-  maxAttendees Int?
-  userId       String
+  maxAttendees  Int?
+  lgbtqFriendly Boolean @default(false)
+  userId        String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
