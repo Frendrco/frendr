@@ -312,7 +312,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {!isSearching && (
           <section>
             <h2 className="mb-4 font-sans font-bold text-base text-core-black">Frendr School</h2>
-            <div className="flex items-center justify-between gap-6 rounded-2xl bg-sunny-yellow px-8 py-10">
+            <div className="flex flex-col gap-4 rounded-2xl bg-sunny-yellow px-8 py-10 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
               <p className="font-sans text-xl text-core-black">
                 <span className="font-bold">Tutorials, tips, and courses.</span>{" "}
                 Learn from the community — plus the best resources from across the web.
