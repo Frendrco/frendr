@@ -136,7 +136,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     <div className="min-h-screen bg-white">
 
       {/* ── Cover image ──────────────────────────────────────── */}
-      <CoverImage initialCoverUrl={user.coverImageUrl} isOwn={isOwn} />
+      <CoverImage initialCoverUrl={user.coverImageUrl} initialCoverVideoUrl={user.coverVideoUrl} isOwn={isOwn} />
 
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 pb-10">
 
