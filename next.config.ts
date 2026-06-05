@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
       { hostname: "img.youtube.com"        },
       { hostname: "i.vimeocdn.com"         },
       { hostname: "*.supabase.co"          },
+      { hostname: "public.rive.app"        },
     ],
   },
 };
