@@ -308,6 +308,21 @@ export default async function SearchPage({ searchParams }: Props) {
           </section>
         )}
 
+        {/* ── Frendr School banner (browse only) ── */}
+        {!isSearching && (
+          <section>
+            <h2 className="mb-4 font-sans font-bold text-base text-core-black">Frendr School</h2>
+            <div className="flex items-center justify-between gap-6 rounded-2xl bg-sunny-yellow px-8 py-10">
+              <p className="font-sans font-bold text-xl text-core-black">
+                Tutorials, tips, and courses from the motion design community
+              </p>
+              <span className="shrink-0 rounded-full border border-core-black/20 px-4 py-1.5 font-sans font-medium text-sm text-core-black/60">
+                Coming soon
+              </span>
+            </div>
+          </section>
+        )}
+
         {/* ── Recess section (browse only, not when in recess view) ── */}
         {!isSearching && !isRecessView && (
           <section>
