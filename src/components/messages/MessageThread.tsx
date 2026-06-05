@@ -182,8 +182,8 @@ export function MessageThread({ messages, currentUserId, onDelete, scrollRef }: 
                     <div
                       onClick={(e) => e.stopPropagation()}
                       className={cn(
-                        "absolute bottom-full mb-1.5 z-20 flex items-center gap-1 rounded-full border border-border bg-white px-2 py-1.5 shadow-md",
-                        isOwn ? "right-0" : "left-0"
+                        "absolute top-1/2 -translate-y-1/2 z-20 flex items-center gap-1 rounded-full border border-border bg-white px-2 py-1.5 shadow-md",
+                        isOwn ? "right-full mr-10" : "left-full ml-10"
                       )}
                     >
                       {QUICK_REACTIONS.map((emoji) => {
