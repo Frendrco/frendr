@@ -22,9 +22,11 @@ export function AdminDeleteButton({ endpoint, label, redirectTo }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleDelete = async () => {
     setLoading(true)
+    setError(null)
     try {
       const res = await fetch(endpoint, { method: "DELETE" })
       if (res.ok) {
@@ -34,6 +36,9 @@ export function AdminDeleteButton({ endpoint, label, redirectTo }: Props) {
         } else {
           router.refresh()
         }
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error ?? "Something went wrong.")
       }
     } finally {
       setLoading(false)
@@ -58,6 +63,9 @@ export function AdminDeleteButton({ endpoint, label, redirectTo }: Props) {
               This action is permanent and cannot be undone.
             </DialogDescription>
           </DialogHeader>
+          {error && (
+            <p className="font-sans text-xs text-red-500 px-1">{error}</p>
+          )}
           <DialogFooter className="gap-2">
             <button
               onClick={() => setOpen(false)}
