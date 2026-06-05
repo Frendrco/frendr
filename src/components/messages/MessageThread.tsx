@@ -151,7 +151,7 @@ export function MessageThread({ messages, currentUserId, onDelete, scrollRef }: 
                 <div className="relative">
                   <div
                     className={cn(
-                      "max-w-xs rounded-2xl px-3.5 py-2 font-sans text-sm leading-relaxed",
+                      "max-w-xs rounded-2xl px-3.5 py-2 font-sans text-sm leading-relaxed whitespace-pre-wrap break-words",
                       isOwn
                         ? "bg-core-black text-white rounded-br-sm"
                         : "bg-foreground/8 text-foreground rounded-bl-sm"
