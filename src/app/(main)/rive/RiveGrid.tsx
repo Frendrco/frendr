@@ -7,6 +7,7 @@ type Thread = {
   id:        string
   title:     string
   riveUrls:  string[]
+  imageUrls: string[]
   voteCount: number
   createdAt: Date | string
   userId:    string
@@ -56,6 +57,7 @@ export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; curren
               id={t.id}
               title={t.title}
               riveUrl={t.riveUrls[0]}
+              previewUrl={t.imageUrls[0] ?? null}
               voteCount={t.voteCount}
               commentCount={t._count.comments}
               user={t.user}

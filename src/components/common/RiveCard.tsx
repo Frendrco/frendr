@@ -12,6 +12,7 @@ type Props = {
   id:           string
   title:        string
   riveUrl:      string
+  previewUrl?:  string | null
   voteCount:    number
   commentCount: number
   isOwner?:     boolean
@@ -22,7 +23,7 @@ type Props = {
   }
 }
 
-export function RiveCard({ id, title, riveUrl, voteCount, commentCount, isOwner, user }: Props) {
+export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCount, isOwner, user }: Props) {
   const router = useRouter()
   const [loadState, setLoadState] = useState<LoadState>("idle")
   const [deleting, setDeleting] = useState(false)
@@ -50,11 +51,24 @@ export function RiveCard({ id, title, riveUrl, voteCount, commentCount, isOwner,
         className="relative aspect-[4/3] bg-mist-grey cursor-crosshair"
         onClick={handleClick}
       >
-        {/* Play icon — shown while idle */}
+        {/* Still frame + play overlay — shown while idle */}
         {loadState === "idle" && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-core-black/8 transition-transform hover:scale-110">
-              <Play size={18} className="text-core-black/30 translate-x-0.5" />
+          <div className="absolute inset-0 group/card">
+            {previewUrl ? (
+              <Image
+                src={previewUrl}
+                alt={title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
+            ) : (
+              <div className="h-full w-full bg-mist-grey" />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-core-black/0 group-hover/card:bg-core-black/20 transition-colors duration-200">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
+                <Play size={18} className="text-core-black translate-x-0.5" />
+              </div>
             </div>
           </div>
         )}

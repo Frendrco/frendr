@@ -3,6 +3,24 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 
+async function fetchRiveOGImage(riveUrl: string): Promise<string | null> {
+  try {
+    const shareUrl = riveUrl.replace(/\/embed$/, "")
+    const res = await fetch(shareUrl, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(5000),
+    })
+    if (!res.ok) return null
+    const html = await res.text()
+    const match =
+      html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/) ??
+      html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:image"/)
+    return match?.[1] ?? null
+  } catch {
+    return null
+  }
+}
+
 const threadSchema = z.object({
   title: z.string().min(1).max(150),
   body: z.string().max(10000).optional(),
@@ -46,13 +64,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Title and body are required" }, { status: 400 })
   }
 
+  // Auto-fetch OG thumbnail from rive.app for Rive World posts
+  let resolvedImageUrls = Array.isArray(imageUrls) ? imageUrls.filter(Boolean) : []
+  if (source === "rive_world" && riveUrls?.[0] && resolvedImageUrls.length === 0) {
+    const ogImage = await fetchRiveOGImage(riveUrls[0])
+    if (ogImage) resolvedImageUrls = [ogImage]
+  }
+
   const thread = await prisma.thread.create({
     data: {
       title: title.trim(),
       body: body?.trim() ?? "",
       tags: Array.isArray(tags) ? tags : [],
       videoUrl: videoUrl?.trim() || null,
-      imageUrls: Array.isArray(imageUrls) ? imageUrls.filter(Boolean) : [],
+      imageUrls: resolvedImageUrls,
       riveUrls: Array.isArray(riveUrls) ? riveUrls.filter(Boolean) : [],
       source: source === "rive_world" ? "rive_world" : "community",
       userId: user.id,
