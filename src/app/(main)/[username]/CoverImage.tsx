@@ -82,13 +82,13 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
 
       {isOwn && (
         <div className="absolute top-3 right-3 z-10 flex gap-1.5">
-          <label className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}>
-            <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleImageFile} />
+          <label className={`relative inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}>
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageFile} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             <Camera size={12} />
             {uploading ? "Uploading…" : "Photo"}
           </label>
-          <label className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}>
-            <input type="file" accept="video/mp4" className="hidden" onChange={handleVideoFile} />
+          <label className={`relative inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}>
+            <input type="file" accept="video/mp4" onChange={handleVideoFile} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
             <Film size={12} />
             {uploadingVideo ? "Uploading…" : "Video"}
           </label>
