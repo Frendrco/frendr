@@ -74,14 +74,14 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
           loop
           muted
           playsInline
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover pointer-events-none"
         />
       ) : coverUrl ? (
-        <Image src={coverUrl} alt="Cover" fill sizes="100vw" className="object-cover" />
+        <Image src={coverUrl} alt="Cover" fill sizes="100vw" className="object-cover pointer-events-none" />
       ) : null}
 
       {isOwn && (
-        <div className="absolute top-3 right-3 flex gap-1.5">
+        <div className="absolute top-3 right-3 z-10 flex gap-1.5">
           <label className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}>
             <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleImageFile} />
             <Camera size={12} />
