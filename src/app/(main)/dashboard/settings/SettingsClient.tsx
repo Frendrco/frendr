@@ -201,6 +201,9 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
           behance:   behance   || null,
           other:     other     || null,
           tags,
+          // Preserve the selected default avatar — without this, the server
+          // overwrites avatarUrl with the Clerk image on every save
+          ...(currentAvatarUrl?.startsWith("/images/ava-") && { customAvatarUrl: currentAvatarUrl }),
         }),
       })
       if (res.status === 409) {
