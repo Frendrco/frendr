@@ -56,16 +56,19 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
     form.append("file", file)
     fetch("/api/users/upload-cover-video", { method: "POST", body: form })
       .then((r) => r.json())
-      .then(async (data: { coverUrl?: string }) => {
-        if (data.coverUrl) {
-          await fetch("/api/users", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ coverVideoUrl: data.coverUrl }),
-          })
-          setCoverVideoUrl(data.coverUrl)
+      .then(async (data: { coverUrl?: string; error?: string }) => {
+        if (!data.coverUrl) {
+          alert(data.error ?? "Video upload failed")
+          return
         }
+        await fetch("/api/users", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ coverVideoUrl: data.coverUrl }),
+        })
+        setCoverVideoUrl(data.coverUrl)
       })
+      .catch(() => alert("Video upload failed"))
       .finally(() => setUploadingVideo(false))
   }
 
@@ -111,7 +114,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
                   Photo
                 </label>
                 <label className="relative flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors border-t border-white/10">
-                  <input type="file" accept="video/mp4" onChange={handleVideoChange} className="absolute opacity-0 w-px h-px" />
+                  <input type="file" accept="video/*" onChange={handleVideoChange} className="absolute opacity-0 w-px h-px" />
                   <Film size={13} />
                   Video
                 </label>

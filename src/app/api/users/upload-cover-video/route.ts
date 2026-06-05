@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
   const formData = await req.formData()
   const file = formData.get("file") as File | null
   if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 })
-  if (file.type !== "video/mp4") {
-    return NextResponse.json({ error: "Only MP4 is allowed" }, { status: 400 })
+  if (!file.type.startsWith("video/")) {
+    return NextResponse.json({ error: "Only video files are allowed" }, { status: 400 })
   }
   if (file.size > MAX_BYTES) {
     return NextResponse.json({ error: "Video must be under 5 MB" }, { status: 400 })
@@ -28,7 +28,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Storage is not configured" }, { status: 503 })
   }
 
-  const key = `users/cover-videos/${clerkId}-${Date.now()}.mp4`
+  const ext = file.type.split("/")[1]?.replace("quicktime", "mov") ?? "mp4"
+  const key = `users/cover-videos/${clerkId}-${Date.now()}.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
   const r2 = new S3Client({
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
       Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
       Key: key,
       Body: buffer,
-      ContentType: "video/mp4",
+      ContentType: file.type,
     })
   )
 
