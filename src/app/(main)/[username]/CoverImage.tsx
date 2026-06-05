@@ -16,6 +16,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
   const [uploading,      setUploading]      = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [menuOpen,       setMenuOpen]       = useState(false)
+  const [error,          setError]          = useState<string | null>(null)
 
   const busy = uploading || uploadingVideo
 
@@ -48,9 +49,10 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
     setMenuOpen(false)
     if (!file) return
     if (file.size > 5 * 1024 * 1024) {
-      alert("Video must be under 5 MB. Aim for 2-3 MB — keep it 10-15 seconds, H.264/MP4.")
+      setError("Video is too large — must be under 5 MB")
       return
     }
+    setError(null)
     setUploadingVideo(true)
     const form = new FormData()
     form.append("file", file)
@@ -58,7 +60,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
       .then((r) => r.json())
       .then(async (data: { coverUrl?: string; error?: string }) => {
         if (!data.coverUrl) {
-          alert(data.error ?? "Video upload failed")
+          setError(data.error ?? "Video upload failed")
           return
         }
         await fetch("/api/users", {
@@ -68,7 +70,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
         })
         setCoverVideoUrl(data.coverUrl)
       })
-      .catch(() => alert("Video upload failed"))
+      .catch(() => setError("Video upload failed"))
       .finally(() => setUploadingVideo(false))
   }
 
@@ -103,6 +105,12 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
               <Pencil size={12} />
               {uploading || uploadingVideo ? "Uploading…" : "Edit cover"}
             </button>
+
+            {error && (
+              <p className="rounded-lg bg-black/70 px-3 py-1.5 font-sans text-xs text-red-400 backdrop-blur">
+                {error}
+              </p>
+            )}
 
             {menuOpen && (
               <div className="flex flex-col overflow-hidden rounded-lg border border-white/20 bg-black/70 backdrop-blur text-xs text-white font-sans shadow-lg">
