@@ -19,7 +19,7 @@ const SKILLS = [
   "2D Animation", "3D Animation", "3D Type", "Typography",
   "Branding", "Commercial", "Music Video", "Short Film", "Film",
   "Loop", "Experimental", "Stop Motion", "Sound",
-  "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Moho", "Toon Boom",
+  "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Moho", "Toon Boom", "Rive",
 ]
 const MAX_SKILLS = 10
 const BIO_MAX    = 150
