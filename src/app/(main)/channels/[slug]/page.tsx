@@ -9,6 +9,7 @@ import { ChannelFollowButton } from "./ChannelFollowButton"
 import { AddVideoToChannelButton } from "./AddVideoToChannelButton"
 import { ChannelSettings } from "./ChannelSettings"
 import { ChannelFeatureButton } from "./ChannelFeatureButton"
+import { RemoveFromChannelButton } from "./RemoveFromChannelButton"
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ token?: string }> }
 
@@ -171,7 +172,12 @@ export default async function ChannelPage({ params, searchParams }: Props) {
         ) : (
           <div className="grid grid-cols-2 gap-4 pb-16 sm:grid-cols-3 lg:grid-cols-4">
             {videos.map((video) => (
-              <VideoCard key={video.id} video={video} showTimestamp />
+              <VideoCard
+                key={video.id}
+                video={video}
+                showTimestamp
+                actionsSlot={canManage ? <RemoveFromChannelButton channelId={channel.id} videoId={video.id} /> : undefined}
+              />
             ))}
           </div>
         )}

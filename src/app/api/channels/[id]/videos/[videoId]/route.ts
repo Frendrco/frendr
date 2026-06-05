@@ -19,7 +19,10 @@ export async function DELETE(
 
   const isOwner = channel.userId === user.id
   const isAdmin = user.isAdmin
-  if (!isOwner && !isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  const isChannelAdmin = !isOwner && !isAdmin
+    ? !!(await prisma.channelAdmin.findUnique({ where: { channelId_userId: { channelId, userId: user.id } } }))
+    : false
+  if (!isOwner && !isAdmin && !isChannelAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   await prisma.channelVideo.deleteMany({ where: { channelId, videoId } })
   return NextResponse.json({ ok: true })
