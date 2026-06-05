@@ -105,13 +105,13 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
               <div className="flex flex-col overflow-hidden rounded-lg border border-white/20 bg-black/70 backdrop-blur text-xs text-white font-sans shadow-lg">
                 {/* Input is a child of label — browser activates it natively on label click,
                     no JS .click() and no clip/sr-only issues */}
-                <label className="flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors">
-                  <input hidden type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} />
+                <label className="relative flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors">
+                  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} className="absolute opacity-0 w-px h-px" />
                   <Camera size={13} />
                   Photo
                 </label>
-                <label className="flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors border-t border-white/10">
-                  <input hidden type="file" accept="video/mp4" onChange={handleVideoChange} />
+                <label className="relative flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors border-t border-white/10">
+                  <input type="file" accept="video/mp4" onChange={handleVideoChange} className="absolute opacity-0 w-px h-px" />
                   <Film size={13} />
                   Video
                 </label>
