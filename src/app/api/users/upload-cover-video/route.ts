@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
 
-const MAX_BYTES = 50 * 1024 * 1024 // 50 MB
+const MAX_BYTES = 5 * 1024 * 1024 // 5 MB
 
 export async function POST(req: NextRequest) {
   const { userId: clerkId } = await auth()
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Only MP4 is allowed" }, { status: 400 })
   }
   if (file.size > MAX_BYTES) {
-    return NextResponse.json({ error: "Video must be under 50 MB" }, { status: 400 })
+    return NextResponse.json({ error: "Video must be under 5 MB" }, { status: 400 })
   }
 
   if (
