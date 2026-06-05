@@ -49,7 +49,7 @@ export function AdminDeleteButton({ endpoint, label, redirectTo }: Props) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-foreground/30 hover:text-red-500 hover:bg-red-50 transition-colors"
+        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors"
         title="Delete"
       >
         <Trash2 size={13} />
