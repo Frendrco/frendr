@@ -90,15 +90,7 @@ export default function DownloadPage() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <InstallButton />
-            <Link
-              href="/"
-              className="inline-flex h-11 items-center px-8 rounded-full border border-border font-sans font-medium text-sm text-foreground/60 transition-colors hover:border-foreground/30 hover:text-foreground"
-            >
-              Open in browser
-            </Link>
-          </div>
+          <InstallButton />
 
           <p className="font-sans text-xs text-foreground/40">
             Free forever · No app store required · Works on Mac, Windows, iOS, Android
@@ -125,7 +117,7 @@ export default function DownloadPage() {
         </section>
 
         {/* ── Platform instructions ── */}
-        <section className="flex flex-col gap-6">
+        <section id="how-to-install" className="flex flex-col gap-6">
           <div>
             <h2 className="font-sans font-bold text-xl text-core-black">How to install</h2>
             <p className="mt-1 font-sans text-sm text-foreground/50">Pick your device below.</p>

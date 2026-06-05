@@ -12,6 +12,10 @@ export function InstallButton() {
   const [installed, setInstalled] = useState(false)
 
   useEffect(() => {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      setInstalled(true)
+      return
+    }
     function onPrompt(e: Event) {
       e.preventDefault()
       setPrompt(e as BeforeInstallPromptEvent)
@@ -29,27 +33,28 @@ export function InstallButton() {
   }, [])
 
   async function handleInstall() {
-    if (!prompt) return
-    await prompt.prompt()
-    const { outcome } = await prompt.userChoice
-    if (outcome === "accepted") setInstalled(true)
-    setPrompt(null)
+    if (prompt) {
+      await prompt.prompt()
+      const { outcome } = await prompt.userChoice
+      if (outcome === "accepted") setInstalled(true)
+      setPrompt(null)
+    } else {
+      document.getElementById("how-to-install")?.scrollIntoView({ behavior: "smooth" })
+    }
   }
 
   if (installed) {
     return (
       <div className="inline-flex h-11 items-center gap-2 rounded-full bg-spring-green px-8 font-sans font-medium text-sm text-core-black">
-        Installed ✓
+        Already installed ✓
       </div>
     )
   }
 
-  if (!prompt) return null
-
   return (
     <button
       onClick={handleInstall}
-      className="inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-colors hover:bg-spring-green/90"
+      className="inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-transform hover:scale-105"
     >
       Install Frendr
     </button>

@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Play, ChevronUp, MessageSquare, Trash2 } from "lucide-react"
 
-type LoadState = "idle" | "preloading" | "loading" | "ready"
+type LoadState = "idle" | "loading" | "ready"
 
 type Props = {
   id:           string
@@ -26,31 +26,9 @@ export function RiveCard({ id, title, riveUrl, voteCount, commentCount, isOwner,
   const router = useRouter()
   const [loadState, setLoadState] = useState<LoadState>("idle")
   const [deleting, setDeleting] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const el = cardRef.current
-    if (!el) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setLoadState((prev) => prev === "idle" ? "preloading" : prev)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: "200px" }
-    )
-
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  function handleMouseEnter() {
-    setLoadState((prev) => {
-      if (prev === "ready") return prev
-      return "loading"
-    })
+  function handleClick() {
+    if (loadState === "idle") setLoadState("loading")
   }
 
   function handleIframeLoad() {
@@ -69,27 +47,26 @@ export function RiveCard({ id, title, riveUrl, voteCount, commentCount, isOwner,
     <div className="rounded-2xl border border-border overflow-hidden bg-white flex flex-col">
       {/* Iframe / placeholder */}
       <div
-        ref={cardRef}
         className="relative aspect-[4/3] bg-mist-grey cursor-crosshair"
-        onMouseEnter={handleMouseEnter}
+        onClick={handleClick}
       >
-        {/* Play icon — shown while idle or preloading */}
-        {(loadState === "idle" || loadState === "preloading") && (
+        {/* Play icon — shown while idle */}
+        {loadState === "idle" && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-core-black/8 transition-transform group-hover:scale-110">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-core-black/8 transition-transform hover:scale-110">
               <Play size={18} className="text-core-black/30 translate-x-0.5" />
             </div>
           </div>
         )}
 
-        {/* Spinner — shown while loading (hovered but iframe not ready) */}
+        {/* Spinner — shown while iframe is loading */}
         {loadState === "loading" && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="h-7 w-7 rounded-full border-2 border-core-black/10 border-t-core-black/40 animate-spin" />
           </div>
         )}
 
-        {/* Iframe — mounted once preloading starts, revealed on ready */}
+        {/* Iframe — mounted on click, revealed when ready */}
         {loadState !== "idle" && (
           <iframe
             src={riveUrl}

@@ -34,7 +34,7 @@ export default async function RiveWorldPage() {
           <div className="text-center md:text-left">
             <h1 className="display-sm text-core-black">Rive World</h1>
             <p className="mt-2 font-sans text-sm text-core-black/60">
-              Interactive work from the community. Hover to play.
+              Interactive work from the community. Click to play.
             </p>
           </div>
           <ShareRiveButton />
