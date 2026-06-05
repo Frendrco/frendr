@@ -1,9 +1,16 @@
+'use client'
+
+import { useState, useRef, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Play, Sparkles } from "lucide-react"
+import type Hls from 'hls.js'
 import { timeAgo } from "@/lib/utils"
 import { AddToPlaylistButton } from "./AddToPlaylistButton"
 import { AddToChannelButton } from "./AddToChannelButton"
+
+// Cached after the first hover — shared across all card instances
+let HlsClass: typeof Hls | null = null
 
 export type VideoCardData = {
   id: string
@@ -30,7 +37,6 @@ type Props = {
   actionsSlot?: React.ReactNode
 }
 
-
 function cfThumb(url: string | null): string | null {
   if (!url || !url.includes("videodelivery.net")) return url
   if (url.includes("width=")) return url
@@ -43,8 +49,72 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
   const rounded = roundedSize === "2xl" ? "rounded-2xl" : "rounded-xl"
 
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const hlsRef = useRef<Hls | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const cancelledRef = useRef(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+
+  const handleMouseEnter = useCallback(async () => {
+    if (!video.streamId) return
+    cancelledRef.current = false
+    debounceRef.current = setTimeout(async () => {
+      const videoEl = videoRef.current
+      if (!videoEl || cancelledRef.current) return
+
+      const src = `https://videodelivery.net/${video.streamId}/manifest/video.m3u8`
+
+      const onCanPlay = () => setIsPlaying(true)
+
+      // Native HLS — Safari
+      if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+        videoEl.src = src
+        videoEl.addEventListener('canplay', onCanPlay, { once: true })
+        videoEl.play().catch(() => {})
+        return
+      }
+
+      // HLS.js — Chrome / Firefox (lazy-loaded once, then cached)
+      if (!HlsClass) {
+        const mod = await import('hls.js')
+        HlsClass = mod.default
+      }
+      // Guard: user may have left during the async import
+      if (cancelledRef.current || !HlsClass.isSupported()) return
+
+      const hls = new HlsClass({
+        startLevel: 0,        // start at lowest quality immediately, no probing delay
+        autoLevelCapping: 0,  // stay at lowest — no ABR switching mid-preview
+        maxBufferLength: 20,  // buffer a bit more to avoid stalls
+      })
+      hlsRef.current = hls
+      hls.loadSource(src)
+      hls.attachMedia(videoEl)
+      hls.on(HlsClass.Events.MANIFEST_PARSED, () => {
+        videoEl.play().catch(() => {})
+      })
+      videoEl.addEventListener('canplay', onCanPlay, { once: true })
+    }, 200)
+  }, [video.streamId])
+
+  const handleMouseLeave = useCallback(() => {
+    cancelledRef.current = true
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    setIsPlaying(false)
+    const videoEl = videoRef.current
+    if (videoEl) {
+      videoEl.pause()
+      videoEl.removeAttribute('src')
+      videoEl.load()
+    }
+    if (hlsRef.current) {
+      hlsRef.current.destroy()
+      hlsRef.current = null
+    }
+  }, [])
+
   return (
-    <div className="group flex flex-col gap-2">
+    <div className="group flex flex-col gap-2" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {/* Thumbnail + overlay */}
       <div className={`relative aspect-video overflow-hidden ${rounded} bg-mist-grey`}>
         {video.thumbnailUrl ? (
@@ -59,6 +129,18 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
           <div className="h-full w-full bg-mist-grey" />
         )}
 
+        {/* Video preview — fades in once canplay fires, sits above thumbnail */}
+        {video.streamId && (
+          <video
+            ref={videoRef}
+            muted
+            loop
+            playsInline
+            preload="none"
+            className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0'}`}
+          />
+        )}
+
         {/* Frendr Picks badge */}
         {video.featured && (
           <div className="absolute top-2 left-2 z-20 rounded-xl bg-spring-green p-1.5">
@@ -66,30 +148,29 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
           </div>
         )}
 
-
-        {/* Base link — always covers the full thumbnail so mobile taps work */}
+        {/* Base link — covers full thumbnail for mobile taps */}
         <Link
           href={`/v/${video.id}`}
           className="absolute inset-0 z-10"
           aria-label={`Play ${video.title}`}
         />
 
-        {/* Hover overlay — visual only, pointer-events-none */}
+        {/* Hover overlay — pointer-events-none so link stays clickable */}
         <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/40 transition-all duration-300 pointer-events-none">
-          {/* Play icon — visual only */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {/* Play icon — hidden once video is playing */}
+          <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 opacity-0 ${!isPlaying ? 'group-hover:opacity-100' : ''}`}>
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg">
               <Play size={16} className="ml-0.5 text-core-black" fill="currentColor" />
             </div>
           </div>
 
-          {/* Action buttons — top-right corner (desktop hover only) */}
+          {/* Action buttons — top-right, desktop hover only */}
           <div className="absolute top-2 right-2 z-30 hidden sm:flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
             <AddToChannelButton videoId={video.id} triggerClassName="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors" />
             <AddToPlaylistButton videoId={video.id} />
           </div>
 
-          {/* Owner actions slot — bottom-right corner */}
+          {/* Owner actions slot — bottom-right */}
           {actionsSlot && (
             <div className="absolute bottom-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
               {actionsSlot}
@@ -98,13 +179,13 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
         </div>
       </div>
 
-      {/* Mobile-only action row — below thumbnail, not covering it */}
+      {/* Mobile-only action row */}
       <div className="flex gap-1 sm:hidden">
         <AddToChannelButton videoId={video.id} />
         <AddToPlaylistButton videoId={video.id} />
       </div>
 
-      {/* Meta — links to video page */}
+      {/* Meta */}
       {hideCreator ? (
         <Link href={`/v/${video.id}`}>
           <p className="truncate font-sans font-medium text-sm text-core-black leading-snug">{video.title}</p>
