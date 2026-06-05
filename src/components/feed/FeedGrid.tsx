@@ -25,9 +25,9 @@ export function FeedGrid({ videos, showTimestamp }: FeedGridProps) {
         {visible.map(video => (
           <div key={video.id} className="flex flex-col gap-1">
             <VideoCard video={video} showTimestamp={showTimestamp} />
-            {video.sourceLabel && (
-              <p className="font-sans text-[10px] text-foreground/30 pl-8">{video.sourceLabel}</p>
-            )}
+            <p className={`font-sans text-[10px] text-foreground/30 pl-8 ${!video.sourceLabel ? "invisible" : ""}`}>
+              {video.sourceLabel ?? "​"}
+            </p>
           </div>
         ))}
       </div>
