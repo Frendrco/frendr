@@ -19,7 +19,20 @@ export async function sendWelcomeMessage(toUser: { id: string; displayName: stri
   })
   if (existing && existing.participants.length === 2) return
 
-  const body = `Hey ${toUser.displayName}, welcome to Frendr. We're in beta right now, which means your feedback actually shapes the product. The best thing you can do is upload a piece of work — it helps us catch bugs and test the full experience. Takes two minutes and makes a real difference. Thanks for being here early.`
+  const body = `Hey ${toUser.displayName} — welcome to Frendr.
+
+A few things that make this place work:
+
+Share the real stuff. Work in progress, passion projects, the stuff you actually care about. Not just the reel-ready highlights you'd send a client.
+
+Be a person, not a brand. Comments, feedback, reactions — they go a long way. Show up for other people's work the way you want them to show up for yours.
+
+Leave the ego at the door. Everyone here is at a different stage. That's the point.
+
+We're in beta, so expect some rough edges. If something feels broken, tell me. If something feels right, tell me that too.
+
+Glad you're here early.
+— Ryan`
 
   const conversation = await prisma.$transaction(async (tx) => {
     const convo = await tx.conversation.create({
