@@ -6,6 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { PushPermissionBanner } from "@/components/notifications/PushPermissionBanner"
 
 type NotifFromUser = { displayName: string; username: string; avatarUrl?: string | null }
 type Notification = {
@@ -195,6 +196,11 @@ export function NotificationsBell() {
                 </button>
               </div>
             )}
+          </div>
+
+          {/* Push permission prompt */}
+          <div className="px-3 py-2 border-b border-black/5 empty:hidden">
+            <PushPermissionBanner />
           </div>
 
           {/* List */}

@@ -72,6 +72,7 @@ model User {
   notificationsFrom   Notification[] @relation("NotifFromUser")
   notificationQueue   NotificationQueue[]
   collaborationsOn    VideoCollaborator[]
+  pushSubscriptions   PushSubscription[]
 }
 
 enum VideoType {
@@ -471,5 +472,18 @@ model NotificationQueue {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([sent])
+  @@index([userId])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }

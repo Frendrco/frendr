@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { resend, FROM, buildFollowEmail, buildTrendingEmail } from "@/lib/email"
+import { sendPushToUser } from "@/lib/push"
 
 type NotificationType = "follow" | "comment" | "reply" | "message" | "vote" | "announcement" | "trending"
 
@@ -15,7 +16,56 @@ type CreateParams = {
 export async function createNotification(params: CreateParams) {
   const notif = await prisma.notification.create({ data: params })
   enqueueEmail(params).catch(() => {})
+  sendPush(params).catch(() => {})
   return notif
+}
+
+async function sendPush(params: CreateParams) {
+  const actor = params.fromUserId
+    ? await prisma.user.findUnique({
+        where: { id: params.fromUserId },
+        select: { displayName: true },
+      })
+    : null
+
+  const name = actor?.displayName ?? "Someone"
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
+
+  let title = "Frendr"
+  let body = "You have a new notification"
+  let url = "/"
+
+  switch (params.type) {
+    case "message":
+      title = `${name} sent you a message`
+      body = "Tap to read it"
+      url = `${appUrl}/messages`
+      break
+    case "follow":
+      title = `${name} started following you`
+      body = "Check out their profile"
+      url = actor ? `${appUrl}/${(await prisma.user.findUnique({ where: { id: params.fromUserId! }, select: { username: true } }))?.username ?? ""}` : `${appUrl}/`
+      break
+    case "comment":
+      title = `${name} commented on your post`
+      body = "Tap to see the comment"
+      url = params.contentType === "video" && params.contentId ? `${appUrl}/v/${params.contentId}` : `${appUrl}/community/${params.contentId ?? ""}`
+      break
+    case "reply":
+      title = `${name} replied to your comment`
+      body = "Tap to see the reply"
+      url = params.contentType === "video" && params.contentId ? `${appUrl}/v/${params.contentId}` : `${appUrl}/community/${params.contentId ?? ""}`
+      break
+    case "announcement":
+      title = "Announcement from Frendr"
+      body = params.message ?? "New announcement"
+      url = `${appUrl}/`
+      break
+    default:
+      return
+  }
+
+  await sendPushToUser(params.userId, { title, body, url })
 }
 
 async function sendImmediateEmail(params: CreateParams) {

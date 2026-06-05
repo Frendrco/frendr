@@ -1,6 +1,16 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { z } from "zod"
+
+const jobSchema = z.object({
+  title: z.string().min(1).max(150),
+  company: z.string().min(1).max(150),
+  location: z.string().max(150).optional().nullable(),
+  type: z.string().min(1),
+  description: z.string().min(1).max(10000),
+  applyEmail: z.string().email(),
+})
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -24,10 +34,10 @@ export async function POST(req: Request) {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
-  const { title, company, location, type, description, applyEmail } = await req.json()
-  if (!title?.trim() || !company?.trim() || !type || !description?.trim() || !applyEmail?.trim()) {
-    return NextResponse.json({ error: "Required fields missing" }, { status: 400 })
-  }
+  const raw = await req.json()
+  const parsed = jobSchema.safeParse(raw)
+  if (!parsed.success) return NextResponse.json({ error: "Invalid input" }, { status: 400 })
+  const { title, company, location, type, description, applyEmail } = parsed.data
 
   const job = await prisma.job.create({
     data: {
@@ -36,7 +46,7 @@ export async function POST(req: Request) {
       location: location?.trim() || null,
       type,
       description: description.trim(),
-      applyEmail: applyEmail?.trim() || null,
+      applyEmail,
       userId: user.id,
     },
   })

@@ -14,6 +14,9 @@ export async function POST(req: NextRequest) {
   if (!ALLOWED_TYPES.includes(file.type)) {
     return NextResponse.json({ error: "Only JPG, PNG, and WebP are allowed" }, { status: 400 })
   }
+  if (file.size > 5 * 1024 * 1024) {
+    return NextResponse.json({ error: "File must be under 5 MB" }, { status: 400 })
+  }
 
   if (
     !process.env.CLOUDFLARE_ACCOUNT_ID ||
