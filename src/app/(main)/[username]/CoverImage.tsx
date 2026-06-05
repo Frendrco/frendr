@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { Camera, Film } from "lucide-react"
 
@@ -15,9 +15,6 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
   const [coverVideoUrl,  setCoverVideoUrl]  = useState(initialCoverVideoUrl)
   const [uploading,      setUploading]      = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState(false)
-
-  const imageInputRef = useRef<HTMLInputElement>(null)
-  const videoInputRef = useRef<HTMLInputElement>(null)
 
   async function handleImageFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -85,26 +82,24 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
 
       {isOwn && (
         <>
-          <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleImageFile} />
-          <input ref={videoInputRef} type="file" accept="video/mp4" className="hidden" onChange={handleVideoFile} />
+          <input id="cover-image-upload" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={handleImageFile} />
+          <input id="cover-video-upload" type="file" accept="video/mp4" className="sr-only" onChange={handleVideoFile} />
 
           <div className="absolute top-3 right-3 flex gap-1.5">
-            <button
-              onClick={() => imageInputRef.current?.click()}
-              disabled={busy}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 disabled:opacity-50"
+            <label
+              htmlFor="cover-image-upload"
+              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}
             >
               <Camera size={12} />
               {uploading ? "Uploading…" : "Photo"}
-            </button>
-            <button
-              onClick={() => videoInputRef.current?.click()}
-              disabled={busy}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 disabled:opacity-50"
+            </label>
+            <label
+              htmlFor="cover-video-upload"
+              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}
             >
               <Film size={12} />
               {uploadingVideo ? "Uploading…" : "Video"}
-            </button>
+            </label>
           </div>
         </>
       )}
