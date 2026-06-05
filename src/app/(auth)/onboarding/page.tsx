@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/common/Logo"
 
@@ -37,13 +38,24 @@ const RULES = [
   "Frendr is for everyone. Hate, harassment, and discrimination of any kind will result in immediate removal.",
 ]
 
+const DEFAULT_AVATARS = [
+  "/images/ava-01.png",
+  "/images/ava-02.png",
+  "/images/ava-03.png",
+  "/images/ava-04.png",
+  "/images/ava-05.png",
+]
+
+const MAX_VIDEO_BYTES = 200 * 1024 * 1024
+
 function toSlug(val: string) {
   return val.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
 }
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const { user } = useUser()
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
 
   // Step 1 state
   const [name,          setName]          = useState("")
@@ -58,6 +70,26 @@ export default function OnboardingPage() {
 
   // Step 3 state
   const [showAiContent, setShowAiContent] = useState(true)
+
+  // Post-creation (steps 4-5)
+  const [createdUsername, setCreatedUsername] = useState("")
+
+  // Step 4 — avatar
+  const avatarFileInputRef = useRef<HTMLInputElement>(null)
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(null)
+
+  // Step 5 — video
+  const videoFileInputRef = useRef<HTMLInputElement>(null)
+  const [videoSource,      setVideoSource]      = useState<"upload" | "link">("upload")
+  const [videoFile,        setVideoFile]        = useState<File | null>(null)
+  const [videoDragging,    setVideoDragging]    = useState(false)
+  const [videoExternalUrl, setVideoExternalUrl] = useState("")
+  const [videoTitle,       setVideoTitle]       = useState("")
+  const [videoUploading,   setVideoUploading]   = useState(false)
+  const [videoProgress,    setVideoProgress]    = useState(0)
+  const [videoError,       setVideoError]       = useState<string | null>(null)
+
+  // ── Helpers ──────────────────────────────────────────────
 
   function toggleTag(tag: string) {
     setSelectedTags((prev) =>
@@ -85,7 +117,7 @@ export default function OnboardingPage() {
     setStep(2)
   }
 
-  async function handleFinish() {
+  async function handleCreateAccount() {
     const res = await fetch("/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -96,8 +128,86 @@ export default function OnboardingPage() {
       setStep(1)
       return
     }
-    router.push("/search")
+    const userData = await res.json()
+    setCreatedUsername(userData.username)
+    setStep(4)
   }
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !user) return
+    await user.setProfileImage({ file })
+    setCurrentAvatarUrl(null)
+    e.target.value = ""
+    await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    })
+  }
+
+  async function pickAvatar(url: string) {
+    setCurrentAvatarUrl(url)
+    await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ customAvatarUrl: url }),
+    })
+  }
+
+  function handleVideoFileSelect(f: File) {
+    if (f.type !== "video/mp4") { alert("Please select an MP4 file."); return }
+    if (f.size > MAX_VIDEO_BYTES) { alert("File exceeds the 200 MB limit."); return }
+    setVideoFile(f)
+    if (!videoTitle) setVideoTitle(f.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim())
+  }
+
+  async function handleVideoPost() {
+    if (videoUploading) return
+    setVideoUploading(true)
+    setVideoError(null)
+    setVideoProgress(0)
+    try {
+      if (videoSource === "link") {
+        await fetch("/api/videos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ externalUrl: videoExternalUrl.trim(), title: videoTitle.trim(), videoType: "PORTFOLIO", isPublic: true }),
+        })
+      } else {
+        const urlRes = await fetch("/api/videos/upload-url", { method: "POST" })
+        if (!urlRes.ok) throw new Error("Could not get upload URL")
+        const { uid, uploadURL } = await urlRes.json() as { uid: string; uploadURL: string }
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest()
+          xhr.upload.addEventListener("progress", (e) => {
+            if (e.lengthComputable) setVideoProgress(Math.round((e.loaded / e.total) * 100))
+          })
+          xhr.addEventListener("load", () => xhr.status < 400 ? resolve() : reject(new Error("Upload failed")))
+          xhr.addEventListener("error", () => reject(new Error("Upload failed")))
+          xhr.open("POST", uploadURL)
+          const form = new FormData()
+          form.append("file", videoFile!)
+          xhr.send(form)
+        })
+        await fetch("/api/videos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ streamId: uid, title: videoTitle.trim(), videoType: "PORTFOLIO", isPublic: true }),
+        })
+      }
+      router.push(`/${createdUsername}`)
+    } catch (err) {
+      setVideoError(err instanceof Error ? err.message : "Something went wrong")
+      setVideoUploading(false)
+      setVideoProgress(0)
+    }
+  }
+
+  const displayAvatar = currentAvatarUrl ?? user?.imageUrl ?? null
+  const initials      = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()
+  const linkValid     = videoExternalUrl.trim().startsWith("https://") &&
+    /vimeo\.com|youtube\.com|youtu\.be|framerate\./.test(videoExternalUrl)
 
   return (
     <div className="flex min-h-screen">
@@ -110,6 +220,16 @@ export default function OnboardingPage() {
           <Link href="/" className="mb-10 inline-flex pt-6">
             <Logo variant="wordmark" height={22} colour="black" />
           </Link>
+
+          {/* Step progress dots */}
+          <div className="flex gap-1.5 mb-8">
+            {([1, 2, 3, 4, 5] as const).map((n) => (
+              <div key={n} className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                n === step ? "w-6 bg-core-black" : n < step ? "w-1.5 bg-core-black/30" : "w-1.5 bg-border"
+              )} />
+            ))}
+          </div>
 
           {/* Step 1 — Profile ───────────────────────────── */}
           {step === 1 && (
@@ -307,13 +427,251 @@ export default function OnboardingPage() {
               </div>
 
               <button
-                onClick={handleFinish}
+                onClick={handleCreateAccount}
                 className="h-11 rounded-full bg-core-black font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80"
               >
                 I agree &amp; join frendr
               </button>
             </div>
           )}
+
+          {/* Step 4 — Profile picture ───────────────────── */}
+          {step === 4 && (
+            <div className="flex flex-col gap-6">
+              <div>
+                <h1 className="font-sans text-2xl font-bold text-core-black">
+                  Add a profile picture
+                </h1>
+                <p className="mt-1.5 font-sans text-sm text-foreground/50">
+                  Help people recognise you in the community.
+                </p>
+              </div>
+
+              {/* Avatar preview + upload */}
+              <div className="flex flex-col items-center gap-4 py-2">
+                <div className="h-24 w-24 overflow-hidden rounded-full ring-2 ring-border">
+                  {displayAvatar ? (
+                    <Image src={displayAvatar} alt={name} width={96} height={96} className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-spring-green font-sans font-bold text-2xl text-core-black">
+                      {initials}
+                    </div>
+                  )}
+                </div>
+                <input
+                  ref={avatarFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+                <button
+                  type="button"
+                  onClick={() => avatarFileInputRef.current?.click()}
+                  className="inline-flex h-9 items-center rounded-full border border-border px-5 font-sans font-medium text-sm text-foreground/60 transition-colors hover:border-foreground/30 hover:text-foreground"
+                >
+                  Upload photo
+                </button>
+              </div>
+
+              {/* Preset avatars */}
+              <div>
+                <p className="mb-3 font-sans text-xs font-medium text-foreground/40 uppercase tracking-widest">
+                  Or choose a default
+                </p>
+                <div className="flex gap-3">
+                  {DEFAULT_AVATARS.map((src) => (
+                    <button
+                      key={src}
+                      type="button"
+                      onClick={() => pickAvatar(src)}
+                      className={cn(
+                        "h-12 w-12 overflow-hidden rounded-full transition-all",
+                        currentAvatarUrl === src
+                          ? "ring-2 ring-core-black ring-offset-2"
+                          : "opacity-70 hover:opacity-100 hover:ring-2 hover:ring-border hover:ring-offset-2"
+                      )}
+                    >
+                      <Image src={src} alt="" width={48} height={48} className="h-full w-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setStep(5)}
+                  className="h-11 rounded-full bg-spring-green font-sans font-medium text-sm text-core-black transition-colors hover:bg-spring-green/90"
+                >
+                  Continue
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStep(5)}
+                  className="font-sans text-sm text-foreground/40 hover:text-foreground/60 transition-colors text-center"
+                >
+                  I&apos;ll do this later
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 5 — First video ────────────────────────── */}
+          {step === 5 && (
+            <div className="flex flex-col gap-5">
+              <div>
+                <h1 className="font-sans text-2xl font-bold text-core-black">
+                  Share your first video
+                </h1>
+                <p className="mt-1.5 font-sans text-sm text-foreground/50">
+                  Show the community what you&apos;re made of.
+                </p>
+              </div>
+
+              {/* Source toggle */}
+              <div className="flex gap-1 rounded-full border border-border bg-foreground/[0.03] p-1 w-fit">
+                <button
+                  type="button"
+                  onClick={() => setVideoSource("upload")}
+                  className={cn(
+                    "inline-flex h-8 items-center gap-1.5 rounded-full px-4 font-sans font-medium text-sm transition-colors",
+                    videoSource === "upload" ? "bg-core-black text-white" : "text-foreground/50 hover:text-foreground"
+                  )}
+                >
+                  Upload file
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setVideoSource("link")}
+                  className={cn(
+                    "inline-flex h-8 items-center gap-1.5 rounded-full px-4 font-sans font-medium text-sm transition-colors",
+                    videoSource === "link" ? "bg-core-black text-white" : "text-foreground/50 hover:text-foreground"
+                  )}
+                >
+                  Share a link
+                </button>
+              </div>
+
+              {/* Upload mode — drag-and-drop zone */}
+              {videoSource === "upload" && (
+                <>
+                  <input
+                    ref={videoFileInputRef}
+                    type="file"
+                    accept="video/mp4"
+                    className="hidden"
+                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoFileSelect(f) }}
+                  />
+                  <div
+                    onDragOver={(e) => { e.preventDefault(); setVideoDragging(true) }}
+                    onDragLeave={() => setVideoDragging(false)}
+                    onDrop={(e) => { e.preventDefault(); setVideoDragging(false); const f = e.dataTransfer.files[0]; if (f) handleVideoFileSelect(f) }}
+                    onClick={() => !videoFile && !videoUploading && videoFileInputRef.current?.click()}
+                    className={cn(
+                      "relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150",
+                      videoFile
+                        ? "border-border cursor-default"
+                        : videoDragging
+                        ? "border-spring-green bg-spring-green/5 scale-[1.005] cursor-copy"
+                        : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03] cursor-pointer"
+                    )}
+                  >
+                    {videoUploading ? (
+                      <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
+                        <p className="font-sans text-sm font-medium text-core-black">
+                          {videoProgress < 100 ? "Uploading…" : "Processing…"}
+                        </p>
+                        <div className="w-full rounded-full bg-border" style={{ height: 6 }}>
+                          {videoProgress === 0 ? (
+                            <div className="h-full w-full animate-pulse rounded-full bg-spring-green/40" />
+                          ) : (
+                            <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${videoProgress}%` }} />
+                          )}
+                        </div>
+                        <span className="font-sans text-xs text-foreground/50">{videoProgress}%</span>
+                      </div>
+                    ) : videoFile ? (
+                      <div className="flex flex-col items-center gap-2 px-8 text-center">
+                        <p className="font-sans font-medium text-sm text-core-black">{videoFile.name}</p>
+                        <p className="font-sans text-xs text-foreground/40">{(videoFile.size / 1024 / 1024).toFixed(1)} MB</p>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setVideoFile(null) }}
+                          className="mt-1 font-sans text-xs text-foreground/40 hover:text-foreground/70 transition-colors"
+                        >
+                          Change file
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 px-8 text-center">
+                        <p className="font-sans font-medium text-sm text-core-black">
+                          {videoDragging ? "Drop to upload" : "Drop your video here"}
+                        </p>
+                        <p className="font-sans text-xs text-foreground/40">or click to browse</p>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-center font-sans text-[11px] text-foreground/30 -mt-3">MP4 only · up to 200 MB</p>
+                </>
+              )}
+
+              {/* Link mode */}
+              {videoSource === "link" && (
+                <div className="flex flex-col gap-1.5">
+                  <input
+                    type="url"
+                    value={videoExternalUrl}
+                    onChange={(e) => setVideoExternalUrl(e.target.value)}
+                    placeholder="Vimeo, YouTube, or Framerate link…"
+                    className="h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                  />
+                  <p className="font-sans text-[11px] text-foreground/30">
+                    Paste a link from Vimeo, YouTube, or Framerate
+                  </p>
+                </div>
+              )}
+
+              {/* Title */}
+              <div className="flex flex-col gap-1.5">
+                <label className="font-sans font-medium text-sm text-core-black">Title</label>
+                <input
+                  type="text"
+                  value={videoTitle}
+                  onChange={(e) => setVideoTitle(e.target.value)}
+                  placeholder="Give your video a title…"
+                  className="h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                />
+              </div>
+
+              {videoError && <p className="font-sans text-xs text-red-500">{videoError}</p>}
+
+              <div className="flex flex-col gap-3 mt-1">
+                <button
+                  type="button"
+                  onClick={handleVideoPost}
+                  disabled={
+                    videoUploading ||
+                    !videoTitle.trim() ||
+                    (videoSource === "upload" ? !videoFile : !linkValid)
+                  }
+                  className="h-11 rounded-full bg-spring-green font-sans font-medium text-sm text-core-black transition-colors hover:bg-spring-green/90 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {videoUploading
+                    ? videoProgress < 100 ? "Uploading…" : "Processing…"
+                    : "Publish Video"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push(`/${createdUsername}`)}
+                  className="font-sans text-sm text-foreground/40 hover:text-foreground/60 transition-colors text-center"
+                >
+                  Upload later
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
 
         {/* Step 2 — sticky bottom bar ─────────────────── */}
