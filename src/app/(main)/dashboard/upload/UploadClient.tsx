@@ -741,6 +741,24 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         <input className={field} placeholder="Name this experiment…" value={title} onChange={(e) => setTitle(e.target.value)} />
       </div>
 
+      {/* Description */}
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-baseline justify-between">
+          <label className="font-sans text-xs font-medium text-foreground/50">
+            Description <span className="font-normal text-foreground/30">(optional)</span>
+          </label>
+          <span className="font-sans text-xs text-foreground/30">{description.length}/{DESC_MAX}</span>
+        </div>
+        <textarea
+          rows={3}
+          maxLength={DESC_MAX}
+          placeholder="What were you exploring? Tools, ideas, process…"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="resize-none rounded-xl border border-border bg-white px-3 py-2.5 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+        />
+      </div>
+
       {/* Tools used */}
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline justify-between">
