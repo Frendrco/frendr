@@ -64,22 +64,25 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
   const busy = uploading || uploadingVideo
 
   return (
-    <div className="relative w-full h-[200px] overflow-hidden bg-mist-grey">
+    <div className="relative w-full h-[200px] bg-mist-grey">
 
-      {/* Video takes priority over static image */}
-      {coverVideoUrl ? (
-        <video
-          src={coverVideoUrl}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-        />
-      ) : coverUrl ? (
-        <Image src={coverUrl} alt="Cover" fill sizes="100vw" className="object-cover pointer-events-none" />
-      ) : null}
+      {/* Media layer — overflow-hidden only here so it doesn't clip the inputs */}
+      <div className="absolute inset-0 overflow-hidden">
+        {coverVideoUrl ? (
+          <video
+            src={coverVideoUrl}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+          />
+        ) : coverUrl ? (
+          <Image src={coverUrl} alt="Cover" fill sizes="100vw" className="object-cover pointer-events-none" />
+        ) : null}
+      </div>
 
+      {/* Buttons live outside overflow-hidden so file inputs work in Safari */}
       {isOwn && (
         <div className="absolute top-3 right-3 z-10 flex gap-1.5">
           <label className={`relative inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}>
