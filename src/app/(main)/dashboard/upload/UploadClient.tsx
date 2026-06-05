@@ -426,7 +426,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
       const res = await fetch("/api/threads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: title.trim(), riveUrls: [riveUrl.trim()], source: "rive_world", body: "" }),
+        body: JSON.stringify({ title: title.trim(), riveUrls: [riveUrl.trim()], source: "rive_world", body: description.trim() }),
       })
       if (!res.ok) throw new Error("Could not post to Rive World")
       router.push("/rive")
@@ -873,6 +873,18 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                 placeholder="Give this a title…"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-medium text-foreground/50">
+                Description <span className="font-normal text-foreground/30">(optional)</span>
+              </label>
+              <textarea
+                rows={3}
+                placeholder="Tell the community about this piece…"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="resize-none rounded-xl border border-border bg-white px-3 py-2.5 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
             </div>
             {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}

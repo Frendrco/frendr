@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# waitlist — contains email addresses, never commit
+scripts/waitlist.csv
