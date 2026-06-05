@@ -4,7 +4,8 @@ import Image from "next/image"
 import { auth } from "@clerk/nextjs/server"
 import { Sparkles } from "lucide-react"
 import { prisma } from "@/lib/prisma"
-import { VideoCard, type VideoCardData } from "@/components/common/VideoCard"
+import { FeedGrid, RecessFeedGrid, type FeedItem } from "@/components/feed/FeedGrid"
+import type { RecessCardData } from "@/components/common/RecessCard"
 
 const COLOR_MAP: Record<string, string> = {
   "spring-green":   "bg-spring-green/60",
@@ -77,17 +78,17 @@ export default async function FollowingPage() {
   const followedChannelIds = channelFollows.map(f => f.channel.id)
   const channelNames = Object.fromEntries(channelFollows.map(f => [f.channel.id, f.channel.name]))
 
-  // Fetch videos for "Latest" section
-  type FeedItem = VideoCardData & { sourceLabel?: string }
+  // Fetch videos for feed sections
   let feedVideos: FeedItem[] = []
+  let recessVideos: RecessCardData[] = []
 
   if (followingIds.length > 0 || followedChannelIds.length > 0) {
-    const [creatorVideos, channelVideoRows] = await Promise.all([
+    const [creatorVideos, channelVideoRows, creatorRecess] = await Promise.all([
       followingIds.length > 0
         ? prisma.video.findMany({
-            where: { userId: { in: followingIds } },
+            where: { userId: { in: followingIds }, isPublic: true, videoType: "PORTFOLIO" },
             orderBy: { createdAt: "desc" },
-            take: 40,
+            take: 80,
             include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
           })
         : Promise.resolve([]),
@@ -95,7 +96,7 @@ export default async function FollowingPage() {
         ? prisma.channelVideo.findMany({
             where: { channelId: { in: followedChannelIds } },
             orderBy: { addedAt: "desc" },
-            take: 40,
+            take: 80,
             include: {
               video: {
                 include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
@@ -103,14 +104,27 @@ export default async function FollowingPage() {
             },
           })
         : Promise.resolve([]),
+      followingIds.length > 0
+        ? prisma.video.findMany({
+            where: { userId: { in: followingIds }, isPublic: true, videoType: "RECESS" },
+            orderBy: { createdAt: "desc" },
+            take: 40,
+            include: {
+              user: { select: { username: true, displayName: true, avatarUrl: true } },
+              _count: { select: { likes: true } },
+            },
+          })
+        : Promise.resolve([]),
     ])
 
     const allItems: { item: FeedItem; date: Date }[] = [
       ...creatorVideos.map(v => ({ item: v as FeedItem, date: v.createdAt })),
-      ...channelVideoRows.map(cv => ({
-        item: { ...cv.video, sourceLabel: `From ${channelNames[cv.channelId] ?? "a channel"}` } as FeedItem,
-        date: cv.addedAt,
-      })),
+      ...channelVideoRows
+        .filter(cv => cv.video.isPublic && cv.video.videoType === "PORTFOLIO")
+        .map(cv => ({
+          item: { ...cv.video, sourceLabel: `From ${channelNames[cv.channelId] ?? "a channel"}` } as FeedItem,
+          date: cv.addedAt,
+        })),
     ]
     allItems.sort((a, b) => b.date.getTime() - a.date.getTime())
 
@@ -118,6 +132,18 @@ export default async function FollowingPage() {
     for (const { item } of allItems) {
       if (!seen.has(item.id)) { seen.add(item.id); feedVideos.push(item) }
     }
+
+    recessVideos = creatorRecess.map(v => ({
+      id: v.id,
+      title: v.title,
+      thumbnailUrl: v.thumbnailUrl,
+      streamId: v.streamId,
+      externalUrl: v.externalUrl,
+      tags: v.tags,
+      categories: v.categories,
+      likeCount: v._count.likes,
+      user: v.user,
+    }))
   }
 
   return (
@@ -160,18 +186,20 @@ export default async function FollowingPage() {
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                  {feedVideos.map(video => (
-                    <div key={video.id} className="flex flex-col gap-1">
-                      <VideoCard video={video} showTimestamp />
-                      {video.sourceLabel && (
-                        <p className="font-sans text-[10px] text-foreground/30 pl-8">{video.sourceLabel}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <FeedGrid videos={feedVideos} showTimestamp />
               )}
             </section>
+
+            {/* ── Recess ───────────────────────────────────── */}
+            {recessVideos.length > 0 && (
+              <section>
+                <h2 className="mb-6 font-sans font-semibold text-base text-core-black">
+                  Recess
+                  <span className="ml-2 font-normal text-foreground/30">{recessVideos.length}</span>
+                </h2>
+                <RecessFeedGrid videos={recessVideos} />
+              </section>
+            )}
 
             {/* ── Frends ───────────────────────────────────── */}
             <section>
