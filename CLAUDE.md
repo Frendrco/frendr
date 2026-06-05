@@ -88,8 +88,8 @@ CLOUDFLARE_STREAM_API_TOKEN=
 | Upload | `/dashboard/upload` | ✅ Built — Basics / Privacy / Embed tabs, frame picker |
 | Settings | `/dashboard/settings` | ✅ Built — Basic info + About Me tabs |
 | Video detail | `/v/[id]` | ✅ Built — Cloudflare Stream player, creator sidebar |
-| Following feed | `/feed` | 🔲 Not started |
-| Search | `/search` | 🔲 Not started |
+| Following feed | `/feed` | ✅ Built — following/trending/newest sort, Recess section |
+| Search | `/search` | ✅ Built — title/description/tags/categories search, browse by tag |
 
 ---
 

@@ -10,7 +10,7 @@ import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore
 import { RecessCard } from "@/components/common/RecessCard"
 import { ExploreSort } from "./ExploreSort"
 import { FollowButton } from "@/components/common/FollowButton"
-import { CONTENT_TAGS } from "@/lib/categories"
+import { CONTENT_TAGS, VIDEO_TAGS } from "@/lib/categories"
 
 const COLOR_MAP: Record<string, string> = {
   "spring-green":   "bg-spring-green/60",
@@ -58,11 +58,17 @@ export default async function SearchPage({ searchParams }: Props) {
     }
   }
 
+  const lowerQuery = query.toLowerCase()
+  const matchingTags = VIDEO_TAGS.filter(t => t.toLowerCase().includes(lowerQuery))
+  const matchingCategories = CONTENT_TAGS.filter(c => c.toLowerCase().includes(lowerQuery))
+
   const videoWhere = isSearching
     ? {
         OR: [
           { title: { contains: query, mode: "insensitive" as const } },
           { description: { contains: query, mode: "insensitive" as const } },
+          ...(matchingTags.length > 0 ? [{ tags: { hasSome: matchingTags } }] : []),
+          ...(matchingCategories.length > 0 ? [{ categories: { hasSome: matchingCategories } }] : []),
         ],
       }
     : isRecessView
