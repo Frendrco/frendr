@@ -81,27 +81,18 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
       ) : null}
 
       {isOwn && (
-        <>
-          <input id="cover-image-upload" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={handleImageFile} />
-          <input id="cover-video-upload" type="file" accept="video/mp4" className="sr-only" onChange={handleVideoFile} />
-
-          <div className="absolute top-3 right-3 flex gap-1.5">
-            <label
-              htmlFor="cover-image-upload"
-              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}
-            >
-              <Camera size={12} />
-              {uploading ? "Uploading…" : "Photo"}
-            </label>
-            <label
-              htmlFor="cover-video-upload"
-              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}
-            >
-              <Film size={12} />
-              {uploadingVideo ? "Uploading…" : "Video"}
-            </label>
-          </div>
-        </>
+        <div className="absolute top-3 right-3 flex gap-1.5">
+          <label className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}>
+            <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleImageFile} />
+            <Camera size={12} />
+            {uploading ? "Uploading…" : "Photo"}
+          </label>
+          <label className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 ${busy ? "pointer-events-none opacity-50" : ""}`}>
+            <input type="file" accept="video/mp4" className="hidden" onChange={handleVideoFile} />
+            <Film size={12} />
+            {uploadingVideo ? "Uploading…" : "Video"}
+          </label>
+        </div>
       )}
     </div>
   )
