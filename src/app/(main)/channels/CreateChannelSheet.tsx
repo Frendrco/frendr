@@ -494,7 +494,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
                 type="button"
                 onClick={submit}
                 disabled={loading || coverUploading}
-                className="inline-flex items-center gap-2 h-9 px-5 rounded-full bg-spring-green font-sans font-medium text-sm text-core-black disabled:opacity-40 transition-opacity"
+                className="inline-flex items-center gap-2 h-9 px-5 rounded-full bg-spring-green font-sans font-medium text-sm text-core-black whitespace-nowrap disabled:opacity-40 transition-opacity"
               >
                 {loading && <Loader2 size={14} className="animate-spin" />}
                 Create Channel
