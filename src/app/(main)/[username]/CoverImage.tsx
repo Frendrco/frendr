@@ -22,6 +22,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     e.target.value = ""
+    setMenuOpen(false)
     if (!file) return
     setUploading(true)
     const form = new FormData()
@@ -44,6 +45,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
   function handleVideoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     e.target.value = ""
+    setMenuOpen(false)
     if (!file) return
     if (file.size > 5 * 1024 * 1024) {
       alert("Video must be under 5 MB. Aim for 2-3 MB — keep it 10-15 seconds, H.264/MP4.")
@@ -84,11 +86,6 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
 
       {isOwn && (
         <>
-          {/* Hidden inputs — label clicks activate these natively, no JS .click() needed */}
-          <input id="cover-photo-input" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={handleImageChange} />
-          <input id="cover-video-input" type="file" accept="video/mp4" className="sr-only" onChange={handleVideoChange} />
-
-          {/* Close menu on outside click */}
           {menuOpen && (
             <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
           )}
@@ -106,19 +103,15 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
 
             {menuOpen && (
               <div className="flex flex-col overflow-hidden rounded-lg border border-white/20 bg-black/70 backdrop-blur text-xs text-white font-sans shadow-lg">
-                <label
-                  htmlFor="cover-photo-input"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors"
-                >
+                {/* Input is a child of label — browser activates it natively on label click,
+                    no JS .click() and no clip/sr-only issues */}
+                <label className="flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors">
+                  <input hidden type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} />
                   <Camera size={13} />
                   Photo
                 </label>
-                <label
-                  htmlFor="cover-video-input"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors border-t border-white/10"
-                >
+                <label className="flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors border-t border-white/10">
+                  <input hidden type="file" accept="video/mp4" onChange={handleVideoChange} />
                   <Film size={13} />
                   Video
                 </label>
