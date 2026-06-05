@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Sparkles, Star, Users, Plus, ChevronUp, ChevronDown } from "lucide-react"
+import { Sparkles, Star, Users, Plus, ChevronUp, ChevronDown, GraduationCap } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { CreateChannelSheet } from "./CreateChannelSheet"
 import { cn } from "@/lib/utils"
@@ -100,6 +100,13 @@ export function ChannelsClient({ adminChannels: initialAdminChannels, userChanne
               <Users size={12} />
               Creator Channels
             </TabsTrigger>
+            <TabsTrigger value="school" className="font-sans text-sm px-3 gap-1.5 after:!bg-sunny-yellow">
+              <GraduationCap size={12} />
+              Frendr School
+              <span className="rounded-full bg-sunny-yellow px-1.5 py-0.5 font-medium text-[9px] text-core-black leading-none">
+                Soon
+              </span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Frendr Picks tab */}
@@ -126,6 +133,11 @@ export function ChannelsClient({ adminChannels: initialAdminChannels, userChanne
                 subtitle="Our editorial team is curating the best work. Check back soon."
               />
             )}
+          </TabsContent>
+
+          {/* Frendr School tab */}
+          <TabsContent value="school">
+            <SchoolComingSoon />
           </TabsContent>
 
           {/* Creator Channels tab */}
@@ -318,6 +330,56 @@ function CreatorEmptyState({
             Sign in to create a channel
           </Link>
         )}
+      </div>
+    </div>
+  )
+}
+
+function SchoolComingSoon() {
+  const placeholders = [
+    "bg-sunny-yellow/40",
+    "bg-sky-blue/50",
+    "bg-bloom-lavender",
+    "bg-winter-green",
+    "bg-sunny-yellow/60",
+    "bg-dream-lilac",
+    "bg-sky-blue/30",
+    "bg-sunny-yellow/30",
+  ]
+
+  return (
+    <div className="relative">
+      {/* Blurred placeholder grid */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 opacity-20 pointer-events-none select-none blur-sm">
+        {placeholders.map((bg, i) => (
+          <div key={i} className="flex flex-col gap-3">
+            <div className={`aspect-video rounded-xl ${bg}`} />
+            <div className="flex flex-col gap-1.5">
+              <div className="h-3 w-3/4 rounded bg-foreground/20" />
+              <div className="h-2.5 w-1/2 rounded bg-foreground/10" />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center py-8">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-sunny-yellow/20">
+          <GraduationCap size={32} className="text-sunny-yellow" />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <p className="font-sans font-bold text-lg text-core-black">Frendr School</p>
+          <p className="font-sans text-sm text-foreground/50 max-w-xs">
+            A dedicated space for tutorials, tips, and courses from the motion design community.
+          </p>
+          <p className="font-sans text-sm font-medium text-core-black mt-1">
+            Learn from the best. Grow your craft.
+          </p>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-sunny-yellow/40 bg-sunny-yellow/10 px-4 py-1.5 font-sans font-medium text-xs text-core-black">
+          <GraduationCap size={11} className="text-sunny-yellow" />
+          Coming soon
+        </span>
       </div>
     </div>
   )
