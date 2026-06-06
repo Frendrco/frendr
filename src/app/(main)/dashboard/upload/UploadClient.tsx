@@ -186,29 +186,25 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     const provider = detectProvider(url)
     setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, provider, status: "loading" } : item))
 
-    if (provider === "youtube" || provider === "vimeo") {
-      try {
-        const res  = await fetch(`/api/videos/oembed?url=${encodeURIComponent(url)}`)
-        const data = await res.json() as { title?: string | null; thumbnailUrl?: string | null; description?: string | null }
-        setBulkItems((prev) => prev.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                title:        item.title       || data.title       || "",
-                description:  item.description || data.description || "",
-                thumbnailUrl: data.thumbnailUrl ?? (provider === "youtube" ? getVideoThumbnail(url) : null),
-                status:       "ready",
-              }
-            : item
-        ))
-      } catch {
-        const thumb = provider === "youtube" ? getVideoThumbnail(url) : null
-        setBulkItems((prev) => prev.map((item) =>
-          item.id === id ? { ...item, thumbnailUrl: thumb, status: thumb ? "ready" : "error" } : item
-        ))
-      }
-    } else {
-      setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, status: "ready" } : item))
+    try {
+      const res  = await fetch(`/api/videos/oembed?url=${encodeURIComponent(url)}`)
+      const data = await res.json() as { title?: string | null; thumbnailUrl?: string | null; description?: string | null }
+      setBulkItems((prev) => prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              title:        item.title       || data.title       || "",
+              description:  item.description || data.description || "",
+              thumbnailUrl: data.thumbnailUrl ?? (provider === "youtube" ? getVideoThumbnail(url) : null),
+              status:       "ready",
+            }
+          : item
+      ))
+    } catch {
+      const thumb = provider === "youtube" ? getVideoThumbnail(url) : null
+      setBulkItems((prev) => prev.map((item) =>
+        item.id === id ? { ...item, thumbnailUrl: thumb, status: thumb ? "ready" : "error" } : item
+      ))
     }
   }
 
