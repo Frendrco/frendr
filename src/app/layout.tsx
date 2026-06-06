@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
   },
   themeColor: "#ffffff",
+  verification: {
+    google: "PugFw0pXgYQqb7D5Y9Jxl1S40YDRP0fXLSiIhHX2C3I",
+  },
 }
 
 export default function RootLayout({
