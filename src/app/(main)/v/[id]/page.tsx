@@ -5,6 +5,7 @@ import { Download, Eye, MoreHorizontal } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { VideoPlayer } from "./VideoPlayer"
 import { FeatureButton } from "./FeatureButton"
+import { AdminDeleteButton } from "@/app/(main)/admin/AdminDeleteButton"
 import { UpvoteButton } from "@/components/common/UpvoteButton"
 import { AddToPlaylistButton } from "@/components/common/AddToPlaylistButton"
 import { AddToChannelButton } from "@/components/common/AddToChannelButton"
@@ -166,6 +167,13 @@ export default async function VideoPage({ params }: Props) {
               <div className="flex shrink-0 items-center gap-1 order-first md:order-last">
                 {isAdmin && (
                   <FeatureButton videoId={video.id} initialFeatured={video.featured} />
+                )}
+                {isAdmin && (
+                  <AdminDeleteButton
+                    endpoint={`/api/admin/videos/${video.id}`}
+                    label="this video"
+                    redirectTo={`/${video.user.username}`}
+                  />
                 )}
                 <UpvoteButton
                   videoId={video.id}
