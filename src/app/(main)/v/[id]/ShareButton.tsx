@@ -13,6 +13,7 @@ import {
 interface Props {
   title?: string
   videoId: string
+  videoSlug?: string | null
 }
 
 const SOCIAL_TARGETS = (url: string, title: string) => [
@@ -30,12 +31,13 @@ const SOCIAL_TARGETS = (url: string, title: string) => [
   },
 ]
 
-export function ShareButton({ title = "", videoId }: Props) {
+export function ShareButton({ title = "", videoId, videoSlug }: Props) {
   const [copiedLink,  setCopiedLink]  = useState(false)
   const [copiedEmbed, setCopiedEmbed] = useState(false)
 
-  const url = typeof window !== "undefined" ? `${window.location.origin}/v/${videoId}` : `https://frendr.co/v/${videoId}`
-  const embedCode = `<iframe src="https://frendr.co/embed/${videoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
+  const urlKey = videoSlug ?? videoId
+  const url = typeof window !== "undefined" ? `${window.location.origin}/v/${urlKey}` : `https://frendr.co/v/${urlKey}`
+  const embedCode = `<iframe src="https://frendr.co/embed/${urlKey}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
 
   async function copyLink() {
     try { await navigator.clipboard.writeText(url) } catch { /* non-secure context */ }

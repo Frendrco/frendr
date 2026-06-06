@@ -209,7 +209,7 @@ export default async function VideoPage({ params }: Props) {
                     <Download size={15} />
                   </a>
                 )}
-                <ShareButton title={video.title} videoId={video.id} />
+                <ShareButton title={video.title} videoId={video.id} videoSlug={video.slug} />
                 {isAdmin && (
                   <AdminDeleteButton
                     endpoint={`/api/admin/videos/${video.id}`}
