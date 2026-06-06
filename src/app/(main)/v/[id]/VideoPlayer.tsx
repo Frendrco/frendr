@@ -48,11 +48,25 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
     return () => clearInterval(id)
   }, [streamStatus, streamId])
 
-  // External video (YouTube, Vimeo, Framerate)
+  // External video (YouTube, Vimeo, Framerate, Dropbox)
   if (externalUrl) {
     const provider    = detectProvider(externalUrl)
-    const embedUrl    = getVideoEmbedUrl(externalUrl)
     const isFramerate = provider === "framerate"
+
+    // Dropbox: direct MP4, native video element (no iframe)
+    if (provider === "dropbox") {
+      return (
+        <div className="relative aspect-video w-full bg-black">
+          <video
+            src={externalUrl}
+            controls
+            className="absolute inset-0 h-full w-full"
+          />
+        </div>
+      )
+    }
+
+    const embedUrl = getVideoEmbedUrl(externalUrl)
 
     return (
       <div className="flex flex-col">

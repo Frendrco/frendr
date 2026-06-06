@@ -1,4 +1,4 @@
-export type Provider = "youtube" | "vimeo" | "framerate" | "other"
+export type Provider = "youtube" | "vimeo" | "framerate" | "dropbox" | "other"
 
 export function detectProvider(url: string): Provider {
   try {
@@ -6,6 +6,7 @@ export function detectProvider(url: string): Provider {
     if (u.hostname.includes("youtube.com") || u.hostname === "youtu.be") return "youtube"
     if (u.hostname.includes("vimeo.com")) return "vimeo"
     if (u.hostname.includes("framerate.tv")) return "framerate"
+    if (u.hostname.includes("dropbox.com") || u.hostname.includes("dropboxusercontent.com")) return "dropbox"
     return "other"
   } catch {
     return "other"
@@ -17,7 +18,22 @@ export function getProviderLabel(provider: Provider): string {
     case "youtube":   return "YouTube"
     case "vimeo":     return "Vimeo"
     case "framerate": return "Framerate"
+    case "dropbox":   return "Dropbox"
     default:          return "External"
+  }
+}
+
+export function getDropboxRawUrl(url: string): { rawUrl: string | null; error: string | null } {
+  if (!url.toLowerCase().includes(".mp4")) {
+    return { rawUrl: null, error: "Dropbox imports support MP4 files only. For other formats, upload directly." }
+  }
+  try {
+    const u = new URL(url)
+    u.searchParams.set("raw", "1")
+    u.searchParams.delete("dl")
+    return { rawUrl: u.toString(), error: null }
+  } catch {
+    return { rawUrl: null, error: "Invalid Dropbox URL" }
   }
 }
 

@@ -10,7 +10,16 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
   const body = await req.json() as {
-    items: { externalUrl: string; title: string; description?: string | null; thumbnailUrl?: string | null; videoType?: "PORTFOLIO" | "RECESS" }[]
+    items: {
+      externalUrl: string
+      title: string
+      description?: string | null
+      thumbnailUrl?: string | null
+      videoType?: "PORTFOLIO" | "RECESS"
+      categories?: string[]
+      tags?: string[]
+      collaborators?: { userId: string; role?: string | null }[]
+    }[]
   }
 
   if (!Array.isArray(body.items) || body.items.length === 0 || body.items.length > 10) {
@@ -34,12 +43,29 @@ export async function POST(req: Request) {
             thumbnailUrl: item.thumbnailUrl ?? null,
             isPublic:     true,
             videoType:    item.videoType ?? "PORTFOLIO",
+            categories:   item.categories ?? [],
+            tags:         item.tags ?? [],
             userId:       user.id,
           },
           select: { id: true },
         })
       )
     )
+
+    // Create collaborator records for Dropbox imports that include credits
+    for (let i = 0; i < body.items.length; i++) {
+      const colls = body.items[i].collaborators ?? []
+      if (colls.length > 0) {
+        await prisma.videoCollaborator.createMany({
+          data: colls.map((c) => ({
+            videoId: created[i].id,
+            userId:  c.userId,
+            role:    c.role ?? null,
+          })),
+          skipDuplicates: true,
+        })
+      }
+    }
 
     return NextResponse.json(
       { created: created.length, ids: created.map((v) => v.id) },

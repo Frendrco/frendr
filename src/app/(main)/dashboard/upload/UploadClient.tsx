@@ -7,6 +7,7 @@ import { Upload, X, Search, Copy, Check, ArrowLeft, ImageIcon, Link2 } from "luc
 import { cn } from "@/lib/utils"
 import {
   detectProvider,
+  getDropboxRawUrl,
   getProviderLabel,
   getVideoEmbedUrl,
   getVideoThumbnail,
@@ -129,6 +130,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     id: crypto.randomUUID(), url: "", provider: null, title: "", description: "", thumbnailUrl: null, status: "idle",
   })
   const [bulkItems, setBulkItems] = useState<BulkItem[]>(() => [newBulkItem()])
+  const [dropboxUrlError, setDropboxUrlError] = useState<string | null>(null)
 
   // Shared metadata
   const [videoType, setVideoType]       = useState<VideoType>(initialType)
@@ -186,6 +188,24 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     const provider = detectProvider(url)
     setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, provider, status: "loading" } : item))
 
+    // Dropbox: validate and convert URL, no oembed needed
+    if (provider === "dropbox") {
+      const { rawUrl, error } = getDropboxRawUrl(url)
+      if (error) {
+        setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, provider, status: "error" } : item))
+        setDropboxUrlError(error)
+        return
+      }
+      const filename = (() => {
+        try { return new URL(url).pathname.split("/").pop()?.replace(/\.mp4$/i, "") ?? "" } catch { return "" }
+      })()
+      setBulkItems((prev) => prev.map((item) =>
+        item.id === id ? { ...item, url: rawUrl!, provider, status: "ready", title: item.title || filename } : item
+      ))
+      setDropboxUrlError(null)
+      return
+    }
+
     try {
       const res  = await fetch(`/api/videos/oembed?url=${encodeURIComponent(url)}`)
       const data = await res.json() as { title?: string | null; thumbnailUrl?: string | null; description?: string | null }
@@ -212,6 +232,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     setBulkItems((prev) => prev.map((item) =>
       item.id === id ? { ...item, url, provider: null, thumbnailUrl: null, status: "idle" } : item
     ))
+    setDropboxUrlError(null)
     const existing = bulkDebounce.current.get(id)
     if (existing) clearTimeout(existing)
     if (!url.trim()) return
@@ -266,6 +287,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     setUploadError(null)
     setProgress(0)
     setUploading(false)
+    setDropboxUrlError(null)
     if (next === "import") {
       setBulkItems([newBulkItem()])
     }
@@ -408,6 +430,35 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         }),
       })
       if (!res.ok) throw new Error("Could not import videos")
+      router.push(`/${username}`)
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Something went wrong")
+      setUploading(false)
+    }
+  }
+
+  async function handleDropboxImport() {
+    const rawUrl = bulkItems[0]?.url
+    if (!rawUrl || !title.trim() || !description.trim() || !thumbnail) return
+    setUploading(true); setUploadError(null)
+    try {
+      const res = await fetch("/api/videos/bulk-import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: [{
+            externalUrl:   rawUrl,
+            title:         title.trim(),
+            description:   description.trim(),
+            thumbnailUrl:  thumbnail,
+            categories,
+            tags,
+            videoType,
+            collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
+          }],
+        }),
+      })
+      if (!res.ok) throw new Error("Could not import video")
       router.push(`/${username}`)
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Something went wrong")
@@ -815,7 +866,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
               ? "Quick loops, tool tests, and explorations — no polish required."
               : mode === "upload"
               ? "Share your work with the frendr community."
-              : "Bring your Vimeo, YouTube, or Framerate work to your Frendr profile."}
+              : "Bring your Vimeo, YouTube, Framerate, or Dropbox work to your Frendr profile."}
           </p>
         </div>
 
@@ -1175,118 +1226,190 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         )}
 
         {/* ══ IMPORT MODE ══════════════════════════════════════ */}
-        {videoType !== "INTERACTIVE" && mode === "import" && (
-          <div className="flex flex-col gap-4">
+        {videoType !== "INTERACTIVE" && mode === "import" && (() => {
+          const isDropboxMode = bulkItems.length === 1 && bulkItems[0].provider === "dropbox"
+          const dropboxItem   = bulkItems[0]
 
-            <p className="font-sans text-xs text-foreground/50">
-              Paste up to 10 links — titles and thumbnails will be fetched automatically.
-            </p>
+          // ── Dropbox expanded form ──────────────────────────────
+          if (isDropboxMode) {
+            const canSubmit = !!thumbnail && title.trim().length > 0 && description.trim().length > 0 && !uploading
+            return (
+              <div className="flex flex-col gap-6">
 
-            {/* URL rows */}
-            <div className="flex flex-col gap-3">
-              {bulkItems.map((item, idx) => (
-                <div key={item.id} className="rounded-xl border border-border bg-white p-3 flex flex-col gap-2">
-
-                  {/* URL input row */}
+                {/* URL input */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-sans text-xs font-medium text-foreground/50">Dropbox URL</label>
                   <div className="relative flex items-center">
                     <Link2 size={14} className="absolute left-3 text-foreground/30 pointer-events-none" />
                     <input
-                      className="h-10 w-full rounded-lg border border-border bg-foreground/[0.02] pl-9 pr-28 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
-                      placeholder="Paste a YouTube, Vimeo, or Framerate link…"
-                      value={item.url}
-                      onChange={(e) => handleBulkUrlChange(item.id, e.target.value)}
+                      className="h-10 w-full rounded-lg border border-border bg-foreground/[0.02] pl-9 pr-24 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                      placeholder="Paste a Dropbox share link…"
+                      value={dropboxItem.url}
+                      onChange={(e) => handleBulkUrlChange(dropboxItem.id, e.target.value)}
                     />
                     <div className="absolute right-2 flex items-center gap-1.5">
-                      {item.status === "loading" && (
+                      {dropboxItem.status === "loading" && (
                         <span className="h-3.5 w-3.5 animate-spin rounded-full border border-border border-t-foreground/40" />
                       )}
-                      {item.provider && item.status !== "loading" && (
-                        <span className="rounded-full bg-core-black px-2 py-0.5 font-sans text-[10px] font-medium text-white">
-                          {getProviderLabel(item.provider)}
-                        </span>
-                      )}
-                      {idx > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => removeBulkItem(item.id)}
-                          className="flex h-6 w-6 items-center justify-center rounded-full text-foreground/30 hover:text-foreground/70 hover:bg-foreground/5 transition-colors"
-                        >
-                          <X size={12} />
-                        </button>
+                      {dropboxItem.status === "ready" && (
+                        <span className="rounded-full bg-core-black px-2 py-0.5 font-sans text-[10px] font-medium text-white">Dropbox</span>
                       )}
                     </div>
                   </div>
-
-                  {/* Meta row — shown once ready */}
-                  {item.status === "ready" && (
-                    <div className="flex items-center gap-2">
-                      {item.thumbnailUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={item.thumbnailUrl}
-                          alt=""
-                          className="h-[34px] w-[60px] shrink-0 rounded object-cover bg-foreground/5"
-                        />
-                      )}
-                      <input
-                        className="h-9 flex-1 rounded-lg border border-border bg-foreground/[0.02] px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
-                        placeholder="Video title…"
-                        value={item.title}
-                        onChange={(e) => updateBulkTitle(item.id, e.target.value)}
-                      />
-                    </div>
-                  )}
-
-                  {item.status === "error" && (
-                    <p className="font-sans text-xs text-red-500">Could not load metadata — check the URL and try again.</p>
+                  {dropboxUrlError ? (
+                    <p className="font-sans text-xs text-red-500">{dropboxUrlError}</p>
+                  ) : (
+                    <p className="font-sans text-[11px] text-foreground/40">MP4 files only. Recommended under 500 MB.</p>
                   )}
                 </div>
-              ))}
-            </div>
 
-            {/* Add row + ready count */}
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={addBulkItem}
-                disabled={bulkItems.length >= 10}
-                className="inline-flex items-center gap-1.5 font-sans text-sm text-foreground/50 hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <span className="flex h-5 w-5 items-center justify-center rounded-full border border-current text-xs leading-none">+</span>
-                Add another link
-              </button>
-              {(() => {
-                const n = bulkItems.filter((i) => i.status === "ready" && i.title.trim()).length
-                return n > 0 ? (
-                  <span className="font-sans text-xs text-foreground/40">
-                    {n} {n === 1 ? "video" : "videos"} ready to import
-                  </span>
-                ) : null
-              })()}
-            </div>
+                {/* Full metadata form — identical to regular upload */}
+                {dropboxItem.status === "ready" && (
+                  <>
+                    {metadataFields}
 
-            {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
+                    {!thumbnail && (
+                      <p className="font-sans text-xs text-foreground/40">A thumbnail is required for Dropbox imports.</p>
+                    )}
+                    {!description.trim() && thumbnail && (
+                      <p className="font-sans text-xs text-foreground/40">A description is required.</p>
+                    )}
 
-            <div className="mt-2 flex items-center justify-end gap-3 border-t border-border pt-5">
-              <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
-                Cancel
-              </Link>
-              {(() => {
-                const readyCount = bulkItems.filter((i) => i.status === "ready" && i.title.trim()).length
-                return (
-                  <button
-                    type="button"
-                    onClick={handleBulkImport}
-                    disabled={readyCount === 0 || uploading}
-                    className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
-                  >
-                    {uploading ? "Importing…" : `Import ${readyCount || ""} Video${readyCount !== 1 ? "s" : ""}`}
-                  </button>
-                )
-              })()}
+                    {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
+
+                    <div className="flex items-center justify-end gap-3 border-t border-border pt-5">
+                      <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
+                        Cancel
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={handleDropboxImport}
+                        disabled={!canSubmit}
+                        className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                      >
+                        {uploading ? "Importing…" : "Import from Dropbox"}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )
+          }
+
+          // ── Standard bulk import (YouTube, Vimeo, Framerate) ──
+          return (
+            <div className="flex flex-col gap-4">
+
+              <p className="font-sans text-xs text-foreground/50">
+                Paste up to 10 links — titles and thumbnails will be fetched automatically.
+              </p>
+
+              {/* URL rows */}
+              <div className="flex flex-col gap-3">
+                {bulkItems.map((item, idx) => (
+                  <div key={item.id} className="rounded-xl border border-border bg-white p-3 flex flex-col gap-2">
+
+                    {/* URL input row */}
+                    <div className="relative flex items-center">
+                      <Link2 size={14} className="absolute left-3 text-foreground/30 pointer-events-none" />
+                      <input
+                        className="h-10 w-full rounded-lg border border-border bg-foreground/[0.02] pl-9 pr-28 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                        placeholder="Paste a YouTube, Vimeo, Framerate, or Dropbox link…"
+                        value={item.url}
+                        onChange={(e) => handleBulkUrlChange(item.id, e.target.value)}
+                      />
+                      <div className="absolute right-2 flex items-center gap-1.5">
+                        {item.status === "loading" && (
+                          <span className="h-3.5 w-3.5 animate-spin rounded-full border border-border border-t-foreground/40" />
+                        )}
+                        {item.provider && item.status !== "loading" && (
+                          <span className="rounded-full bg-core-black px-2 py-0.5 font-sans text-[10px] font-medium text-white">
+                            {getProviderLabel(item.provider)}
+                          </span>
+                        )}
+                        {idx > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => removeBulkItem(item.id)}
+                            className="flex h-6 w-6 items-center justify-center rounded-full text-foreground/30 hover:text-foreground/70 hover:bg-foreground/5 transition-colors"
+                          >
+                            <X size={12} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Meta row — shown once ready */}
+                    {item.status === "ready" && (
+                      <div className="flex items-center gap-2">
+                        {item.thumbnailUrl && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.thumbnailUrl}
+                            alt=""
+                            className="h-[34px] w-[60px] shrink-0 rounded object-cover bg-foreground/5"
+                          />
+                        )}
+                        <input
+                          className="h-9 flex-1 rounded-lg border border-border bg-foreground/[0.02] px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                          placeholder="Video title…"
+                          value={item.title}
+                          onChange={(e) => updateBulkTitle(item.id, e.target.value)}
+                        />
+                      </div>
+                    )}
+
+                    {item.status === "error" && (
+                      <p className="font-sans text-xs text-red-500">Could not load metadata — check the URL and try again.</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Add row + ready count */}
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={addBulkItem}
+                  disabled={bulkItems.length >= 10}
+                  className="inline-flex items-center gap-1.5 font-sans text-sm text-foreground/50 hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full border border-current text-xs leading-none">+</span>
+                  Add another link
+                </button>
+                {(() => {
+                  const n = bulkItems.filter((i) => i.status === "ready" && i.title.trim()).length
+                  return n > 0 ? (
+                    <span className="font-sans text-xs text-foreground/40">
+                      {n} {n === 1 ? "video" : "videos"} ready to import
+                    </span>
+                  ) : null
+                })()}
+              </div>
+
+              {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
+
+              <div className="mt-2 flex items-center justify-end gap-3 border-t border-border pt-5">
+                <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
+                  Cancel
+                </Link>
+                {(() => {
+                  const readyCount = bulkItems.filter((i) => i.status === "ready" && i.title.trim()).length
+                  return (
+                    <button
+                      type="button"
+                      onClick={handleBulkImport}
+                      disabled={readyCount === 0 || uploading}
+                      className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                    >
+                      {uploading ? "Importing…" : `Import ${readyCount || ""} Video${readyCount !== 1 ? "s" : ""}`}
+                    </button>
+                  )
+                })()}
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
       </div>
     </div>
