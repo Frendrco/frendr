@@ -9,6 +9,11 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: "/waitlist", destination: "/", permanent: true },
+    ]
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }]
   },
