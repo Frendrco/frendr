@@ -196,6 +196,18 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         setDropboxUrlError(error)
         return
       }
+      // Check file size via HEAD request before accepting
+      try {
+        const head = await fetch(rawUrl!, { method: "HEAD" })
+        const bytes = parseInt(head.headers.get("content-length") ?? "0", 10)
+        if (bytes > 0 && bytes > 50 * 1024 * 1024) {
+          setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, provider, status: "error" } : item))
+          setDropboxUrlError(`File is ${Math.round(bytes / 1024 / 1024)} MB — over the 50 MB limit. Compress to H.264 before importing.`)
+          return
+        }
+      } catch {
+        // CORS or network issue — let it through, size check is best-effort
+      }
       const filename = (() => {
         try { return new URL(url).pathname.split("/").pop()?.replace(/\.mp4$/i, "") ?? "" } catch { return "" }
       })()
