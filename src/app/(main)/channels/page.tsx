@@ -1,6 +1,12 @@
+import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { ChannelsClient } from "./ChannelsClient"
+
+export const metadata: Metadata = {
+  title: "Channels",
+  description: "Curated collections of the best motion design and creative video.",
+}
 
 export default async function ChannelsPage() {
   const { userId: clerkId } = await auth()

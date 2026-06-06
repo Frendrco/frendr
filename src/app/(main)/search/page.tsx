@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { Sparkles } from "lucide-react"
@@ -11,6 +12,11 @@ import { ExploreSort } from "./ExploreSort"
 import { FollowButton } from "@/components/common/FollowButton"
 import { CONTENT_TAGS, VIDEO_TAGS } from "@/lib/categories"
 import { TagBar } from "./TagBar"
+
+export const metadata: Metadata = {
+  title: "Discover",
+  description: "Browse motion design, animation, and creative video from the world's best creators.",
+}
 
 const COLOR_MAP: Record<string, string> = {
   "spring-green":   "bg-spring-green/60",
