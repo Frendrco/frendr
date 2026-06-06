@@ -84,13 +84,13 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
       const hls = new HlsClass({
         startLevel: 0,        // start at lowest quality immediately, no probing delay
-        autoLevelCapping: 0,  // stay at lowest — no ABR switching mid-preview
         maxBufferLength: 20,  // buffer a bit more to avoid stalls
       })
       hlsRef.current = hls
       hls.loadSource(src)
       hls.attachMedia(videoEl)
       hls.on(HlsClass.Events.MANIFEST_PARSED, () => {
+        hls.nextAutoLevel = 0  // pin to lowest quality — no ABR switching mid-preview
         videoEl.play().catch(() => {})
       })
       videoEl.addEventListener('canplay', onCanPlay, { once: true })
