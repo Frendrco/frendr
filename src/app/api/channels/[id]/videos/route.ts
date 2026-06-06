@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
+import { createNotification } from "@/lib/notifications"
 
 // POST /api/channels/[id]/videos — add a video to a channel
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -24,11 +25,28 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { videoId } = await req.json()
   if (!videoId) return NextResponse.json({ error: "videoId required" }, { status: 400 })
 
+  const existing = await prisma.channelVideo.findUnique({ where: { channelId_videoId: { channelId, videoId } } })
+
   const entry = await prisma.channelVideo.upsert({
     where: { channelId_videoId: { channelId, videoId } },
     create: { channelId, videoId, addedBy: user.id },
     update: {},
   })
+
+  // Notify the video owner if it's a new add and they're not the one doing it
+  if (!existing) {
+    const video = await prisma.video.findUnique({ where: { id: videoId }, select: { userId: true } })
+    if (video && video.userId !== user.id) {
+      createNotification({
+        userId: video.userId,
+        type: "channel_add",
+        fromUserId: user.id,
+        contentId: videoId,
+        contentType: "video",
+        message: JSON.stringify({ channelName: channel.name, channelSlug: channel.slug }),
+      }).catch(() => {})
+    }
+  }
 
   return NextResponse.json(entry, { status: 201 })
 }

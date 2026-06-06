@@ -121,6 +121,40 @@ export function buildFollowEmail(recipientName: string, actorName: string, actor
   return { subject, html }
 }
 
+export function buildFrendrPickEmail(recipientName: string, videoTitle: string, videoId: string): { subject: string; html: string } {
+  const subject = `Your video was featured as a Frendr Pick ✨`
+  const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /></head>
+<body style="margin:0;padding:0;background:#F1ECE9;font-family:sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F1ECE9;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
+        <tr><td style="background:#5CE65C;padding:20px 32px;">
+          <span style="font-size:18px;font-weight:700;color:#000;">frendr</span>
+        </td></tr>
+        <tr><td style="padding:32px 32px 8px;">
+          <p style="margin:0;font-size:16px;font-weight:600;color:#111;">Hi ${recipientName},</p>
+        </td></tr>
+        <tr><td style="padding:12px 32px 0;">
+          <p style="margin:0;font-size:15px;color:#111;line-height:1.6;">
+            ✨&nbsp; Your video <strong>${videoTitle}</strong> was hand-picked by the Frendr team and is now featured as a <strong>Frendr Pick</strong> — shown to the whole community on the homepage.
+          </p>
+        </td></tr>
+        <tr><td style="padding:28px 32px 32px;">
+          <a href="${APP_URL}/v/${videoId}" style="display:inline-block;background:#000;color:#fff;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;">View your video →</a>
+        </td></tr>
+        <tr><td style="padding:16px 32px;border-top:1px solid #eee;">
+          <p style="margin:0;font-size:12px;color:#999;">You're receiving this because your work was featured on Frendr. <a href="${APP_URL}/dashboard/settings" style="color:#999;">Manage notifications</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+  return { subject, html }
+}
+
 export function buildTrendingEmail(recipientName: string, videoTitle: string, milestone: number, videoId: string): { subject: string; html: string } {
   const subject = `Your video just hit ${milestone.toLocaleString()} views on Frendr`
   const html = `<!DOCTYPE html>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Bell, Megaphone } from "lucide-react"
+import { Bell, Megaphone, Sparkles, Tv } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -26,6 +26,13 @@ function parseCreditRequest(n: Notification): { videoTitle: string; role: string
 
 function notifMessage(n: Notification) {
   if (n.type === "announcement") return n.message ?? "New announcement"
+  if (n.type === "frendr_pick") return "Your video was featured as a Frendr Pick ✨"
+  if (n.type === "channel_add") {
+    try {
+      const d = JSON.parse(n.message ?? "{}") as { channelName?: string }
+      return `Your video was added to ${d.channelName ?? "a channel"}`
+    } catch { return "Your video was added to a channel" }
+  }
   if (n.type === "credit_request") {
     const data = parseCreditRequest(n)
     const name = data?.ownerName ?? n.fromUser?.displayName ?? "Someone"
@@ -47,6 +54,10 @@ function notifMessage(n: Notification) {
 function notifUrl(n: Notification) {
   switch (n.type) {
     case "announcement": return "#"
+    case "frendr_pick": return n.contentId ? `/v/${n.contentId}` : "/"
+    case "channel_add": {
+      try { const d = JSON.parse(n.message ?? "{}") as { channelSlug?: string }; return d.channelSlug ? `/channels/${d.channelSlug}` : "/channels" } catch { return "/channels" }
+    }
     case "follow":  return n.fromUser?.username ? `/${n.fromUser.username}` : "/"
     case "message": return "/messages"
     case "credit_request": {
@@ -226,6 +237,14 @@ export function NotificationsBell() {
                     {n.type === "announcement" ? (
                       <div className="flex h-full w-full items-center justify-center bg-spring-green">
                         <Megaphone size={14} className="text-core-black" />
+                      </div>
+                    ) : n.type === "frendr_pick" ? (
+                      <div className="flex h-full w-full items-center justify-center bg-spring-green">
+                        <Sparkles size={14} className="text-core-black" />
+                      </div>
+                    ) : n.type === "channel_add" ? (
+                      <div className="flex h-full w-full items-center justify-center bg-core-black">
+                        <Tv size={14} className="text-white" />
                       </div>
                     ) : n.fromUser?.avatarUrl ? (
                       <Image src={n.fromUser.avatarUrl} alt={n.fromUser.displayName} width={32} height={32} className="h-full w-full object-cover" />

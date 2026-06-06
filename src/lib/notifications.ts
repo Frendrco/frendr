@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma"
-import { resend, FROM, buildFollowEmail, buildTrendingEmail } from "@/lib/email"
+import { resend, FROM, buildFollowEmail, buildTrendingEmail, buildFrendrPickEmail } from "@/lib/email"
 import { sendPushToUser } from "@/lib/push"
 
-type NotificationType = "follow" | "comment" | "reply" | "message" | "vote" | "announcement" | "trending"
+type NotificationType = "follow" | "comment" | "reply" | "message" | "vote" | "announcement" | "trending" | "channel_add" | "frendr_pick"
 
 type CreateParams = {
   userId: string
@@ -61,6 +61,19 @@ async function sendPush(params: CreateParams) {
       body = params.message ?? "New announcement"
       url = `${appUrl}/`
       break
+    case "channel_add": {
+      let channelName = "a channel"
+      try { channelName = params.message ? (JSON.parse(params.message) as { channelName?: string }).channelName ?? channelName : channelName } catch {}
+      title = "Your video was added to a channel"
+      body = `It was added to ${channelName}`
+      url = params.contentId ? `${appUrl}/v/${params.contentId}` : `${appUrl}/`
+      break
+    }
+    case "frendr_pick":
+      title = "You've been featured as a Frendr Pick ✨"
+      body = "Your video was hand-picked by the Frendr team"
+      url = params.contentId ? `${appUrl}/v/${params.contentId}` : `${appUrl}/`
+      break
     default:
       return
   }
@@ -89,6 +102,16 @@ async function sendImmediateEmail(params: CreateParams) {
     await resend.emails.send({ from: FROM, to: recipient.email, subject, html })
   }
 
+  if (params.type === "frendr_pick") {
+    const [recipient, video] = await Promise.all([
+      prisma.user.findUnique({ where: { id: params.userId }, select: { email: true, displayName: true } }),
+      params.contentId ? prisma.video.findUnique({ where: { id: params.contentId }, select: { title: true } }) : null,
+    ])
+    if (!recipient?.email || !video) return
+    const { subject, html } = buildFrendrPickEmail(recipient.displayName, video.title, params.contentId!)
+    await resend.emails.send({ from: FROM, to: recipient.email, subject, html })
+  }
+
   if (params.type === "trending") {
     const [recipient, video] = await Promise.all([
       prisma.user.findUnique({
@@ -107,9 +130,9 @@ async function sendImmediateEmail(params: CreateParams) {
 }
 
 async function enqueueEmail(params: CreateParams) {
-  if (params.type === "vote" || params.type === "announcement") return
+  if (params.type === "vote" || params.type === "announcement" || params.type === "channel_add") return
 
-  if (params.type === "follow" || params.type === "trending") {
+  if (params.type === "follow" || params.type === "trending" || params.type === "frendr_pick") {
     return sendImmediateEmail(params)
   }
 
