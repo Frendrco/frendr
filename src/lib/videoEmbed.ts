@@ -25,7 +25,7 @@ export function getProviderLabel(provider: Provider): string {
 
 export function getDropboxRawUrl(url: string): { rawUrl: string | null; error: string | null } {
   if (!url.toLowerCase().includes(".mp4")) {
-    return { rawUrl: null, error: "Dropbox imports support MP4 files only. For other formats, upload directly." }
+    return { rawUrl: null, error: "Dropbox imports support MP4 files only." }
   }
   try {
     const u = new URL(url)

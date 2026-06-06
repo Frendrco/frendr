@@ -439,7 +439,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
 
   async function handleDropboxImport() {
     const rawUrl = bulkItems[0]?.url
-    if (!rawUrl || !title.trim() || !description.trim() || !thumbnail) return
+    if (!rawUrl || !title.trim() || !thumbnail) return
     setUploading(true); setUploadError(null)
     try {
       const res = await fetch("/api/videos/bulk-import", {
@@ -1232,7 +1232,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
 
           // ── Dropbox expanded form ──────────────────────────────
           if (isDropboxMode) {
-            const canSubmit = !!thumbnail && title.trim().length > 0 && description.trim().length > 0 && !uploading
+            const canSubmit = !!thumbnail && title.trim().length > 0 && !uploading
             return (
               <div className="flex flex-col gap-6">
 
@@ -1270,9 +1270,6 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
 
                     {!thumbnail && (
                       <p className="font-sans text-xs text-foreground/40">A thumbnail is required for Dropbox imports.</p>
-                    )}
-                    {!description.trim() && thumbnail && (
-                      <p className="font-sans text-xs text-foreground/40">A description is required.</p>
                     )}
 
                     {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
