@@ -14,6 +14,15 @@ function extractOgTag(html: string, prop: string): string | null {
   )
 }
 
+function resolveUrl(value: string | null, base: string): string | null {
+  if (!value) return null
+  try {
+    return new URL(value, base).href
+  } catch {
+    return value
+  }
+}
+
 async function scrapeOpenGraph(url: string): Promise<VideoMetadata> {
   try {
     const res = await fetch(url, {
@@ -24,7 +33,7 @@ async function scrapeOpenGraph(url: string): Promise<VideoMetadata> {
     const html = await res.text()
     return {
       title:        extractOgTag(html, "title"),
-      thumbnailUrl: extractOgTag(html, "image"),
+      thumbnailUrl: resolveUrl(extractOgTag(html, "image"), url),
       description:  extractOgTag(html, "description"),
     }
   } catch {
