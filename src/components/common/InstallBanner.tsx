@@ -34,7 +34,7 @@ export function InstallBanner() {
       <div className="flex items-center gap-3 shrink-0">
         <Link
           href="/download"
-          className="inline-flex h-7 items-center px-4 rounded-full bg-white text-core-black font-sans font-medium text-xs transition-transform hover:scale-105"
+          className="inline-flex h-7 items-center px-4 rounded-full bg-bloom-lavender text-core-black font-sans font-medium text-xs transition-transform hover:scale-105"
         >
           Get the app
         </Link>
