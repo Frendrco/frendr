@@ -20,10 +20,15 @@ const HERO_CLIPS = [
   "/videos/hero/clip-4.mp4",
 ]
 
+const FADE_OUT_MS = 150
+const FADE_IN_MS  = 800
+
 export function HeroSection({ children }: { children?: ReactNode }) {
   const { scrollY } = useScroll()
   const [hoveredId, setHoveredId] = useState<number | null>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [leavingId, setLeavingId] = useState<number | null>(null)
+  const hoverTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const unmountTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Blobs — larger = faster, more exaggerated movement
   const blob4Y = useTransform(scrollY, [0, 800], [0, -280])  // 208px — largest, fastest
@@ -38,15 +43,23 @@ export function HeroSection({ children }: { children?: ReactNode }) {
   const logoY     = useTransform(scrollY, [0, 800], [0, -110])
 
   function handleHoverStart(id: number) {
-    if (timerRef.current) clearTimeout(timerRef.current)
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current)
+    if (unmountTimerRef.current) clearTimeout(unmountTimerRef.current)
     setHoveredId(id)
     // Auto-fade back to colour after 4.5s even while still hovering
-    timerRef.current = setTimeout(() => setHoveredId(null), 4500)
+    hoverTimerRef.current = setTimeout(() => {
+      setLeavingId(id)
+      setHoveredId(null)
+      unmountTimerRef.current = setTimeout(() => setLeavingId(null), FADE_IN_MS)
+    }, 4500)
   }
 
   function handleHoverEnd() {
-    if (timerRef.current) clearTimeout(timerRef.current)
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current)
+    setLeavingId(hoveredId)
     setHoveredId(null)
+    if (unmountTimerRef.current) clearTimeout(unmountTimerRef.current)
+    unmountTimerRef.current = setTimeout(() => setLeavingId(null), FADE_IN_MS)
   }
 
   return (
@@ -56,6 +69,7 @@ export function HeroSection({ children }: { children?: ReactNode }) {
       {BLOBS.map((b, i) => {
         const clip = HERO_CLIPS[i] ?? ""
         const isHovered = hoveredId === b.id
+        const isMounted = isHovered || leavingId === b.id
         return (
           <motion.div
             key={b.id}
@@ -64,13 +78,8 @@ export function HeroSection({ children }: { children?: ReactNode }) {
             onHoverStart={() => clip && handleHoverStart(b.id)}
             onHoverEnd={handleHoverEnd}
           >
-            {/* Colour fill */}
-            <div
-              className={`absolute inset-0 ${b.bg} transition-opacity duration-500 ease-in-out`}
-              style={{ opacity: isHovered ? 0 : 1 }}
-            />
-            {/* Video — mounted only while hovered to avoid loading 4 streams on page load */}
-            {clip && isHovered && (
+            {/* Video — below colour in stacking order; stays mounted during fade-in */}
+            {clip && isMounted && (
               <video
                 autoPlay
                 muted
@@ -81,6 +90,14 @@ export function HeroSection({ children }: { children?: ReactNode }) {
                 <source src={clip} type="video/mp4" />
               </video>
             )}
+            {/* Colour — on top; fast fade-out on hover, slow fade-in on leave */}
+            <div
+              className={`absolute inset-0 ${b.bg}`}
+              style={{
+                opacity: isHovered ? 0 : 1,
+                transition: `opacity ${isHovered ? FADE_OUT_MS : FADE_IN_MS}ms ${isHovered ? 'ease-out' : 'ease-in-out'}`,
+              }}
+            />
           </motion.div>
         )
       })}
