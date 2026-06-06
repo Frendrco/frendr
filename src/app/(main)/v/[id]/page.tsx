@@ -269,12 +269,13 @@ export default async function VideoPage({ params }: Props) {
             {video.tags.length > 0 && (
               <div className="mt-5 flex flex-wrap justify-center md:justify-start gap-1.5">
                 {video.tags.map((tag) => (
-                  <span
+                  <Link
                     key={tag}
-                    className="rounded-full border border-border px-3 py-1 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors cursor-pointer"
+                    href={`/search?tag=${encodeURIComponent(tag)}`}
+                    className="rounded-full border border-border px-3 py-1 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
                   >
                     {tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
             )}

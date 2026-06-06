@@ -235,9 +235,13 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
       {!hideTags && video.tags.length > 0 && (
         <div className="flex gap-1">
           {video.tags.slice(0, 2).map((tag) => (
-            <span key={tag} className="rounded-full border border-border px-2 py-0.5 font-sans text-[10px] text-foreground/40">
+            <Link
+              key={tag}
+              href={`/search?tag=${encodeURIComponent(tag)}`}
+              className="rounded-full border border-border px-2 py-0.5 font-sans text-[10px] text-foreground/40 hover:border-foreground/30 hover:text-foreground transition-colors"
+            >
               {tag}
-            </span>
+            </Link>
           ))}
         </div>
       )}
