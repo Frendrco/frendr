@@ -1,29 +1,11 @@
 'use client'
 
-import { useState, useRef, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Play, Sparkles } from "lucide-react"
-import type Hls from 'hls.js'
 import { timeAgo } from "@/lib/utils"
 import { AddToPlaylistButton } from "./AddToPlaylistButton"
 import { AddToChannelButton } from "./AddToChannelButton"
-
-// Cached after the first hover — shared across all card instances
-let HlsClass: typeof Hls | null = null
-
-// Scroll guard — prevents hover-play from firing while the user is scrolling.
-// Shared across all card instances; a single passive listener for the whole page.
-let scrolling = false
-let scrollTimer: ReturnType<typeof setTimeout> | null = null
-function onWindowScroll() {
-  scrolling = true
-  if (scrollTimer) clearTimeout(scrollTimer)
-  scrollTimer = setTimeout(() => { scrolling = false }, 300)
-}
-if (typeof window !== 'undefined') {
-  window.addEventListener('scroll', onWindowScroll, { passive: true })
-}
 
 export type VideoCardData = {
   id: string
@@ -62,72 +44,8 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
   const rounded = roundedSize === "2xl" ? "rounded-2xl" : "rounded-xl"
 
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const hlsRef = useRef<Hls | null>(null)
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const cancelledRef = useRef(false)
-  const [isPlaying, setIsPlaying] = useState(false)
-
-  const handleMouseEnter = useCallback(async () => {
-    if (!video.streamId || scrolling) return
-    cancelledRef.current = false
-    debounceRef.current = setTimeout(async () => {
-      const videoEl = videoRef.current
-      if (!videoEl || cancelledRef.current) return
-
-      const src = `https://videodelivery.net/${video.streamId}/manifest/video.m3u8`
-
-      const onCanPlay = () => setIsPlaying(true)
-
-      // Native HLS — Safari
-      if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-        videoEl.src = src
-        videoEl.addEventListener('canplay', onCanPlay, { once: true })
-        videoEl.play().catch(() => {})
-        return
-      }
-
-      // HLS.js — Chrome / Firefox (lazy-loaded once, then cached)
-      if (!HlsClass) {
-        const mod = await import('hls.js')
-        HlsClass = mod.default
-      }
-      // Guard: user may have left during the async import
-      if (cancelledRef.current || !HlsClass.isSupported()) return
-
-      const hls = new HlsClass({
-        startLevel: 0,        // start at lowest quality immediately, no probing delay
-        maxBufferLength: 20,  // buffer a bit more to avoid stalls
-      })
-      hlsRef.current = hls
-      hls.loadSource(src)
-      hls.attachMedia(videoEl)
-      hls.on(HlsClass.Events.MANIFEST_PARSED, () => {
-        hls.nextAutoLevel = 0  // pin to lowest quality — no ABR switching mid-preview
-        videoEl.play().catch(() => {})
-      })
-      videoEl.addEventListener('canplay', onCanPlay, { once: true })
-    }, 200)
-  }, [video.streamId])
-
-  const handleMouseLeave = useCallback(() => {
-    cancelledRef.current = true
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    setIsPlaying(false)
-    const videoEl = videoRef.current
-    if (videoEl) {
-      videoEl.pause()
-      videoEl.removeAttribute('src')
-      videoEl.load()
-    }
-    if (hlsRef.current) {
-      hlsRef.current.destroy()
-      hlsRef.current = null
-    }
-  }, [])
-
   return (
-    <div className="group flex flex-col gap-2" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div className="group flex flex-col gap-2">
       {/* Thumbnail + overlay */}
       <div className={`relative aspect-video overflow-hidden ${rounded} bg-mist-grey`}>
         {video.thumbnailUrl ? (
@@ -140,18 +58,6 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
           />
         ) : (
           <div className="h-full w-full bg-mist-grey" />
-        )}
-
-        {/* Video preview — fades in once canplay fires, sits above thumbnail */}
-        {video.streamId && (
-          <video
-            ref={videoRef}
-            muted
-            loop
-            playsInline
-            preload="none"
-            className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0'}`}
-          />
         )}
 
         {/* Frendr Picks badge */}
@@ -170,8 +76,8 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
         {/* Hover overlay — pointer-events-none so link stays clickable */}
         <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/40 transition-all duration-300 pointer-events-none">
-          {/* Play icon — hidden once video is playing */}
-          <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 opacity-0 ${!isPlaying ? 'group-hover:opacity-100' : ''}`}>
+          {/* Play icon */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg">
               <Play size={16} className="ml-0.5 text-core-black" fill="currentColor" />
             </div>
