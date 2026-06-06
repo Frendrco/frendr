@@ -71,12 +71,7 @@ export function HeroSection({ children }: { children?: ReactNode }) {
             onHoverStart={() => clip && handleHoverStart(b.id)}
             onHoverEnd={handleHoverEnd}
           >
-            {/* Colour fill */}
-            <div
-              className={`absolute inset-0 ${b.bg} transition-opacity duration-500 ease-in-out`}
-              style={{ opacity: isHovered ? 0 : 1 }}
-            />
-            {/* Video — mounted while hovered + 500ms after to allow colour to crossfade back in */}
+            {/* Video — below colour in stacking order */}
             {clip && isMounted && (
               <video
                 autoPlay
@@ -88,6 +83,11 @@ export function HeroSection({ children }: { children?: ReactNode }) {
                 <source src={clip} type="video/mp4" />
               </video>
             )}
+            {/* Colour fill — on top, fades out to reveal video, fades back in on hover-off */}
+            <div
+              className={`absolute inset-0 ${b.bg} transition-opacity duration-500 ease-in-out`}
+              style={{ opacity: isHovered ? 0 : 1 }}
+            />
           </motion.div>
         )
       })}
