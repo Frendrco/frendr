@@ -69,15 +69,14 @@ export function HeroSection({ children }: { children?: ReactNode }) {
               className={`absolute inset-0 ${b.bg} transition-opacity duration-500 ease-in-out`}
               style={{ opacity: isHovered ? 0 : 1 }}
             />
-            {/* Video — preloads in background, fades in on hover */}
-            {clip && (
+            {/* Video — mounted only while hovered to avoid loading 4 streams on page load */}
+            {clip && isHovered && (
               <video
                 autoPlay
                 muted
                 loop
                 playsInline
                 className="absolute inset-0 w-full h-full object-cover"
-                style={{ opacity: isHovered ? 1 : 0, transition: "opacity 0.3s ease-in-out" }}
               >
                 <source src={clip} type="video/mp4" />
               </video>

@@ -421,11 +421,18 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: ready.map((i) => ({
-            externalUrl:  i.url,
-            title:        i.title.trim(),
-            description:  i.description.trim() || null,
-            thumbnailUrl: i.thumbnailUrl,
+            externalUrl:   i.url,
+            title:         i.title.trim(),
+            description:   i.description.trim() || null,
+            thumbnailUrl:  i.thumbnailUrl,
             videoType,
+            categories,
+            tags,
+            isPublic,
+            isAiGenerated,
+            embedAutoplay: autoplay,
+            embedLoop:     loop,
+            collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
           })),
         }),
       })
@@ -484,6 +491,157 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
   }
 
   const field = "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+
+  // ── Credits / categories / tags / toggles — shared between upload and import ──
+  const sharedImportFields = (
+    <>
+      {/* Credits / Collaborators */}
+      <div className="flex flex-col gap-2">
+        <label className="font-sans text-xs font-medium text-foreground/50">Credits</label>
+        {collabs.length > 0 && (
+          <div className="flex flex-col gap-1.5">
+            {collabs.map((c) => (
+              <span key={c.id} className="inline-flex items-center gap-2 rounded-full border border-border bg-foreground/[0.06] pl-1.5 pr-2.5 py-1 font-sans text-xs text-core-black self-start">
+                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden ${c.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
+                  {c.avatarUrl
+                    // eslint-disable-next-line @next/next/no-img-element
+                    ? <img src={c.avatarUrl} alt={c.displayName} className="h-full w-full object-cover" />
+                    : <span className="font-bold text-[8px] text-core-black">{c.displayName[0].toUpperCase()}</span>
+                  }
+                </span>
+                {c.displayName}
+                <span className="text-foreground/30">·</span>
+                <input
+                  type="text"
+                  value={c.role}
+                  onChange={(e) => updateCollabRole(c.id, e.target.value)}
+                  placeholder="Role…"
+                  className="w-20 bg-transparent placeholder:text-foreground/35 text-core-black focus:outline-none"
+                />
+                <button type="button" onClick={() => removeCollab(c.id)} className="text-foreground/40 hover:text-foreground transition-colors"><X size={11} /></button>
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="relative">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-white px-3 h-11">
+            <Search size={13} className="shrink-0 text-foreground/30" />
+            <input
+              className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+              placeholder="Search by name or @handle…"
+              value={collabSearch}
+              onChange={(e) => setCollabSearch(e.target.value)}
+            />
+            {collabLoading && <span className="h-3.5 w-3.5 animate-spin rounded-full border border-border border-t-foreground/40 shrink-0" />}
+          </div>
+          {collabResults.length > 0 && (
+            <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-border bg-white shadow-lg">
+              {collabResults
+                .filter((r) => !collabs.find((c) => c.id === r.id))
+                .map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => addCollab(r)}
+                    className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors"
+                  >
+                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full overflow-hidden ${r.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
+                      {r.avatarUrl
+                        // eslint-disable-next-line @next/next/no-img-element
+                        ? <img src={r.avatarUrl} alt={r.displayName} className="h-full w-full object-cover" />
+                        : <span className="font-bold text-[9px] text-core-black">{r.displayName[0].toUpperCase()}</span>
+                      }
+                    </span>
+                    <div className="text-left">
+                      <p className="font-sans text-sm font-medium text-core-black">{r.displayName}</p>
+                      <p className="font-sans text-xs text-foreground/40">@{r.username}</p>
+                    </div>
+                  </button>
+                ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Category — guided discovery */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-baseline justify-between">
+          <label className="font-sans text-xs font-medium text-foreground/50">Category</label>
+          <span className="font-sans text-xs text-foreground/30">{categories.length}/{MAX_CATEGORIES}</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {CONTENT_TAGS.map((cat) => {
+            const on    = categories.includes(cat)
+            const maxed = !on && categories.length >= MAX_CATEGORIES
+            return (
+              <button key={cat} type="button" onClick={() => toggleCategory(cat)} disabled={maxed}
+                className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                  on ? "border-core-black bg-core-black text-white"
+                    : maxed ? "border-border text-foreground/25 cursor-not-allowed"
+                    : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                )}
+              >{cat}</button>
+            )
+          })}
+        </div>
+        <p className="font-sans text-xs text-foreground/30">Helps people find your work in discovery. Pick up to {MAX_CATEGORIES}.</p>
+      </div>
+
+      {/* Tags — free-form search tags */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-baseline justify-between">
+          <label className="font-sans text-xs font-medium text-foreground/50">Tags <span className="text-foreground/30">(optional)</span></label>
+          <span className="font-sans text-xs text-foreground/30">{tags.length}/{MAX_TAGS}</span>
+        </div>
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {tags.map((t) => (
+              <span key={t} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black px-3 py-0.5 font-sans text-xs font-medium text-white">
+                {t}
+                <button type="button" onClick={() => toggleTag(t)} className="hover:opacity-60 transition-opacity"><X size={10} /></button>
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="flex flex-col gap-2 rounded-xl border border-border bg-white p-3">
+          <div className="flex items-center gap-2 rounded-lg border border-border px-3 h-9">
+            <Search size={13} className="shrink-0 text-foreground/30" />
+            <input className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+              placeholder="Search tags…" value={tagSearch} onChange={(e) => setTagSearch(e.target.value)} />
+          </div>
+          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+            {VIDEO_TAGS.filter((t) => t.toLowerCase().includes(tagSearch.toLowerCase())).map((t) => {
+              const on    = tags.includes(t)
+              const maxed = !on && tags.length >= MAX_TAGS
+              return (
+                <button key={t} type="button" onClick={() => toggleTag(t)} disabled={maxed}
+                  className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                    on ? "border-core-black bg-core-black text-white"
+                      : maxed ? "border-border text-foreground/25 cursor-not-allowed"
+                      : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                  )}
+                >{t}</button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Make public */}
+      <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
+        description="Your video will appear in the Discover feed and on your profile." />
+
+      {/* AI content */}
+      <Toggle on={isAiGenerated} onToggle={() => setIsAiGenerated((v) => !v)} label="AI Generated Content"
+        description="Let viewers know if this video was created with the help of AI tools." />
+
+      {/* Playback */}
+      <Toggle on={autoplay} onToggle={() => setAutoplay((v) => !v)} label="Autoplay"
+        description="Video starts playing as soon as it loads." />
+      <Toggle on={loop} onToggle={() => setLoop((v) => !v)} label="Loop"
+        description="Replay automatically when the video ends." />
+    </>
+  )
 
   // ── Shared metadata fields (used in both modes) ──────────────
   const metadataFields = (
@@ -632,151 +790,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         />
       </div>
 
-      {/* Credits / Collaborators */}
-      <div className="flex flex-col gap-2">
-        <label className="font-sans text-xs font-medium text-foreground/50">Credits</label>
-        {collabs.length > 0 && (
-          <div className="flex flex-col gap-1.5">
-            {collabs.map((c) => (
-              <span key={c.id} className="inline-flex items-center gap-2 rounded-full border border-border bg-foreground/[0.06] pl-1.5 pr-2.5 py-1 font-sans text-xs text-core-black self-start">
-                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden ${c.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
-                  {c.avatarUrl
-                    // eslint-disable-next-line @next/next/no-img-element
-                    ? <img src={c.avatarUrl} alt={c.displayName} className="h-full w-full object-cover" />
-                    : <span className="font-bold text-[8px] text-core-black">{c.displayName[0].toUpperCase()}</span>
-                  }
-                </span>
-                {c.displayName}
-                <span className="text-foreground/30">·</span>
-                <input
-                  type="text"
-                  value={c.role}
-                  onChange={(e) => updateCollabRole(c.id, e.target.value)}
-                  placeholder="Role…"
-                  className="w-20 bg-transparent placeholder:text-foreground/35 text-core-black focus:outline-none"
-                />
-                <button type="button" onClick={() => removeCollab(c.id)} className="text-foreground/40 hover:text-foreground transition-colors"><X size={11} /></button>
-              </span>
-            ))}
-          </div>
-        )}
-        <div className="relative">
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-white px-3 h-11">
-            <Search size={13} className="shrink-0 text-foreground/30" />
-            <input
-              className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
-              placeholder="Search by name or @handle…"
-              value={collabSearch}
-              onChange={(e) => setCollabSearch(e.target.value)}
-            />
-            {collabLoading && <span className="h-3.5 w-3.5 animate-spin rounded-full border border-border border-t-foreground/40 shrink-0" />}
-          </div>
-          {collabResults.length > 0 && (
-            <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-border bg-white shadow-lg">
-              {collabResults
-                .filter((r) => !collabs.find((c) => c.id === r.id))
-                .map((r) => (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => addCollab(r)}
-                    className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors"
-                  >
-                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full overflow-hidden ${r.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
-                      {r.avatarUrl
-                        // eslint-disable-next-line @next/next/no-img-element
-                        ? <img src={r.avatarUrl} alt={r.displayName} className="h-full w-full object-cover" />
-                        : <span className="font-bold text-[9px] text-core-black">{r.displayName[0].toUpperCase()}</span>
-                      }
-                    </span>
-                    <div className="text-left">
-                      <p className="font-sans text-sm font-medium text-core-black">{r.displayName}</p>
-                      <p className="font-sans text-xs text-foreground/40">@{r.username}</p>
-                    </div>
-                  </button>
-                ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Category — guided discovery */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-baseline justify-between">
-          <label className="font-sans text-xs font-medium text-foreground/50">Category</label>
-          <span className="font-sans text-xs text-foreground/30">{categories.length}/{MAX_CATEGORIES}</span>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {CONTENT_TAGS.map((cat) => {
-            const on    = categories.includes(cat)
-            const maxed = !on && categories.length >= MAX_CATEGORIES
-            return (
-              <button key={cat} type="button" onClick={() => toggleCategory(cat)} disabled={maxed}
-                className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
-                  on ? "border-core-black bg-core-black text-white"
-                    : maxed ? "border-border text-foreground/25 cursor-not-allowed"
-                    : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
-                )}
-              >{cat}</button>
-            )
-          })}
-        </div>
-        <p className="font-sans text-xs text-foreground/30">Helps people find your work in discovery. Pick up to {MAX_CATEGORIES}.</p>
-      </div>
-
-      {/* Tags — free-form search tags */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-baseline justify-between">
-          <label className="font-sans text-xs font-medium text-foreground/50">Tags <span className="text-foreground/30">(optional)</span></label>
-          <span className="font-sans text-xs text-foreground/30">{tags.length}/{MAX_TAGS}</span>
-        </div>
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {tags.map((t) => (
-              <span key={t} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black px-3 py-0.5 font-sans text-xs font-medium text-white">
-                {t}
-                <button type="button" onClick={() => toggleTag(t)} className="hover:opacity-60 transition-opacity"><X size={10} /></button>
-              </span>
-            ))}
-          </div>
-        )}
-        <div className="flex flex-col gap-2 rounded-xl border border-border bg-white p-3">
-          <div className="flex items-center gap-2 rounded-lg border border-border px-3 h-9">
-            <Search size={13} className="shrink-0 text-foreground/30" />
-            <input className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
-              placeholder="Search tags…" value={tagSearch} onChange={(e) => setTagSearch(e.target.value)} />
-          </div>
-          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
-            {VIDEO_TAGS.filter((t) => t.toLowerCase().includes(tagSearch.toLowerCase())).map((t) => {
-              const on    = tags.includes(t)
-              const maxed = !on && tags.length >= MAX_TAGS
-              return (
-                <button key={t} type="button" onClick={() => toggleTag(t)} disabled={maxed}
-                  className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
-                    on ? "border-core-black bg-core-black text-white"
-                      : maxed ? "border-border text-foreground/25 cursor-not-allowed"
-                      : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
-                  )}
-                >{t}</button>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Make public */}
-      <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
-        description="Your video will appear in the Discover feed and on your profile." />
-
-      {/* AI content */}
-      <Toggle on={isAiGenerated} onToggle={() => setIsAiGenerated((v) => !v)} label="AI Generated Content"
-        description="Let viewers know if this video was created with the help of AI tools." />
-
-      {/* Playback */}
-      <Toggle on={autoplay} onToggle={() => setAutoplay((v) => !v)} label="Autoplay"
-        description="Video starts playing as soon as it loads." />
-      <Toggle on={loop} onToggle={() => setLoop((v) => !v)} label="Loop"
-        description="Replay automatically when the video ends." />
+      {sharedImportFields}
     </>
   )
 
@@ -1382,6 +1396,12 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                     </span>
                   ) : null
                 })()}
+              </div>
+
+              {/* Settings applied to all imported videos */}
+              <div className="border-t border-border pt-5 flex flex-col gap-5">
+                <p className="font-sans text-xs font-medium text-foreground/50">Settings applied to all imported videos</p>
+                {sharedImportFields}
               </div>
 
               {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}

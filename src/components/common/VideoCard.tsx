@@ -12,6 +12,19 @@ import { AddToChannelButton } from "./AddToChannelButton"
 // Cached after the first hover — shared across all card instances
 let HlsClass: typeof Hls | null = null
 
+// Scroll guard — prevents hover-play from firing while the user is scrolling.
+// Shared across all card instances; a single passive listener for the whole page.
+let scrolling = false
+let scrollTimer: ReturnType<typeof setTimeout> | null = null
+function onWindowScroll() {
+  scrolling = true
+  if (scrollTimer) clearTimeout(scrollTimer)
+  scrollTimer = setTimeout(() => { scrolling = false }, 300)
+}
+if (typeof window !== 'undefined') {
+  window.addEventListener('scroll', onWindowScroll, { passive: true })
+}
+
 export type VideoCardData = {
   id: string
   title: string
@@ -56,7 +69,7 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
   const [isPlaying, setIsPlaying] = useState(false)
 
   const handleMouseEnter = useCallback(async () => {
-    if (!video.streamId) return
+    if (!video.streamId || scrolling) return
     cancelledRef.current = false
     debounceRef.current = setTimeout(async () => {
       const videoEl = videoRef.current

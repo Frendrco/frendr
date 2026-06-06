@@ -11,13 +11,17 @@ export async function POST(req: Request) {
 
   const body = await req.json() as {
     items: {
-      externalUrl: string
-      title: string
-      description?: string | null
+      externalUrl:   string
+      title:         string
+      description?:  string | null
       thumbnailUrl?: string | null
-      videoType?: "PORTFOLIO" | "RECESS"
-      categories?: string[]
-      tags?: string[]
+      videoType?:    "PORTFOLIO" | "RECESS"
+      categories?:   string[]
+      tags?:         string[]
+      isPublic?:     boolean
+      isAiGenerated?: boolean
+      embedAutoplay?: boolean
+      embedLoop?:    boolean
       collaborators?: { userId: string; role?: string | null }[]
     }[]
   }
@@ -41,7 +45,10 @@ export async function POST(req: Request) {
             title:        item.title.trim(),
             description:  item.description?.trim() || null,
             thumbnailUrl: item.thumbnailUrl ?? null,
-            isPublic:     true,
+            isPublic:     item.isPublic      ?? true,
+            isAiGenerated: item.isAiGenerated ?? false,
+            embedAutoplay: item.embedAutoplay ?? false,
+            embedLoop:     item.embedLoop     ?? false,
             videoType:    item.videoType ?? "PORTFOLIO",
             categories:   item.categories ?? [],
             tags:         item.tags ?? [],
