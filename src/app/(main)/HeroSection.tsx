@@ -23,7 +23,9 @@ const HERO_CLIPS = [
 export function HeroSection({ children }: { children?: ReactNode }) {
   const { scrollY } = useScroll()
   const [hoveredId, setHoveredId] = useState<number | null>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [leavingId, setLeavingId] = useState<number | null>(null)
+  const autoFadeRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const unmountRef   = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Blobs — larger = faster, more exaggerated movement
   const blob4Y = useTransform(scrollY, [0, 800], [0, -280])  // 208px — largest, fastest
@@ -38,15 +40,19 @@ export function HeroSection({ children }: { children?: ReactNode }) {
   const logoY     = useTransform(scrollY, [0, 800], [0, -110])
 
   function handleHoverStart(id: number) {
-    if (timerRef.current) clearTimeout(timerRef.current)
+    if (autoFadeRef.current) clearTimeout(autoFadeRef.current)
     setHoveredId(id)
     // Auto-fade back to colour after 4.5s even while still hovering
-    timerRef.current = setTimeout(() => setHoveredId(null), 4500)
+    autoFadeRef.current = setTimeout(() => setHoveredId(null), 4500)
   }
 
   function handleHoverEnd() {
-    if (timerRef.current) clearTimeout(timerRef.current)
+    if (autoFadeRef.current) clearTimeout(autoFadeRef.current)
+    // Keep video mounted for 500ms so the colour can fade back in over it
+    setLeavingId(hoveredId)
     setHoveredId(null)
+    if (unmountRef.current) clearTimeout(unmountRef.current)
+    unmountRef.current = setTimeout(() => setLeavingId(null), 500)
   }
 
   return (
@@ -56,6 +62,7 @@ export function HeroSection({ children }: { children?: ReactNode }) {
       {BLOBS.map((b, i) => {
         const clip = HERO_CLIPS[i] ?? ""
         const isHovered = hoveredId === b.id
+        const isMounted = isHovered || leavingId === b.id
         return (
           <motion.div
             key={b.id}
@@ -69,8 +76,8 @@ export function HeroSection({ children }: { children?: ReactNode }) {
               className={`absolute inset-0 ${b.bg} transition-opacity duration-500 ease-in-out`}
               style={{ opacity: isHovered ? 0 : 1 }}
             />
-            {/* Video — mounted only while hovered to avoid loading 4 streams on page load */}
-            {clip && isHovered && (
+            {/* Video — mounted while hovered + 500ms after to allow colour to crossfade back in */}
+            {clip && isMounted && (
               <video
                 autoPlay
                 muted
