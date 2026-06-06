@@ -23,6 +23,7 @@ const HERO_CLIPS = [
 export function HeroSection({ children }: { children?: ReactNode }) {
   const { scrollY } = useScroll()
   const [hoveredId, setHoveredId] = useState<number | null>(null)
+  const [playingId, setPlayingId] = useState<number | null>(null)
   const [leavingId, setLeavingId] = useState<number | null>(null)
   const autoFadeRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
   const unmountRef   = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -52,7 +53,10 @@ export function HeroSection({ children }: { children?: ReactNode }) {
     setLeavingId(hoveredId)
     setHoveredId(null)
     if (unmountRef.current) clearTimeout(unmountRef.current)
-    unmountRef.current = setTimeout(() => setLeavingId(null), 500)
+    unmountRef.current = setTimeout(() => {
+      setLeavingId(null)
+      setPlayingId(null)
+    }, 500)
   }
 
   return (
@@ -62,6 +66,7 @@ export function HeroSection({ children }: { children?: ReactNode }) {
       {BLOBS.map((b, i) => {
         const clip = HERO_CLIPS[i] ?? ""
         const isHovered = hoveredId === b.id
+        const isPlaying = playingId === b.id
         const isMounted = isHovered || leavingId === b.id
         return (
           <motion.div
@@ -78,15 +83,16 @@ export function HeroSection({ children }: { children?: ReactNode }) {
                 muted
                 loop
                 playsInline
+                onCanPlay={() => setPlayingId(b.id)}
                 className="absolute inset-0 w-full h-full object-cover"
               >
                 <source src={clip} type="video/mp4" />
               </video>
             )}
-            {/* Colour fill — on top, fades out to reveal video, fades back in on hover-off */}
+            {/* Colour fill — on top; fades out only once video is ready, fades back in on hover-off */}
             <div
               className={`absolute inset-0 ${b.bg} transition-opacity duration-500 ease-in-out`}
-              style={{ opacity: isHovered ? 0 : 1 }}
+              style={{ opacity: isHovered && isPlaying ? 0 : 1 }}
             />
           </motion.div>
         )
