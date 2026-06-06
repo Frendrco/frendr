@@ -3,11 +3,7 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { RecessCard, type RecessCardData } from "@/components/common/RecessCard"
-
-const TOOL_NAMES = [
-  "Blender", "Cinema 4D", "After Effects", "Cavalry",
-  "Houdini", "Rive", "Nuke", "DaVinci Resolve",
-]
+import { TOOL_TAGS } from "@/lib/categories"
 
 type Props = {
   videos: RecessCardData[]
@@ -18,12 +14,12 @@ export function RecessProfileGrid({ videos }: Props) {
   const [visibleCount, setVisibleCount] = useState(20)
 
   // Detect which tool tags actually appear in this set of videos
-  const presentTools = TOOL_NAMES.filter((tool) =>
-    videos.some((v) => v.tags.includes(tool))
+  const presentTools = TOOL_TAGS.filter((tool) =>
+    videos.some((v) => v.categories.includes(tool))
   )
 
   const filtered = activeTool
-    ? videos.filter((v) => v.tags.includes(activeTool))
+    ? videos.filter((v) => v.categories.includes(activeTool))
     : videos
 
   if (videos.length === 0) {

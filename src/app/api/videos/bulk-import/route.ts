@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { uniqueVideoSlug } from "@/lib/videoSlug"
 
 export async function POST(req: Request) {
   const { userId: clerkId } = await auth()
@@ -37,10 +38,13 @@ export async function POST(req: Request) {
   }
 
   try {
+    const slugs = await Promise.all(body.items.map(() => uniqueVideoSlug()))
+
     const created = await prisma.$transaction(
-      body.items.map((item) =>
+      body.items.map((item, i) =>
         prisma.video.create({
           data: {
+            slug:         slugs[i],
             externalUrl:  item.externalUrl.trim(),
             title:        item.title.trim(),
             description:  item.description?.trim() || null,
@@ -54,7 +58,7 @@ export async function POST(req: Request) {
             tags:         item.tags ?? [],
             userId:       user.id,
           },
-          select: { id: true },
+          select: { id: true, slug: true },
         })
       )
     )
@@ -75,7 +79,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { created: created.length, ids: created.map((v) => v.id) },
+      { created: created.length, ids: created.map((v) => v.id), slugs: created.map((v) => v.slug) },
       { status: 201 }
     )
   } catch (err) {

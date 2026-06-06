@@ -82,6 +82,7 @@ enum VideoType {
 
 model Video {
   id            String         @id @default(cuid())
+  slug          String?        @unique
   title         String
   description   String?
   streamId      String?

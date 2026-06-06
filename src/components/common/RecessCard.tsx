@@ -4,6 +4,7 @@ import { Heart } from "lucide-react"
 
 export type RecessCardData = {
   id: string
+  slug?: string | null
   title: string
   thumbnailUrl: string | null
   streamId?: string | null
@@ -60,7 +61,7 @@ export function RecessCard({ video, fixedWidth = false }: Props) {
   return (
     <div className={fixedWidth ? "w-[136px] sm:w-[168px] shrink-0" : "group flex flex-col gap-1.5"}>
       {/* Square thumbnail */}
-      <Link href={`/v/${video.id}`} className="relative block aspect-square overflow-hidden rounded-xl bg-[#111] group">
+      <Link href={`/v/${video.slug ?? video.id}`} className="relative block aspect-square overflow-hidden rounded-xl bg-[#111] group">
         {video.thumbnailUrl ? (
           <Image
             src={cfThumb(video.thumbnailUrl)!}

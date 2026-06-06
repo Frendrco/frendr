@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { getVideoThumbnail } from "@/lib/videoEmbed"
+import { uniqueVideoSlug } from "@/lib/videoSlug"
 
 export async function POST(req: Request) {
   const { userId: clerkId } = await auth()
@@ -37,9 +38,12 @@ export async function POST(req: Request) {
     ?? (streamId     ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?width=1280` : null)
     ?? (externalUrl  ? getVideoThumbnail(externalUrl) : null)
 
+  const slug = await uniqueVideoSlug()
+
   try {
     const video = await prisma.video.create({
       data: {
+        slug,
         streamId:      streamId       ?? null,
         externalUrl:   externalUrl    ?? null,
         title,

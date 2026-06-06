@@ -9,6 +9,7 @@ import { AddToChannelButton } from "./AddToChannelButton"
 
 export type VideoCardData = {
   id: string
+  slug?: string | null
   title: string
   thumbnailUrl: string | null
   streamId?: string | null
@@ -69,7 +70,7 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
         {/* Base link — covers full thumbnail for mobile taps */}
         <Link
-          href={`/v/${video.id}`}
+          href={`/v/${video.slug ?? video.id}`}
           className="absolute inset-0 z-10"
           aria-label={`Play ${video.title}`}
         />
@@ -106,14 +107,14 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
       {/* Meta */}
       {hideCreator ? (
-        <Link href={`/v/${video.id}`}>
+        <Link href={`/v/${video.slug ?? video.id}`}>
           <p className="truncate font-sans font-medium text-sm text-core-black leading-snug">{video.title}</p>
           {showTimestamp && (
             <p className="font-sans text-xs text-foreground/40">{timeAgo(video.createdAt)}</p>
           )}
         </Link>
       ) : (
-        <Link href={`/v/${video.id}`} className="flex items-start gap-2">
+        <Link href={`/v/${video.slug ?? video.id}`} className="flex items-start gap-2">
           <div className="mt-0.5 h-6 w-6 shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
             {video.user.avatarUrl ? (
               <Image

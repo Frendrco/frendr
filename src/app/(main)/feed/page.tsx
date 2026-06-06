@@ -135,6 +135,7 @@ export default async function FollowingPage() {
 
     recessVideos = creatorRecess.map(v => ({
       id: v.id,
+      slug: v.slug,
       title: v.title,
       thumbnailUrl: v.thumbnailUrl,
       streamId: v.streamId,

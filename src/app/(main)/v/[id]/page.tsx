@@ -75,8 +75,8 @@ export default async function VideoPage({ params }: Props) {
   const { userId: clerkId } = await auth()
 
   const [video, currentUser] = await Promise.all([
-    prisma.video.findUnique({
-      where: { id },
+    prisma.video.findFirst({
+      where: { OR: [{ slug: id }, { id }] },
       include: {
         user: true,
         _count: { select: { likes: true } },

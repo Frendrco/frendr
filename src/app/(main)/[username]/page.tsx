@@ -379,6 +379,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               <RecessProfileGrid
                 videos={recessVideos.map((v) => ({
                   id: v.id,
+                  slug: v.slug,
                   title: v.title,
                   thumbnailUrl: v.thumbnailUrl,
                   streamId: v.streamId,
@@ -437,6 +438,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   <ProfileVideoGrid
                     initialVideos={portfolioVideos.map((v) => ({
                       id: v.id,
+                      slug: v.slug,
                       title: v.title,
                       thumbnailUrl: v.thumbnailUrl,
                       streamId: v.streamId,
