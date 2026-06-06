@@ -146,8 +146,8 @@ export default async function VideoPage({ params }: Props) {
             externalUrl={video.externalUrl}
             title={video.title}
             streamStatus={streamStatus}
-            autoPlay={video.videoType === "RECESS"}
-            loop={video.videoType === "RECESS"}
+            autoPlay={video.embedAutoplay || video.videoType === "RECESS"}
+            loop={video.embedLoop || video.videoType === "RECESS"}
           />
         </div>
       </div>
