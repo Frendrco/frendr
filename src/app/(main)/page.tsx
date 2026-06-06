@@ -23,13 +23,18 @@ type Sort = "newest" | "trending"
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string }>
+  searchParams: Promise<{ sort?: string; category?: string }>
 }) {
-  const [{ sort: sortParam }, { userId }] = await Promise.all([searchParams, auth()])
+  const [{ sort: sortParam, category: categoryParam }, { userId }] = await Promise.all([searchParams, auth()])
   const sort: Sort = sortParam === "newest" ? "newest" : "trending"
+  const activeCategory = categoryParam && CONTENT_TAGS.includes(categoryParam) ? categoryParam : ""
 
   const videos = await prisma.video.findMany({
-    where: { isPublic: true, videoType: "PORTFOLIO" },
+    where: {
+      isPublic: true,
+      videoType: "PORTFOLIO",
+      ...(activeCategory ? { categories: { has: activeCategory } } : {}),
+    },
     orderBy: sort === "newest"
       ? { createdAt: "desc" }
       : [{ featured: "desc" }, { createdAt: "desc" }],
@@ -63,50 +68,65 @@ export default async function HomePage({
         )}
       </HeroSection>
 
-      <section className="bg-white pb-24">
+      <section id="explore" className="bg-white pb-24">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6">
 
           {/* Section header */}
           <div className="flex flex-col gap-4 py-12 md:flex-row md:items-end md:justify-between">
             <div className="text-center md:text-left">
-              <h2 className="display-sm text-core-black">Out of the oven</h2>
+              <h2 className="display-sm text-core-black">
+                {activeCategory ? activeCategory : "Out of the oven"}
+              </h2>
               <p className="mt-1 font-sans text-sm text-foreground/50">
                 The best motion design, animation, and video from the community.
               </p>
             </div>
             <div className="flex items-center justify-center gap-1 shrink-0 md:justify-start">
-              {(["trending", "newest"] as Sort[]).map(opt => (
-                <Link
-                  key={opt}
-                  scroll={false}
-                  href={opt === "trending" ? "/" : `/?sort=${opt}`}
-                  className={
-                    sort === opt
-                      ? "inline-flex h-8 items-center rounded-full bg-core-black px-4 font-sans text-xs font-medium text-white"
-                      : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
-                  }
-                >
-                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
-                </Link>
-              ))}
+              {(["trending", "newest"] as Sort[]).map(opt => {
+                const p = new URLSearchParams()
+                if (opt !== "trending") p.set("sort", opt)
+                if (activeCategory) p.set("category", activeCategory)
+                const qs = p.toString()
+                return (
+                  <Link
+                    key={opt}
+                    scroll={false}
+                    href={`/${qs ? `?${qs}` : ""}`}
+                    className={
+                      sort === opt
+                        ? "inline-flex h-8 items-center rounded-full bg-core-black px-4 font-sans text-xs font-medium text-white"
+                        : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
+                    }
+                  >
+                    {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                  </Link>
+                )
+              })}
             </div>
           </div>
 
           {/* Category filter pills */}
           <div className="mb-8 flex flex-wrap justify-center gap-2 md:justify-start">
-            {FILTER_PILLS.map((pill, i) => (
-              <Link
-                key={pill}
-                href={i === 0 ? "/search" : `/search?tag=${encodeURIComponent(pill)}`}
-                className={
-                  i === 0
-                    ? "inline-flex h-8 items-center rounded-full bg-spring-green px-4 font-sans text-xs font-medium text-core-black"
-                    : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
-                }
-              >
-                {pill}
-              </Link>
-            ))}
+            {FILTER_PILLS.map((pill) => {
+              const isActive = pill === "All" ? !activeCategory : pill === activeCategory
+              const p = new URLSearchParams()
+              if (sort !== "trending") p.set("sort", sort)
+              if (pill !== "All") p.set("category", pill)
+              const qs = p.toString()
+              return (
+                <Link
+                  key={pill}
+                  href={`/${qs ? `?${qs}` : ""}#explore`}
+                  className={
+                    isActive
+                      ? "inline-flex h-8 items-center rounded-full bg-spring-green px-4 font-sans text-xs font-medium text-core-black"
+                      : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
+                  }
+                >
+                  {pill}
+                </Link>
+              )
+            })}
           </div>
 
           {/* Grid */}
