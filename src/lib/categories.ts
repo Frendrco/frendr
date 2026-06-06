@@ -10,9 +10,6 @@ export const TOOL_TAGS = [
 ]
 
 export const VIDEO_TAGS = [
-  "Motion Design", "Animation", "3D", "VFX",
-  "2D Animation", "3D Animation", "3D Type", "Typography",
-  "Branding", "Commercial", "Music Video", "Short Film", "Film",
-  "Experimental", "Stop Motion", "Sound",
+  "2D Animation", "3D Animation", "3D Type", "Short Film",
   ...TOOL_TAGS,
 ]
