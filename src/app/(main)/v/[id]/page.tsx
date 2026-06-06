@@ -186,13 +186,6 @@ export default async function VideoPage({ params }: Props) {
                 {isAdmin && (
                   <FeatureButton videoId={video.id} initialFeatured={video.featured} />
                 )}
-                {isAdmin && (
-                  <AdminDeleteButton
-                    endpoint={`/api/admin/videos/${video.id}`}
-                    label="this video"
-                    redirectTo={`/${video.user.username}`}
-                  />
-                )}
                 <UpvoteButton
                   videoId={video.id}
                   initialUpvoted={!!upvoteData}
@@ -217,6 +210,13 @@ export default async function VideoPage({ params }: Props) {
                   </a>
                 )}
                 <ShareButton title={video.title} videoId={video.id} />
+                {isAdmin && (
+                  <AdminDeleteButton
+                    endpoint={`/api/admin/videos/${video.id}`}
+                    label="this video"
+                    redirectTo={`/${video.user.username}`}
+                  />
+                )}
                 {isOwner ? (
                   <VideoOwnerActions
                     videoId={video.id}
