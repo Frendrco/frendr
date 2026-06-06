@@ -49,7 +49,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     include: { user: { select: { displayName: true } } },
   })
   if (!video) return {}
-  return { title: `${video.title} by ${video.user.displayName} — frendr` }
+  const title = `${video.title} by ${video.user.displayName}`
+  const description = video.description ?? `Watch ${video.title} by ${video.user.displayName} on Frendr.`
+  const image = video.thumbnailUrl ?? "/og-image.png"
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image, width: 1280, height: 720 }],
+      type: "video.other",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
+  }
 }
 
 export default async function VideoPage({ params }: Props) {

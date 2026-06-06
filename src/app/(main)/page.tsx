@@ -1,9 +1,27 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { HeroSection } from "./HeroSection"
 import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore"
 import { CONTENT_TAGS } from "@/lib/categories"
+
+export const metadata: Metadata = {
+  title: "Frendr — Real craft. Real community.",
+  description: "The new home for creative video. Discover, share, and showcase motion design, animation, and visual art from the world's best creators.",
+  openGraph: {
+    title: "Frendr — Real craft. Real community.",
+    description: "The new home for creative video. Discover, share, and showcase motion design, animation, and visual art from the world's best creators.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Frendr — Real craft. Real community.",
+    description: "The new home for creative video. Discover, share, and showcase motion design, animation, and visual art from the world's best creators.",
+    images: ["/og-image.png"],
+  },
+}
 
 // ── Constants ─────────────────────────────────────────────
 
