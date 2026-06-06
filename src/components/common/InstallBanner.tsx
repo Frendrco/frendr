@@ -7,10 +7,16 @@ export function InstallBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    // Don't show if already dismissed or running as installed PWA
+    // If running as installed PWA, record it permanently and never show banner
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      localStorage.setItem("pwa-installed", "1")
+      return
+    }
+
+    // Don't show if already dismissed or previously launched as installed PWA
     if (
       localStorage.getItem("install-banner-dismissed") ||
-      window.matchMedia("(display-mode: standalone)").matches
+      localStorage.getItem("pwa-installed")
     ) return
 
     // Only show after 2+ dashboard visits
