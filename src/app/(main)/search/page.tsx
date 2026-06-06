@@ -3,7 +3,6 @@ import Link from "next/link"
 import { Sparkles } from "lucide-react"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
-import { cn } from "@/lib/utils"
 import { FrendrSelectsMarquee } from "./FrendrSelectsMarquee"
 import { VideoCard } from "@/components/common/VideoCard"
 import { VideoGridWithLoadMore } from "@/components/common/VideoGridWithLoadMore"
@@ -11,6 +10,7 @@ import { RecessCard } from "@/components/common/RecessCard"
 import { ExploreSort } from "./ExploreSort"
 import { FollowButton } from "@/components/common/FollowButton"
 import { CONTENT_TAGS, VIDEO_TAGS } from "@/lib/categories"
+import { TagBar } from "./TagBar"
 
 const COLOR_MAP: Record<string, string> = {
   "spring-green":   "bg-spring-green/60",
@@ -41,6 +41,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const { q = "", tag = "", sort = "newest", type = "" } = await searchParams
   const query = q.trim()
   const activeTag = tag || "All"
+  const isCategoryTag = CONTENT_TAGS.includes(activeTag)
   const isSearching = query.length > 0
   const isRecessView = type === "recess"
   const activeSort = (["newest", "trending", "following"].includes(sort) ? sort : "newest") as SortValue
@@ -74,9 +75,18 @@ export default async function SearchPage({ searchParams }: Props) {
     : isRecessView
     ? { isPublic: true, videoType: "RECESS" as const }
     : activeSort === "following"
-    ? { userId: { in: followingIds }, videoType: "PORTFOLIO" as const, ...(activeTag !== "All" ? { categories: { has: activeTag } } : {}) }
+    ? {
+        userId: { in: followingIds },
+        videoType: "PORTFOLIO" as const,
+        ...(activeTag !== "All"
+          ? (isCategoryTag ? { categories: { has: activeTag } } : { tags: { has: activeTag } })
+          : {}),
+      }
     : activeTag !== "All"
-    ? { categories: { has: activeTag }, videoType: "PORTFOLIO" as const }
+    ? {
+        ...(isCategoryTag ? { categories: { has: activeTag } } : { tags: { has: activeTag } }),
+        videoType: "PORTFOLIO" as const,
+      }
     : { videoType: "PORTFOLIO" as const, isPublic: true }
 
   const videoOrderBy =
@@ -179,22 +189,7 @@ export default async function SearchPage({ searchParams }: Props) {
       {/* ── Sticky tag bar ── */}
       <div className="sticky top-16 z-40 bg-white border-b border-border">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6">
-          <div className="flex items-center gap-2 py-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {TAGS.map(t => (
-              <Link
-                key={t}
-                href={t === "All" ? "/search" : `/search?tag=${encodeURIComponent(t)}`}
-                className={cn(
-                  "shrink-0 inline-flex items-center rounded-full px-4 h-8 font-sans font-medium text-sm transition-colors",
-                  !isSearching && activeTag === t
-                    ? "bg-spring-green text-core-black"
-                    : "border border-border bg-transparent text-foreground/60 hover:text-foreground hover:border-foreground/30"
-                )}
-              >
-                {t}
-              </Link>
-            ))}
-          </div>
+          <TagBar tags={TAGS} activeTag={activeTag} isSearching={isSearching} />
         </div>
       </div>
 

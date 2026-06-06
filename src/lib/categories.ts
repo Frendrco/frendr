@@ -6,7 +6,7 @@ export const CONTENT_TAGS = [
 
 export const TOOL_TAGS = [
   "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini",
-  "Moho", "Toon Boom", "Rive", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI",
+  "Moho", "Toon Boom", "Nuke", "DaVinci Resolve", "TouchDesigner", "AI",
 ]
 
 export const VIDEO_TAGS = [
