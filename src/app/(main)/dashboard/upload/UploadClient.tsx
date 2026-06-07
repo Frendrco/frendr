@@ -1058,7 +1058,7 @@ export function UploadClient({
                 {Math.floor(uploadedSeconds / 60)}m {uploadedSeconds % 60}s of {Math.floor(freeSeconds / 60)}m free used
               </p>
               <button type="button" onClick={startCheckout} className="font-sans text-xs text-spring-green hover:underline">
-                Upgrade for €6/mo
+                Upgrade for €8/mo
               </button>
             </div>
             <div className="h-1.5 rounded-full bg-border overflow-hidden">
@@ -1073,9 +1073,9 @@ export function UploadClient({
         {/* Paywall */}
         {showPaywall && (
           <div className="rounded-2xl border border-border bg-mist-grey p-8 text-center">
-            <p className="font-sans font-bold text-lg text-core-black mb-1">You&apos;ve used your 10 free minutes</p>
+            <p className="font-sans font-bold text-lg text-core-black mb-1">You&apos;ve used your 20 free minutes</p>
             <p className="font-sans text-sm text-foreground/50 mb-6">
-              Upgrade to Frendr Pro to keep uploading — unlimited storage for just €6/month.
+              Upgrade to Frendr Pro to keep uploading — unlimited storage for just €8/month.
             </p>
             <button
               type="button"
@@ -1083,7 +1083,7 @@ export function UploadClient({
               disabled={checkoutLoading}
               className="inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-colors hover:bg-spring-green/90 disabled:opacity-60"
             >
-              {checkoutLoading ? "Loading…" : "Upgrade for €6/month"}
+              {checkoutLoading ? "Loading…" : "Upgrade for €8/month"}
             </button>
             <p className="mt-4 font-sans text-xs text-foreground/40">Cancel anytime. Import from Vimeo, YouTube, and Framerate is always free.</p>
           </div>
