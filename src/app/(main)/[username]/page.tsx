@@ -161,10 +161,10 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
             {/* Name + role */}
             <div className="mb-4 flex flex-col gap-1 items-center md:items-start text-center md:text-left">
-              <div className="flex flex-wrap items-baseline justify-center md:justify-start gap-x-1.5 gap-y-0">
-                <h1 className="font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
+              <div className="text-center md:text-left">
+                <h1 className="inline font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
                 {user.pronouns && (
-                  <span className="font-sans text-xs text-foreground/35">{user.pronouns}</span>
+                  <span className="ml-1.5 font-sans text-xs text-foreground/35">{user.pronouns}</span>
                 )}
               </div>
               {user.role && (
