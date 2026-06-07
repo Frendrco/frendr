@@ -224,7 +224,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             {user.bio && (
               <div className="mb-4">
                 <p className="mb-1 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 text-center md:text-left">Bio</p>
-                <p className="font-sans text-xs leading-relaxed text-foreground/60">{user.bio}</p>
+                <p className="font-sans text-xs leading-relaxed text-foreground/60 text-center md:text-left">{user.bio}</p>
               </div>
             )}
 
@@ -248,7 +248,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             {/* Skills */}
             {user.tags.length > 0 && (
               <div className="mb-5">
-                <p className="mb-2 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30">Skills</p>
+                <p className="mb-2 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 text-center md:text-left">Skills</p>
                 <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                   {user.tags.map((tag) => (
                     <span key={tag} className="rounded-full border border-border px-2.5 py-0.5 font-sans text-xs text-foreground/60">
@@ -262,7 +262,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             {/* Vibes */}
             {(user.vibes ?? []).length > 0 && (
               <div className="mb-5">
-                <p className="mb-2 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30">Vibes</p>
+                <p className="mb-2 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 text-center md:text-left">Vibes</p>
                 <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                   {(user.vibes ?? []).map((v) => (
                     <span key={v} className="rounded-full border border-border bg-white px-2.5 py-0.5 font-sans text-xs text-foreground/60">
