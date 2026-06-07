@@ -19,7 +19,7 @@ const MAX_CATEGORIES = 3
 const MAX_TAGS = 5
 const MAX_RECESS_TOOLS = 3
 const MAX_FILE_BYTES = 500 * 1024 * 1024 // 500 MB
-const DESC_MAX = 500
+const DESC_MAX = 1000
 const FRAME_COUNT = 6
 
 type Mode       = "upload" | "import"
@@ -1002,12 +1002,11 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {videoType === "RECESS" && (
               <div className="flex flex-col gap-6">
                 <div>
-                  <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="hidden" onChange={handleVideoInput} />
+                  <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="hidden" onChange={handleVideoInput} />
                   <div
                     onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                     onDragLeave={() => setDragging(false)}
                     onDrop={handleVideoDrop}
-                    onClick={() => !file && fileInputRef.current?.click()}
                     className={cn(
                       "relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150",
                       file ? "border-border cursor-default"
@@ -1050,7 +1049,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                         </button>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center gap-3">
+                      <label htmlFor="video-upload" className="flex cursor-pointer flex-col items-center gap-3">
                         <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                           <Upload size={20} className="text-foreground/35" />
                         </div>
@@ -1058,10 +1057,10 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                           <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
                           <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
                         </div>
-                      </div>
+                      </label>
                     )}
                   </div>
-                  <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 only · up to 200 MB</p>
+                  <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 or MOV · up to 500 MB</p>
                 </div>
 
                 {recessMetadataFields}
@@ -1089,12 +1088,11 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                   <div className="flex flex-col gap-6">
                     {/* Video drop zone */}
                     <div>
-                      <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="hidden" onChange={handleVideoInput} />
+                      <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="hidden" onChange={handleVideoInput} />
                       <div
                         onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                         onDragLeave={() => setDragging(false)}
                         onDrop={handleVideoDrop}
-                        onClick={() => !file && fileInputRef.current?.click()}
                         className={cn(
                           "relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150",
                           file ? "border-border cursor-default"
@@ -1137,7 +1135,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                             </button>
                           </div>
                         ) : (
-                          <div className="flex flex-col items-center gap-3">
+                          <label htmlFor="video-upload" className="flex cursor-pointer flex-col items-center gap-3">
                             <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                               <Upload size={20} className="text-foreground/35" />
                             </div>
@@ -1145,10 +1143,10 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                               <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
                               <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
                             </div>
-                          </div>
+                          </label>
                         )}
                       </div>
-                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 only · up to 200 MB</p>
+                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 or MOV · up to 500 MB</p>
                     </div>
 
                     {metadataFields}
