@@ -39,7 +39,7 @@ export default async function FrendsPage() {
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-12">
 
-        <div className="mb-10">
+        <div className="mb-10 text-center sm:text-left">
           <h1 className="display-sm text-core-black">Frends</h1>
           <p className="mt-2 font-sans text-sm text-foreground/50">
             {members.length} creator{members.length === 1 ? "" : "s"} on Frendr
