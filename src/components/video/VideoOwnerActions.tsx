@@ -334,18 +334,28 @@ export function VideoOwnerActions({
                       <label className="font-sans text-sm font-medium text-core-black">Tools used</label>
                       <span className="font-sans text-xs text-foreground/40">{recessTools.length}/{MAX_RECESS_TOOLS}</span>
                     </div>
+                    {recessTools.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {recessTools.map((tool) => (
+                          <span key={tool} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black px-3 py-0.5 font-sans text-xs font-medium text-white">
+                            {tool}
+                            <button type="button" onClick={() => setRecessTools((prev) => prev.filter((t) => t !== tool))} className="hover:opacity-60 transition-opacity">
+                              <X size={10} />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <div className="flex flex-wrap gap-1.5">
-                      {RECESS_TOOLS.map((tool) => {
-                        const on    = recessTools.includes(tool)
-                        const maxed = !on && recessTools.length >= MAX_RECESS_TOOLS
+                      {RECESS_TOOLS.filter((t) => !recessTools.includes(t)).map((tool) => {
+                        const maxed = recessTools.length >= MAX_RECESS_TOOLS
                         return (
                           <button key={tool} type="button"
-                            onClick={() => setRecessTools((prev) => on ? prev.filter((t) => t !== tool) : maxed ? prev : [...prev, tool])}
+                            onClick={() => !maxed && setRecessTools((prev) => [...prev, tool])}
                             disabled={maxed}
                             className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
-                              on    ? "border-core-black bg-core-black text-white"
-                                : maxed ? "border-border text-foreground/25 cursor-not-allowed"
-                                : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                              maxed ? "border-border text-foreground/25 cursor-not-allowed"
+                                    : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
                             )}
                           >{tool}</button>
                         )
