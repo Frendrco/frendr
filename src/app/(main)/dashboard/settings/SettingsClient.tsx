@@ -618,7 +618,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
             <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
               <div>
                 <p className="font-sans text-sm font-medium text-core-black">Frendr Pro</p>
-                <p className="font-sans text-xs text-foreground/40">Unlimited video uploads · €8/month</p>
+                <p className="font-sans text-xs text-foreground/40">Unlimited video uploads · $8/month</p>
               </div>
               <button
                 type="button"
@@ -641,7 +641,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
                 disabled={checkoutLoading}
                 className="inline-flex h-8 items-center px-4 rounded-full bg-spring-green text-core-black font-sans font-medium text-xs transition-colors hover:bg-spring-green/90 disabled:opacity-60"
               >
-                {checkoutLoading ? "Loading…" : "Upgrade · €8/mo"}
+                {checkoutLoading ? "Loading…" : "Upgrade · $8/mo"}
               </button>
             </div>
           )}
