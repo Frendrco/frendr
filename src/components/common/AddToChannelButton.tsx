@@ -114,16 +114,16 @@ export function AddToChannelButton({ videoId, triggerClassName }: { videoId: str
                     className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors disabled:opacity-50"
                   >
                     <span
-                      className="h-4 w-4 shrink-0 rounded-full border border-border"
-                      style={{ background: ch.color ?? "#e5e7eb" }}
-                    />
+                      className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors"
+                      style={ch.inChannel
+                        ? { background: "#5CE65C", borderColor: "#5CE65C" }
+                        : { background: ch.color ?? "#e5e7eb", borderColor: "#e5e7eb" }
+                      }
+                    >
+                      {ch.inChannel && <Check size={9} className="text-core-black" strokeWidth={3} />}
+                    </span>
                     <span className="flex-1 truncate font-sans text-sm text-left text-core-black">{ch.name}</span>
-                    {saving === ch.id
-                      ? <Loader2 size={13} className="shrink-0 animate-spin text-foreground/40" />
-                      : ch.inChannel
-                        ? <Check size={13} className="shrink-0 text-spring-green" strokeWidth={2.5} />
-                        : null
-                    }
+                    {saving === ch.id && <Loader2 size={13} className="shrink-0 animate-spin text-foreground/40" />}
                   </button>
                 ))}
                 {error && (
