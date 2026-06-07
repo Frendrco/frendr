@@ -700,24 +700,22 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {/* ─ Upload image ─ */}
             {thumbMode === "upload" && (
               <>
-                <input ref={thumbInputRef} type="file" accept="image/*" className="hidden" onChange={handleThumbInput} />
+                <input id="thumb-upload" ref={thumbInputRef} type="file" accept="image/*" className="hidden" onChange={handleThumbInput} />
                 {thumbnail ? (
                   <div className="relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={thumbnail} alt="Thumbnail preview" className="max-h-64 w-full object-contain rounded-lg bg-black" />
-                    <button type="button"
-                      onClick={() => thumbInputRef.current?.click()}
-                      className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-black/50 px-3 py-1.5 font-sans text-xs text-white backdrop-blur hover:bg-black/70 transition-colors"
+                    <label htmlFor="thumb-upload"
+                      className="absolute bottom-2 right-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/50 px-3 py-1.5 font-sans text-xs text-white backdrop-blur hover:bg-black/70 transition-colors"
                     >
                       <ImageIcon size={11} /> Replace
-                    </button>
+                    </label>
                   </div>
                 ) : (
-                  <div
+                  <label htmlFor="thumb-upload"
                     onDragOver={(e) => { e.preventDefault(); setThumbDragging(true) }}
                     onDragLeave={() => setThumbDragging(false)}
                     onDrop={handleThumbDrop}
-                    onClick={() => thumbInputRef.current?.click()}
                     className={cn(
                       "flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors",
                       thumbDragging ? "border-spring-green bg-spring-green/5" : "border-border hover:border-foreground/25"
@@ -728,7 +726,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       Drop an image or click to browse
                     </p>
                     <p className="font-sans text-[11px] text-foreground/25">JPG, PNG, WebP · any aspect ratio</p>
-                  </div>
+                  </label>
                 )}
               </>
             )}
