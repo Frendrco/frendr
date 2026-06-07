@@ -700,19 +700,19 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {/* ─ Upload image ─ */}
             {thumbMode === "upload" && (
               <>
-                <input id="thumb-upload" ref={thumbInputRef} type="file" accept="image/*" className="sr-only" onChange={handleThumbInput} />
                 {thumbnail ? (
                   <div className="relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={thumbnail} alt="Thumbnail preview" className="max-h-64 w-full object-contain rounded-lg bg-black" />
-                    <label htmlFor="thumb-upload"
+                    <label
                       className="absolute bottom-2 right-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/50 px-3 py-1.5 font-sans text-xs text-white backdrop-blur hover:bg-black/70 transition-colors"
                     >
+                      <input ref={thumbInputRef} type="file" accept="image/*" onChange={handleThumbInput} className="absolute opacity-0 w-px h-px" />
                       <ImageIcon size={11} /> Replace
                     </label>
                   </div>
                 ) : (
-                  <label htmlFor="thumb-upload"
+                  <label
                     onDragOver={(e) => { e.preventDefault(); setThumbDragging(true) }}
                     onDragLeave={() => setThumbDragging(false)}
                     onDrop={handleThumbDrop}
@@ -721,6 +721,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       thumbDragging ? "border-spring-green bg-spring-green/5" : "border-border hover:border-foreground/25"
                     )}
                   >
+                    <input ref={thumbInputRef} type="file" accept="image/*" onChange={handleThumbInput} className="absolute opacity-0 w-px h-px" />
                     <ImageIcon size={20} className="text-foreground/25" />
                     <p className="font-sans text-xs text-foreground/40">
                       Drop an image or click to browse
@@ -1002,7 +1003,6 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {videoType === "RECESS" && (
               <div className="flex flex-col gap-6">
                 <div>
-                  <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="sr-only" onChange={handleVideoInput} />
                   {file || uploading ? (
                     <div
                       onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
@@ -1048,7 +1048,6 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                     </div>
                   ) : (
                     <label
-                      htmlFor="video-upload"
                       onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                       onDragLeave={() => setDragging(false)}
                       onDrop={handleVideoDrop}
@@ -1058,6 +1057,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                                  : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                       )}
                     >
+                      <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 w-px h-px" />
                       <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                         <Upload size={20} className="text-foreground/35" />
                       </div>
@@ -1095,7 +1095,6 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                   <div className="flex flex-col gap-6">
                     {/* Video drop zone */}
                     <div>
-                      <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="sr-only" onChange={handleVideoInput} />
                       {file || uploading ? (
                         <div
                           onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
@@ -1141,7 +1140,6 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                         </div>
                       ) : (
                         <label
-                          htmlFor="video-upload"
                           onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                           onDragLeave={() => setDragging(false)}
                           onDrop={handleVideoDrop}
@@ -1151,6 +1149,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                                      : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                           )}
                         >
+                          <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 w-px h-px" />
                           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                             <Upload size={20} className="text-foreground/35" />
                           </div>
