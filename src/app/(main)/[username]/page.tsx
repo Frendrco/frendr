@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import Image from "next/image"
 import Link from "next/link"
-import { MapPin, Globe } from "lucide-react"
+import { MapPin, Globe, Lock } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { AvailableForWork } from "@/components/common/AvailableForWork"
 import { FollowButton } from "@/components/common/FollowButton"
@@ -13,6 +13,7 @@ import { EditProfileModal } from "./EditProfileModal"
 import { ProfileVideoGrid } from "./ProfileVideoGrid"
 import { RecessProfileGrid } from "./RecessProfileGrid"
 import { RiveCard } from "@/components/common/RiveCard"
+import { PlaylistCardActions } from "./playlists/PlaylistCardActions"
 import { AdminDeleteButton } from "@/app/(main)/admin/AdminDeleteButton"
 import type { Metadata } from "next"
 
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProfilePage({ params, searchParams }: Props) {
   const [{ username }, { tab: tabParam }] = await Promise.all([params, searchParams])
-  const activeTab = tabParam === "recess" ? "recess" : tabParam === "interactive" ? "interactive" : "videos"
+  const activeTab = tabParam === "recess" ? "recess" : tabParam === "interactive" ? "interactive" : tabParam === "playlists" ? "playlists" : "videos"
   const { userId: clerkId } = await auth()
 
   const user = await prisma.user.findUnique({
@@ -71,6 +72,17 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   })
 
   const isOwn = clerkId === user.clerkId
+
+  const playlists = activeTab === "playlists"
+    ? await prisma.playlist.findMany({
+        where: { userId: user.id, ...(isOwn ? {} : { isPublic: true, isDefault: false }) },
+        orderBy: { createdAt: "asc" },
+        include: {
+          videos: { take: 4, orderBy: { position: "asc" }, include: { video: { select: { thumbnailUrl: true } } } },
+          _count: { select: { videos: true } },
+        },
+      })
+    : []
 
   const avatarUrl = user.avatarUrl ?? null
 
@@ -360,9 +372,13 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   Interactive
                 </Link>
                 <Link
-                  href={`/${username}/playlists`}
+                  href={`/${username}?tab=playlists`}
                   scroll={false}
-                  className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/40 hover:text-foreground/70 transition-colors"
+                  className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
+                    activeTab === "playlists"
+                      ? "border-core-black text-core-black"
+                      : "border-transparent text-foreground/40 hover:text-foreground/70"
+                  }`}
                 >
                   Playlists
                 </Link>
@@ -394,8 +410,73 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               )
             )}
 
+            {/* Playlists tab */}
+            {activeTab === "playlists" && (
+              playlists.length === 0 ? (
+                <div className="flex flex-col items-center gap-3 py-24 text-center">
+                  <p className="font-sans font-semibold text-base text-core-black">No playlists yet</p>
+                  <p className="font-sans text-sm text-foreground/40">
+                    {isOwn ? "Hover over any video and click the bookmark icon to save it to a playlist." : "This creator hasn't made any public playlists."}
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  {playlists.map((pl) => (
+                    <div key={pl.id} className="group relative flex flex-col gap-2">
+                      <Link href={`/${username}/playlists/${pl.id}`} className="relative block aspect-video overflow-hidden rounded-xl bg-mist-grey">
+                        {pl.videos.length === 0 ? (
+                          <div className="h-full w-full bg-mist-grey" />
+                        ) : pl.videos.length === 1 ? (
+                          pl.videos[0].video.thumbnailUrl ? (
+                            <Image src={pl.videos[0].video.thumbnailUrl} alt={pl.name} fill className="object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
+                          ) : <div className="h-full w-full bg-mist-grey" />
+                        ) : (
+                          <div className="grid grid-cols-2 h-full">
+                            {pl.videos.slice(0, 4).map((pv, i) => (
+                              <div key={i} className="relative overflow-hidden">
+                                {pv.video.thumbnailUrl ? (
+                                  <Image src={pv.video.thumbnailUrl} alt="" fill className="object-cover" />
+                                ) : (
+                                  <div className="h-full w-full bg-mist-grey" />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {!pl.isPublic && (
+                          <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5">
+                            <Lock size={9} className="text-white" />
+                            <span className="font-sans text-[9px] text-white">Private</span>
+                          </div>
+                        )}
+                      </Link>
+                      {isOwn && (
+                        <PlaylistCardActions
+                          playlist={{ id: pl.id, name: pl.name, description: pl.description, isPublic: pl.isPublic, isDefault: pl.isDefault }}
+                          username={username}
+                        />
+                      )}
+                      <div>
+                        <Link href={`/${username}/playlists/${pl.id}`}>
+                          <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1 hover:underline">{pl.name}</p>
+                        </Link>
+                        <p className="font-sans text-xs text-foreground/40">
+                          {pl._count.videos} {pl._count.videos === 1 ? "video" : "videos"}
+                          {pl.isPublic ? (
+                            <> · <Globe size={9} className="inline mb-0.5" /> Public</>
+                          ) : (
+                            <> · <Lock size={9} className="inline mb-0.5" /> Private</>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            )}
+
             {/* Recess / Videos tabs */}
-            {activeTab !== "interactive" && (activeTab === "recess" ? (
+            {activeTab !== "interactive" && activeTab !== "playlists" && (activeTab === "recess" ? (
               <RecessProfileGrid
                 videos={recessVideos.map((v) => ({
                   id: v.id,

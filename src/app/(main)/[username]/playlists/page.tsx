@@ -65,7 +65,7 @@ export default async function PlaylistsPage({ params }: Props) {
               Interactive
             </Link>
             <Link
-              href={`/${username}/playlists`}
+              href={`/${username}?tab=playlists`}
               scroll={false}
               className="pb-3 font-sans font-medium text-sm border-b-2 border-core-black text-core-black"
             >
