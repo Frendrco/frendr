@@ -23,7 +23,7 @@ export async function POST() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        maxDurationSeconds: 3600,
+        maxDurationSeconds: 600,
         requireSignedURLs: false,
       }),
     }
