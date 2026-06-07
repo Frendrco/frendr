@@ -700,7 +700,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {/* ─ Upload image ─ */}
             {thumbMode === "upload" && (
               <>
-                <input id="thumb-upload" ref={thumbInputRef} type="file" accept="image/*" className="hidden" onChange={handleThumbInput} />
+                <input id="thumb-upload" ref={thumbInputRef} type="file" accept="image/*" className="sr-only" onChange={handleThumbInput} />
                 {thumbnail ? (
                   <div className="relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1002,7 +1002,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {videoType === "RECESS" && (
               <div className="flex flex-col gap-6">
                 <div>
-                  <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="hidden" onChange={handleVideoInput} />
+                  <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="sr-only" onChange={handleVideoInput} />
                   <div
                     onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                     onDragLeave={() => setDragging(false)}
@@ -1088,7 +1088,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                   <div className="flex flex-col gap-6">
                     {/* Video drop zone */}
                     <div>
-                      <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="hidden" onChange={handleVideoInput} />
+                      <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="sr-only" onChange={handleVideoInput} />
                       <div
                         onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                         onDragLeave={() => setDragging(false)}
