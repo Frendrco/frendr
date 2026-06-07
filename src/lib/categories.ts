@@ -1,6 +1,6 @@
 export const CONTENT_TAGS = [
   "Motion Design", "2D Animation", "3D Animation",
-  "VFX", "Live Action", "Music Video", "Typography", "Film",
+  "VFX", "Live Action", "Music Video", "Typography", "Film", "Short Film",
   "Branding", "Experimental", "Sound", "Stop Motion", "Commercial", "Mixed Media",
 ]
 
