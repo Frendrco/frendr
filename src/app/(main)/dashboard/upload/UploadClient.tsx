@@ -648,131 +648,138 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
       {/* AI content */}
       <Toggle on={isAiGenerated} onToggle={() => setIsAiGenerated((v) => !v)} label="AI Generated Content"
         description="Let viewers know if this video was created with the help of AI tools." />
+
+      {/* Downloads */}
+      <Toggle on={allowDownloads} onToggle={() => setAllowDownloads((v) => !v)} label="Allow downloads"
+        description="Viewers can download the original file." />
     </>
+  )
+
+  // ── Thumbnail picker (shared by Portfolio and Recess) ───────────
+  const thumbnailSection = (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <label className="font-sans text-xs font-medium text-foreground/50">Thumbnail</label>
+        {thumbnail && (
+          <button type="button" onClick={() => { setThumbnail(null); setSelectedFrame(null) }}
+            className="font-sans text-xs text-foreground/40 hover:text-foreground/70 transition-colors"
+          >
+            Remove
+          </button>
+        )}
+      </div>
+
+      <div className="rounded-xl border border-border overflow-hidden">
+        {/* Mode switcher — only available in upload mode with a file */}
+        {mode === "upload" && (
+          <div className="flex border-b border-border">
+            {([
+              { mode: "upload" as ThumbMode, label: "Upload image" },
+              { mode: "frame"  as ThumbMode, label: "Select from video" },
+            ]).map(({ mode: m, label }) => {
+              const disabled = m === "frame" && !file
+              return (
+                <button key={m} type="button"
+                  onClick={() => !disabled && setThumbMode(m)}
+                  disabled={disabled}
+                  className={cn(
+                    "flex-1 py-2.5 font-sans text-xs font-medium transition-colors",
+                    thumbMode === m
+                      ? "bg-white text-core-black"
+                      : disabled
+                      ? "bg-foreground/[0.02] text-foreground/25 cursor-not-allowed"
+                      : "bg-foreground/[0.02] text-foreground/40 hover:text-foreground/70"
+                  )}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        )}
+
+        <div className="p-4">
+          {/* ─ Upload image ─ */}
+          {thumbMode === "upload" && (
+            <>
+              {thumbnail ? (
+                <div className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={thumbnail} alt="Thumbnail preview" className="max-h-64 w-full object-contain rounded-lg bg-black" />
+                  <label className="absolute bottom-2 right-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/50 px-3 py-1.5 font-sans text-xs text-white backdrop-blur hover:bg-black/70 transition-colors">
+                    <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleThumbInput} />
+                    <ImageIcon size={11} /> Replace
+                  </label>
+                </div>
+              ) : (
+                <label
+                  onDragOver={(e) => { e.preventDefault(); setThumbDragging(true) }}
+                  onDragLeave={() => setThumbDragging(false)}
+                  onDrop={handleThumbDrop}
+                  className={cn(
+                    "relative flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors",
+                    thumbDragging ? "border-spring-green bg-spring-green/5" : "border-border hover:border-foreground/25"
+                  )}
+                >
+                  <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleThumbInput} />
+                  <ImageIcon size={20} className="text-foreground/25" />
+                  <p className="font-sans text-xs text-foreground/40">Drop an image or click to browse</p>
+                  <p className="font-sans text-[11px] text-foreground/25">JPG, PNG, WebP · any aspect ratio</p>
+                </label>
+              )}
+            </>
+          )}
+
+          {/* ─ Select from video (upload mode only) ─ */}
+          {mode === "upload" && thumbMode === "frame" && (
+            <div className="flex flex-col gap-3">
+              {extracting ? (
+                <div className="flex aspect-video items-center justify-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-core-black" />
+                    <p className="font-sans text-xs text-foreground/40">Extracting frames…</p>
+                  </div>
+                </div>
+              ) : videoFrames.length > 0 ? (
+                <>
+                  <div className="relative overflow-hidden rounded-lg bg-black flex items-center justify-center min-h-[120px]">
+                    {selectedFrame !== null ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={videoFrames[selectedFrame]} alt="Selected frame" className="max-h-72 w-full object-contain" />
+                    ) : (
+                      <div className="flex min-h-[120px] items-center justify-center">
+                        <p className="font-sans text-xs text-foreground/30">Select a frame below</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
+                    {videoFrames.map((src, i) => (
+                      <button key={i} type="button" onClick={() => selectFrame(i)}
+                        className={cn(
+                          "relative overflow-hidden rounded-md border-2 transition-colors bg-black",
+                          selectedFrame === i ? "border-core-black" : "border-transparent hover:border-foreground/30"
+                        )}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={src} alt={`Frame ${i + 1}`} className="w-full object-contain" />
+                      </button>
+                    ))}
+                  </div>
+                  <p className="font-sans text-[11px] text-foreground/30">{FRAME_COUNT} frames sampled evenly across your video</p>
+                </>
+              ) : null}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   )
 
   // ── Shared metadata fields (used in both modes) ──────────────
   const metadataFields = (
     <>
       {/* Thumbnail */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <label className="font-sans text-xs font-medium text-foreground/50">Thumbnail</label>
-          {thumbnail && (
-            <button type="button" onClick={() => { setThumbnail(null); setSelectedFrame(null) }}
-              className="font-sans text-xs text-foreground/40 hover:text-foreground/70 transition-colors"
-            >
-              Remove
-            </button>
-          )}
-        </div>
-
-        <div className="rounded-xl border border-border overflow-hidden">
-          {/* Mode switcher — only available in upload mode with a file */}
-          {mode === "upload" && (
-            <div className="flex border-b border-border">
-              {([
-                { mode: "upload" as ThumbMode, label: "Upload image" },
-                { mode: "frame"  as ThumbMode, label: "Select from video" },
-              ]).map(({ mode: m, label }) => {
-                const disabled = m === "frame" && !file
-                return (
-                  <button key={m} type="button"
-                    onClick={() => !disabled && setThumbMode(m)}
-                    disabled={disabled}
-                    className={cn(
-                      "flex-1 py-2.5 font-sans text-xs font-medium transition-colors",
-                      thumbMode === m
-                        ? "bg-white text-core-black"
-                        : disabled
-                        ? "bg-foreground/[0.02] text-foreground/25 cursor-not-allowed"
-                        : "bg-foreground/[0.02] text-foreground/40 hover:text-foreground/70"
-                    )}
-                  >
-                    {label}
-                  </button>
-                )
-              })}
-            </div>
-          )}
-
-          <div className="p-4">
-            {/* ─ Upload image ─ */}
-            {thumbMode === "upload" && (
-              <>
-                {thumbnail ? (
-                  <div className="relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={thumbnail} alt="Thumbnail preview" className="max-h-64 w-full object-contain rounded-lg bg-black" />
-                    <label className="absolute bottom-2 right-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/50 px-3 py-1.5 font-sans text-xs text-white backdrop-blur hover:bg-black/70 transition-colors">
-                      <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleThumbInput} />
-                      <ImageIcon size={11} /> Replace
-                    </label>
-                  </div>
-                ) : (
-                  <label
-                    onDragOver={(e) => { e.preventDefault(); setThumbDragging(true) }}
-                    onDragLeave={() => setThumbDragging(false)}
-                    onDrop={handleThumbDrop}
-                    className={cn(
-                      "relative flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors",
-                      thumbDragging ? "border-spring-green bg-spring-green/5" : "border-border hover:border-foreground/25"
-                    )}
-                  >
-                    <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleThumbInput} />
-                    <ImageIcon size={20} className="text-foreground/25" />
-                    <p className="font-sans text-xs text-foreground/40">
-                      Drop an image or click to browse
-                    </p>
-                    <p className="font-sans text-[11px] text-foreground/25">JPG, PNG, WebP · any aspect ratio</p>
-                  </label>
-                )}
-              </>
-            )}
-
-            {/* ─ Select from video (upload mode only) ─ */}
-            {mode === "upload" && thumbMode === "frame" && (
-              <div className="flex flex-col gap-3">
-                {extracting ? (
-                  <div className="flex aspect-video items-center justify-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-core-black" />
-                      <p className="font-sans text-xs text-foreground/40">Extracting frames…</p>
-                    </div>
-                  </div>
-                ) : videoFrames.length > 0 ? (
-                  <>
-                    <div className="relative overflow-hidden rounded-lg bg-black flex items-center justify-center min-h-[120px]">
-                      {selectedFrame !== null ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={videoFrames[selectedFrame]} alt="Selected frame" className="max-h-72 w-full object-contain" />
-                      ) : (
-                        <div className="flex min-h-[120px] items-center justify-center">
-                          <p className="font-sans text-xs text-foreground/30">Select a frame below</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
-                      {videoFrames.map((src, i) => (
-                        <button key={i} type="button" onClick={() => selectFrame(i)}
-                          className={cn(
-                            "relative overflow-hidden rounded-md border-2 transition-colors bg-black",
-                            selectedFrame === i ? "border-core-black" : "border-transparent hover:border-foreground/30"
-                          )}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={src} alt={`Frame ${i + 1}`} className="w-full object-contain" />
-                        </button>
-                      ))}
-                    </div>
-                    <p className="font-sans text-[11px] text-foreground/30">{FRAME_COUNT} frames sampled evenly across your video</p>
-                  </>
-                ) : null}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      {thumbnailSection}
 
       {/* Title */}
       <div className="flex flex-col gap-1.5">
@@ -807,6 +814,9 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
 
   const recessMetadataFields = (
     <>
+      {/* Thumbnail */}
+      {thumbnailSection}
+
       {/* Title */}
       <div className="flex flex-col gap-1.5">
         <label className="font-sans text-xs font-medium text-foreground/50">Title</label>
@@ -863,6 +873,10 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
       {/* Make public */}
       <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
         description="Your video will appear in the Discover feed and on your profile." />
+
+      {/* Downloads */}
+      <Toggle on={allowDownloads} onToggle={() => setAllowDownloads((v) => !v)} label="Allow downloads"
+        description="Viewers can download the original file." />
     </>
   )
 
@@ -1200,7 +1214,6 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Permissions</p>
                       <Toggle on={hideFromFeeds}  onToggle={() => setHideFromFeeds((v) => !v)}  label="Hide from Discover feed" description="Your video won't appear in feeds but can still be shared via link." />
                       <Toggle on={allowComments}  onToggle={() => setAllowComments((v) => !v)}  label="Allow comments" />
-                      <Toggle on={allowDownloads} onToggle={() => setAllowDownloads((v) => !v)} label="Allow downloads" description="Viewers can download the original file." />
                     </div>
                   </div>
                 )}

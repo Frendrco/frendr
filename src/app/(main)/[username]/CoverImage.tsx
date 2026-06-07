@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { Camera, Film, Pencil } from "lucide-react"
 
@@ -17,8 +17,20 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [menuOpen,       setMenuOpen]       = useState(false)
   const [error,          setError]          = useState<string | null>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const busy = uploading || uploadingVideo
+
+  useEffect(() => {
+    if (!menuOpen) return
+    function handleMouseDown(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleMouseDown)
+    return () => document.removeEventListener("mousedown", handleMouseDown)
+  }, [menuOpen])
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -90,12 +102,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
       </div>
 
       {isOwn && (
-        <>
-          {menuOpen && (
-            <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-          )}
-
-          <div className="absolute top-3 right-3 z-20 flex flex-col items-end gap-1">
+        <div ref={menuRef} className="absolute top-3 right-3 z-20 flex flex-col items-end gap-1">
             <button
               type="button"
               disabled={busy}
@@ -114,8 +121,6 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
 
             {menuOpen && (
               <div className="flex flex-col overflow-hidden rounded-lg border border-white/20 bg-black/70 backdrop-blur text-xs text-white font-sans shadow-lg">
-                {/* Input is a child of label — browser activates it natively on label click,
-                    no JS .click() and no clip/sr-only issues */}
                 <label className="relative flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors">
                   <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
                   <Camera size={13} />
@@ -128,8 +133,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
                 </label>
               </div>
             )}
-          </div>
-        </>
+        </div>
       )}
     </div>
   )

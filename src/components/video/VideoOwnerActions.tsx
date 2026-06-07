@@ -500,50 +500,26 @@ export function VideoOwnerActions({
                     </svg>
                   </div>
                 </div>
-              </div>
-            )}
 
-            {/* ── Embed tab ── */}
-            {tab === "embed" && (
-              <div className="flex flex-col gap-8">
-                {/* Allow embedding toggle */}
-                <div className="rounded-xl border border-border p-5">
+                {/* Allow downloads */}
+                {streamId && (
                   <button
                     type="button"
-                    onClick={() => setAllowEmbedding((v) => !v)}
-                    className="flex w-full items-center justify-between gap-4 text-left"
+                    onClick={() => setAllowDownloads((v) => !v)}
+                    className="flex items-center justify-between gap-4 text-left"
                   >
                     <div>
-                      <p className="font-sans text-sm font-medium text-core-black">Allow embedding on other sites</p>
-                      <p className="font-sans text-xs text-foreground/40">Let anyone embed your video player on their website or blog.</p>
+                      <p className="font-sans text-sm font-medium text-core-black">Allow downloads</p>
+                      <p className="font-sans text-xs text-foreground/40">Let viewers download your video as an MP4 file.</p>
                     </div>
-                    <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowEmbedding ? "bg-spring-green" : "bg-border")}>
-                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", allowEmbedding ? "translate-x-4" : "translate-x-0.5")} />
+                    <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowDownloads ? "bg-spring-green" : "bg-border")}>
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", allowDownloads ? "translate-x-4" : "translate-x-0.5")} />
                     </div>
                   </button>
-                </div>
-
-                {/* Allow downloads toggle — only for Cloudflare-hosted videos */}
-                {streamId && (
-                  <div className="rounded-xl border border-border p-5">
-                    <button
-                      type="button"
-                      onClick={() => setAllowDownloads((v) => !v)}
-                      className="flex w-full items-center justify-between gap-4 text-left"
-                    >
-                      <div>
-                        <p className="font-sans text-sm font-medium text-core-black">Allow downloads</p>
-                        <p className="font-sans text-xs text-foreground/40">Let viewers download your video as an MP4 file.</p>
-                      </div>
-                      <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowDownloads ? "bg-spring-green" : "bg-border")}>
-                        <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", allowDownloads ? "translate-x-4" : "translate-x-0.5")} />
-                      </div>
-                    </button>
-                  </div>
                 )}
 
                 {/* Player options */}
-                <div className={cn("flex flex-col gap-5 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
+                <div className="flex flex-col gap-5">
                   <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Player options</p>
                   {([
                     { on: embedAutoplay, set: setEmbedAutoplay, label: "Autoplay",             desc: "Video starts playing as soon as it loads." },
@@ -565,6 +541,28 @@ export function VideoOwnerActions({
                       </div>
                     </button>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── Embed tab ── */}
+            {tab === "embed" && (
+              <div className="flex flex-col gap-8">
+                {/* Allow embedding toggle */}
+                <div className="rounded-xl border border-border p-5">
+                  <button
+                    type="button"
+                    onClick={() => setAllowEmbedding((v) => !v)}
+                    className="flex w-full items-center justify-between gap-4 text-left"
+                  >
+                    <div>
+                      <p className="font-sans text-sm font-medium text-core-black">Allow embedding on other sites</p>
+                      <p className="font-sans text-xs text-foreground/40">Let anyone embed your video player on their website or blog.</p>
+                    </div>
+                    <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowEmbedding ? "bg-spring-green" : "bg-border")}>
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", allowEmbedding ? "translate-x-4" : "translate-x-0.5")} />
+                    </div>
+                  </button>
                 </div>
 
                 {/* Embed code */}
