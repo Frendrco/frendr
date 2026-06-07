@@ -1057,7 +1057,7 @@ export function UploadClient({
               <p className="font-sans text-xs text-foreground/50">
                 {Math.floor(uploadedSeconds / 60)}m {uploadedSeconds % 60}s of {Math.floor(freeSeconds / 60)}m free used
               </p>
-              <button type="button" onClick={startCheckout} className="font-sans text-xs text-spring-green hover:underline">
+              <button type="button" onClick={startCheckout} className="font-sans text-xs text-core-black hover:underline">
                 Upgrade for $8/mo
               </button>
             </div>
