@@ -94,7 +94,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
       <div className="mx-auto max-w-screen-xl px-4 md:px-6">
 
         {/* Back nav */}
-        <div className="py-4">
+        <div className="py-4 text-center sm:text-left">
           <Link
             href="/channels"
             className="inline-flex items-center gap-1.5 font-sans text-sm text-foreground/50 hover:text-foreground transition-colors"
@@ -106,8 +106,8 @@ export default async function ChannelPage({ params, searchParams }: Props) {
 
         {/* Channel header */}
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2.5 mb-1">
+          <div className="text-center sm:text-left">
+            <div className="flex items-center justify-center gap-2.5 mb-1 sm:justify-start">
               <h1 className="font-sans font-bold text-2xl text-core-black">{channel.name}</h1>
               {channel.type === "admin" && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-spring-green px-2.5 py-0.5">
@@ -130,7 +130,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
             {isSiteAdmin && (
               <ChannelFeatureButton channelId={channel.id} initialFeatured={channel.featured} />
             )}
