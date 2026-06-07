@@ -31,6 +31,7 @@ type Props = {
   hideCreator?: boolean
   hideTags?: boolean
   actionsSlot?: React.ReactNode
+  mobileActionsSlot?: React.ReactNode
 }
 
 function cfThumb(url: string | null): string | null {
@@ -39,7 +40,7 @@ function cfThumb(url: string | null): string | null {
   return url + (url.includes("?") ? "&" : "?") + "width=1280"
 }
 
-export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hideCreator = false, hideTags = false, actionsSlot }: Props) {
+export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hideCreator = false, hideTags = false, actionsSlot, mobileActionsSlot }: Props) {
   const initials = video.user.displayName
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
@@ -102,7 +103,8 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
       {/* Mobile-only action row */}
       <div className="flex gap-1 sm:hidden">
         <AddToChannelButton videoId={video.id} />
-        <AddToPlaylistButton videoId={video.id} />
+        <AddToPlaylistButton videoId={video.id} triggerClassName="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground" />
+        {mobileActionsSlot}
       </div>
 
       {/* Meta */}

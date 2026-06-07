@@ -66,6 +66,13 @@ function SortableCard({ video, pinnedVideoId, username, displayName, avatarUrl }
         actionsSlot={
           <PinButton videoId={video.id} isPinned={pinnedVideoId === video.id} />
         }
+        mobileActionsSlot={
+          <PinButton
+            videoId={video.id}
+            isPinned={pinnedVideoId === video.id}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/40 transition-colors hover:border-foreground/30 hover:text-foreground disabled:opacity-50"
+          />
+        }
       />
     </div>
   )

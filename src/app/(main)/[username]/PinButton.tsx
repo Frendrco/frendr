@@ -7,9 +7,10 @@ import { Pin, PinOff } from "lucide-react"
 interface Props {
   videoId: string
   isPinned: boolean
+  className?: string
 }
 
-export function PinButton({ videoId, isPinned }: Props) {
+export function PinButton({ videoId, isPinned, className }: Props) {
   const router          = useRouter()
   const [busy, setBusy] = useState(false)
 
@@ -27,7 +28,7 @@ export function PinButton({ videoId, isPinned }: Props) {
       onClick={handleClick}
       disabled={busy}
       title={isPinned ? "Unpin from profile" : "Pin to profile"}
-      className="flex h-7 w-7 items-center justify-center rounded-lg bg-black/50 text-white backdrop-blur transition-colors hover:bg-black/70 disabled:opacity-50"
+      className={className ?? "flex h-7 w-7 items-center justify-center rounded-lg bg-black/50 text-white backdrop-blur transition-colors hover:bg-black/70 disabled:opacity-50"}
     >
       {isPinned ? <PinOff size={13} /> : <Pin size={13} />}
     </button>
