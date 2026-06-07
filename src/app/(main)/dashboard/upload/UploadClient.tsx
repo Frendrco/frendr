@@ -18,6 +18,7 @@ import { CONTENT_TAGS, TOOL_TAGS, VIDEO_TAGS } from "@/lib/categories"
 const MAX_CATEGORIES = 3
 const MAX_TAGS = 5
 const MAX_RECESS_TOOLS = 3
+const MAX_BATCH      = 5
 const MAX_FILE_BYTES = 500 * 1024 * 1024 // 500 MB
 const DESC_MAX = 1000
 const FRAME_COUNT = 6
@@ -343,6 +344,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
   function filesToBatch(files: File[]): BatchItem[] {
     return files
       .filter((f) => (f.type === "video/mp4" || f.type === "video/quicktime") && f.size <= MAX_FILE_BYTES)
+      .slice(0, MAX_BATCH)
       .map((f) => ({
         id:       crypto.randomUUID(),
         file:     f,
@@ -1181,7 +1183,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                 </div>
 
                 {/* Add more files */}
-                {!batchStarted && (
+                {!batchStarted && batchFiles.length < MAX_BATCH && (
                   <label className="relative inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-dashed border-border px-4 py-2 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground/70 transition-colors">
                     <input
                       type="file"
@@ -1190,7 +1192,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       className="absolute inset-0 h-full w-full cursor-pointer opacity-0 z-10"
                       onChange={(e) => {
                         const newItems = filesToBatch(Array.from(e.target.files ?? []))
-                        if (newItems.length) setBatchFiles((prev) => [...prev, ...newItems])
+                        if (newItems.length) setBatchFiles((prev) => [...prev, ...newItems].slice(0, MAX_BATCH))
                       }}
                     />
                     <Upload size={12} /> Add more files
@@ -1293,7 +1295,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       </div>
                       <div className="text-center">
                         <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
-                        <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse · select multiple to batch upload</p>
+                        <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse · upload up to 5 at once</p>
                       </div>
                     </label>
                   )}
@@ -1385,7 +1387,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                           </div>
                           <div className="text-center">
                             <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
-                            <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse · select multiple to batch upload</p>
+                            <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse · upload up to 5 at once</p>
                           </div>
                         </label>
                       )}
