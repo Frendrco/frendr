@@ -328,6 +328,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               <div className="flex gap-6 justify-center sm:justify-start">
                 <Link
                   href={`/${username}`}
+                  scroll={false}
                   className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
                     activeTab === "videos"
                       ? "border-core-black text-core-black"
@@ -338,6 +339,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                 </Link>
                 <Link
                   href={`/${username}?tab=recess`}
+                  scroll={false}
                   className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
                     activeTab === "recess"
                       ? "border-core-black text-core-black"
@@ -348,6 +350,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                 </Link>
                 <Link
                   href={`/${username}?tab=interactive`}
+                  scroll={false}
                   className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
                     activeTab === "interactive"
                       ? "border-core-black text-core-black"
@@ -358,6 +361,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                 </Link>
                 <Link
                   href={`/${username}/playlists`}
+                  scroll={false}
                   className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/40 hover:text-foreground/70 transition-colors"
                 >
                   Playlists
