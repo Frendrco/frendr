@@ -700,19 +700,19 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {/* ─ Upload image ─ */}
             {thumbMode === "upload" && (
               <>
+                <input id="thumb-upload" ref={thumbInputRef} type="file" accept="image/*" className="sr-only" onChange={handleThumbInput} />
                 {thumbnail ? (
                   <div className="relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={thumbnail} alt="Thumbnail preview" className="max-h-64 w-full object-contain rounded-lg bg-black" />
-                    <label
+                    <label htmlFor="thumb-upload"
                       className="absolute bottom-2 right-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/50 px-3 py-1.5 font-sans text-xs text-white backdrop-blur hover:bg-black/70 transition-colors"
                     >
-                      <input ref={thumbInputRef} type="file" accept="image/*" onChange={handleThumbInput} className="absolute opacity-0 w-px h-px" />
                       <ImageIcon size={11} /> Replace
                     </label>
                   </div>
                 ) : (
-                  <label
+                  <label htmlFor="thumb-upload"
                     onDragOver={(e) => { e.preventDefault(); setThumbDragging(true) }}
                     onDragLeave={() => setThumbDragging(false)}
                     onDrop={handleThumbDrop}
@@ -721,7 +721,6 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       thumbDragging ? "border-spring-green bg-spring-green/5" : "border-border hover:border-foreground/25"
                     )}
                   >
-                    <input ref={thumbInputRef} type="file" accept="image/*" onChange={handleThumbInput} className="absolute opacity-0 w-px h-px" />
                     <ImageIcon size={20} className="text-foreground/25" />
                     <p className="font-sans text-xs text-foreground/40">
                       Drop an image or click to browse
