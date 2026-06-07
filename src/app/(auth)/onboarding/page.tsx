@@ -458,20 +458,10 @@ export default function OnboardingPage() {
                     </div>
                   )}
                 </div>
-                <input
-                  ref={avatarFileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarChange}
-                />
-                <button
-                  type="button"
-                  onClick={() => avatarFileInputRef.current?.click()}
-                  className="inline-flex h-9 items-center rounded-full border border-border px-5 font-sans font-medium text-sm text-foreground/60 transition-colors hover:border-foreground/30 hover:text-foreground"
-                >
+                <label className="relative inline-flex h-9 cursor-pointer items-center rounded-full border border-border px-5 font-sans font-medium text-sm text-foreground/60 transition-colors hover:border-foreground/30 hover:text-foreground">
+                  <input ref={avatarFileInputRef} type="file" accept="image/*" className="absolute opacity-0 w-px h-px" onChange={handleAvatarChange} />
                   Upload photo
-                </button>
+                </label>
               </div>
 
               {/* Preset avatars */}
@@ -556,62 +546,62 @@ export default function OnboardingPage() {
               {/* Upload mode — drag-and-drop zone */}
               {videoSource === "upload" && (
                 <>
-                  <input
-                    ref={videoFileInputRef}
-                    type="file"
-                    accept="video/mp4"
-                    className="hidden"
-                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoFileSelect(f) }}
-                  />
-                  <div
-                    onDragOver={(e) => { e.preventDefault(); setVideoDragging(true) }}
-                    onDragLeave={() => setVideoDragging(false)}
-                    onDrop={(e) => { e.preventDefault(); setVideoDragging(false); const f = e.dataTransfer.files[0]; if (f) handleVideoFileSelect(f) }}
-                    onClick={() => !videoFile && !videoUploading && videoFileInputRef.current?.click()}
-                    className={cn(
-                      "relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150",
-                      videoFile
-                        ? "border-border cursor-default"
-                        : videoDragging
-                        ? "border-spring-green bg-spring-green/5 scale-[1.005] cursor-copy"
-                        : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03] cursor-pointer"
-                    )}
-                  >
-                    {videoUploading ? (
-                      <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
-                        <p className="font-sans text-sm font-medium text-core-black">
-                          {videoProgress < 100 ? "Uploading…" : "Processing…"}
-                        </p>
-                        <div className="w-full rounded-full bg-border" style={{ height: 6 }}>
-                          {videoProgress === 0 ? (
-                            <div className="h-full w-full animate-pulse rounded-full bg-spring-green/40" />
-                          ) : (
-                            <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${videoProgress}%` }} />
-                          )}
+                  {videoFile || videoUploading ? (
+                    <div
+                      onDragOver={(e) => { e.preventDefault(); setVideoDragging(true) }}
+                      onDragLeave={() => setVideoDragging(false)}
+                      onDrop={(e) => { e.preventDefault(); setVideoDragging(false); const f = e.dataTransfer.files[0]; if (f) handleVideoFileSelect(f) }}
+                      className="relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 border-border transition-all duration-150"
+                    >
+                      {videoUploading ? (
+                        <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
+                          <p className="font-sans text-sm font-medium text-core-black">
+                            {videoProgress < 100 ? "Uploading…" : "Processing…"}
+                          </p>
+                          <div className="w-full rounded-full bg-border" style={{ height: 6 }}>
+                            {videoProgress === 0 ? (
+                              <div className="h-full w-full animate-pulse rounded-full bg-spring-green/40" />
+                            ) : (
+                              <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${videoProgress}%` }} />
+                            )}
+                          </div>
+                          <span className="font-sans text-xs text-foreground/50">{videoProgress}%</span>
                         </div>
-                        <span className="font-sans text-xs text-foreground/50">{videoProgress}%</span>
-                      </div>
-                    ) : videoFile ? (
-                      <div className="flex flex-col items-center gap-2 px-8 text-center">
-                        <p className="font-sans font-medium text-sm text-core-black">{videoFile.name}</p>
-                        <p className="font-sans text-xs text-foreground/40">{(videoFile.size / 1024 / 1024).toFixed(1)} MB</p>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); setVideoFile(null) }}
-                          className="mt-1 font-sans text-xs text-foreground/40 hover:text-foreground/70 transition-colors"
-                        >
-                          Change file
-                        </button>
-                      </div>
-                    ) : (
+                      ) : (
+                        <div className="flex flex-col items-center gap-2 px-8 text-center">
+                          <p className="font-sans font-medium text-sm text-core-black">{videoFile!.name}</p>
+                          <p className="font-sans text-xs text-foreground/40">{(videoFile!.size / 1024 / 1024).toFixed(1)} MB</p>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setVideoFile(null) }}
+                            className="mt-1 font-sans text-xs text-foreground/40 hover:text-foreground/70 transition-colors"
+                          >
+                            Change file
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <label
+                      onDragOver={(e) => { e.preventDefault(); setVideoDragging(true) }}
+                      onDragLeave={() => setVideoDragging(false)}
+                      onDrop={(e) => { e.preventDefault(); setVideoDragging(false); const f = e.dataTransfer.files[0]; if (f) handleVideoFileSelect(f) }}
+                      className={cn(
+                        "relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150",
+                        videoDragging
+                          ? "border-spring-green bg-spring-green/5 scale-[1.005] cursor-copy"
+                          : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
+                      )}
+                    >
+                      <input ref={videoFileInputRef} type="file" accept="video/mp4" className="absolute opacity-0 w-px h-px" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoFileSelect(f) }} />
                       <div className="flex flex-col items-center gap-2 px-8 text-center">
                         <p className="font-sans font-medium text-sm text-core-black">
                           {videoDragging ? "Drop to upload" : "Drop your video here"}
                         </p>
                         <p className="font-sans text-xs text-foreground/40">or click to browse</p>
                       </div>
-                    )}
-                  </div>
+                    </label>
+                  )}
                   <p className="text-center font-sans text-[11px] text-foreground/30 -mt-3">MP4 only · up to 200 MB</p>
                 </>
               )}

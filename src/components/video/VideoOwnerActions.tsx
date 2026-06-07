@@ -412,10 +412,10 @@ export function VideoOwnerActions({
                         )}
                       </div>
                       <div className="flex flex-1 flex-col gap-2">
-                        <label className={cn("flex h-10 w-full cursor-pointer items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-core-black transition-colors hover:border-foreground/30", uploadingThumb && "opacity-50 pointer-events-none")}>
+                        <label className={cn("relative flex h-10 w-full cursor-pointer items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-core-black transition-colors hover:border-foreground/30", uploadingThumb && "opacity-50 pointer-events-none")}>
                           <Upload size={14} className="shrink-0" />
                           {uploadingThumb ? "Uploading…" : "Upload image"}
-                          <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleThumbFileChange} disabled={uploadingThumb} />
+                          <input type="file" accept="image/jpeg,image/png,image/webp" className="absolute opacity-0 w-px h-px" onChange={handleThumbFileChange} disabled={uploadingThumb} />
                         </label>
                         <button
                           type="button"

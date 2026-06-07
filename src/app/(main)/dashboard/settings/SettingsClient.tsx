@@ -244,13 +244,13 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
               </div>
             )}
           </div>
-          <label className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
+          <label className="relative inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
             <Camera size={12} />
             Replace
             <input
               type="file"
               accept="image/*"
-              className="hidden"
+              className="absolute opacity-0 w-px h-px"
               onChange={handleAvatarChange}
             />
           </label>

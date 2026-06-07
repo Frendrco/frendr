@@ -269,15 +269,6 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
                 Cover image <span className="font-normal text-foreground/40">(optional)</span>
               </label>
 
-              <input
-                ref={fileInputRef}
-                id="edit-cover-upload"
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="sr-only"
-                onChange={handleCoverSelect}
-              />
-
               {coverPreview ? (
                 <div className="relative aspect-video w-full rounded-xl overflow-hidden">
                   <Image src={coverPreview} alt="Cover preview" fill className="object-cover" />
@@ -298,9 +289,9 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
                 </div>
               ) : (
                 <label
-                  htmlFor="edit-cover-upload"
-                  className="flex flex-col items-center justify-center gap-2 aspect-video w-full rounded-xl border border-dashed border-border hover:border-foreground/30 transition-colors cursor-pointer"
+                  className="relative flex flex-col items-center justify-center gap-2 aspect-video w-full rounded-xl border border-dashed border-border hover:border-foreground/30 transition-colors cursor-pointer"
                 >
+                  <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="absolute opacity-0 w-px h-px" onChange={handleCoverSelect} />
                   <ImagePlus size={20} className="text-foreground/30" />
                   <span className="font-sans text-xs text-foreground/40">Click to upload</span>
                   <span className="font-sans text-[10px] text-foreground/30">JPG, PNG or WebP</span>
