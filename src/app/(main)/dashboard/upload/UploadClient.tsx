@@ -1003,63 +1003,70 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
               <div className="flex flex-col gap-6">
                 <div>
                   <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="sr-only" onChange={handleVideoInput} />
-                  <div
-                    onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
-                    onDragLeave={() => setDragging(false)}
-                    onDrop={handleVideoDrop}
-                    className={cn(
-                      "relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150",
-                      file ? "border-border cursor-default"
-                        : dragging ? "border-spring-green bg-spring-green/5 scale-[1.005] cursor-copy"
-                        : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03] cursor-pointer"
-                    )}
-                  >
-                    {uploading ? (
-                      <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
-                        <p className="font-sans text-sm font-medium text-core-black">
-                          {progress < 100 ? "Uploading…" : "Processing…"}
-                        </p>
-                        <div className="w-full max-w-xs">
-                          <div className="mb-2 flex items-center justify-between">
-                            <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
-                            <span className="font-sans text-xs text-foreground/50">{progress}%</span>
-                          </div>
-                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                            {progress === 0 ? (
-                              <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
-                            ) : (
-                              <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
-                            )}
+                  {file || uploading ? (
+                    <div
+                      onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+                      onDragLeave={() => setDragging(false)}
+                      onDrop={handleVideoDrop}
+                      className="relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 border-border transition-all duration-150"
+                    >
+                      {uploading ? (
+                        <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
+                          <p className="font-sans text-sm font-medium text-core-black">
+                            {progress < 100 ? "Uploading…" : "Processing…"}
+                          </p>
+                          <div className="w-full max-w-xs">
+                            <div className="mb-2 flex items-center justify-between">
+                              <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
+                              <span className="font-sans text-xs text-foreground/50">{progress}%</span>
+                            </div>
+                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+                              {progress === 0 ? (
+                                <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
+                              ) : (
+                                <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
+                              )}
+                            </div>
                           </div>
                         </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-3 px-8 text-center">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
+                            <Upload size={20} className="text-spring-green" />
+                          </div>
+                          <div>
+                            <p className="font-sans font-medium text-sm text-core-black">{file!.name}</p>
+                            <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file!.size / 1024 / 1024).toFixed(1)} MB</p>
+                          </div>
+                          <button type="button" onClick={(e) => { e.stopPropagation(); setFile(null); setThumbnail(null) }}
+                            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
+                          >
+                            <X size={11} /> Change file
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <label
+                      htmlFor="video-upload"
+                      onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+                      onDragLeave={() => setDragging(false)}
+                      onDrop={handleVideoDrop}
+                      className={cn(
+                        "relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 transition-all duration-150",
+                        dragging ? "border-spring-green bg-spring-green/5 scale-[1.005] cursor-copy"
+                                 : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
+                      )}
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
+                        <Upload size={20} className="text-foreground/35" />
                       </div>
-                    ) : file ? (
-                      <div className="flex flex-col items-center gap-3 px-8 text-center">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
-                          <Upload size={20} className="text-spring-green" />
-                        </div>
-                        <div>
-                          <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
-                          <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
-                        </div>
-                        <button type="button" onClick={(e) => { e.stopPropagation(); setFile(null); setThumbnail(null) }}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
-                        >
-                          <X size={11} /> Change file
-                        </button>
+                      <div className="text-center">
+                        <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
+                        <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
                       </div>
-                    ) : (
-                      <label htmlFor="video-upload" className="flex cursor-pointer flex-col items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
-                          <Upload size={20} className="text-foreground/35" />
-                        </div>
-                        <div className="text-center">
-                          <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
-                          <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
-                        </div>
-                      </label>
-                    )}
-                  </div>
+                    </label>
+                  )}
                   <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 or MOV · up to 500 MB</p>
                 </div>
 
@@ -1089,63 +1096,70 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                     {/* Video drop zone */}
                     <div>
                       <input id="video-upload" ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="sr-only" onChange={handleVideoInput} />
-                      <div
-                        onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
-                        onDragLeave={() => setDragging(false)}
-                        onDrop={handleVideoDrop}
-                        className={cn(
-                          "relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150",
-                          file ? "border-border cursor-default"
-                            : dragging ? "border-spring-green bg-spring-green/5 scale-[1.005] cursor-copy"
-                            : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03] cursor-pointer"
-                        )}
-                      >
-                        {uploading ? (
-                          <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
-                            <p className="font-sans text-sm font-medium text-core-black">
-                              {progress < 100 ? "Uploading…" : "Processing…"}
-                            </p>
-                            <div className="w-full max-w-xs">
-                              <div className="mb-2 flex items-center justify-between">
-                                <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
-                                <span className="font-sans text-xs text-foreground/50">{progress}%</span>
-                              </div>
-                              <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                                {progress === 0 ? (
-                                  <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
-                                ) : (
-                                  <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
-                                )}
+                      {file || uploading ? (
+                        <div
+                          onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+                          onDragLeave={() => setDragging(false)}
+                          onDrop={handleVideoDrop}
+                          className="relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 border-border transition-all duration-150"
+                        >
+                          {uploading ? (
+                            <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
+                              <p className="font-sans text-sm font-medium text-core-black">
+                                {progress < 100 ? "Uploading…" : "Processing…"}
+                              </p>
+                              <div className="w-full max-w-xs">
+                                <div className="mb-2 flex items-center justify-between">
+                                  <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
+                                  <span className="font-sans text-xs text-foreground/50">{progress}%</span>
+                                </div>
+                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+                                  {progress === 0 ? (
+                                    <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
+                                  ) : (
+                                    <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
+                                  )}
+                                </div>
                               </div>
                             </div>
+                          ) : (
+                            <div className="flex flex-col items-center gap-3 px-8 text-center">
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
+                                <Upload size={20} className="text-spring-green" />
+                              </div>
+                              <div>
+                                <p className="font-sans font-medium text-sm text-core-black">{file!.name}</p>
+                                <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file!.size / 1024 / 1024).toFixed(1)} MB</p>
+                              </div>
+                              <button type="button" onClick={(e) => { e.stopPropagation(); setFile(null); setThumbnail(null) }}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
+                              >
+                                <X size={11} /> Change file
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <label
+                          htmlFor="video-upload"
+                          onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+                          onDragLeave={() => setDragging(false)}
+                          onDrop={handleVideoDrop}
+                          className={cn(
+                            "relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 transition-all duration-150",
+                            dragging ? "border-spring-green bg-spring-green/5 scale-[1.005] cursor-copy"
+                                     : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
+                          )}
+                        >
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
+                            <Upload size={20} className="text-foreground/35" />
                           </div>
-                        ) : file ? (
-                          <div className="flex flex-col items-center gap-3 px-8 text-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
-                              <Upload size={20} className="text-spring-green" />
-                            </div>
-                            <div>
-                              <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
-                              <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
-                            </div>
-                            <button type="button" onClick={(e) => { e.stopPropagation(); setFile(null); setThumbnail(null) }}
-                              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
-                            >
-                              <X size={11} /> Change file
-                            </button>
+                          <div className="text-center">
+                            <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
+                            <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
                           </div>
-                        ) : (
-                          <label htmlFor="video-upload" className="flex cursor-pointer flex-col items-center gap-3">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
-                              <Upload size={20} className="text-foreground/35" />
-                            </div>
-                            <div className="text-center">
-                              <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
-                              <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
-                            </div>
-                          </label>
-                        )}
-                      </div>
+                        </label>
+                      )}
                       <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 or MOV · up to 500 MB</p>
                     </div>
 
