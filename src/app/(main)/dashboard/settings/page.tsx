@@ -15,6 +15,7 @@ export default async function SettingsPage() {
     select: {
       username:    true,
       displayName: true,
+      isPro:       true,
       avatarUrl:   true,
       location:    true,
       age:         true,
@@ -42,5 +43,5 @@ export default async function SettingsPage() {
 
   if (!user) redirect("/onboarding")
 
-  return <SettingsClient profile={user} />
+  return <SettingsClient profile={user} isPro={user.isPro} />
 }

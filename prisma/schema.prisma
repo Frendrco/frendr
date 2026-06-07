@@ -26,6 +26,11 @@ model User {
   playlist    String?
   behance     String?
   other       String?
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?  @unique
+  subscriptionStatus   String?
+  isPro                Boolean  @default(false)
+
   isAdmin       Boolean  @default(false)
   openToWork    Boolean  @default(false)
   showAiContent Boolean  @default(true)
@@ -100,6 +105,7 @@ model Video {
   featured       Boolean        @default(false)
   isAiGenerated  Boolean        @default(false)
   videoType      VideoType      @default(PORTFOLIO)
+  duration       Int?
   viewCount      Int            @default(0)
   position       Int?
   userId        String

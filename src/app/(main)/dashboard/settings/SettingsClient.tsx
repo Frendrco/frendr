@@ -97,12 +97,36 @@ function BehanceIcon() {
   return <span className="font-sans font-bold text-[11px] tracking-tight">Be</span>
 }
 
-export function SettingsClient({ profile }: { profile: ProfileData }) {
+export function SettingsClient({ profile, isPro = false }: { profile: ProfileData; isPro?: boolean }) {
   const router = useRouter()
   const { user } = useUser()
   const [saving,         setSaving]         = useState(false)
   const [confirmDelete,  setConfirmDelete]  = useState(false)
   const [deleting,       setDeleting]       = useState(false)
+  const [portalLoading,  setPortalLoading]  = useState(false)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+
+  async function openPortal() {
+    setPortalLoading(true)
+    try {
+      const res = await fetch("/api/billing/portal", { method: "POST" })
+      const { url } = await res.json()
+      if (url) window.location.href = url
+    } finally {
+      setPortalLoading(false)
+    }
+  }
+
+  async function startCheckout() {
+    setCheckoutLoading(true)
+    try {
+      const res = await fetch("/api/billing/checkout", { method: "POST" })
+      const { url } = await res.json()
+      if (url) window.location.href = url
+    } finally {
+      setCheckoutLoading(false)
+    }
+  }
 
   // Basic info
   const [displayName,   setDisplayName]   = useState(profile.displayName)
@@ -581,6 +605,46 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
             </div>
 
           </div>
+        </div>
+
+        {/* ── Billing divider ── */}
+        <div className="flex items-center gap-3 px-5 pt-2 md:px-10">
+          <span className="font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 shrink-0">Billing</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        <div className="px-5 pb-6 md:px-10">
+          {isPro ? (
+            <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
+              <div>
+                <p className="font-sans text-sm font-medium text-core-black">Frendr Pro</p>
+                <p className="font-sans text-xs text-foreground/40">Unlimited video uploads · €6/month</p>
+              </div>
+              <button
+                type="button"
+                onClick={openPortal}
+                disabled={portalLoading}
+                className="font-sans text-xs text-foreground/50 hover:text-foreground transition-colors disabled:opacity-50"
+              >
+                {portalLoading ? "Loading…" : "Manage"}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
+              <div>
+                <p className="font-sans text-sm font-medium text-core-black">Free plan</p>
+                <p className="font-sans text-xs text-foreground/40">10 minutes of uploads included</p>
+              </div>
+              <button
+                type="button"
+                onClick={startCheckout}
+                disabled={checkoutLoading}
+                className="inline-flex h-8 items-center px-4 rounded-full bg-spring-green text-core-black font-sans font-medium text-xs transition-colors hover:bg-spring-green/90 disabled:opacity-60"
+              >
+                {checkoutLoading ? "Loading…" : "Upgrade · €6/mo"}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Footer */}

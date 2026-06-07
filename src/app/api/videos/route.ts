@@ -59,6 +59,23 @@ export async function POST(req: Request) {
       },
     })
 
+    if (streamId) {
+      const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
+      const cfToken   = process.env.CLOUDFLARE_STREAM_API_TOKEN
+      if (accountId && cfToken) {
+        fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}`,
+          { headers: { Authorization: `Bearer ${cfToken}` } }
+        )
+          .then((r) => r.json())
+          .then((data) => {
+            const secs = Math.ceil(data?.result?.duration ?? 0)
+            if (secs > 0) prisma.video.update({ where: { id: video.id }, data: { duration: secs } }).catch(() => {})
+          })
+          .catch(() => {})
+      }
+    }
+
     if (allowDownloads && streamId) {
       const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
       const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN

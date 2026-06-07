@@ -111,8 +111,41 @@ async function extractVideoFrames(videoFile: File): Promise<string[]> {
   })
 }
 
-export function UploadClient({ username, initialType = "PORTFOLIO" }: { username: string; initialType?: VideoType }) {
+interface UploadClientProps {
+  username: string
+  initialType?: VideoType
+  isPro?: boolean
+  uploadedSeconds?: number
+  freeSeconds?: number
+  isAtLimit?: boolean
+  justUpgraded?: boolean
+}
+
+export function UploadClient({
+  username,
+  initialType = "PORTFOLIO",
+  isPro = false,
+  uploadedSeconds = 0,
+  freeSeconds = 600,
+  isAtLimit = false,
+  justUpgraded = false,
+}: UploadClientProps) {
   const router = useRouter()
+
+  // Paywall state
+  const [showPaywall, setShowPaywall] = useState(isAtLimit)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+
+  async function startCheckout() {
+    setCheckoutLoading(true)
+    try {
+      const res = await fetch("/api/billing/checkout", { method: "POST" })
+      const { url } = await res.json()
+      if (url) window.location.href = url
+    } finally {
+      setCheckoutLoading(false)
+    }
+  }
 
   // Source mode
   const [mode, setMode] = useState<Mode>("upload")
@@ -395,6 +428,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
       try {
         updateBatchItem(item.id, { status: "uploading" })
         const urlRes = await fetch("/api/videos/upload-url", { method: "POST" })
+        if (urlRes.status === 402) { setShowPaywall(true); setUploading(false); setBatchStarted(false); return null }
         if (!urlRes.ok) throw new Error("Could not get upload URL")
         const { uid, uploadURL } = await urlRes.json() as { uid: string; uploadURL: string }
 
@@ -478,6 +512,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     setUploading(true); setUploadError(null); setProgress(0)
     try {
       const urlRes = await fetch("/api/videos/upload-url", { method: "POST" })
+      if (urlRes.status === 402) { setShowPaywall(true); setUploading(false); return }
       if (!urlRes.ok) throw new Error("Could not get upload URL")
       const { uid, uploadURL } = await urlRes.json() as { uid: string; uploadURL: string }
 
@@ -1012,8 +1047,54 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
           </p>
         </div>
 
+        {/* Upgraded success banner */}
+        {justUpgraded && !showPaywall && (
+          <div className="mb-6 rounded-xl bg-spring-green/20 border border-spring-green/30 px-4 py-3">
+            <p className="font-sans font-medium text-sm text-core-black">You&apos;re now on Frendr Pro — upload as much as you like.</p>
+          </div>
+        )}
+
+        {/* Upload limit usage bar (free users only) */}
+        {!isPro && !showPaywall && (
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="font-sans text-xs text-foreground/50">
+                {Math.floor(uploadedSeconds / 60)}m {uploadedSeconds % 60}s of {Math.floor(freeSeconds / 60)}m free used
+              </p>
+              <button type="button" onClick={startCheckout} className="font-sans text-xs text-spring-green hover:underline">
+                Upgrade for €6/mo
+              </button>
+            </div>
+            <div className="h-1.5 rounded-full bg-border overflow-hidden">
+              <div
+                className="h-full rounded-full bg-spring-green transition-all"
+                style={{ width: `${Math.min(100, (uploadedSeconds / freeSeconds) * 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Paywall */}
+        {showPaywall && (
+          <div className="rounded-2xl border border-border bg-mist-grey p-8 text-center">
+            <p className="font-sans font-bold text-lg text-core-black mb-1">You&apos;ve used your 10 free minutes</p>
+            <p className="font-sans text-sm text-foreground/50 mb-6">
+              Upgrade to Frendr Pro to keep uploading — unlimited storage for just €6/month.
+            </p>
+            <button
+              type="button"
+              onClick={startCheckout}
+              disabled={checkoutLoading}
+              className="inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-colors hover:bg-spring-green/90 disabled:opacity-60"
+            >
+              {checkoutLoading ? "Loading…" : "Upgrade for €6/month"}
+            </button>
+            <p className="mt-4 font-sans text-xs text-foreground/40">Cancel anytime. Import from Vimeo, YouTube, and Framerate is always free.</p>
+          </div>
+        )}
+
         {/* Type selector */}
-        <div className="mb-6 grid grid-cols-3 gap-2">
+        <div className={cn("mb-6 grid grid-cols-3 gap-2", showPaywall && "hidden")}>
           {([
             { value: "PORTFOLIO"   as VideoType, label: "Portfolio",   desc: "Finished work you're proud of." },
             { value: "RECESS"      as VideoType, label: "Recess",      desc: "Personal experiments, not client work." },
@@ -1037,7 +1118,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         </div>
 
         {/* Source toggle — hidden for Interactive (always URL-based) */}
-        {videoType !== "INTERACTIVE" && (
+        {!showPaywall && videoType !== "INTERACTIVE" && (
           <div className="mb-8 inline-flex rounded-full border border-border p-1 gap-1">
             {([
               { value: "upload" as Mode, icon: <Upload size={13} />,  label: "Upload Video" },
@@ -1061,7 +1142,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         )}
 
         {/* ══ INTERACTIVE MODE ═════════════════════════════════ */}
-        {videoType === "INTERACTIVE" && (
+        {!showPaywall && videoType === "INTERACTIVE" && (
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-1.5">
               <label className="font-sans text-xs font-medium text-foreground/50">Rive URL</label>
@@ -1112,7 +1193,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         )}
 
         {/* ══ UPLOAD MODE ══════════════════════════════════════ */}
-        {videoType !== "INTERACTIVE" && mode === "upload" && (
+        {!showPaywall && videoType !== "INTERACTIVE" && mode === "upload" && (
           <>
             {/* ── Batch queue (2+ files selected) ── */}
             {batchFiles.length > 0 && (
@@ -1495,7 +1576,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         )}
 
         {/* ══ IMPORT MODE ══════════════════════════════════════ */}
-        {videoType !== "INTERACTIVE" && mode === "import" && (() => {
+        {!showPaywall && videoType !== "INTERACTIVE" && mode === "import" && (() => {
           const isDropboxMode = bulkItems.length === 1 && bulkItems[0].provider === "dropbox"
           const dropboxItem   = bulkItems[0]
 
