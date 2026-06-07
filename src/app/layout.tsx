@@ -28,6 +28,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     images: ["/og-image.png"],
   },
+  icons: {
+    icon: "/images/icon-192.png",
+    apple: "/images/icon-192.png",
+  },
   themeColor: "#ffffff",
   verification: {
     google: "PugFw0pXgYQqb7D5Y9Jxl1S40YDRP0fXLSiIhHX2C3I",
