@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { VIBES_QUESTIONS, toggleVibe } from "@/lib/vibes"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
@@ -55,7 +56,7 @@ function toSlug(val: string) {
 export default function OnboardingPage() {
   const router = useRouter()
   const { user } = useUser()
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1)
 
   // Step 1 state
   const [name,          setName]          = useState("")
@@ -78,7 +79,10 @@ export default function OnboardingPage() {
   const avatarFileInputRef = useRef<HTMLInputElement>(null)
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(null)
 
-  // Step 5 — video
+  // Step 5 — vibes
+  const [selectedVibes, setSelectedVibes] = useState<string[]>([])
+
+  // Step 6 — video
   const videoFileInputRef = useRef<HTMLInputElement>(null)
   const [videoSource,      setVideoSource]      = useState<"upload" | "link">("upload")
   const [videoFile,        setVideoFile]        = useState<File | null>(null)
@@ -223,7 +227,7 @@ export default function OnboardingPage() {
 
           {/* Step progress dots */}
           <div className="flex gap-1.5 mb-8">
-            {([1, 2, 3, 4, 5] as const).map((n) => (
+            {([1, 2, 3, 4, 5, 6] as const).map((n) => (
               <div key={n} className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
                 n === step ? "w-6 bg-core-black" : n < step ? "w-1.5 bg-core-black/30" : "w-1.5 bg-border"
@@ -507,8 +511,69 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {/* Step 5 — First video ────────────────────────── */}
+          {/* Step 5 — Vibes ──────────────────────────────── */}
           {step === 5 && (
+            <div className="flex flex-col gap-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h1 className="font-sans text-2xl font-bold text-core-black">Your Vibes ✨</h1>
+                  <p className="mt-1.5 font-sans text-sm text-foreground/50">All optional — just for fun.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStep(6)}
+                  className="shrink-0 font-sans text-sm text-foreground/40 hover:text-foreground/60 transition-colors"
+                >
+                  Skip →
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                {VIBES_QUESTIONS.map((q) => (
+                  <div key={q.id} className="flex items-center gap-2">
+                    {([q.a, q.b] as const).map((opt) => {
+                      const on = selectedVibes.includes(opt)
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setSelectedVibes((prev) => toggleVibe(prev, opt, q))}
+                          className={[
+                            "inline-flex h-8 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                            on
+                              ? "border-core-black bg-core-black text-white"
+                              : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground",
+                          ].join(" ")}
+                        >
+                          {opt}
+                        </button>
+                      )
+                    })}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  if (selectedVibes.length > 0) {
+                    await fetch("/api/users", {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ vibes: selectedVibes }),
+                    })
+                  }
+                  setStep(6)
+                }}
+                className="h-11 rounded-full bg-spring-green font-sans font-medium text-sm text-core-black transition-colors hover:bg-spring-green/90"
+              >
+                Continue →
+              </button>
+            </div>
+          )}
+
+          {/* Step 6 — First video ────────────────────────── */}
+          {step === 6 && (
             <div className="flex flex-col gap-5">
               <div>
                 <h1 className="font-sans text-2xl font-bold text-core-black">

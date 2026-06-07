@@ -7,6 +7,7 @@ import Image from "next/image"
 import { Camera, X, Globe, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Switch } from "@/components/ui/switch"
+import { VIBES_QUESTIONS, toggleVibe } from "@/lib/vibes"
 
 const DEFAULT_AVATARS = [
   "/images/ava-01.png",
@@ -35,6 +36,7 @@ interface ProfileData {
   behance:  string | null
   other:    string | null
   tags: string[]
+  vibes: string[]
   emailNotifyMessages: boolean
   emailNotifyComments: boolean
   emailNotifyReplies:  boolean
@@ -121,6 +123,7 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
   const [behance,   setBehance]   = useState(profile.behance ?? "")
   const [other,     setOther]     = useState(profile.other ?? "")
   const [tags,      setTags]      = useState<string[]>(profile.tags)
+  const [vibes,     setVibes]     = useState<string[]>(profile.vibes ?? [])
 
   // Notification preferences
   const [notifyMessages,  setNotifyMessages]  = useState(profile.emailNotifyMessages)
@@ -201,6 +204,7 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
           behance:   behance   || null,
           other:     other     || null,
           tags,
+          vibes,
           // Preserve the selected default avatar — without this, the server
           // overwrites avatarUrl with the Clerk image on every save
           ...(currentAvatarUrl?.startsWith("/images/ava-") && { customAvatarUrl: currentAvatarUrl }),
@@ -545,6 +549,33 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
                   )
                 })}
               </div>
+            </div>
+
+            {/* Vibes */}
+            <div className="flex flex-col gap-3 pb-4">
+              <label className="font-sans text-xs font-medium text-foreground/50">Vibes</label>
+              {VIBES_QUESTIONS.map((q) => (
+                <div key={q.id} className="flex items-center gap-2">
+                  {([q.a, q.b] as const).map((opt) => {
+                    const on = vibes.includes(opt)
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setVibes((prev) => toggleVibe(prev, opt, q))}
+                        className={cn(
+                          "inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                          on
+                            ? "border-core-black bg-core-black text-white"
+                            : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                        )}
+                      >
+                        {opt}
+                      </button>
+                    )
+                  })}
+                </div>
+              ))}
             </div>
 
           </div>

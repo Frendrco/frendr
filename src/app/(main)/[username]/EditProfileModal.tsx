@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { Camera, X, Globe } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { VIBES_QUESTIONS, toggleVibe } from "@/lib/vibes"
 import {
   Dialog,
   DialogClose,
@@ -43,6 +44,7 @@ interface Profile {
   behance:     string | null
   other:       string | null
   tags:        string[]
+  vibes:       string[]
 }
 
 function extractHandle(value: string | null, ...prefixes: string[]): string {
@@ -106,6 +108,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
   const [behance,   setBehance]   = useState(profile.behance   ?? "")
   const [other,     setOther]     = useState(profile.other     ?? "")
   const [tags,      setTags]      = useState<string[]>(profile.tags)
+  const [vibes,     setVibes]     = useState<string[]>(profile.vibes ?? [])
 
   // Re-sync state from latest server props each time the modal opens,
   // so stale initial state can't overwrite real DB values on save.
@@ -126,6 +129,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
     setBehance(profile.behance   ?? "")
     setOther(profile.other     ?? "")
     setTags([...profile.tags])
+    setVibes([...(profile.vibes ?? [])])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
@@ -182,6 +186,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
         behance:   behance   || null,
         other:     other     || null,
         tags,
+        vibes,
       }),
     })
     setSaving(false)
@@ -422,6 +427,33 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                     )
                   })}
                 </div>
+              </div>
+
+              {/* Vibes */}
+              <div className="flex flex-col gap-3">
+                <label className="font-sans text-xs font-medium text-foreground/50">Vibes</label>
+                {VIBES_QUESTIONS.map((q) => (
+                  <div key={q.id} className="flex items-center gap-2">
+                    {([q.a, q.b] as const).map((opt) => {
+                      const on = vibes.includes(opt)
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setVibes((prev) => toggleVibe(prev, opt, q))}
+                          className={cn(
+                            "inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
+                            on
+                              ? "border-core-black bg-core-black text-white"
+                              : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
+                          )}
+                        >
+                          {opt}
+                        </button>
+                      )
+                    })}
+                  </div>
+                ))}
               </div>
 
               {/* Danger zone */}

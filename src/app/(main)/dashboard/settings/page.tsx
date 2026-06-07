@@ -31,6 +31,7 @@ export default async function SettingsPage() {
       behance:     true,
       other:       true,
       tags:        true,
+      vibes:       true,
       emailNotifyMessages: true,
       emailNotifyComments: true,
       emailNotifyReplies:  true,

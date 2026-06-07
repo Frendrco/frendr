@@ -259,6 +259,20 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               </div>
             )}
 
+            {/* Vibes */}
+            {(user.vibes ?? []).length > 0 && (
+              <div className="mb-5">
+                <p className="mb-2 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30">Vibes</p>
+                <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
+                  {(user.vibes ?? []).map((v) => (
+                    <span key={v} className="rounded-full border border-border bg-foreground/[0.04] px-2.5 py-0.5 font-sans text-xs text-foreground/60">
+                      {v}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Edit profile (owner) / Follow button (visitors) */}
             {isOwn ? (
               <EditProfileModal
@@ -279,6 +293,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   behance:     user.behance,
                   other:       user.other,
                   tags:        user.tags,
+                  vibes:       user.vibes ?? [],
                 }}
               />
             ) : (

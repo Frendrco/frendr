@@ -64,7 +64,7 @@ export async function PATCH(req: Request) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { displayName, username, location, age, bio, website, role, pronouns, creatorType, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, openToWork, coverImageUrl, coverVideoUrl, emailNotifyMessages, emailNotifyComments, emailNotifyReplies, emailNotifyFollows, emailNotifyTrending, customAvatarUrl } = await req.json()
+  const { displayName, username, location, age, bio, website, role, pronouns, creatorType, instagram, linkedin, twitter, patreon, substack, playlist, behance, other, tags, vibes, openToWork, coverImageUrl, coverVideoUrl, emailNotifyMessages, emailNotifyComments, emailNotifyReplies, emailNotifyFollows, emailNotifyTrending, customAvatarUrl } = await req.json()
 
   if (username !== undefined) {
     if (!USERNAME_RE.test(username)) {
@@ -105,7 +105,8 @@ export async function PATCH(req: Request) {
       ...(playlist   !== undefined && { playlist:  playlist  ?? null }),
       ...(behance    !== undefined && { behance:   behance   ?? null }),
       ...(other      !== undefined && { other:     other     ?? null }),
-      ...(Array.isArray(tags) && { tags }),
+      ...(Array.isArray(tags)  && { tags }),
+      ...(Array.isArray(vibes) && { vibes }),
       ...(typeof openToWork           === "boolean" && { openToWork }),
       ...(coverImageUrl !== undefined && { coverImageUrl: coverImageUrl ?? null }),
       ...(coverVideoUrl !== undefined && { coverVideoUrl: coverVideoUrl ?? null }),

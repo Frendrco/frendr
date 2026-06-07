@@ -39,6 +39,7 @@ model User {
   coverVideoUrl String?
   pinnedVideoId String?
   tags          String[]
+  vibes         String[]
   email         String?
   lastActiveAt  DateTime?
   createdAt   DateTime @default(now())
