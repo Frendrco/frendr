@@ -35,6 +35,14 @@ interface BulkItem {
   thumbnailUrl: string | null
   status:       "idle" | "loading" | "ready" | "error"
 }
+interface BatchItem {
+  id:       string
+  file:     File
+  title:    string
+  status:   "pending" | "uploading" | "saving" | "done" | "error"
+  progress: number
+  error?:   string
+}
 type Visibility = "public" | "followers" | "private"
 type ThumbMode  = "upload" | "frame"
 
@@ -131,6 +139,10 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
   })
   const [bulkItems, setBulkItems] = useState<BulkItem[]>(() => [newBulkItem()])
   const [dropboxUrlError, setDropboxUrlError] = useState<string | null>(null)
+
+  // Batch file upload state
+  const [batchFiles, setBatchFiles]     = useState<BatchItem[]>([])
+  const [batchStarted, setBatchStarted] = useState(false)
 
   // Shared metadata
   const [videoType, setVideoType]       = useState<VideoType>(initialType)
@@ -328,19 +340,104 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
     )
   }
 
+  function filesToBatch(files: File[]): BatchItem[] {
+    return files
+      .filter((f) => (f.type === "video/mp4" || f.type === "video/quicktime") && f.size <= MAX_FILE_BYTES)
+      .map((f) => ({
+        id:       crypto.randomUUID(),
+        file:     f,
+        title:    f.name.replace(/\.(mp4|mov)$/i, "").replace(/[-_]+/g, " ").trim(),
+        status:   "pending" as const,
+        progress: 0,
+      }))
+  }
+
+  function updateBatchItem(id: string, patch: Partial<BatchItem>) {
+    setBatchFiles((prev) => prev.map((i) => i.id === id ? { ...i, ...patch } : i))
+  }
+
   function handleVideoDrop(e: React.DragEvent) {
     e.preventDefault(); setDragging(false)
-    const f = e.dataTransfer.files[0]
-    const allowed = f?.type === "video/mp4" || f?.type === "video/quicktime"
-    if (allowed && f.size <= MAX_FILE_BYTES) setFile(f)
-    else if (f?.size > MAX_FILE_BYTES) alert("File exceeds the 500 MB limit.")
+    const files = Array.from(e.dataTransfer.files)
+    if (files.length > 1) {
+      const items = filesToBatch(files)
+      if (items.length) { setBatchFiles(items); setBatchStarted(false) }
+    } else {
+      const f = files[0]
+      const allowed = f?.type === "video/mp4" || f?.type === "video/quicktime"
+      if (allowed && f.size <= MAX_FILE_BYTES) setFile(f)
+      else if (f?.size > MAX_FILE_BYTES) alert("File exceeds the 500 MB limit.")
+    }
   }
 
   function handleVideoInput(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0]
-    const allowed = f?.type === "video/mp4" || f?.type === "video/quicktime"
-    if (allowed && f.size <= MAX_FILE_BYTES) setFile(f)
-    else if (f && f.size > MAX_FILE_BYTES) alert("File exceeds the 500 MB limit.")
+    const files = Array.from(e.target.files ?? [])
+    if (files.length > 1) {
+      const items = filesToBatch(files)
+      if (items.length) { setBatchFiles(items); setBatchStarted(false) }
+    } else {
+      const f = files[0]
+      const allowed = f?.type === "video/mp4" || f?.type === "video/quicktime"
+      if (allowed && f && f.size <= MAX_FILE_BYTES) setFile(f)
+      else if (f && f.size > MAX_FILE_BYTES) alert("File exceeds the 500 MB limit.")
+    }
+  }
+
+  async function handleBatchUpload() {
+    if (batchStarted) return
+    setBatchStarted(true)
+    setUploading(true)
+    setUploadError(null)
+
+    const results = await Promise.all(batchFiles.map(async (item) => {
+      try {
+        updateBatchItem(item.id, { status: "uploading" })
+        const urlRes = await fetch("/api/videos/upload-url", { method: "POST" })
+        if (!urlRes.ok) throw new Error("Could not get upload URL")
+        const { uid, uploadURL } = await urlRes.json() as { uid: string; uploadURL: string }
+
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest()
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable)
+              updateBatchItem(item.id, { progress: Math.round((e.loaded / e.total) * 100) })
+          }
+          xhr.onload  = () => xhr.status < 400 ? resolve() : reject(new Error("Upload failed"))
+          xhr.onerror = () => reject(new Error("Upload failed"))
+          xhr.open("POST", uploadURL)
+          const form = new FormData()
+          form.append("file", item.file)
+          xhr.send(form)
+        })
+
+        updateBatchItem(item.id, { status: "saving", progress: 100 })
+        const saveRes = await fetch("/api/videos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            streamId:     uid,
+            title:        item.title.trim() || item.file.name,
+            categories,
+            tags,
+            isPublic,
+            allowDownloads,
+            isAiGenerated,
+            videoType,
+          }),
+        })
+        if (!saveRes.ok) throw new Error("Could not save video")
+        updateBatchItem(item.id, { status: "done" })
+        return "done"
+      } catch (err) {
+        updateBatchItem(item.id, { status: "error", error: err instanceof Error ? err.message : "Upload failed" })
+        return "error"
+      }
+    }))
+
+    setUploading(false)
+    if (results.every((r) => r === "done")) {
+      router.push(`/${username}`)
+    }
   }
 
   function handleThumbDrop(e: React.DragEvent) {
@@ -874,6 +971,10 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
       <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
         description="Your video will appear in the Discover feed and on your profile." />
 
+      {/* AI content */}
+      <Toggle on={isAiGenerated} onToggle={() => setIsAiGenerated((v) => !v)} label="AI Generated Content"
+        description="Let viewers know if this video was created with the help of AI tools." />
+
       {/* Downloads */}
       <Toggle on={allowDownloads} onToggle={() => setAllowDownloads((v) => !v)} label="Allow downloads"
         description="Viewers can download the original file." />
@@ -1011,6 +1112,123 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         {/* ══ UPLOAD MODE ══════════════════════════════════════ */}
         {videoType !== "INTERACTIVE" && mode === "upload" && (
           <>
+            {/* ── Batch queue (2+ files selected) ── */}
+            {batchFiles.length > 0 && (
+              <div className="flex flex-col gap-6">
+
+                {!batchStarted && (
+                  <button
+                    type="button"
+                    onClick={() => { setBatchFiles([]); setBatchStarted(false) }}
+                    className="inline-flex items-center gap-1.5 font-sans text-xs text-foreground/40 hover:text-foreground/70 transition-colors"
+                  >
+                    <ArrowLeft size={13} /> Start over
+                  </button>
+                )}
+
+                {/* Queue list */}
+                <div className="flex flex-col gap-2">
+                  {batchFiles.map((item) => (
+                    <div key={item.id} className="overflow-hidden rounded-xl border border-border">
+                      <div className="flex items-center gap-3 px-3 py-2.5">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-foreground/[0.04]">
+                          <Upload size={14} className="text-foreground/30" />
+                        </div>
+                        <input
+                          className="min-w-0 flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                          value={item.title}
+                          onChange={(e) => setBatchFiles((prev) => prev.map((i) => i.id === item.id ? { ...i, title: e.target.value } : i))}
+                          placeholder="Video title…"
+                          disabled={item.status !== "pending"}
+                        />
+                        <span className="shrink-0 font-sans text-xs text-foreground/30">
+                          {(item.file.size / 1024 / 1024).toFixed(1)} MB
+                        </span>
+                        {item.status === "pending" && !batchStarted && (
+                          <button
+                            type="button"
+                            onClick={() => setBatchFiles((prev) => prev.filter((i) => i.id !== item.id))}
+                            className="shrink-0 text-foreground/30 hover:text-foreground/60 transition-colors"
+                          >
+                            <X size={13} />
+                          </button>
+                        )}
+                        {item.status === "uploading" && (
+                          <span className="w-8 shrink-0 text-right font-sans text-xs tabular-nums text-foreground/40">
+                            {item.progress}%
+                          </span>
+                        )}
+                        {item.status === "saving" && (
+                          <span className="shrink-0 font-sans text-xs text-foreground/40">Saving…</span>
+                        )}
+                        {item.status === "done" && (
+                          <Check size={13} className="shrink-0 text-spring-green" />
+                        )}
+                        {item.status === "error" && (
+                          <span className="shrink-0 font-sans text-xs text-red-500">Failed</span>
+                        )}
+                      </div>
+                      {item.status === "uploading" && (
+                        <div className="h-0.5 w-full bg-border">
+                          <div className="h-full bg-spring-green transition-all duration-300" style={{ width: `${item.progress}%` }} />
+                        </div>
+                      )}
+                      {item.status === "saving" && (
+                        <div className="h-0.5 w-full animate-pulse bg-spring-green/50" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Add more files */}
+                {!batchStarted && (
+                  <label className="relative inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-dashed border-border px-4 py-2 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground/70 transition-colors">
+                    <input
+                      type="file"
+                      multiple
+                      accept="video/mp4,video/quicktime"
+                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0 z-10"
+                      onChange={(e) => {
+                        const newItems = filesToBatch(Array.from(e.target.files ?? []))
+                        if (newItems.length) setBatchFiles((prev) => [...prev, ...newItems])
+                      }}
+                    />
+                    <Upload size={12} /> Add more files
+                  </label>
+                )}
+
+                {/* Shared settings */}
+                <div className="border-t border-border pt-5 flex flex-col gap-5">
+                  <p className="font-sans text-xs font-medium text-foreground/50">Settings applied to all videos</p>
+                  {sharedImportFields}
+                  <Toggle on={autoplay} onToggle={() => setAutoplay((v) => !v)} label="Autoplay" description="Video starts playing as soon as it loads." />
+                  <Toggle on={loop}     onToggle={() => setLoop((v) => !v)}     label="Loop"     description="Replay automatically when the video ends." />
+                </div>
+
+                {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
+
+                <div className="flex items-center justify-end gap-3 border-t border-border pt-5">
+                  {!batchStarted && (
+                    <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
+                      Cancel
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleBatchUpload}
+                    disabled={batchStarted || batchFiles.length === 0}
+                    className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                  >
+                    {batchStarted
+                      ? (batchFiles.every((i) => i.status === "done" || i.status === "error") ? "Done" : "Uploading…")
+                      : `Upload ${batchFiles.length} video${batchFiles.length !== 1 ? "s" : ""}`}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── Single-file forms (hidden when batch queue is active) ── */}
+            {batchFiles.length === 0 && <>
             {/* ── Recess: flat form, no tabs ── */}
             {videoType === "RECESS" && (
               <div className="flex flex-col gap-6">
@@ -1069,13 +1287,13 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                                  : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                       )}
                     >
-                      <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
+                      <input ref={fileInputRef} type="file" multiple accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
                       <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                         <Upload size={20} className="text-foreground/35" />
                       </div>
                       <div className="text-center">
                         <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
-                        <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
+                        <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse · select multiple to batch upload</p>
                       </div>
                     </label>
                   )}
@@ -1161,13 +1379,13 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                                      : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                           )}
                         >
-                          <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
+                          <input ref={fileInputRef} type="file" multiple accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
                           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                             <Upload size={20} className="text-foreground/35" />
                           </div>
                           <div className="text-center">
                             <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
-                            <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse</p>
+                            <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse · select multiple to batch upload</p>
                           </div>
                         </label>
                       )}
@@ -1270,6 +1488,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                 {uploading ? (progress < 100 ? "Uploading…" : "Processing…") : videoType === "RECESS" ? "Drop into Recess" : "Upload Video"}
               </button>
             </div>
+            </>}
           </>
         )}
 
