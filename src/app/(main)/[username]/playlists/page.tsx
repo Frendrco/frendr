@@ -41,22 +41,32 @@ export default async function PlaylistsPage({ params }: Props) {
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
 
         {/* Profile tab header */}
-        <div className="mb-8 flex items-center justify-between border-b border-border pb-0">
-          <div className="flex gap-6">
+        <div className="mb-8 border-b border-border pb-0">
+          <div className="flex gap-6 justify-center sm:justify-start">
             <Link
               href={`/${username}`}
+              scroll={false}
               className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/40 hover:text-foreground/70 transition-colors"
             >
               Videos
             </Link>
             <Link
               href={`/${username}?tab=recess`}
+              scroll={false}
               className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/40 hover:text-foreground/70 transition-colors"
             >
               Recess
             </Link>
             <Link
+              href={`/${username}?tab=interactive`}
+              scroll={false}
+              className="pb-3 font-sans font-medium text-sm border-b-2 border-transparent text-foreground/40 hover:text-foreground/70 transition-colors"
+            >
+              Interactive
+            </Link>
+            <Link
               href={`/${username}/playlists`}
+              scroll={false}
               className="pb-3 font-sans font-medium text-sm border-b-2 border-core-black text-core-black"
             >
               Playlists
