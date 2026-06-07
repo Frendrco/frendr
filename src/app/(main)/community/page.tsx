@@ -42,7 +42,7 @@ export default async function CommunityPage({ searchParams }: Props) {
   return (
     <div className="flex flex-col gap-0">
       {/* Sort tabs */}
-      <div className="mb-6 flex gap-2">
+      <div className="mb-6 flex justify-center sm:justify-start gap-2">
         {(["recent", "top"] as const).map(s => (
           <Link
             key={s}
