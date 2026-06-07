@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { Camera, X, Globe } from "lucide-react"
@@ -85,6 +85,7 @@ const field = "h-11 w-full rounded-xl border border-border bg-white px-4 font-sa
 
 export function EditProfileModal({ profile }: { profile: Profile }) {
   const router       = useRouter()
+  const pathname     = usePathname()
   const { user }     = useUser()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -191,7 +192,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
     })
     setSaving(false)
     setOpen(false)
-    router.refresh()
+    router.push(pathname)
   }
 
   return (

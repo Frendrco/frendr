@@ -5,8 +5,10 @@ import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { sendWelcomeMessage } from "@/lib/sendWelcomeMessage"
 import { pickDefaultAvatar } from "@/lib/defaultAvatars"
+import { VIBES_QUESTIONS } from "@/lib/vibes"
 
 const USERNAME_RE = /^[a-z0-9-]{3,30}$/
+const VALID_VIBES = new Set(VIBES_QUESTIONS.flatMap((q) => [q.a, q.b]))
 
 export async function POST(req: Request) {
   const { userId } = await auth()
@@ -106,7 +108,7 @@ export async function PATCH(req: Request) {
       ...(behance    !== undefined && { behance:   behance   ?? null }),
       ...(other      !== undefined && { other:     other     ?? null }),
       ...(Array.isArray(tags)  && { tags }),
-      ...(Array.isArray(vibes) && { vibes }),
+      ...(Array.isArray(vibes) && { vibes: vibes.filter((v: string) => VALID_VIBES.has(v)) }),
       ...(typeof openToWork           === "boolean" && { openToWork }),
       ...(coverImageUrl !== undefined && { coverImageUrl: coverImageUrl ?? null }),
       ...(coverVideoUrl !== undefined && { coverVideoUrl: coverVideoUrl ?? null }),
