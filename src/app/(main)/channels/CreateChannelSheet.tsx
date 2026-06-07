@@ -281,7 +281,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
                   <label
                     className="relative flex flex-col items-center justify-center gap-2 aspect-video w-full rounded-xl border border-dashed border-border hover:border-foreground/30 transition-colors cursor-pointer"
                   >
-                    <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="absolute opacity-0 w-px h-px" onChange={handleCoverSelect} />
+                    <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer" onChange={handleCoverSelect} />
                     <ImagePlus size={20} className="text-foreground/30" />
                     <span className="font-sans text-xs text-foreground/40">Click to upload</span>
                     <span className="font-sans text-[10px] text-foreground/30">JPG, PNG or WebP</span>
