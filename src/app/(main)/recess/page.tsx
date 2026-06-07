@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { RecessGrid } from "./RecessGrid"
 import { RecessSearchInput } from "./RecessSearchInput"
@@ -6,8 +7,26 @@ import { RecessSearchInput } from "./RecessSearchInput"
 type Props = { searchParams: Promise<{ q?: string }> }
 
 export default async function RecessPage({ searchParams }: Props) {
-  const { q = "" } = await searchParams
+  const [{ q = "" }, { userId: clerkId }] = await Promise.all([searchParams, auth()])
   const query = q.trim()
+
+  // Fetch optional following list for the current user
+  let followedUserIds: string[] = []
+  let isAuthenticated = false
+  if (clerkId) {
+    isAuthenticated = true
+    const currentUser = await prisma.user.findUnique({
+      where: { clerkId },
+      select: { id: true },
+    })
+    if (currentUser) {
+      const follows = await prisma.follow.findMany({
+        where: { followerId: currentUser.id },
+        select: { followingId: true },
+      })
+      followedUserIds = follows.map((f) => f.followingId)
+    }
+  }
 
   const videos = await prisma.video.findMany({
     where: {
@@ -26,13 +45,14 @@ export default async function RecessPage({ searchParams }: Props) {
     orderBy: { createdAt: "desc" },
     take: 200,
     include: {
-      user: { select: { username: true, displayName: true, avatarUrl: true } },
+      user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
       _count: { select: { likes: true } },
     },
   })
 
   const mapped = videos.map((v) => ({
     id: v.id,
+    slug: v.slug,
     title: v.title,
     thumbnailUrl: v.thumbnailUrl,
     streamId: v.streamId,
@@ -40,7 +60,12 @@ export default async function RecessPage({ searchParams }: Props) {
     tags: v.tags,
     categories: v.categories,
     likeCount: v._count.likes,
-    user: v.user,
+    userId: v.user.id,
+    user: {
+      username: v.user.username,
+      displayName: v.user.displayName,
+      avatarUrl: v.user.avatarUrl,
+    },
   }))
 
   return (
@@ -64,35 +89,37 @@ export default async function RecessPage({ searchParams }: Props) {
         </div>
 
         {/* Search */}
-        <div className="py-5">
+        <div className="pt-5 pb-4">
           <RecessSearchInput defaultValue={query} />
         </div>
 
-        {/* Results */}
-        {mapped.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 py-24 text-center">
-            {query ? (
-              <>
-                <p className="font-sans font-semibold text-sm text-core-black">No results for &ldquo;{query}&rdquo;</p>
-                <p className="font-sans text-sm text-foreground/40">Try a different title, creator, or tool name.</p>
-              </>
-            ) : (
-              <>
-                <p className="font-sans font-semibold text-sm text-core-black">Nothing here yet</p>
-                <p className="font-sans text-sm text-foreground/40">Be the first to drop something.</p>
-              </>
-            )}
-          </div>
-        ) : (
-          <div className="pb-16">
-            {query && (
-              <p className="mb-5 font-sans text-sm text-foreground/40">
-                {mapped.length} result{mapped.length !== 1 ? "s" : ""} for &ldquo;{query}&rdquo;
-              </p>
-            )}
-            <RecessGrid videos={mapped} />
-          </div>
-        )}
+        {/* Grid with sort + filter */}
+        <div className="pb-16">
+          {query && mapped.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 py-24 text-center">
+              <p className="font-sans font-semibold text-sm text-core-black">No results for &ldquo;{query}&rdquo;</p>
+              <p className="font-sans text-sm text-foreground/40">Try a different title, creator, or tool name.</p>
+            </div>
+          ) : mapped.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 py-24 text-center">
+              <p className="font-sans font-semibold text-sm text-core-black">Nothing here yet</p>
+              <p className="font-sans text-sm text-foreground/40">Be the first to drop something.</p>
+            </div>
+          ) : (
+            <>
+              {query && (
+                <p className="mb-4 font-sans text-sm text-foreground/40">
+                  {mapped.length} result{mapped.length !== 1 ? "s" : ""} for &ldquo;{query}&rdquo;
+                </p>
+              )}
+              <RecessGrid
+                videos={mapped}
+                followedUserIds={followedUserIds}
+                isAuthenticated={isAuthenticated}
+              />
+            </>
+          )}
+        </div>
 
       </div>
     </div>

@@ -23,6 +23,7 @@ const TOOL_COLORS: Record<string, string> = {
   "Blender":          "bg-winter-green text-core-black",
   "Cinema 4D":        "bg-spring-green text-core-black",
   "After Effects":    "bg-bloom-lavender text-core-black",
+  "Animate":          "bg-dream-lilac/80 text-core-black",
   "Cavalry":          "bg-hyper-blue text-white",
   "Houdini":          "bg-sunny-yellow text-core-black",
   "Moho":             "bg-sky-blue text-core-black",
