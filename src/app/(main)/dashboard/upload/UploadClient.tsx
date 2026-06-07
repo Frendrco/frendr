@@ -416,8 +416,8 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
         }),
       })
       if (!saveRes.ok) throw new Error("Could not save video")
-      const video = await saveRes.json() as { id: string }
-      router.push(videoType === "RECESS" ? "/recess" : `/v/${video.id}`)
+      const video = await saveRes.json() as { id: string; slug?: string | null }
+      router.push(videoType === "RECESS" ? "/recess" : `/v/${video.slug ?? video.id}`)
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Something went wrong")
       setUploading(false)

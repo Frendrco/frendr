@@ -44,8 +44,8 @@ type Props = { params: Promise<{ id: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
-  const video = await prisma.video.findUnique({
-    where: { id },
+  const video = await prisma.video.findFirst({
+    where: { OR: [{ slug: id }, { id }] },
     include: { user: { select: { displayName: true } } },
   })
   if (!video) return {}

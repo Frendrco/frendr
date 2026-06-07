@@ -7,7 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [videos, users] = await Promise.all([
     prisma.video.findMany({
       where: { isPublic: true },
-      select: { id: true, updatedAt: true },
+      select: { id: true, slug: true, updatedAt: true },
       orderBy: { updatedAt: "desc" },
       take: 1000,
     }),
@@ -23,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/search`,   changeFrequency: "daily",  priority: 0.8, lastModified: new Date() },
     { url: `${base}/channels`, changeFrequency: "weekly", priority: 0.7, lastModified: new Date() },
     ...videos.map(v => ({
-      url: `${base}/v/${v.id}`,
+      url: `${base}/v/${v.slug ?? v.id}`,
       changeFrequency: "monthly" as const,
       priority: 0.6,
       lastModified: v.updatedAt,
