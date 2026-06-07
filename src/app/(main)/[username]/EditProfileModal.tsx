@@ -236,7 +236,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                 <div>
                   <label className="relative inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
                     <Camera size={12} /> Change photo
-                    <input type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer" onChange={handleAvatarChange} />
+                    <input type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleAvatarChange} />
                   </label>
                 </div>
               </div>

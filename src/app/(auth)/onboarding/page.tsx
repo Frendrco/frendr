@@ -459,7 +459,7 @@ export default function OnboardingPage() {
                   )}
                 </div>
                 <label className="relative inline-flex h-9 cursor-pointer items-center rounded-full border border-border px-5 font-sans font-medium text-sm text-foreground/60 transition-colors hover:border-foreground/30 hover:text-foreground">
-                  <input ref={avatarFileInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer" onChange={handleAvatarChange} />
+                  <input ref={avatarFileInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleAvatarChange} />
                   Upload photo
                 </label>
               </div>
@@ -593,7 +593,7 @@ export default function OnboardingPage() {
                           : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                       )}
                     >
-                      <input ref={videoFileInputRef} type="file" accept="video/mp4" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoFileSelect(f) }} />
+                      <input ref={videoFileInputRef} type="file" accept="video/mp4" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoFileSelect(f) }} />
                       <div className="flex flex-col items-center gap-2 px-8 text-center">
                         <p className="font-sans font-medium text-sm text-core-black">
                           {videoDragging ? "Drop to upload" : "Drop your video here"}

@@ -705,7 +705,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={thumbnail} alt="Thumbnail preview" className="max-h-64 w-full object-contain rounded-lg bg-black" />
                     <label className="absolute bottom-2 right-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/30 bg-black/50 px-3 py-1.5 font-sans text-xs text-white backdrop-blur hover:bg-black/70 transition-colors">
-                      <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer" onChange={handleThumbInput} />
+                      <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleThumbInput} />
                       <ImageIcon size={11} /> Replace
                     </label>
                   </div>
@@ -719,7 +719,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                       thumbDragging ? "border-spring-green bg-spring-green/5" : "border-border hover:border-foreground/25"
                     )}
                   >
-                    <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer" onChange={handleThumbInput} />
+                    <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleThumbInput} />
                     <ImageIcon size={20} className="text-foreground/25" />
                     <p className="font-sans text-xs text-foreground/40">
                       Drop an image or click to browse
@@ -1055,7 +1055,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                                  : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                       )}
                     >
-                      <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer" />
+                      <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
                       <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                         <Upload size={20} className="text-foreground/35" />
                       </div>
@@ -1147,7 +1147,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                                      : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                           )}
                         >
-                          <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer" />
+                          <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
                           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                             <Upload size={20} className="text-foreground/35" />
                           </div>

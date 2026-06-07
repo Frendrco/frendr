@@ -250,7 +250,7 @@ export function SettingsClient({ profile }: { profile: ProfileData }) {
             <input
               type="file"
               accept="image/*"
-              className="absolute opacity-0 inset-0 w-full h-full cursor-pointer"
+              className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10"
               onChange={handleAvatarChange}
             />
           </label>
