@@ -18,7 +18,7 @@ import { CONTENT_TAGS, TOOL_TAGS, VIDEO_TAGS } from "@/lib/categories"
 const MAX_CATEGORIES = 3
 const MAX_TAGS = 5
 const MAX_RECESS_TOOLS = 3
-const MAX_FILE_BYTES = 200 * 1024 * 1024 // 200 MB
+const MAX_FILE_BYTES = 500 * 1024 * 1024 // 500 MB
 const DESC_MAX = 500
 const FRAME_COUNT = 6
 
@@ -331,14 +331,16 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
   function handleVideoDrop(e: React.DragEvent) {
     e.preventDefault(); setDragging(false)
     const f = e.dataTransfer.files[0]
-    if (f?.type === "video/mp4" && f.size <= MAX_FILE_BYTES) setFile(f)
-    else if (f?.size > MAX_FILE_BYTES) alert("File exceeds the 200 MB limit.")
+    const allowed = f?.type === "video/mp4" || f?.type === "video/quicktime"
+    if (allowed && f.size <= MAX_FILE_BYTES) setFile(f)
+    else if (f?.size > MAX_FILE_BYTES) alert("File exceeds the 500 MB limit.")
   }
 
   function handleVideoInput(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
-    if (f?.type === "video/mp4" && f.size <= MAX_FILE_BYTES) setFile(f)
-    else if (f && f.size > MAX_FILE_BYTES) alert("File exceeds the 200 MB limit.")
+    const allowed = f?.type === "video/mp4" || f?.type === "video/quicktime"
+    if (allowed && f.size <= MAX_FILE_BYTES) setFile(f)
+    else if (f && f.size > MAX_FILE_BYTES) alert("File exceeds the 500 MB limit.")
   }
 
   function handleThumbDrop(e: React.DragEvent) {
@@ -1002,7 +1004,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
             {videoType === "RECESS" && (
               <div className="flex flex-col gap-6">
                 <div>
-                  <input ref={fileInputRef} type="file" accept="video/mp4" className="hidden" onChange={handleVideoInput} />
+                  <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="hidden" onChange={handleVideoInput} />
                   <div
                     onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                     onDragLeave={() => setDragging(false)}
@@ -1089,7 +1091,7 @@ export function UploadClient({ username, initialType = "PORTFOLIO" }: { username
                   <div className="flex flex-col gap-6">
                     {/* Video drop zone */}
                     <div>
-                      <input ref={fileInputRef} type="file" accept="video/mp4" className="hidden" onChange={handleVideoInput} />
+                      <input ref={fileInputRef} type="file" accept="video/mp4,video/quicktime" className="hidden" onChange={handleVideoInput} />
                       <div
                         onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                         onDragLeave={() => setDragging(false)}
