@@ -20,6 +20,8 @@ const SKILLS = [
   "2D Animation", "3D Animation", "3D Type", "Typography",
   "Branding", "Commercial", "Music Video", "Short Film", "Film",
   "Loop", "Experimental", "Stop Motion", "Sound",
+  "Creative Direction", "Art Direction", "Directing", "Producing",
+  "Storyboard", "Illustration", "Character Design", "Compositing",
   "Blender", "Cinema 4D", "After Effects", "Cavalry", "Houdini", "Moho", "Toon Boom", "Rive",
 ]
 const MAX_SKILLS = 10
