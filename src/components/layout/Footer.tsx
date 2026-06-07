@@ -26,7 +26,7 @@ export function Footer() {
             <Link
               key={link.label}
               href={link.href}
-              className="font-sans text-sm text-foreground/50 hover:text-foreground transition-colors"
+              className={`font-sans text-sm text-foreground/50 hover:text-foreground transition-colors${link.label === "Get the app" ? " hidden md:inline" : ""}`}
             >
               {link.label}
             </Link>
