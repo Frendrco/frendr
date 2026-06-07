@@ -19,7 +19,7 @@ const MAX_CATEGORIES = 3
 const MAX_TAGS = 5
 const MAX_RECESS_TOOLS = 3
 const MAX_BATCH      = 5
-const MAX_FILE_BYTES = 500 * 1024 * 1024 // 500 MB
+const ACCEPTED_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/x-msvideo", "video/avi"]
 const DESC_MAX = 1000
 const FRAME_COUNT = 6
 
@@ -376,12 +376,12 @@ export function UploadClient({
 
   function filesToBatch(files: File[]): BatchItem[] {
     return files
-      .filter((f) => (f.type === "video/mp4" || f.type === "video/quicktime") && f.size <= MAX_FILE_BYTES)
+      .filter((f) => ACCEPTED_VIDEO_TYPES.includes(f.type))
       .slice(0, MAX_BATCH)
       .map((f) => ({
         id:       crypto.randomUUID(),
         file:     f,
-        title:    f.name.replace(/\.(mp4|mov)$/i, "").replace(/[-_]+/g, " ").trim(),
+        title:    f.name.replace(/\.(mp4|mov|avi)$/i, "").replace(/[-_]+/g, " ").trim(),
         status:   "pending" as const,
         progress: 0,
       }))
@@ -399,9 +399,7 @@ export function UploadClient({
       if (items.length) { setBatchFiles(items); setBatchStarted(false) }
     } else {
       const f = files[0]
-      const allowed = f?.type === "video/mp4" || f?.type === "video/quicktime"
-      if (allowed && f.size <= MAX_FILE_BYTES) setFile(f)
-      else if (f?.size > MAX_FILE_BYTES) alert("File exceeds the 500 MB limit.")
+      if (f && ACCEPTED_VIDEO_TYPES.includes(f.type)) setFile(f)
     }
   }
 
@@ -412,9 +410,7 @@ export function UploadClient({
       if (items.length) { setBatchFiles(items); setBatchStarted(false) }
     } else {
       const f = files[0]
-      const allowed = f?.type === "video/mp4" || f?.type === "video/quicktime"
-      if (allowed && f && f.size <= MAX_FILE_BYTES) setFile(f)
-      else if (f && f.size > MAX_FILE_BYTES) alert("File exceeds the 500 MB limit.")
+      if (f && ACCEPTED_VIDEO_TYPES.includes(f.type)) setFile(f)
     }
   }
 
@@ -1269,7 +1265,7 @@ export function UploadClient({
                     <input
                       type="file"
                       multiple
-                      accept="video/mp4,video/quicktime"
+                      accept="video/mp4,video/quicktime,video/x-msvideo,video/avi,.mp4,.mov,.avi"
                       className="absolute inset-0 h-full w-full cursor-pointer opacity-0 z-10"
                       onChange={(e) => {
                         const newItems = filesToBatch(Array.from(e.target.files ?? []))
@@ -1370,7 +1366,7 @@ export function UploadClient({
                                  : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                       )}
                     >
-                      <input ref={fileInputRef} type="file" multiple accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
+                      <input ref={fileInputRef} type="file" multiple accept="video/mp4,video/quicktime,video/x-msvideo,video/avi,.mp4,.mov,.avi" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
                       <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                         <Upload size={20} className="text-foreground/35" />
                       </div>
@@ -1462,7 +1458,7 @@ export function UploadClient({
                                      : "border-dashed border-border bg-foreground/[0.015] hover:border-foreground/25 hover:bg-foreground/[0.03]"
                           )}
                         >
-                          <input ref={fileInputRef} type="file" multiple accept="video/mp4,video/quicktime" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
+                          <input ref={fileInputRef} type="file" multiple accept="video/mp4,video/quicktime,video/x-msvideo,video/avi,.mp4,.mov,.avi" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
                           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
                             <Upload size={20} className="text-foreground/35" />
                           </div>
