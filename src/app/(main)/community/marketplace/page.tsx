@@ -66,7 +66,7 @@ export default async function MarketplacePage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {shops.map(shop => (
             <div key={shop.id} className="rounded-2xl border border-border p-5 flex flex-col gap-4 hover:border-foreground/20 transition-colors">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center sm:gap-3">
                 <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-spring-green/20">
                   {shop.user.avatarUrl ? (
                     <Image src={shop.user.avatarUrl} alt={shop.user.displayName} width={36} height={36} className="h-full w-full object-cover" />
@@ -76,7 +76,7 @@ export default async function MarketplacePage() {
                     </div>
                   )}
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 text-center sm:text-left">
                   <Link href={`/${shop.user.username}`} className="font-sans font-semibold text-sm text-core-black hover:underline truncate block">
                     {shop.name}
                   </Link>
@@ -85,7 +85,7 @@ export default async function MarketplacePage() {
               </div>
 
               {shop.category && (
-                <span className="self-start inline-flex h-6 items-center rounded-full bg-foreground/[0.06] px-3 font-sans text-[11px] font-medium text-foreground/60">
+                <span className="self-center sm:self-start inline-flex h-6 items-center rounded-full bg-foreground/[0.06] px-3 font-sans text-[11px] font-medium text-foreground/60">
                   {shop.category}
                 </span>
               )}

@@ -116,7 +116,7 @@ export default async function CommunityPage({ searchParams }: Props) {
 
                 {/* Tags */}
                 {thread.tags.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <div className="mt-3 flex flex-wrap justify-center sm:justify-start gap-1.5">
                     {thread.tags.map(tag => (
                       <span key={tag} className="rounded-full border border-border px-2.5 py-0.5 font-sans text-xs text-foreground/40">
                         {tag}

@@ -38,7 +38,7 @@ export default async function JobsPage({ searchParams }: Props) {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap gap-1.5">
           {TYPE_FILTERS.map(f => (
             <Link
@@ -58,7 +58,7 @@ export default async function JobsPage({ searchParams }: Props) {
         {clerkId && (
           <Link
             href="/community/jobs/new"
-            className="inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/60 transition-colors hover:border-foreground/30 hover:text-foreground"
+            className="self-start sm:self-auto inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/60 transition-colors hover:border-foreground/30 hover:text-foreground"
           >
             Post a Job
           </Link>
