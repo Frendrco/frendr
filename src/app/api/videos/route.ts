@@ -30,6 +30,8 @@ export async function POST(req: Request) {
   const { streamId, externalUrl, title, description, tags, categories, isPublic, allowDownloads, isAiGenerated, videoType, thumbnailUrl, collaborators } = body
 
   if (!title) return NextResponse.json({ error: "title is required" }, { status: 400 })
+  if (title.length > 200) return NextResponse.json({ error: "title too long (max 200 chars)" }, { status: 400 })
+  if (description && description.length > 5000) return NextResponse.json({ error: "description too long (max 5000 chars)" }, { status: 400 })
   if (!streamId && !externalUrl) {
     return NextResponse.json({ error: "streamId or externalUrl is required" }, { status: 400 })
   }

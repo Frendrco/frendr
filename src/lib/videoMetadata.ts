@@ -6,6 +6,27 @@ export interface VideoMetadata {
   description:  string | null
 }
 
+const ALLOWED_HOSTS = new Set([
+  "youtube.com", "www.youtube.com", "youtu.be", "m.youtube.com",
+  "vimeo.com", "www.vimeo.com", "player.vimeo.com",
+  "framerate.io", "www.framerate.io",
+  "dropbox.com", "www.dropbox.com", "dl.dropboxusercontent.com",
+])
+
+// RFC-1918, loopback, link-local (AWS metadata), and IPv6 private ranges
+const PRIVATE_IP_RE = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|169\.254\.|0\.|::1$|fc[0-9a-f]{2}:|fd[0-9a-f]{2}:)/i
+
+function isAllowedUrl(url: string): boolean {
+  try {
+    const { hostname, protocol } = new URL(url)
+    if (protocol !== "https:" && protocol !== "http:") return false
+    if (PRIVATE_IP_RE.test(hostname)) return false
+    return ALLOWED_HOSTS.has(hostname)
+  } catch {
+    return false
+  }
+}
+
 function extractOgTag(html: string, prop: string): string | null {
   return (
     html.match(new RegExp(`<meta[^>]+property=["']og:${prop}["'][^>]+content=["']([^"']+)["']`, "i"))?.[1] ??
@@ -42,6 +63,8 @@ async function scrapeOpenGraph(url: string): Promise<VideoMetadata> {
 }
 
 export async function fetchVideoMetadata(url: string): Promise<VideoMetadata> {
+  if (!isAllowedUrl(url)) return { title: null, thumbnailUrl: null, description: null }
+
   const provider = detectProvider(url)
 
   if (provider === "youtube") {

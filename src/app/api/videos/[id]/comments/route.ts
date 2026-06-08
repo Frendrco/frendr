@@ -66,6 +66,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { body, parentCommentId } = await req.json()
   if (!body?.trim()) return NextResponse.json({ error: "Body required" }, { status: 400 })
+  if (body.trim().length > 2000) return NextResponse.json({ error: "Comment too long (max 2000 chars)" }, { status: 400 })
 
   const comment = await prisma.comment.create({
     data: {

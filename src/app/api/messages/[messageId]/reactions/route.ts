@@ -9,11 +9,27 @@ async function getAuthedUser(clerkId: string | null) {
   return prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
 }
 
+async function verifyParticipant(messageId: string, userId: string): Promise<boolean> {
+  const message = await prisma.message.findUnique({
+    where: { id: messageId },
+    select: { conversationId: true },
+  })
+  if (!message) return false
+  const member = await prisma.conversationParticipant.findUnique({
+    where: { conversationId_userId: { conversationId: message.conversationId, userId } },
+  })
+  return member !== null
+}
+
 export async function POST(req: Request, { params }: Params) {
   const { messageId } = await params
   const { userId: clerkId } = await auth()
   const user = await getAuthedUser(clerkId ?? null)
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  if (!(await verifyParticipant(messageId, user.id))) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
+  }
 
   const { emoji } = await req.json()
   if (!emoji || typeof emoji !== "string") {
@@ -34,6 +50,10 @@ export async function DELETE(req: Request, { params }: Params) {
   const { userId: clerkId } = await auth()
   const user = await getAuthedUser(clerkId ?? null)
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  if (!(await verifyParticipant(messageId, user.id))) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
+  }
 
   const { emoji } = await req.json()
   if (!emoji || typeof emoji !== "string") {

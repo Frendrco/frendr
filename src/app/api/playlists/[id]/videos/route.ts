@@ -18,6 +18,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { videoId } = await req.json()
   if (!videoId) return NextResponse.json({ error: "videoId required" }, { status: 400 })
 
+  const video = await prisma.video.findUnique({
+    where: { id: videoId },
+    select: { isPublic: true, userId: true },
+  })
+  if (!video || (!video.isPublic && video.userId !== user.id)) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
+  }
+
   const entry = await prisma.playlistVideo.upsert({
     where: { playlistId_videoId: { playlistId: id, videoId } },
     create: { playlistId: id, videoId },
