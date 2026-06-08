@@ -37,7 +37,7 @@ export async function POST(req: Request) {
   }
 
   const resolvedThumbnail = thumbnailUrl
-    ?? (streamId     ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?width=1280` : null)
+    ?? (streamId     ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=1s&width=1280` : null)
     ?? (externalUrl  ? getVideoThumbnail(externalUrl) : null)
 
   const slug = await uniqueVideoSlug()
