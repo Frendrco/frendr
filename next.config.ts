@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
       { hostname: "imagedelivery.net"      },
       { hostname: "*.r2.dev"               },
       { hostname: "img.youtube.com"        },
-      { hostname: "i.vimeocdn.com"         },
+      { hostname: "*.vimeocdn.com"          },
       { hostname: "*.supabase.co"          },
       { hostname: "public.rive.app"        },
     ],
