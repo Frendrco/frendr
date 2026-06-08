@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { auth } from "@clerk/nextjs/server"
 import { InstallButton } from "./InstallButton"
 
 const PLATFORMS = [
@@ -64,7 +65,9 @@ const FEATURES = [
   },
 ]
 
-export default function DownloadPage() {
+export default async function DownloadPage() {
+  const { userId } = await auth()
+
   return (
     <div className="min-h-screen bg-white text-core-black">
 
@@ -145,19 +148,21 @@ export default function DownloadPage() {
           </div>
         </section>
 
-        {/* ── Bottom CTA ── */}
-        <section className="rounded-2xl bg-spring-green px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col gap-1">
-            <p className="font-sans font-bold text-lg text-core-black">Already a member?</p>
-            <p className="font-sans text-sm text-core-black/50">Sign in and start sharing your work.</p>
-          </div>
-          <Link
-            href="/sign-in"
-            className="shrink-0 inline-flex h-11 items-center px-8 rounded-full bg-core-black text-white font-sans font-medium text-sm transition-transform hover:scale-105"
-          >
-            Sign in
-          </Link>
-        </section>
+        {/* ── Bottom CTA — only shown to signed-out visitors ── */}
+        {!userId && (
+          <section className="rounded-2xl bg-spring-green px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col gap-1">
+              <p className="font-sans font-bold text-lg text-core-black">Already a member?</p>
+              <p className="font-sans text-sm text-core-black/50">Sign in and start sharing your work.</p>
+            </div>
+            <Link
+              href="/sign-in"
+              className="shrink-0 inline-flex h-11 items-center px-8 rounded-full bg-core-black text-white font-sans font-medium text-sm transition-transform hover:scale-105"
+            >
+              Sign in
+            </Link>
+          </section>
+        )}
 
       </div>
     </div>
