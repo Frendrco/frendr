@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { detectProvider } from "@/lib/videoEmbed"
 import { uniqueVideoSlug } from "@/lib/videoSlug"
 
 export async function POST(req: Request) {
@@ -34,6 +35,9 @@ export async function POST(req: Request) {
   for (const item of body.items) {
     if (!item.externalUrl?.trim() || !item.title?.trim()) {
       return NextResponse.json({ error: "Each item needs externalUrl and title" }, { status: 400 })
+    }
+    if (detectProvider(item.externalUrl.trim()) === "other") {
+      return NextResponse.json({ error: "Unsupported video source. Use YouTube, Vimeo, Framerate, or Dropbox." }, { status: 400 })
     }
   }
 

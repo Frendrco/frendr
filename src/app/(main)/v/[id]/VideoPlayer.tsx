@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Hls from "hls.js"
-import { getVideoEmbedUrl, detectProvider } from "@/lib/videoEmbed"
+import { getVideoEmbedUrl, getProviderLabel, detectProvider } from "@/lib/videoEmbed"
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
 
@@ -50,8 +50,7 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
 
   // External video (YouTube, Vimeo, Framerate, Dropbox)
   if (externalUrl) {
-    const provider    = detectProvider(externalUrl)
-    const isFramerate = provider === "framerate"
+    const provider = detectProvider(externalUrl)
 
     // Dropbox: direct MP4, native video element (no iframe)
     if (provider === "dropbox") {
@@ -68,6 +67,8 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
 
     const embedUrl = getVideoEmbedUrl(externalUrl)
 
+    const showExternalLink = provider === "framerate" || provider === "vimeo"
+
     return (
       <div className="flex flex-col">
         <div className="relative aspect-video w-full">
@@ -79,7 +80,7 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
             className="absolute inset-0 h-full w-full border-0"
           />
         </div>
-        {isFramerate && (
+        {showExternalLink && (
           <div className="flex justify-end bg-core-black px-4 py-2">
             <a
               href={externalUrl}
@@ -87,7 +88,7 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
               rel="noopener noreferrer"
               className="font-sans text-xs text-white/40 hover:text-white transition-colors"
             >
-              View on Framerate →
+              View on {getProviderLabel(provider)} →
             </a>
           </div>
         )}

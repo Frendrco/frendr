@@ -112,7 +112,7 @@ export default async function SearchPage({ searchParams }: Props) {
     prisma.video.findMany({
       where: videoWhere,
       orderBy: videoOrderBy,
-      take: 24,
+      take: 200,
       include: {
         user: { select: { username: true, displayName: true, avatarUrl: true } },
       },
@@ -489,16 +489,26 @@ export default async function SearchPage({ searchParams }: Props) {
         {!noResults && !isRecessView && (
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-sans font-bold text-base text-core-black">
-                {isSearching ? (
-                  <>
-                    Videos
-                    {videos.length > 0 && (
-                      <span className="ml-2 font-normal text-foreground/40">({videos.length})</span>
-                    )}
-                  </>
-                ) : activeTag === "All" ? "Explore Video" : activeTag}
-              </h2>
+              <div className="flex items-baseline gap-3">
+                <h2 className="font-sans font-bold text-base text-core-black">
+                  {isSearching ? (
+                    <>
+                      Videos
+                      {videos.length > 0 && (
+                        <span className="ml-2 font-normal text-foreground/40">({videos.length})</span>
+                      )}
+                    </>
+                  ) : activeTag === "All" ? "Explore Video" : activeTag}
+                </h2>
+                {!isSearching && activeTag === "All" && (
+                  <Link
+                    href="/discover"
+                    className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
+                  >
+                    See all →
+                  </Link>
+                )}
+              </div>
               {!isSearching && <ExploreSort current={activeSort} />}
             </div>
 

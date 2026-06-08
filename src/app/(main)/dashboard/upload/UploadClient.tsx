@@ -28,13 +28,14 @@ type Tab        = "basics" | "privacy" | "embed"
 type VideoType  = "PORTFOLIO" | "RECESS" | "INTERACTIVE"
 
 interface BulkItem {
-  id:           string
-  url:          string
-  provider:     Provider | null
-  title:        string
-  description:  string
-  thumbnailUrl: string | null
-  status:       "idle" | "loading" | "ready" | "error"
+  id:            string
+  url:           string
+  provider:      Provider | null
+  title:         string
+  description:   string
+  thumbnailUrl:  string | null
+  status:        "idle" | "loading" | "ready" | "error"
+  errorMessage?: string
 }
 interface BatchItem {
   id:       string
@@ -233,6 +234,16 @@ export function UploadClient({
     try { new URL(url) } catch { return }
     const provider = detectProvider(url)
     setBulkItems((prev) => prev.map((item) => item.id === id ? { ...item, provider, status: "loading" } : item))
+
+    // Unsupported source — reject immediately with a clear message
+    if (provider === "other") {
+      setBulkItems((prev) => prev.map((item) =>
+        item.id === id
+          ? { ...item, provider, status: "error", errorMessage: "This platform doesn't support external embedding. Import from YouTube, Vimeo, Framerate, or Dropbox." }
+          : item
+      ))
+      return
+    }
 
     // Dropbox: validate and convert URL, no oembed needed
     if (provider === "dropbox") {
@@ -1705,7 +1716,9 @@ export function UploadClient({
                     )}
 
                     {item.status === "error" && (
-                      <p className="font-sans text-xs text-red-500">Could not load metadata — check the URL and try again.</p>
+                      <p className="font-sans text-xs text-red-500">
+                        {item.errorMessage ?? "Could not load metadata — check the URL and try again."}
+                      </p>
                     )}
                   </div>
                 ))}

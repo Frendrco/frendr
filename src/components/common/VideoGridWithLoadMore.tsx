@@ -8,23 +8,26 @@ interface Props {
   showTimestamp?: boolean
 }
 
+const INITIAL = 24
+const PAGE_SIZE = 12
+
 export function VideoGridWithLoadMore({ initialVideos, showTimestamp }: Props) {
-  const [visibleCount, setVisibleCount] = useState(16)
+  const [visibleCount, setVisibleCount] = useState(INITIAL)
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 md:gap-4">
         {initialVideos.slice(0, visibleCount).map((video) => (
           <VideoCard key={video.id} video={video} showTimestamp={showTimestamp} />
         ))}
       </div>
       {initialVideos.length > visibleCount && (
-        <div className="mt-8 flex justify-center">
+        <div className="mt-10 flex justify-center">
           <button
-            onClick={() => setVisibleCount(c => c + 8)}
-            className="h-10 px-6 rounded-full bg-core-black font-sans font-medium text-sm text-white hover:bg-spring-green hover:text-core-black transition-colors"
+            onClick={() => setVisibleCount(c => c + PAGE_SIZE)}
+            className="inline-flex h-10 items-center rounded-full border border-border px-8 font-sans font-medium text-sm text-core-black transition-colors hover:border-core-black"
           >
-            Load more
+            Show more
           </button>
         </div>
       )}
