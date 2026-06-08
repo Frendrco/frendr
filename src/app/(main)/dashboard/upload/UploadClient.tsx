@@ -779,9 +779,11 @@ export function UploadClient({
       <Toggle on={isAiGenerated} onToggle={() => setIsAiGenerated((v) => !v)} label="AI Generated Content"
         description="Let viewers know if this video was created with the help of AI tools." />
 
-      {/* Downloads */}
-      <Toggle on={allowDownloads} onToggle={() => setAllowDownloads((v) => !v)} label="Allow downloads"
-        description="Viewers can download the original file." />
+      {/* Downloads — only meaningful for direct file uploads, not URL imports */}
+      {mode === "upload" && (
+        <Toggle on={allowDownloads} onToggle={() => setAllowDownloads((v) => !v)} label="Allow downloads"
+          description="Viewers can download the original file." />
+      )}
     </>
   )
 
