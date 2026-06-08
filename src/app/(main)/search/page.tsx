@@ -102,7 +102,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
   // Everything runs in one parallel batch. currentUser is included here for the non-"following"
   // sort case so it doesn't add a sequential round-trip before the main queries.
-  const [currentUser, videos, creators, featuredVideos, featuredChannels, newMembers, recessVideos] = await Promise.all([
+  const [currentUser, videos, creators, featuredVideos, featuredChannels, newMembers, recessVideosRaw] = await Promise.all([
     // currentUser — needed for new-member follow status; already resolved for "following" sort
     prefetchedUserId
       ? Promise.resolve({ id: prefetchedUserId })
@@ -167,7 +167,7 @@ export default async function SearchPage({ searchParams }: Props) {
       ? prisma.video.findMany({
           where: { isPublic: true, videoType: "RECESS" },
           orderBy: { createdAt: "desc" },
-          take: 8,
+          take: 20,
           include: {
             user: { select: { username: true, displayName: true, avatarUrl: true } },
             _count: { select: { likes: true } },
@@ -175,6 +175,11 @@ export default async function SearchPage({ searchParams }: Props) {
         })
       : Promise.resolve([]),
   ])
+
+  // Cavalry work always surfaces first in the Recess preview strip
+  const recessVideos = recessVideosRaw
+    .sort((a, b) => (b.categories.includes("Cavalry") ? 1 : 0) - (a.categories.includes("Cavalry") ? 1 : 0))
+    .slice(0, 8)
 
   // New-member follow status — one quick lookup after the parallel batch
   const currentUserId = currentUser?.id ?? null
