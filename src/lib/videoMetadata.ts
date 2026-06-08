@@ -9,7 +9,7 @@ export interface VideoMetadata {
 const ALLOWED_HOSTS = new Set([
   "youtube.com", "www.youtube.com", "youtu.be", "m.youtube.com",
   "vimeo.com", "www.vimeo.com", "player.vimeo.com",
-  "framerate.io", "www.framerate.io",
+  "framerate.tv", "www.framerate.tv",
   "dropbox.com", "www.dropbox.com", "dl.dropboxusercontent.com",
 ])
 

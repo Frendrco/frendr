@@ -41,5 +41,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# waitlist — contains email addresses, never commit
+# waitlist/signups — contain email addresses, never commit
 scripts/waitlist.csv
+frendr-signups.csv

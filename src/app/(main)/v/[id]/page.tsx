@@ -94,6 +94,8 @@ export default async function VideoPage({ params }: Props) {
   const isAdmin = currentUser?.isAdmin
   const isOwner = clerkId != null && video.user.clerkId === clerkId
 
+  if (!video.isPublic && !isOwner && !isAdmin) notFound()
+
   const [upvoteData, savedData, rawComments, followData] = await Promise.all([
     currentUser
       ? prisma.videoLike.findUnique({

@@ -125,8 +125,10 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     { key: "other",     href: buildHref(user.other),     label: "↗"  },
   ].filter((s): s is { key: string; href: string; label: string } => Boolean(s.href))
 
+  const visibleVideos = isOwn ? user.videos : user.videos.filter((v) => v.isPublic)
+
   const pinnedVideo = user.pinnedVideoId
-    ? (user.videos.find((v) => v.id === user.pinnedVideoId) ?? null)
+    ? (visibleVideos.find((v) => v.id === user.pinnedVideoId) ?? null)
     : null
 
   const pinnedVideoUpvoted = pinnedVideo && clerkId
@@ -137,8 +139,8 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     : false
 
   const allGridVideos = pinnedVideo
-    ? user.videos.filter((v) => v.id !== user.pinnedVideoId)
-    : user.videos
+    ? visibleVideos.filter((v) => v.id !== user.pinnedVideoId)
+    : visibleVideos
 
   const portfolioVideos = allGridVideos.filter((v) => v.videoType !== "RECESS")
   const recessVideos = allGridVideos.filter((v) => v.videoType === "RECESS")
