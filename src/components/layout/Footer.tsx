@@ -18,28 +18,19 @@ export function Footer() {
     <footer className="bg-white overflow-hidden">
 
       {/* ── Slim nav bar ── */}
-      <div className="mx-auto max-w-screen-xl px-6 md:px-8 pt-6 pb-3 relative flex items-center justify-between border-t border-black/10">
+      <div className="mx-auto max-w-screen-xl px-6 md:px-8 pt-6 pb-3 border-t border-black/10">
 
-        {/* Social links */}
-        <div className="flex items-center gap-6">
-          {SOCIAL_LINKS.map((link) => (
+        {/* Mobile: all links centred in a single row */}
+        <div className="flex md:hidden items-center justify-center gap-6 flex-wrap">
+          {SOCIAL_LINKS.filter((l) => l.label !== "Get the app").map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className={`font-sans text-sm text-foreground/50 hover:text-foreground transition-colors${link.label === "Get the app" ? " hidden md:inline" : ""}`}
+              className="font-sans text-sm text-foreground/50 hover:text-foreground transition-colors"
             >
               {link.label}
             </Link>
           ))}
-        </div>
-
-        {/* Symbol — absolutely centered so it's independent of side widths */}
-        <Link href="/" className="hidden md:block absolute left-1/2 -translate-x-1/2 hover:scale-125 transition-transform duration-200">
-          <Logo variant="symbol" height={22} colour="black" />
-        </Link>
-
-        {/* Legal links */}
-        <div className="flex items-center gap-6">
           {LEGAL_LINKS.map((link) => (
             <Link
               key={link.label}
@@ -49,6 +40,42 @@ export function Footer() {
               {link.label}
             </Link>
           ))}
+        </div>
+
+        {/* Desktop: left / centred logo / right */}
+        <div className="hidden md:flex relative items-center justify-between">
+
+          {/* Social links */}
+          <div className="flex items-center gap-6">
+            {SOCIAL_LINKS.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="font-sans text-sm text-foreground/50 hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Symbol — absolutely centred */}
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2 hover:scale-125 transition-transform duration-200">
+            <Logo variant="symbol" height={22} colour="black" />
+          </Link>
+
+          {/* Legal links */}
+          <div className="flex items-center gap-6">
+            {LEGAL_LINKS.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="font-sans text-sm text-foreground/50 hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
         </div>
 
       </div>

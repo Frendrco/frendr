@@ -7,6 +7,9 @@ export function InstallBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    // Never show on mobile — native browser prompt handles it there
+    if (window.matchMedia("(max-width: 768px)").matches) return
+
     // If running as installed PWA, record it permanently and never show banner
     if (window.matchMedia("(display-mode: standalone)").matches) {
       localStorage.setItem("pwa-installed", "1")
