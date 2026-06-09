@@ -454,7 +454,6 @@ export function UploadClient({
               filename:           item.file.name,
               filetype:           item.file.type,
               maxDurationSeconds: "600",
-              requireSignedURLs:  "false",
               allowedOrigins:     "frendr.co,www.frendr.co",
             },
             onAfterResponse: (_req, res) => {
@@ -553,7 +552,6 @@ export function UploadClient({
             filename:           file.name,
             filetype:           file.type,
             maxDurationSeconds: "600",
-            requireSignedURLs:  "false",
             allowedOrigins:     "frendr.co,www.frendr.co",
           },
           onAfterResponse: (_req, res) => {
