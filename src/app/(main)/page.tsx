@@ -94,10 +94,10 @@ export default async function HomePage({
           <div className="flex flex-col gap-4 py-12 md:flex-row md:items-end md:justify-between">
             <div className="text-center md:text-left">
               <h2 className="display-sm text-core-black">
-                {activeCategory ? activeCategory : "Out of the oven"}
+                {activeCategory ? activeCategory : "Out of the Oven"}
               </h2>
               <p className="mt-1 font-sans text-sm text-foreground/50">
-                The best motion design, animation, and video from the community.
+                Served with love.
               </p>
             </div>
             <div className="flex items-center justify-center gap-1 shrink-0 md:justify-start">

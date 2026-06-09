@@ -19,11 +19,11 @@ export async function POST(req: Request) {
 
   const user = await prisma.user.findUnique({
     where: { clerkId },
-    select: { id: true, isPro: true },
+    select: { id: true, isPro: true, isAdmin: true },
   })
   if (!user) return new Response(null, { status: 404 })
 
-  if (!user.isPro) {
+  if (!user.isPro && !user.isAdmin) {
     const agg = await prisma.video.aggregate({
       where: { userId: user.id, duration: { not: null } },
       _sum: { duration: true },

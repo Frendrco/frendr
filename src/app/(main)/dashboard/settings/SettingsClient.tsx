@@ -578,7 +578,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
             </div>
 
             {/* Vibes */}
-            <div className="flex flex-col gap-3 pb-4">
+            <div className="flex flex-col gap-3 pb-4 items-center md:items-start">
               <label className="font-sans text-xs font-medium text-foreground/50">Vibes</label>
               {VIBES_QUESTIONS.map((q) => (
                 <div key={q.id} className="flex items-center gap-2">
@@ -633,7 +633,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
             <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
               <div>
                 <p className="font-sans text-sm font-medium text-core-black">Free plan</p>
-                <p className="font-sans text-xs text-foreground/40">10 minutes of uploads included</p>
+                <p className="font-sans text-xs text-foreground/40">20 minutes of uploads included</p>
               </div>
               <button
                 type="button"
