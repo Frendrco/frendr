@@ -108,9 +108,17 @@ export function VideoPlayer({ streamId, externalUrl, title, streamStatus = "unkn
   // Still processing
   if (streamStatus === "processing") {
     return (
-      <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-white/70" />
-        <p className="font-sans text-sm text-white/40">Processing video… this usually takes a minute</p>
+      <div className="flex aspect-video w-full flex-col items-center justify-center gap-5 bg-core-black px-8">
+        <div className="flex w-full max-w-sm flex-col items-center gap-3 text-center">
+          <p className="font-sans text-sm font-medium text-white/70">Processing your video…</p>
+          <div className="relative h-1 w-full overflow-hidden rounded-full bg-white/10">
+            <div
+              className="absolute inset-y-0 left-0 w-1/2 rounded-full bg-white/50"
+              style={{ animation: "shimmer 1.8s ease-in-out infinite" }}
+            />
+          </div>
+          <p className="font-sans text-xs text-white/30">This usually takes 1–2 minutes. The page updates automatically.</p>
+        </div>
       </div>
     )
   }
