@@ -68,12 +68,16 @@ function Toggle({ on, onToggle, label, description }: { on: boolean; onToggle: (
 }
 
 async function extractVideoFrames(videoFile: File): Promise<string[]> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const video = document.createElement("video")
     const url = URL.createObjectURL(videoFile)
     video.src = url
     video.muted = true
-    video.crossOrigin = "anonymous"
+    video.preload = "metadata"
+
+    const cleanup = () => URL.revokeObjectURL(url)
+
+    video.addEventListener("error", () => { cleanup(); reject(new Error("Video load failed")) })
 
     const frames: string[] = []
     let index = 0
@@ -81,13 +85,14 @@ async function extractVideoFrames(videoFile: File): Promise<string[]> {
 
     video.addEventListener("loadedmetadata", () => {
       const d = video.duration
+      if (!d || !isFinite(d)) { cleanup(); resolve([]); return }
       timestamps = Array.from({ length: FRAME_COUNT }, (_, i) => (d * (i + 0.5)) / FRAME_COUNT)
       seekNext()
     })
 
     function seekNext() {
       if (index >= timestamps.length) {
-        URL.revokeObjectURL(url)
+        cleanup()
         resolve(frames)
         return
       }
