@@ -1389,7 +1389,7 @@ export function UploadClient({
                       </div>
                     </label>
                   )}
-                  <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 or MOV · up to 500 MB</p>
+                  <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 or MOV · up to 2 GB</p>
                 </div>
 
                 {recessMetadataFields}
@@ -1481,7 +1481,7 @@ export function UploadClient({
                           </div>
                         </label>
                       )}
-                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 or MOV · up to 500 MB</p>
+                      <p className="mt-2 text-center font-sans text-[11px] text-foreground/30">MP4 or MOV · up to 2 GB</p>
                     </div>
 
                     {metadataFields}
