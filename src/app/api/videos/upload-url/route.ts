@@ -53,7 +53,7 @@ export async function POST() {
         maxDurationSeconds: 600,
         requireSignedURLs: false,
         expiry: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
-        allowedOrigins: ["frendr.co", "www.frendr.co"],
+        allowedOrigins: ["https://frendr.co", "https://www.frendr.co"],
       }),
     }
   )
