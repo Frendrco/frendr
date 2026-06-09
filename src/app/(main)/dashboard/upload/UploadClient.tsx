@@ -455,7 +455,7 @@ export function UploadClient({
             onProgress: (bytesUploaded, bytesTotal) => {
               updateBatchItem(item.id, { progress: Math.round((bytesUploaded / bytesTotal) * 100) })
             },
-            onSuccess: resolve,
+            onSuccess: () => resolve(),
           })
           upload.start()
         })
