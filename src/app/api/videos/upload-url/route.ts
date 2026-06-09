@@ -54,6 +54,7 @@ export async function POST() {
         requireSignedURLs: false,
         expiry: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
         allowedOrigins: ["frendr.co", "www.frendr.co"],
+        maxUploadSizeInBytes: 1073741824,
       }),
     }
   )
