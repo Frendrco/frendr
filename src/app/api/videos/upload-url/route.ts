@@ -3,15 +3,25 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { FREE_UPLOAD_SECONDS } from "@/lib/stripe"
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin":  "https://frendr.co",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+}
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS_HEADERS })
+}
+
 export async function POST() {
   const { userId: clerkId } = await auth()
-  if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: CORS_HEADERS })
 
   const user = await prisma.user.findUnique({
     where: { clerkId },
     select: { id: true, isPro: true },
   })
-  if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
+  if (!user) return NextResponse.json({ error: "User not found" }, { status: 404, headers: CORS_HEADERS })
 
   if (!user.isPro) {
     const agg = await prisma.video.aggregate({
@@ -20,7 +30,7 @@ export async function POST() {
     })
     const totalSeconds = agg._sum.duration ?? 0
     if (totalSeconds >= FREE_UPLOAD_SECONDS) {
-      return NextResponse.json({ error: "upload_limit_reached" }, { status: 402 })
+      return NextResponse.json({ error: "upload_limit_reached" }, { status: 402, headers: CORS_HEADERS })
     }
   }
 
@@ -28,7 +38,7 @@ export async function POST() {
   const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
 
   if (!accountId || !token) {
-    return NextResponse.json({ error: "Cloudflare Stream is not configured" }, { status: 503 })
+    return NextResponse.json({ error: "Cloudflare Stream is not configured" }, { status: 503, headers: CORS_HEADERS })
   }
 
   const res = await fetch(
@@ -43,7 +53,7 @@ export async function POST() {
         maxDurationSeconds: 600,
         requireSignedURLs: false,
         expiry: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
-        allowedOrigins: ["*"],
+        allowedOrigins: ["frendr.co", "www.frendr.co"],
       }),
     }
   )
@@ -51,12 +61,12 @@ export async function POST() {
   if (!res.ok) {
     const body = await res.text()
     console.error("Cloudflare Stream error:", body)
-    return NextResponse.json({ error: "Failed to create upload URL" }, { status: 502 })
+    return NextResponse.json({ error: "Failed to create upload URL" }, { status: 502, headers: CORS_HEADERS })
   }
 
   const { result } = await res.json() as {
     result: { uid: string; uploadURL: string }
   }
 
-  return NextResponse.json({ uid: result.uid, uploadURL: result.uploadURL })
+  return NextResponse.json({ uid: result.uid, uploadURL: result.uploadURL }, { headers: CORS_HEADERS })
 }
