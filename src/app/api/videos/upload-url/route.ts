@@ -60,9 +60,11 @@ export async function POST() {
 
   if (!res.ok) {
     const body = await res.text()
-    console.error("Cloudflare Stream error:", body)
+    console.error("[upload-url] Cloudflare error — status:", res.status, "body:", body)
     return NextResponse.json({ error: "Failed to create upload URL" }, { status: 502, headers: CORS_HEADERS })
   }
+
+  console.log("[upload-url] Cloudflare response OK — status:", res.status)
 
   const { result } = await res.json() as {
     result: { uid: string; uploadURL: string }
