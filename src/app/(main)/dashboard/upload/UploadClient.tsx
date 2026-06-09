@@ -528,8 +528,10 @@ export function UploadClient({
         xhr.upload.addEventListener("progress", (e) => {
           if (e.lengthComputable) setProgress(Math.round((e.loaded / e.total) * 100))
         })
-        xhr.addEventListener("load", () => xhr.status < 400 ? resolve() : reject(new Error("Upload failed")))
-        xhr.addEventListener("error", () => reject(new Error("Upload failed")))
+        xhr.addEventListener("load", () => xhr.status < 400 ? resolve() : reject(new Error(`Upload rejected by server (${xhr.status})`)))
+        xhr.addEventListener("error", () => reject(new Error("Network error during upload")))
+        xhr.addEventListener("timeout", () => reject(new Error("Upload timed out — try a smaller file or faster connection")))
+        xhr.timeout = 20 * 60 * 1000 // 20 minutes
         xhr.open("POST", uploadURL)
         const form = new FormData()
         form.append("file", file)
@@ -1335,15 +1337,15 @@ export function UploadClient({
                       {uploading ? (
                         <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
                           <p className="font-sans text-sm font-medium text-core-black">
-                            {progress < 100 ? "Uploading…" : "Processing…"}
+                            {progress < 100 ? "Uploading…" : "Finalising with Cloudflare…"}
                           </p>
                           <div className="w-full max-w-xs">
                             <div className="mb-2 flex items-center justify-between">
                               <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
-                              <span className="font-sans text-xs text-foreground/50">{progress}%</span>
+                              <span className="font-sans text-xs text-foreground/50">{progress < 100 ? `${progress}%` : ""}</span>
                             </div>
                             <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                              {progress === 0 ? (
+                              {progress === 0 || progress === 100 ? (
                                 <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
                               ) : (
                                 <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
@@ -1427,15 +1429,15 @@ export function UploadClient({
                           {uploading ? (
                             <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
                               <p className="font-sans text-sm font-medium text-core-black">
-                                {progress < 100 ? "Uploading…" : "Processing…"}
+                                {progress < 100 ? "Uploading…" : "Finalising with Cloudflare…"}
                               </p>
                               <div className="w-full max-w-xs">
                                 <div className="mb-2 flex items-center justify-between">
                                   <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
-                                  <span className="font-sans text-xs text-foreground/50">{progress}%</span>
+                                  <span className="font-sans text-xs text-foreground/50">{progress < 100 ? `${progress}%` : ""}</span>
                                 </div>
                                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                                  {progress === 0 ? (
+                                  {progress === 0 || progress === 100 ? (
                                     <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
                                   ) : (
                                     <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
@@ -1565,9 +1567,10 @@ export function UploadClient({
               </>
             )}
 
-            {uploadError && <p className="mt-4 font-sans text-xs text-red-500">{uploadError}</p>}
-
             <div className="mt-6 flex items-center justify-end gap-3 border-t border-border pt-5">
+              {uploadError && (
+                <p className="mr-auto font-sans text-xs text-red-500">{uploadError}</p>
+              )}
               <Link href={`/${username}`} className="inline-flex h-10 items-center px-6 font-sans font-medium text-sm text-red-500 hover:opacity-70 transition-opacity">
                 Cancel
               </Link>
@@ -1577,7 +1580,7 @@ export function UploadClient({
                 disabled={!file || !title.trim() || uploading}
                 className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
               >
-                {uploading ? (progress < 100 ? "Uploading…" : "Processing…") : videoType === "RECESS" ? "Drop into Recess" : "Upload Video"}
+                {uploading ? (progress < 100 ? "Uploading…" : "Finalising…") : videoType === "RECESS" ? "Drop into Recess" : "Upload Video"}
               </button>
             </div>
             </>}
