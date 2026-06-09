@@ -440,18 +440,31 @@ export function UploadClient({
     const results = await Promise.all(batchFiles.map(async (item) => {
       try {
         updateBatchItem(item.id, { status: "uploading" })
-        const urlRes = await fetch("/api/videos/upload-url", { method: "POST" })
-        if (urlRes.status === 402) { setShowPaywall(true); setUploading(false); setBatchStarted(false); return null }
-        if (!urlRes.ok) throw new Error("Could not get upload URL")
-        const { uid, uploadURL } = await urlRes.json() as { uid: string; uploadURL: string }
+
+        let uid = ""
+        let paywalled = false
 
         await new Promise<void>((resolve, reject) => {
           const upload = new TusUpload(item.file, {
-            uploadUrl: uploadURL,
-            chunkSize: 50 * 1024 * 1024,
+            endpoint: "/api/videos/upload-url",
+            chunkSize: 150 * 1024 * 1024,
             retryDelays: [0, 3000, 5000, 10000, 20000],
-            metadata: { filename: item.file.name, filetype: item.file.type },
-            onError: reject,
+            metadata: {
+              filename:           item.file.name,
+              filetype:           item.file.type,
+              maxDurationSeconds: "600",
+              requireSignedURLs:  "false",
+              allowedOrigins:     "frendr.co,www.frendr.co",
+            },
+            onAfterResponse: (_req, res) => {
+              const mediaId = res.getHeader("stream-media-id")
+              if (mediaId) uid = mediaId
+            },
+            onError: (err) => {
+              const status = (err as { originalResponse?: { getStatus: () => number } }).originalResponse?.getStatus()
+              if (status === 402) paywalled = true
+              reject(err)
+            },
             onProgress: (bytesUploaded, bytesTotal) => {
               updateBatchItem(item.id, { progress: Math.round((bytesUploaded / bytesTotal) * 100) })
             },
@@ -459,6 +472,8 @@ export function UploadClient({
           })
           upload.start()
         })
+
+        if (paywalled) { setShowPaywall(true); setUploading(false); setBatchStarted(false); return null }
 
         updateBatchItem(item.id, { status: "saving", progress: 100 })
         const saveRes = await fetch("/api/videos", {
@@ -525,25 +540,38 @@ export function UploadClient({
     if (!file || !title.trim()) return
     setUploading(true); setUploadError(null); setProgress(0)
     try {
-      const urlRes = await fetch("/api/videos/upload-url", { method: "POST" })
-      if (urlRes.status === 402) { setShowPaywall(true); setUploading(false); return }
-      if (!urlRes.ok) throw new Error("Could not get upload URL")
-      const { uid, uploadURL } = await urlRes.json() as { uid: string; uploadURL: string }
+      let uid = ""
 
       await new Promise<void>((resolve, reject) => {
         const upload = new TusUpload(file, {
-          uploadUrl: uploadURL,
-          chunkSize: 50 * 1024 * 1024,
+          endpoint: "/api/videos/upload-url",
+          chunkSize: 150 * 1024 * 1024,
           retryDelays: [0, 3000, 5000, 10000, 20000],
-          metadata: { filename: file.name, filetype: file.type },
-          onError: reject,
+          metadata: {
+            filename:           file.name,
+            filetype:           file.type,
+            maxDurationSeconds: "600",
+            requireSignedURLs:  "false",
+            allowedOrigins:     "frendr.co,www.frendr.co",
+          },
+          onAfterResponse: (_req, res) => {
+            const mediaId = res.getHeader("stream-media-id")
+            if (mediaId) uid = mediaId
+          },
+          onError: (err) => {
+            const status = (err as { originalResponse?: { getStatus: () => number } }).originalResponse?.getStatus()
+            if (status === 402) { setShowPaywall(true); setUploading(false) }
+            reject(err)
+          },
           onProgress: (bytesUploaded, bytesTotal) => {
             setProgress(Math.round((bytesUploaded / bytesTotal) * 100))
           },
-          onSuccess: resolve,
+          onSuccess: () => resolve(),
         })
         upload.start()
       })
+
+      if (!uid) throw new Error("Could not get video ID")
 
       const effectiveThumbnail = videoType === "RECESS" && !thumbnail && videoFrames.length > 0
         ? videoFrames[0]
