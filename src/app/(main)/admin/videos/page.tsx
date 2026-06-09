@@ -71,9 +71,11 @@ export default async function AdminVideosPage() {
                 </td>
                 <td className="px-4 py-3 hidden md:table-cell">
                   <span className={`inline-flex items-center rounded-full px-2 py-0.5 font-sans text-xs font-medium ${
-                    v.isPublic ? "bg-green-50 text-green-700" : "bg-muted text-foreground/50"
+                    v.visibility === "PUBLIC" ? "bg-green-50 text-green-700"
+                    : v.visibility === "FOLLOWERS_ONLY" ? "bg-amber-50 text-amber-700"
+                    : "bg-muted text-foreground/50"
                   }`}>
-                    {v.isPublic ? "Public" : "Private"}
+                    {v.visibility === "PUBLIC" ? "Public" : v.visibility === "FOLLOWERS_ONLY" ? "Followers" : "Private"}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right">

@@ -176,7 +176,7 @@ export default function OnboardingPage() {
         await fetch("/api/videos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ externalUrl: videoExternalUrl.trim(), title: videoTitle.trim(), videoType: "PORTFOLIO", isPublic: true }),
+          body: JSON.stringify({ externalUrl: videoExternalUrl.trim(), title: videoTitle.trim(), videoType: "PORTFOLIO", visibility: "PUBLIC"}),
         })
       } else {
         const urlRes = await fetch("/api/videos/upload-url", { method: "POST" })
@@ -197,7 +197,7 @@ export default function OnboardingPage() {
         await fetch("/api/videos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ streamId: uid, title: videoTitle.trim(), videoType: "PORTFOLIO", isPublic: true }),
+          body: JSON.stringify({ streamId: uid, title: videoTitle.trim(), videoType: "PORTFOLIO", visibility: "PUBLIC"}),
         })
       }
       router.push(`/${createdUsername}`)

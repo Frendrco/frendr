@@ -49,7 +49,8 @@ export default async function HomePage({
 
   const videos = await prisma.video.findMany({
     where: {
-      isPublic: true,
+      visibility: "PUBLIC" as const,
+      hideFromFeeds: false,
       videoType: "PORTFOLIO",
       ...(activeCategory ? { categories: { has: activeCategory } } : {}),
     },

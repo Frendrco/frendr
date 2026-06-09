@@ -20,7 +20,9 @@ export async function POST(req: Request) {
       videoType?:    "PORTFOLIO" | "RECESS"
       categories?:   string[]
       tags?:         string[]
-      isPublic?:     boolean
+      visibility?:   "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE"
+      hideFromFeeds?: boolean
+      allowComments?: boolean
       isAiGenerated?: boolean
       embedAutoplay?: boolean
       embedLoop?:    boolean
@@ -53,7 +55,9 @@ export async function POST(req: Request) {
             title:        item.title.trim(),
             description:  item.description?.trim() || null,
             thumbnailUrl: item.thumbnailUrl ?? null,
-            isPublic:     item.isPublic      ?? true,
+            visibility:    item.visibility    ?? "PUBLIC",
+            hideFromFeeds: item.hideFromFeeds ?? false,
+            allowComments: item.allowComments ?? true,
             isAiGenerated: item.isAiGenerated ?? false,
             embedAutoplay: item.embedAutoplay ?? false,
             embedLoop:     item.embedLoop     ?? false,

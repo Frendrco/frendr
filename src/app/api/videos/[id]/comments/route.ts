@@ -64,6 +64,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
+  const videoCheck = await prisma.video.findUnique({ where: { id }, select: { allowComments: true } })
+  if (!videoCheck?.allowComments) {
+    return NextResponse.json({ error: "Comments are disabled for this video" }, { status: 403 })
+  }
+
   const { body, parentCommentId } = await req.json()
   if (!body?.trim()) return NextResponse.json({ error: "Body required" }, { status: 400 })
   if (body.trim().length > 2000) return NextResponse.json({ error: "Comment too long (max 2000 chars)" }, { status: 400 })

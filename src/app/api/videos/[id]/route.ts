@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { hashPassword } from "@/lib/videoPrivacy"
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -22,7 +23,10 @@ export async function PATCH(req: Request, { params }: Params) {
     tags?:              string[]
     categories?:        string[]
     thumbnailUrl?:      string | null
-    isPublic?:          boolean
+    visibility?:        "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE"
+    password?:          string | null
+    hideFromFeeds?:     boolean
+    allowComments?:     boolean
     allowDownloads?:    boolean
     videoType?:         "PORTFOLIO" | "RECESS"
     collaborators?:     { userId: string; role?: string | null }[]
@@ -31,8 +35,12 @@ export async function PATCH(req: Request, { params }: Params) {
     embedShowControls?: boolean
     allowEmbedding?:    boolean
   }
-  const { title, description, tags, categories, thumbnailUrl, isPublic, allowDownloads, videoType, collaborators,
-          embedAutoplay, embedLoop, embedShowControls, allowEmbedding } = body
+  const { title, description, tags, categories, thumbnailUrl, visibility, password, hideFromFeeds, allowComments,
+          allowDownloads, videoType, collaborators, embedAutoplay, embedLoop, embedShowControls, allowEmbedding } = body
+
+  const passwordUpdate = password === undefined
+    ? {}
+    : { password: password?.trim() ? hashPassword(password.trim()) : null }
 
   const updated = await prisma.video.update({
     where: { id },
@@ -42,7 +50,10 @@ export async function PATCH(req: Request, { params }: Params) {
       ...(tags              !== undefined && { tags }),
       ...(categories        !== undefined && { categories }),
       ...(thumbnailUrl      !== undefined && { thumbnailUrl }),
-      ...(isPublic          !== undefined && { isPublic }),
+      ...(visibility        !== undefined && { visibility }),
+      ...passwordUpdate,
+      ...(hideFromFeeds     !== undefined && { hideFromFeeds }),
+      ...(allowComments     !== undefined && { allowComments }),
       ...(allowDownloads    !== undefined && { allowDownloads }),
       ...(videoType         !== undefined && { videoType }),
       ...(embedAutoplay     !== undefined && { embedAutoplay }),

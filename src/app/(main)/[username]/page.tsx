@@ -125,7 +125,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     { key: "other",     href: buildHref(user.other),     label: "↗"  },
   ].filter((s): s is { key: string; href: string; label: string } => Boolean(s.href))
 
-  const visibleVideos = isOwn ? user.videos : user.videos.filter((v) => v.isPublic)
+  const visibleVideos = isOwn ? user.videos : user.videos.filter((v) => v.visibility !== "PRIVATE")
 
   const pinnedVideo = user.pinnedVideoId
     ? (visibleVideos.find((v) => v.id === user.pinnedVideoId) ?? null)

@@ -6,7 +6,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const [videos, users] = await Promise.all([
     prisma.video.findMany({
-      where: { isPublic: true },
+      where: { visibility: "PUBLIC" },
       select: { id: true, slug: true, updatedAt: true },
       orderBy: { updatedAt: "desc" },
       take: 1000,

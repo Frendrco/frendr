@@ -79,7 +79,7 @@ export default async function SearchPage({ searchParams }: Props) {
         ],
       }
     : isRecessView
-    ? { isPublic: true, videoType: "RECESS" as const }
+    ? { visibility: "PUBLIC" as const, hideFromFeeds: false, videoType: "RECESS" as const }
     : activeSort === "following"
     ? {
         userId: { in: followingIds },
@@ -93,7 +93,7 @@ export default async function SearchPage({ searchParams }: Props) {
         ...(isCategoryTag ? { categories: { has: activeTag } } : { tags: { has: activeTag } }),
         videoType: "PORTFOLIO" as const,
       }
-    : { videoType: "PORTFOLIO" as const, isPublic: true }
+    : { videoType: "PORTFOLIO" as const, visibility: "PUBLIC" as const, hideFromFeeds: false }
 
   const videoOrderBy =
     activeSort === "trending"
@@ -132,7 +132,7 @@ export default async function SearchPage({ searchParams }: Props) {
       : Promise.resolve([]),
     !isSearching
       ? prisma.video.findMany({
-          where: { featured: true },
+          where: { featured: true, visibility: "PUBLIC" },
           orderBy: { updatedAt: "desc" },
           take: 12,
           include: {
@@ -165,7 +165,7 @@ export default async function SearchPage({ searchParams }: Props) {
       : Promise.resolve([]),
     !isSearching && !isRecessView
       ? prisma.video.findMany({
-          where: { isPublic: true, videoType: "RECESS" },
+          where: { visibility: "PUBLIC", hideFromFeeds: false, videoType: "RECESS" },
           orderBy: { createdAt: "desc" },
           take: 20,
           include: {
