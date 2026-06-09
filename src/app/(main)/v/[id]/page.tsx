@@ -146,9 +146,9 @@ export default async function VideoPage({ params }: Props) {
     })),
   }))
 
-  const streamInfo = (!video.externalUrl && video.streamId)
+  const streamInfo = (!video.externalUrl && video.streamId && !video.isProcessed)
     ? await getStreamInfo(video.streamId)
-    : { status: "unknown" as StreamStatus, duration: null }
+    : { status: video.isProcessed ? "ready" as StreamStatus : "unknown" as StreamStatus, duration: null }
   const streamStatus = streamInfo.status
 
   const formattedDate = new Date(video.createdAt).toLocaleDateString("en-US", {

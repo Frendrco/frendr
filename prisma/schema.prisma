@@ -104,6 +104,7 @@ model Video {
   allowDownloads Boolean        @default(false)
   featured       Boolean        @default(false)
   isAiGenerated  Boolean        @default(false)
+  isProcessed    Boolean        @default(false)
   videoType      VideoType      @default(PORTFOLIO)
   duration       Int?
   viewCount      Int            @default(0)

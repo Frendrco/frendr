@@ -63,6 +63,7 @@ export async function POST(req: Request) {
     await prisma.video.updateMany({
       where: { streamId: uid },
       data: {
+        isProcessed: true,
         ...(duration != null ? { duration: Math.round(duration) } : {}),
       },
     })
