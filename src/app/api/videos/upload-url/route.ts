@@ -43,6 +43,7 @@ export async function POST() {
         maxDurationSeconds: 600,
         requireSignedURLs: false,
         expiry: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
+        allowedOrigins: ["*"],
       }),
     }
   )
