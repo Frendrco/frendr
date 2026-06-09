@@ -44,3 +44,4 @@ next-env.d.ts
 # waitlist/signups — contain email addresses, never commit
 scripts/waitlist.csv
 frendr-signups.csv
+.env*.local

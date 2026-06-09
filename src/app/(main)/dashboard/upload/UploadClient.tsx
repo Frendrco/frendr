@@ -47,6 +47,12 @@ interface BatchItem {
   error?:   string
 }
 type Visibility = "public" | "followers" | "private"
+
+function toApiVisibility(v: Visibility): "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE" {
+  if (v === "public") return "PUBLIC"
+  if (v === "followers") return "FOLLOWERS_ONLY"
+  return "PRIVATE"
+}
 type ThumbMode  = "upload" | "frame"
 
 function Toggle({ on, onToggle, label, description }: { on: boolean; onToggle: () => void; label: string; description?: string }) {
@@ -192,7 +198,6 @@ export function UploadClient({
   const [categories, setCategories]     = useState<string[]>([])
   const [tags, setTags]                 = useState<string[]>([])
   const [tagSearch, setTagSearch]       = useState("")
-  const [isPublic, setIsPublic]         = useState(true)
   const [isAiGenerated, setIsAiGenerated] = useState(false)
   const [riveUrl, setRiveUrl]           = useState("")
 
@@ -484,7 +489,9 @@ export function UploadClient({
             title:        item.title.trim() || item.file.name,
             categories,
             tags,
-            isPublic,
+            visibility:   toApiVisibility(visibility),
+            hideFromFeeds,
+            allowComments,
             allowDownloads,
             isAiGenerated,
             videoType,
@@ -585,7 +592,10 @@ export function UploadClient({
           description:   description || null,
           categories,
           tags,
-          isPublic,
+          visibility:    toApiVisibility(visibility),
+          password:      password.trim() || null,
+          hideFromFeeds,
+          allowComments,
           allowDownloads,
           isAiGenerated,
           videoType,
@@ -620,7 +630,9 @@ export function UploadClient({
             videoType,
             categories,
             tags,
-            isPublic,
+            visibility:    toApiVisibility(visibility),
+            hideFromFeeds,
+            allowComments,
             isAiGenerated,
             embedAutoplay: autoplay,
             embedLoop:     loop,
@@ -820,7 +832,7 @@ export function UploadClient({
       </div>
 
       {/* Make public */}
-      <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
+      <Toggle on={visibility === "public"} onToggle={() => setVisibility((v) => v === "public" ? "private" : "public")} label="Make it public"
         description="Your video will appear in the Discover feed and on your profile." />
 
       {/* AI content */}
@@ -1051,7 +1063,7 @@ export function UploadClient({
         description="Replay automatically when the video ends." />
 
       {/* Make public */}
-      <Toggle on={isPublic} onToggle={() => setIsPublic((v) => !v)} label="Make it public"
+      <Toggle on={visibility === "public"} onToggle={() => setVisibility((v) => v === "public" ? "private" : "public")} label="Make it public"
         description="Your video will appear in the Discover feed and on your profile." />
 
       {/* AI content */}

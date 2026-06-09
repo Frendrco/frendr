@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { getVideoThumbnail } from "@/lib/videoEmbed"
 import { uniqueVideoSlug } from "@/lib/videoSlug"
+import { hashPassword } from "@/lib/videoPrivacy"
 
 export async function POST(req: Request) {
   const { userId: clerkId } = await auth()
@@ -19,7 +20,10 @@ export async function POST(req: Request) {
     description?:     string
     tags?:            string[]
     categories?:      string[]
-    isPublic?:        boolean
+    visibility?:      "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE"
+    password?:        string | null
+    hideFromFeeds?:   boolean
+    allowComments?:   boolean
     allowDownloads?:  boolean
     isAiGenerated?:   boolean
     videoType?:       "PORTFOLIO" | "RECESS"
@@ -27,7 +31,7 @@ export async function POST(req: Request) {
     collaborators?:   { userId: string; role?: string | null }[]
   }
 
-  const { streamId, externalUrl, title, description, tags, categories, isPublic, allowDownloads, isAiGenerated, videoType, thumbnailUrl, collaborators } = body
+  const { streamId, externalUrl, title, description, tags, categories, visibility, password, hideFromFeeds, allowComments, allowDownloads, isAiGenerated, videoType, thumbnailUrl, collaborators } = body
 
   if (!title) return NextResponse.json({ error: "title is required" }, { status: 400 })
   if (title.length > 200) return NextResponse.json({ error: "title too long (max 200 chars)" }, { status: 400 })
@@ -53,7 +57,10 @@ export async function POST(req: Request) {
         tags:          tags           ?? [],
         categories:    categories     ?? [],
         thumbnailUrl:  resolvedThumbnail ?? null,
-        isPublic:      isPublic       ?? true,
+        visibility:    visibility      ?? "PUBLIC",
+        password:      password?.trim() ? hashPassword(password.trim()) : null,
+        hideFromFeeds: hideFromFeeds   ?? false,
+        allowComments: allowComments   ?? true,
         allowDownloads: allowDownloads ?? false,
         isAiGenerated: isAiGenerated  ?? false,
         videoType:     videoType      ?? "PORTFOLIO",

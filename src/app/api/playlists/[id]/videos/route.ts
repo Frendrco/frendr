@@ -20,9 +20,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const video = await prisma.video.findUnique({
     where: { id: videoId },
-    select: { isPublic: true, userId: true },
+    select: { visibility: true, userId: true },
   })
-  if (!video || (!video.isPublic && video.userId !== user.id)) {
+  if (!video || (video.visibility === "PRIVATE" && video.userId !== user.id)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 

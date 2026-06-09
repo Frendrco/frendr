@@ -67,7 +67,10 @@ interface Props {
   initialTags: string[]
   initialCategories: string[]
   initialThumbnailUrl: string | null
-  initialIsPublic: boolean
+  initialVisibility: "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE"
+  initialHasPassword: boolean
+  initialHideFromFeeds: boolean
+  initialAllowComments: boolean
   initialAllowDownloads: boolean
   initialCollaborators: CollabEntry[]
   initialEmbedAutoplay?: boolean
@@ -89,7 +92,10 @@ export function VideoOwnerActions({
   initialTags,
   initialCategories,
   initialThumbnailUrl,
-  initialIsPublic,
+  initialVisibility,
+  initialHasPassword,
+  initialHideFromFeeds,
+  initialAllowComments,
   initialAllowDownloads,
   initialCollaborators,
   initialEmbedAutoplay = false,
@@ -117,7 +123,11 @@ export function VideoOwnerActions({
   const [recessTools,    setRecessTools]   = useState<string[]>(initialCategories)
   const [categorySearch, setCategorySearch] = useState("")
   const [thumbnailUrl,   setThumbnailUrl]  = useState(initialThumbnailUrl ?? "")
-  const [isPublic,       setIsPublic]      = useState(initialIsPublic)
+  const [visibility,     setVisibility]    = useState<"PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE">(initialVisibility)
+  const [newPassword,    setNewPassword]   = useState("")
+  const [removePassword, setRemovePassword] = useState(false)
+  const [hideFromFeeds,  setHideFromFeeds] = useState(initialHideFromFeeds)
+  const [allowComments,  setAllowComments] = useState(initialAllowComments)
   const [thumbMode,      setThumbMode]     = useState<"default" | "frames">("default")
   const [framePercents,  setFramePercents] = useState(() => randomFrameTimes(streamDuration ?? null))
   const [uploadingThumb, setUploadingThumb] = useState(false)
@@ -211,7 +221,11 @@ export function VideoOwnerActions({
         tags,
         ...(isRecess && { categories: recessTools }),
         thumbnailUrl:      thumbnailUrl.trim() || null,
-        isPublic,
+        visibility,
+        ...(newPassword.trim() && { password: newPassword.trim() }),
+        ...(removePassword && { password: null }),
+        hideFromFeeds,
+        allowComments,
         allowDownloads:    streamId ? allowDownloads : undefined,
         collaborators:     collabs.map((c) => ({ userId: c.userId, role: (c.role ?? "").trim() || null })),
         allowEmbedding,
@@ -494,12 +508,13 @@ export function VideoOwnerActions({
                   <label className="font-sans text-sm font-medium text-core-black">Visibility</label>
                   <div className="relative">
                     <select
-                      value={isPublic ? "public" : "private"}
-                      onChange={(e) => setIsPublic(e.target.value === "public")}
+                      value={visibility}
+                      onChange={(e) => setVisibility(e.target.value as "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE")}
                       className="h-11 w-full appearance-none rounded-xl border border-border bg-white pl-4 pr-10 font-sans text-sm text-core-black focus:outline-none focus:ring-2 focus:ring-spring-green"
                     >
-                      <option value="public">Public</option>
-                      <option value="private">Private</option>
+                      <option value="PUBLIC">Everyone</option>
+                      <option value="FOLLOWERS_ONLY">Followers only</option>
+                      <option value="PRIVATE">Only me</option>
                     </select>
                     <svg
                       className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-foreground/40"
@@ -510,6 +525,59 @@ export function VideoOwnerActions({
                     </svg>
                   </div>
                 </div>
+
+                {/* Password protection */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-sans text-sm font-medium text-core-black">Password protection</label>
+                  <input
+                    type="password"
+                    placeholder={initialHasPassword ? "Enter new password to change" : "Set a password (optional)"}
+                    value={removePassword ? "" : newPassword}
+                    disabled={removePassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className={field}
+                  />
+                  {initialHasPassword && !removePassword && (
+                    <button
+                      type="button"
+                      onClick={() => { setRemovePassword(true); setNewPassword("") }}
+                      className="font-sans text-xs text-destructive hover:text-destructive/70 transition-colors text-left"
+                    >
+                      Remove password
+                    </button>
+                  )}
+                  {removePassword && (
+                    <button
+                      type="button"
+                      onClick={() => setRemovePassword(false)}
+                      className="font-sans text-xs text-foreground/40 hover:text-foreground/60 transition-colors text-left"
+                    >
+                      Keep existing password
+                    </button>
+                  )}
+                  <p className="font-sans text-xs text-foreground/30">Anyone with the link will need this password to watch.</p>
+                </div>
+
+                {/* Hide from feeds / Allow comments */}
+                {[
+                  { on: hideFromFeeds,  set: setHideFromFeeds,  label: "Hide from Discover feed", desc: "Your video won't appear in feeds but can still be shared via link." },
+                  { on: !allowComments, set: (v: boolean) => setAllowComments(!v), label: "Disable comments", desc: "Viewers won't be able to leave comments on this video." },
+                ].map(({ on, set, label, desc }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => set(!on)}
+                    className="flex items-center justify-between gap-4 text-left"
+                  >
+                    <div>
+                      <p className="font-sans text-sm font-medium text-core-black">{label}</p>
+                      <p className="font-sans text-xs text-foreground/40">{desc}</p>
+                    </div>
+                    <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", on ? "bg-spring-green" : "bg-border")}>
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
+                    </div>
+                  </button>
+                ))}
 
                 {/* Allow downloads */}
                 {streamId && (

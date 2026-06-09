@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default async function DiscoverPage() {
   const videos = await prisma.video.findMany({
-    where: { isPublic: true, videoType: "PORTFOLIO" },
+    where: { visibility: "PUBLIC", hideFromFeeds: false, videoType: "PORTFOLIO" },
     orderBy: { createdAt: "desc" },
     take: 200,
     include: {

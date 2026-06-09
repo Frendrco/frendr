@@ -86,7 +86,7 @@ export default async function FollowingPage() {
     const [creatorVideos, channelVideoRows, creatorRecess] = await Promise.all([
       followingIds.length > 0
         ? prisma.video.findMany({
-            where: { userId: { in: followingIds }, isPublic: true, videoType: "PORTFOLIO" },
+            where: { userId: { in: followingIds }, visibility: "PUBLIC", hideFromFeeds: false, videoType: "PORTFOLIO" },
             orderBy: { createdAt: "desc" },
             take: 80,
             include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
@@ -106,7 +106,7 @@ export default async function FollowingPage() {
         : Promise.resolve([]),
       followingIds.length > 0
         ? prisma.video.findMany({
-            where: { userId: { in: followingIds }, isPublic: true, videoType: "RECESS" },
+            where: { userId: { in: followingIds }, visibility: "PUBLIC", hideFromFeeds: false, videoType: "RECESS" },
             orderBy: { createdAt: "desc" },
             take: 40,
             include: {
@@ -120,7 +120,7 @@ export default async function FollowingPage() {
     const allItems: { item: FeedItem; date: Date }[] = [
       ...creatorVideos.map(v => ({ item: v as FeedItem, date: v.createdAt })),
       ...channelVideoRows
-        .filter(cv => cv.video.isPublic && cv.video.videoType === "PORTFOLIO")
+        .filter(cv => cv.video.visibility === "PUBLIC" && !cv.video.hideFromFeeds && cv.video.videoType === "PORTFOLIO")
         .map(cv => ({
           item: { ...cv.video, sourceLabel: `From ${channelNames[cv.channelId] ?? "a channel"}` } as FeedItem,
           date: cv.addedAt,

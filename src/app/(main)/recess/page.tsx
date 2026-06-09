@@ -30,7 +30,8 @@ export default async function RecessPage({ searchParams }: Props) {
 
   const videos = await prisma.video.findMany({
     where: {
-      isPublic: true,
+      visibility: "PUBLIC" as const,
+      hideFromFeeds: false,
       videoType: "RECESS",
       ...(query
         ? {

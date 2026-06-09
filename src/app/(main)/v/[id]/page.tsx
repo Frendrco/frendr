@@ -1,9 +1,12 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { auth } from "@clerk/nextjs/server"
+import { cookies } from "next/headers"
 import { Download, Eye, MoreHorizontal } from "lucide-react"
 import { prisma } from "@/lib/prisma"
+import { verifyAccessToken } from "@/lib/videoPrivacy"
 import { VideoPlayer } from "./VideoPlayer"
+import { PasswordGateClient } from "./PasswordGateClient"
 import { FeatureButton } from "./FeatureButton"
 import { AdminDeleteButton } from "@/app/(main)/admin/AdminDeleteButton"
 import { UpvoteButton } from "@/components/common/UpvoteButton"
@@ -48,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     where: { OR: [{ slug: id }, { id }] },
     include: { user: { select: { displayName: true } } },
   })
-  if (!video) return {}
+  if (!video || video.visibility === "PRIVATE") return {}
   const title = `${video.title} by ${video.user.displayName}`
   const description = video.description ?? `Watch ${video.title} by ${video.user.displayName} on Frendr.`
   const image = video.thumbnailUrl ?? "/og-image.png"
@@ -94,7 +97,25 @@ export default async function VideoPage({ params }: Props) {
   const isAdmin = currentUser?.isAdmin
   const isOwner = clerkId != null && video.user.clerkId === clerkId
 
-  if (!video.isPublic && !isOwner && !isAdmin) notFound()
+  // Visibility access control
+  if (video.visibility === "PRIVATE" && !isOwner && !isAdmin) notFound()
+
+  if (video.visibility === "FOLLOWERS_ONLY" && !isOwner && !isAdmin) {
+    if (!currentUser) notFound()
+    const follow = await prisma.follow.findUnique({
+      where: { followerId_followingId: { followerId: currentUser.id, followingId: video.user.id } },
+      select: { id: true },
+    })
+    if (!follow) notFound()
+  }
+
+  // Password gate check
+  let passwordGated = false
+  if (video.password && !isOwner && !isAdmin) {
+    const cookieStore = await cookies()
+    const token = cookieStore.get(`video_access_${video.id}`)?.value
+    passwordGated = !token || !verifyAccessToken(token, video.id, video.password)
+  }
 
   const [upvoteData, savedData, rawComments, followData] = await Promise.all([
     currentUser
@@ -162,14 +183,18 @@ export default async function VideoPage({ params }: Props) {
       {/* ── Player ─────────────────────────────────────────── */}
       <div className="bg-core-black w-full">
         <div className="mx-auto max-w-screen-xl">
-          <VideoPlayer
-            streamId={video.streamId}
-            externalUrl={video.externalUrl}
-            title={video.title}
-            streamStatus={streamStatus}
-            autoPlay={video.embedAutoplay || video.videoType === "RECESS"}
-            loop={video.embedLoop || video.videoType === "RECESS"}
-          />
+          {passwordGated ? (
+            <PasswordGateClient videoId={video.id} title={video.title} />
+          ) : (
+            <VideoPlayer
+              streamId={video.streamId}
+              externalUrl={video.externalUrl}
+              title={video.title}
+              streamStatus={streamStatus}
+              autoPlay={video.embedAutoplay || video.videoType === "RECESS"}
+              loop={video.embedLoop || video.videoType === "RECESS"}
+            />
+          )}
         </div>
       </div>
 
@@ -231,7 +256,10 @@ export default async function VideoPage({ params }: Props) {
                     initialTags={video.tags}
                     initialCategories={video.categories}
                     initialThumbnailUrl={video.thumbnailUrl}
-                    initialIsPublic={video.isPublic}
+                    initialVisibility={video.visibility}
+                    initialHasPassword={video.password !== null}
+                    initialHideFromFeeds={video.hideFromFeeds}
+                    initialAllowComments={video.allowComments}
                     initialAllowDownloads={video.allowDownloads}
                     initialEmbedAutoplay={video.embedAutoplay}
                     initialEmbedLoop={video.embedLoop}
@@ -340,13 +368,15 @@ export default async function VideoPage({ params }: Props) {
             )}
 
             {/* Comments */}
-            <div className="mt-10 border-t border-border pt-8">
-              <VideoCommentSection
-                videoId={video.id}
-                initialComments={comments}
-                currentUserId={currentUser?.id}
-              />
-            </div>
+            {video.allowComments && (
+              <div className="mt-10 border-t border-border pt-8">
+                <VideoCommentSection
+                  videoId={video.id}
+                  initialComments={comments}
+                  currentUserId={currentUser?.id}
+                />
+              </div>
+            )}
           </div>
 
         </div>
