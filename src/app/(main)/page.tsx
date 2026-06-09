@@ -97,7 +97,7 @@ export default async function HomePage({
                 {activeCategory ? activeCategory : "Out of the Oven"}
               </h2>
               <p className="mt-1 font-sans text-sm text-foreground/50">
-                Served with love.
+                Motion design, animation, and film. Served with love.
               </p>
             </div>
             <div className="flex items-center justify-center gap-1 shrink-0 md:justify-start">
