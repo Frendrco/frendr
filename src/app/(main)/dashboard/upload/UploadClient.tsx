@@ -1,5 +1,6 @@
 "use client"
 
+import { Upload as TusUpload } from "tus-js-client"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -445,17 +446,18 @@ export function UploadClient({
         const { uid, uploadURL } = await urlRes.json() as { uid: string; uploadURL: string }
 
         await new Promise<void>((resolve, reject) => {
-          const xhr = new XMLHttpRequest()
-          xhr.upload.onprogress = (e) => {
-            if (e.lengthComputable)
-              updateBatchItem(item.id, { progress: Math.round((e.loaded / e.total) * 100) })
-          }
-          xhr.onload  = () => xhr.status < 400 ? resolve() : reject(new Error("Upload failed"))
-          xhr.onerror = () => reject(new Error("Upload failed"))
-          xhr.open("POST", uploadURL)
-          const form = new FormData()
-          form.append("file", item.file)
-          xhr.send(form)
+          const upload = new TusUpload(item.file, {
+            uploadUrl: uploadURL,
+            chunkSize: 50 * 1024 * 1024,
+            retryDelays: [0, 3000, 5000, 10000, 20000],
+            metadata: { filename: item.file.name, filetype: item.file.type },
+            onError: reject,
+            onProgress: (bytesUploaded, bytesTotal) => {
+              updateBatchItem(item.id, { progress: Math.round((bytesUploaded / bytesTotal) * 100) })
+            },
+            onSuccess: resolve,
+          })
+          upload.start()
         })
 
         updateBatchItem(item.id, { status: "saving", progress: 100 })
@@ -529,18 +531,18 @@ export function UploadClient({
       const { uid, uploadURL } = await urlRes.json() as { uid: string; uploadURL: string }
 
       await new Promise<void>((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-        xhr.upload.addEventListener("progress", (e) => {
-          if (e.lengthComputable) setProgress(Math.round((e.loaded / e.total) * 100))
+        const upload = new TusUpload(file, {
+          uploadUrl: uploadURL,
+          chunkSize: 50 * 1024 * 1024,
+          retryDelays: [0, 3000, 5000, 10000, 20000],
+          metadata: { filename: file.name, filetype: file.type },
+          onError: reject,
+          onProgress: (bytesUploaded, bytesTotal) => {
+            setProgress(Math.round((bytesUploaded / bytesTotal) * 100))
+          },
+          onSuccess: resolve,
         })
-        xhr.addEventListener("load", () => xhr.status < 400 ? resolve() : reject(new Error(`Upload rejected by server (${xhr.status})`)))
-        xhr.addEventListener("error", () => reject(new Error("Network error during upload")))
-        xhr.addEventListener("timeout", () => reject(new Error("Upload timed out — try a smaller file or faster connection")))
-        xhr.timeout = 20 * 60 * 1000 // 20 minutes
-        xhr.open("POST", uploadURL)
-        const form = new FormData()
-        form.append("file", file)
-        xhr.send(form)
+        upload.start()
       })
 
       const effectiveThumbnail = videoType === "RECESS" && !thumbnail && videoFrames.length > 0
