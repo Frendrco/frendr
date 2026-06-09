@@ -12,6 +12,12 @@ const isProtectedRoute = createRouteMatcher([
 
 export const proxy = clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl
+
+  // Let OPTIONS preflight requests pass through to the route handler untouched
+  if (req.method === "OPTIONS") {
+    return NextResponse.next()
+  }
+
   const isBetaRoute = pathname === "/beta" || pathname.startsWith("/api/beta")
 
   if (process.env.BETA_PASSWORD && !isBetaRoute) {
