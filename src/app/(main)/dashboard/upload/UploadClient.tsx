@@ -450,6 +450,7 @@ export function UploadClient({
             chunkSize: 150 * 1024 * 1024,
             retryDelays: [0, 3000, 5000, 10000, 20000],
             metadata: {
+              name:               item.title.trim() || item.file.name,
               filename:           item.file.name,
               filetype:           item.file.type,
               maxDurationSeconds: "600",
@@ -548,6 +549,7 @@ export function UploadClient({
           chunkSize: 150 * 1024 * 1024,
           retryDelays: [0, 3000, 5000, 10000, 20000],
           metadata: {
+            name:               title.trim() || file.name,
             filename:           file.name,
             filetype:           file.type,
             maxDurationSeconds: "600",
