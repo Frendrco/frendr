@@ -117,12 +117,15 @@ export default async function VideoPage({ params }: Props) {
     passwordGated = !token || !verifyAccessToken(token, video.id, video.password)
   }
 
-  const [upvoteData, savedData, rawComments, followData] = await Promise.all([
+  const [upvoteLikes, savedData, rawComments, followData] = await Promise.all([
     currentUser
-      ? prisma.videoLike.findUnique({
-          where: { videoId_userId: { videoId: id, userId: currentUser.id } },
+      ? prisma.videoLike.findMany({
+          where: { videoId: id },
+          take: 10,
+          orderBy: { createdAt: "asc" },
+          include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
         })
-      : null,
+      : [],
     currentUser
       ? prisma.playlistVideo.findFirst({
           where: { videoId: id, playlist: { userId: currentUser.id, isDefault: true } },
@@ -239,8 +242,9 @@ export default async function VideoPage({ params }: Props) {
                 )}
                 <UpvoteButton
                   videoId={video.id}
-                  initialUpvoted={!!upvoteData}
+                  initialUpvoted={upvoteLikes.some(l => l.userId === currentUser?.id)}
                   initialCount={video._count.likes}
+                  initialLikedBy={upvoteLikes.map(l => l.user)}
                 />
                 <AddToPlaylistButton
                   videoId={video.id}

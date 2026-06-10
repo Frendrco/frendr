@@ -20,6 +20,14 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     await prisma.videoLike.create({ data: { videoId: id, userId: user.id } })
   }
 
-  const count = await prisma.videoLike.count({ where: { videoId: id } })
-  return NextResponse.json({ liked: !existing, count })
+  const [count, likedBy] = await Promise.all([
+    prisma.videoLike.count({ where: { videoId: id } }),
+    prisma.videoLike.findMany({
+      where: { videoId: id },
+      take: 10,
+      orderBy: { createdAt: "asc" },
+      include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+    }),
+  ])
+  return NextResponse.json({ liked: !existing, count, likedBy: likedBy.map(l => l.user) })
 }
