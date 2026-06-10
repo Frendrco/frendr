@@ -120,7 +120,7 @@ export default async function VideoPage({ params }: Props) {
   const [upvoteLikes, savedData, rawComments, followData] = await Promise.all([
     currentUser
       ? prisma.videoLike.findMany({
-          where: { videoId: id },
+          where: { videoId: video.id },
           take: 10,
           orderBy: { createdAt: "asc" },
           include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
@@ -128,11 +128,11 @@ export default async function VideoPage({ params }: Props) {
       : [],
     currentUser
       ? prisma.playlistVideo.findFirst({
-          where: { videoId: id, playlist: { userId: currentUser.id, isDefault: true } },
+          where: { videoId: video.id, playlist: { userId: currentUser.id, isDefault: true } },
         })
       : null,
     prisma.comment.findMany({
-      where: { videoId: id, parentCommentId: null },
+      where: { videoId: video.id, parentCommentId: null },
       orderBy: { createdAt: "asc" },
       include: {
         user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },

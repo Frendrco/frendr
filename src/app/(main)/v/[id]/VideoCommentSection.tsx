@@ -215,17 +215,22 @@ function CommentForm({ videoId, parentCommentId, isReply, onSubmit, onCancel }: 
     if (!body.trim() || submitting) return
     if (!isSignedIn) { router.push("/sign-in"); return }
     setSubmitting(true)
-    const res = await fetch(`/api/videos/${videoId}/comments`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body: body.trim(), parentCommentId }),
-    })
-    if (res.ok) {
-      const comment = await res.json()
-      onSubmit({ ...comment, replies: comment.replies ?? [] })
-      setBody("")
+    try {
+      const res = await fetch(`/api/videos/${videoId}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body: body.trim(), parentCommentId }),
+      })
+      if (res.ok) {
+        const comment = await res.json()
+        onSubmit({ ...comment, replies: comment.replies ?? [] })
+        setBody("")
+      }
+    } catch {
+      // network error — leave body intact so user can retry
+    } finally {
+      setSubmitting(false)
     }
-    setSubmitting(false)
   }
 
   return (
