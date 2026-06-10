@@ -3,14 +3,38 @@ import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { createNotification } from "@/lib/notifications"
 
+const likedByInclude = {
+  take: 10,
+  orderBy: { createdAt: "asc" as const },
+  include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+}
+
 const commentInclude = {
   user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+  likes: likedByInclude,
+  reactions: true,
   replies: {
     orderBy: { createdAt: "asc" as const },
     include: {
       user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+      likes: likedByInclude,
+      reactions: true,
     },
   },
+}
+
+function buildReactions(reactions: { emoji: string; userId: string }[], currentUserId?: string) {
+  const map = new Map<string, { emoji: string; count: number; reacted: boolean }>()
+  for (const r of reactions) {
+    const ex = map.get(r.emoji)
+    if (ex) {
+      ex.count++
+      if (r.userId === currentUserId) ex.reacted = true
+    } else {
+      map.set(r.emoji, { emoji: r.emoji, count: 1, reacted: r.userId === currentUserId })
+    }
+  }
+  return Array.from(map.values())
 }
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -27,29 +51,24 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     include: commentInclude,
   })
 
-  // Fetch current user's votes in one query instead of loading all votes
-  const allIds = [
-    ...comments.map(c => c.id),
-    ...comments.flatMap(c => c.replies.map(r => r.id)),
-  ]
-  const userVotes = currentUser && allIds.length > 0
-    ? await prisma.commentVote.findMany({
-        where: { userId: currentUser.id, commentId: { in: allIds } },
-        select: { commentId: true, value: true },
-      })
-    : []
-  const voteMap = new Map(userVotes.map(v => [v.commentId, v.value]))
-
   const serialized = comments.map((c) => ({
     ...c,
     createdAt: c.createdAt.toISOString(),
     updatedAt: c.updatedAt.toISOString(),
-    userVote: (voteMap.get(c.id) ?? 0) as 1 | -1 | 0,
+    userVote: 0 as const,
+    likeCount: c.likes.length,
+    liked: c.likes.some(l => l.userId === currentUser?.id),
+    likedBy: c.likes.map(l => l.user),
+    reactions: buildReactions(c.reactions, currentUser?.id),
     replies: c.replies.map((r) => ({
       ...r,
       createdAt: r.createdAt.toISOString(),
       updatedAt: r.updatedAt.toISOString(),
-      userVote: (voteMap.get(r.id) ?? 0) as 1 | -1 | 0,
+      userVote: 0 as const,
+      likeCount: r.likes.length,
+      liked: r.likes.some(l => l.userId === currentUser?.id),
+      likedBy: r.likes.map(l => l.user),
+      reactions: buildReactions(r.reactions, currentUser?.id),
     })),
   }))
 
@@ -83,7 +102,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     include: commentInclude,
   })
 
-  // Fetch video owner + parent comment author in parallel
   const [video, parent] = await Promise.all([
     prisma.video.findUnique({ where: { id }, select: { userId: true } }),
     parentCommentId
@@ -116,11 +134,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     createdAt: comment.createdAt.toISOString(),
     updatedAt: comment.updatedAt.toISOString(),
     userVote: 0,
-    replies: comment.replies.map((r) => ({
-      ...r,
-      createdAt: r.createdAt.toISOString(),
-      updatedAt: r.updatedAt.toISOString(),
-      userVote: 0,
-    })),
+    likeCount: 0,
+    liked: false,
+    likedBy: [],
+    reactions: [],
+    replies: [],
   }, { status: 201 })
 }

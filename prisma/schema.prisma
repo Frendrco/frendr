@@ -57,6 +57,8 @@ model User {
   savedThreads        SavedThread[]
   comments            Comment[]
   commentVotes        CommentVote[]
+  commentLikes        CommentLike[]
+  commentReactions    CommentReaction[]
   jobs                Job[]
   savedJobs           SavedJob[]
   followers           Follow[]        @relation("UserFollowers")
@@ -179,21 +181,23 @@ model ThreadVote {
 }
 
 model Comment {
-  id              String        @id @default(cuid())
+  id              String             @id @default(cuid())
   body            String
-  voteCount       Int           @default(0)
+  voteCount       Int                @default(0)
   userId          String
   threadId        String?
   videoId         String?
   parentCommentId String?
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  thread          Thread?       @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  video           Video?        @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  parentComment   Comment?      @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  replies         Comment[]     @relation("CommentReplies")
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  thread          Thread?            @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  video           Video?             @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  parentComment   Comment?           @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies         Comment[]          @relation("CommentReplies")
   votes           CommentVote[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  likes           CommentLike[]
+  reactions       CommentReaction[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 
   @@index([videoId])
   @@index([threadId])
@@ -219,6 +223,30 @@ model CommentVote {
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, commentId])
+}
+
+model CommentLike {
+  id        String   @id @default(cuid())
+  commentId String
+  userId    String
+  createdAt DateTime @default(now())
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+}
+
+model CommentReaction {
+  id        String   @id @default(cuid())
+  emoji     String
+  commentId String
+  userId    String
+  createdAt DateTime @default(now())
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId, emoji])
+  @@index([commentId])
 }
 
 model Follow {

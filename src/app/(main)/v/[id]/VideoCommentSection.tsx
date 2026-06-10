@@ -5,13 +5,19 @@ import Image from "next/image"
 import Link from "next/link"
 import { useAuth } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
+import { Heart } from "lucide-react"
 import { timeAgo, cn } from "@/lib/utils"
-import { VoteButtons } from "@/app/(main)/community/VoteButtons"
 
 interface CommentUser {
   username: string
   displayName: string
   avatarUrl: string | null
+}
+
+interface ReactionData {
+  emoji: string
+  count: number
+  reacted: boolean
 }
 
 interface ReplyData {
@@ -22,6 +28,10 @@ interface ReplyData {
   createdAt: string | Date
   user: CommentUser
   userVote: 1 | -1 | 0
+  likeCount: number
+  liked: boolean
+  likedBy: CommentUser[]
+  reactions: ReactionData[]
 }
 
 export interface VideoCommentData {
@@ -32,13 +42,19 @@ export interface VideoCommentData {
   createdAt: string | Date
   user: CommentUser
   userVote: 1 | -1 | 0
+  likeCount: number
+  liked: boolean
+  likedBy: CommentUser[]
+  reactions: ReactionData[]
   replies: ReplyData[]
 }
+
+const EMOJI_PALETTE = ["👍", "❤️", "😂", "😮", "😢", "🔥", "🎉", "👏"]
 
 function Avatar({ user, size }: { user: CommentUser; size: number }) {
   return (
     <div
-      className={`shrink-0 overflow-hidden rounded-full flex items-center justify-center ${user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}
+      className={`shrink-0 overflow-hidden rounded-full flex items-center justify-center ${user.avatarUrl ? "bg-mist-grey" : "bg-spring-green"}`}
       style={{ width: size, height: size }}
     >
       {user.avatarUrl ? (
@@ -48,6 +64,136 @@ function Avatar({ user, size }: { user: CommentUser; size: number }) {
           {user.displayName.charAt(0).toUpperCase()}
         </span>
       )}
+    </div>
+  )
+}
+
+function LikeButton({ commentId, initialLiked, initialCount, initialLikedBy }: {
+  commentId: string
+  initialLiked: boolean
+  initialCount: number
+  initialLikedBy: CommentUser[]
+}) {
+  const { isSignedIn } = useAuth()
+  const router = useRouter()
+  const [liked, setLiked] = useState(initialLiked)
+  const [count, setCount] = useState(initialCount)
+  const [likedBy, setLikedBy] = useState(initialLikedBy)
+  const [loading, setLoading] = useState(false)
+
+  async function toggle() {
+    if (!isSignedIn) { router.push("/sign-in"); return }
+    if (loading) return
+    setLoading(true)
+    setLiked(l => !l)
+    setCount(c => liked ? c - 1 : c + 1)
+    try {
+      const res = await fetch(`/api/comments/${commentId}/like`, { method: "POST" })
+      if (res.ok) {
+        const data = await res.json()
+        setLiked(data.liked)
+        setCount(data.count)
+        setLikedBy(data.likedBy)
+      }
+    } catch {
+      router.refresh()
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="relative group flex items-center gap-1">
+      <button
+        onClick={toggle}
+        className={cn("flex items-center gap-1 transition-colors", liked ? "text-red-400" : "text-foreground/30 hover:text-foreground/60")}
+      >
+        <Heart size={12} className={liked ? "fill-current" : ""} strokeWidth={2} />
+        {count > 0 && <span className="font-sans text-xs tabular-nums">{count}</span>}
+      </button>
+      {count > 0 && (
+        <div className="pointer-events-none invisible group-hover:visible absolute bottom-full left-0 mb-1.5 z-10 max-w-[160px] rounded-lg bg-core-black px-2.5 py-1.5 shadow-lg">
+          <p className="font-sans text-xs text-white leading-relaxed">
+            {likedBy.slice(0, 5).map(u => u.displayName).join(", ")}
+            {count > 5 ? ` +${count - 5} more` : ""}
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function EmojiReactions({ commentId, initialReactions }: {
+  commentId: string
+  initialReactions: ReactionData[]
+}) {
+  const { isSignedIn } = useAuth()
+  const router = useRouter()
+  const [reactions, setReactions] = useState(initialReactions)
+  const [showPicker, setShowPicker] = useState(false)
+
+  async function react(emoji: string) {
+    if (!isSignedIn) { router.push("/sign-in"); return }
+    setShowPicker(false)
+    setReactions(prev => {
+      const ex = prev.find(r => r.emoji === emoji)
+      if (ex) {
+        if (ex.reacted) {
+          return ex.count <= 1 ? prev.filter(r => r.emoji !== emoji) : prev.map(r => r.emoji === emoji ? { ...r, count: r.count - 1, reacted: false } : r)
+        }
+        return prev.map(r => r.emoji === emoji ? { ...r, count: r.count + 1, reacted: true } : r)
+      }
+      return [...prev, { emoji, count: 1, reacted: true }]
+    })
+    try {
+      const res = await fetch(`/api/comments/${commentId}/react`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emoji }),
+      })
+      if (res.ok) setReactions(await res.json())
+    } catch {
+      router.refresh()
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-1 flex-wrap">
+      {reactions.map(r => (
+        <button
+          key={r.emoji}
+          onClick={() => react(r.emoji)}
+          className={cn(
+            "flex items-center gap-0.5 rounded-full border px-1.5 py-0.5 text-xs transition-colors",
+            r.reacted ? "border-spring-green/40 bg-spring-green/10 text-core-black" : "border-border text-foreground/60 hover:border-foreground/30"
+          )}
+        >
+          <span>{r.emoji}</span>
+          <span className="font-sans text-[10px] font-medium tabular-nums">{r.count}</span>
+        </button>
+      ))}
+      <div className="relative">
+        <button
+          onClick={() => isSignedIn ? setShowPicker(s => !s) : router.push("/sign-in")}
+          className="flex h-5 w-5 items-center justify-center rounded-full border border-border text-foreground/30 hover:border-foreground/30 hover:text-foreground transition-colors text-xs"
+          title="Add reaction"
+        >
+          +
+        </button>
+        {showPicker && (
+          <div className="absolute bottom-full left-0 mb-1 z-20 flex gap-0.5 rounded-xl border border-border bg-white p-1.5 shadow-lg">
+            {EMOJI_PALETTE.map(emoji => (
+              <button
+                key={emoji}
+                onClick={() => react(emoji)}
+                className="h-7 w-7 flex items-center justify-center rounded-lg hover:bg-mist-grey transition-colors text-base"
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -76,7 +222,7 @@ function CommentForm({ videoId, parentCommentId, isReply, onSubmit, onCancel }: 
     })
     if (res.ok) {
       const comment = await res.json()
-      onSubmit({ ...comment, userVote: 0, replies: comment.replies ?? [] })
+      onSubmit({ ...comment, replies: comment.replies ?? [] })
       setBody("")
     }
     setSubmitting(false)
@@ -153,6 +299,7 @@ export function VideoCommentSection({ videoId, initialComments, currentUserId }:
     setComments(prev => [...prev, comment])
   }
 
+  // parentId is always the top-level comment id (flat threading)
   function addReply(parentId: string, reply: VideoCommentData) {
     setComments(prev => prev.map(c =>
       c.id === parentId ? { ...c, replies: [...c.replies, reply] } : c
@@ -229,7 +376,12 @@ export function VideoCommentSection({ videoId, initialComments, currentUserId }:
                 )}
 
                 <div className="mt-2 flex items-center gap-3">
-                  <VoteButtons commentId={comment.id} initialCount={comment.voteCount} initialVote={comment.userVote} />
+                  <LikeButton
+                    commentId={comment.id}
+                    initialLiked={comment.liked}
+                    initialCount={comment.likeCount}
+                    initialLikedBy={comment.likedBy}
+                  />
                   {isSignedIn && (
                     <button
                       onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
@@ -244,6 +396,10 @@ export function VideoCommentSection({ videoId, initialComments, currentUserId }:
                       <button onClick={() => deleteComment(comment.id)} className="font-sans text-xs text-foreground/40 hover:text-red-500 transition-colors">Delete</button>
                     </>
                   )}
+                </div>
+
+                <div className="mt-2">
+                  <EmojiReactions commentId={comment.id} initialReactions={comment.reactions} />
                 </div>
 
                 {replyingTo === comment.id && (
@@ -282,7 +438,20 @@ export function VideoCommentSection({ videoId, initialComments, currentUserId }:
                           )}
 
                           <div className="mt-1.5 flex items-center gap-3">
-                            <VoteButtons commentId={reply.id} initialCount={reply.voteCount} initialVote={reply.userVote} />
+                            <LikeButton
+                              commentId={reply.id}
+                              initialLiked={reply.liked}
+                              initialCount={reply.likeCount}
+                              initialLikedBy={reply.likedBy}
+                            />
+                            {isSignedIn && (
+                              <button
+                                onClick={() => setReplyingTo(replyingTo === reply.id ? null : reply.id)}
+                                className={cn("font-sans text-xs transition-colors", replyingTo === reply.id ? "text-core-black" : "text-foreground/40 hover:text-foreground")}
+                              >
+                                Reply
+                              </button>
+                            )}
                             {currentUserId === reply.userId && editingId !== reply.id && (
                               <>
                                 <button onClick={() => setEditingId(reply.id)} className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors">Edit</button>
@@ -290,6 +459,22 @@ export function VideoCommentSection({ videoId, initialComments, currentUserId }:
                               </>
                             )}
                           </div>
+
+                          <div className="mt-1.5">
+                            <EmojiReactions commentId={reply.id} initialReactions={reply.reactions} />
+                          </div>
+
+                          {replyingTo === reply.id && (
+                            <div className="mt-3">
+                              <CommentForm
+                                videoId={videoId}
+                                parentCommentId={comment.id}
+                                isReply
+                                onSubmit={newReply => addReply(comment.id, newReply)}
+                                onCancel={() => setReplyingTo(null)}
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}

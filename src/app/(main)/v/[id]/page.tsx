@@ -133,12 +133,22 @@ export default async function VideoPage({ params }: Props) {
       orderBy: { createdAt: "asc" },
       include: {
         user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
-        votes: true,
+        likes: {
+          take: 10,
+          orderBy: { createdAt: "asc" },
+          include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+        },
+        reactions: true,
         replies: {
           orderBy: { createdAt: "asc" },
           include: {
             user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
-            votes: true,
+            likes: {
+              take: 10,
+              orderBy: { createdAt: "asc" },
+              include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+            },
+            reactions: true,
           },
         },
       },
@@ -150,20 +160,34 @@ export default async function VideoPage({ params }: Props) {
       : null,
   ])
 
+  function buildReactions(reactions: { emoji: string; userId: string }[], uid?: string) {
+    const map = new Map<string, { emoji: string; count: number; reacted: boolean }>()
+    for (const r of reactions) {
+      const ex = map.get(r.emoji)
+      if (ex) { ex.count++; if (r.userId === uid) ex.reacted = true }
+      else map.set(r.emoji, { emoji: r.emoji, count: 1, reacted: r.userId === uid })
+    }
+    return Array.from(map.values())
+  }
+
   const comments: VideoCommentData[] = rawComments.map((c) => ({
     ...c,
     createdAt: c.createdAt.toISOString(),
     updatedAt: c.updatedAt.toISOString(),
-    userVote: currentUser
-      ? ((c.votes.find((v) => v.userId === currentUser.id)?.value ?? 0) as 1 | -1 | 0)
-      : 0,
+    userVote: 0 as const,
+    likeCount: c.likes.length,
+    liked: c.likes.some(l => l.userId === currentUser?.id),
+    likedBy: c.likes.map(l => l.user),
+    reactions: buildReactions(c.reactions, currentUser?.id),
     replies: c.replies.map((r) => ({
       ...r,
       createdAt: r.createdAt.toISOString(),
       updatedAt: r.updatedAt.toISOString(),
-      userVote: currentUser
-        ? ((r.votes.find((v) => v.userId === currentUser.id)?.value ?? 0) as 1 | -1 | 0)
-        : 0,
+      userVote: 0 as const,
+      likeCount: r.likes.length,
+      liked: r.likes.some(l => l.userId === currentUser?.id),
+      likedBy: r.likes.map(l => l.user),
+      reactions: buildReactions(r.reactions, currentUser?.id),
     })),
   }))
 
