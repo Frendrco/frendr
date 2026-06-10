@@ -68,6 +68,7 @@ export async function fetchVideoMetadata(url: string): Promise<VideoMetadata> {
   const provider = detectProvider(url)
 
   if (provider === "youtube") {
+    const cdnThumb = getVideoThumbnail(url)
     try {
       const res = await fetch(
         `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`,
@@ -76,14 +77,13 @@ export async function fetchVideoMetadata(url: string): Promise<VideoMetadata> {
       if (res.ok) {
         const data = await res.json() as { title?: string; thumbnail_url?: string }
         return {
-          title:        data.title        ?? null,
-          thumbnailUrl: data.thumbnail_url ?? getVideoThumbnail(url),
+          title:        data.title ?? null,
+          thumbnailUrl: cdnThumb ?? data.thumbnail_url ?? null,
           description:  null,
         }
       }
     } catch {}
-    // oEmbed failed — use YouTube CDN thumbnail
-    return { title: null, thumbnailUrl: getVideoThumbnail(url), description: null }
+    return { title: null, thumbnailUrl: cdnThumb, description: null }
   }
 
   if (provider === "vimeo") {
