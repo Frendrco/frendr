@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma"
 import { VideoModal } from "./VideoModal"
-import { GatedModal } from "./GatedModal"
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -33,15 +32,12 @@ export default async function InterceptedVideoPage({ params }: Props) {
       },
     })
   } catch {
-    return <GatedModal href={`/v/${id}`} />
+    return null
   }
 
-  const fullHref = `/v/${video?.slug ?? id}`
-
-  // Non-public, password-gated, or missing — show a gated modal with a link
-  // to the full page. Auto-redirect loops because the URL is already /v/[id].
+  // Non-public, password-gated, or missing — don't show modal
   if (!video || video.visibility !== "PUBLIC" || video.password) {
-    return <GatedModal href={fullHref} />
+    return null
   }
 
   return <VideoModal video={video} />
