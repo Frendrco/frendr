@@ -146,7 +146,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
 
           {!searchActive && (
             <div className="absolute inset-0 flex items-center justify-center text-foreground/40 cursor-text pointer-events-none">
-              <span className="font-sans font-medium text-sm">Search creators & videos…</span>
+              <span className="font-sans font-medium text-sm">Search creators, videos or location…</span>
             </div>
           )}
 
