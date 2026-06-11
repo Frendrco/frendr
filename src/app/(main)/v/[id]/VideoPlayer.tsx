@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Hls from "hls.js"
+import { X } from "lucide-react"
 import { getVideoEmbedUrl, getProviderLabel, detectProvider } from "@/lib/videoEmbed"
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
@@ -17,88 +18,75 @@ interface Props {
   loop?:         boolean
 }
 
-export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, streamStatus = "unknown", autoPlay = false, loop = false }: Props) {
-  const router   = useRouter()
-  const videoRef = useRef<HTMLVideoElement>(null)
+function DismissButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+    >
+      <X size={12} />
+    </button>
+  )
+}
 
+export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, streamStatus = "unknown", autoPlay = false, loop = false }: Props) {
+  const router      = useRouter()
+  const videoRef    = useRef<HTMLVideoElement>(null)
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  const [isFloating, setIsFloating] = useState(false)
+  const [dismissed,  setDismissed]  = useState(false)
+
+  // HLS setup for Cloudflare Stream
   useEffect(() => {
     const video = videoRef.current
     if (!video || !streamId) return
-
     const hlsUrl = `https://videodelivery.net/${streamId}/manifest/video.m3u8`
-
     if (Hls.isSupported()) {
       const hls = new Hls({ capLevelToPlayerSize: false })
       hls.on(Hls.Events.MANIFEST_PARSED, (_evt, data) => {
-        // Cloudflare orders levels lowest→highest; lock to the last (highest quality)
         hls.currentLevel = data.levels.length - 1
       })
       hls.loadSource(hlsUrl)
       hls.attachMedia(video)
       return () => hls.destroy()
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      // Safari — native HLS
       video.src = hlsUrl
     }
   }, [streamId])
 
-  // Poll for readiness while the video is processing
+  // Poll every 5s while Cloudflare is processing
   useEffect(() => {
     if (streamStatus !== "processing" || !streamId) return
     const id = setInterval(() => router.refresh(), 5000)
     return () => clearInterval(id)
   }, [streamStatus, streamId])
 
-  // External video (YouTube, Vimeo, Framerate, Dropbox)
-  if (externalUrl) {
-    const provider = detectProvider(externalUrl)
-
-    // Dropbox: direct MP4, native video element (no iframe)
-    if (provider === "dropbox") {
-      return (
-        <div className="relative aspect-video w-full bg-black">
-          <video
-            src={externalUrl}
-            controls
-            className="absolute inset-0 h-full w-full"
-          />
-        </div>
-      )
-    }
-
-    const embedUrl = getVideoEmbedUrl(externalUrl)
-
-    const showExternalLink = provider === "framerate" || provider === "vimeo"
-
-    return (
-      <div className="flex flex-col">
-        <div className="relative aspect-video w-full">
-          <iframe
-            src={embedUrl}
-            title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-            allowFullScreen
-            className="absolute inset-0 h-full w-full border-0"
-          />
-        </div>
-        {showExternalLink && (
-          <div className="flex justify-end bg-core-black px-4 py-2">
-            <a
-              href={externalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-sans text-xs text-white/40 hover:text-white transition-colors"
-            >
-              View on {getProviderLabel(provider)} →
-            </a>
-          </div>
-        )}
-      </div>
+  // Mini player: watch sentinel, float when scrolled out of view
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsFloating(!entry.isIntersecting),
+      { threshold: 0 }
     )
-  }
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
-  // No streamId — shouldn't normally happen
-  if (!streamId) {
+  // Reset dismiss when user scrolls back up to the player
+  useEffect(() => {
+    if (!isFloating) setDismissed(false)
+  }, [isFloating])
+
+  const showMini = isFloating && !dismissed
+
+  const miniCls  = "fixed bottom-4 right-4 z-50 w-72 aspect-video overflow-hidden rounded-xl shadow-2xl"
+  const inlineCls = "absolute inset-0"
+
+  // ── No stream or external URL ──────────────────────────────────
+  if (!streamId && !externalUrl) {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
         <p className="font-sans text-sm text-white/40">No video source found.</p>
@@ -106,8 +94,8 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
     )
   }
 
-  // Still processing
-  if (streamStatus === "processing") {
+  // ── Still processing ───────────────────────────────────────────
+  if (!externalUrl && streamStatus === "processing") {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center gap-5 bg-core-black px-8">
         <div className="flex w-full max-w-sm flex-col items-center gap-3 text-center">
@@ -124,8 +112,8 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
     )
   }
 
-  // Cloudflare returned an error state
-  if (streamStatus === "error") {
+  // ── Cloudflare Stream error ────────────────────────────────────
+  if (!externalUrl && streamStatus === "error") {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
         <p className="font-sans text-sm text-white/40">There was a problem processing this video.</p>
@@ -133,18 +121,69 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
     )
   }
 
-  // Ready or unknown — render the HLS player
+  // ── Dropbox — direct MP4 ───────────────────────────────────────
+  if (externalUrl && detectProvider(externalUrl) === "dropbox") {
+    return (
+      <div ref={sentinelRef} className="relative aspect-video w-full bg-black">
+        <div className={showMini ? miniCls : inlineCls}>
+          <video src={externalUrl} controls className="h-full w-full bg-black" />
+          {showMini && <DismissButton onClick={() => setDismissed(true)} />}
+        </div>
+      </div>
+    )
+  }
+
+  // ── External embed (YouTube, Vimeo, Framerate, …) ─────────────
+  if (externalUrl) {
+    const provider       = detectProvider(externalUrl)
+    const embedUrl       = getVideoEmbedUrl(externalUrl)
+    const showExternalLink = (provider === "framerate" || provider === "vimeo") && !showMini
+
+    return (
+      <>
+        <div ref={sentinelRef} className="relative aspect-video w-full">
+          <div className={showMini ? miniCls : inlineCls}>
+            <iframe
+              src={embedUrl}
+              title={title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full border-0"
+            />
+            {showMini && <DismissButton onClick={() => setDismissed(true)} />}
+          </div>
+        </div>
+        {showExternalLink && (
+          <div className="flex justify-end bg-core-black px-4 py-2">
+            <a
+              href={externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-xs text-white/40 hover:text-white transition-colors"
+            >
+              View on {getProviderLabel(provider)} →
+            </a>
+          </div>
+        )}
+      </>
+    )
+  }
+
+  // ── Cloudflare Stream — HLS player ────────────────────────────
   return (
-    <div className="relative aspect-video w-full">
-      <video
-        ref={videoRef}
-        controls
-        autoPlay={autoPlay}
-        loop={loop}
-        muted={autoPlay}
-        poster={thumbnailUrl ?? undefined}
-        className="absolute inset-0 h-full w-full bg-black"
-      />
+    <div ref={sentinelRef} className="relative aspect-video w-full">
+      <div className={showMini ? miniCls : inlineCls}>
+        <video
+          ref={videoRef}
+          controls
+          autoPlay={autoPlay}
+          loop={loop}
+          muted={autoPlay}
+          poster={thumbnailUrl ?? undefined}
+          className="h-full w-full bg-black"
+        />
+        {showMini && <DismissButton onClick={() => setDismissed(true)} />}
+      </div>
     </div>
   )
 }
