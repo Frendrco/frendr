@@ -33,7 +33,7 @@ export default async function InterceptedVideoPage({ params }: Props) {
       },
     })
   } catch {
-    return <HardRedirect href={`/v/${id}`} />
+    return <GatedModal href={`/v/${id}`} />
   }
 
   const fullHref = `/v/${video?.slug ?? id}`
