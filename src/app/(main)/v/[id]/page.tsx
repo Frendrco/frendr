@@ -209,7 +209,7 @@ export default async function VideoPage({ params }: Props) {
       <ViewTracker videoId={id} />
 
       {/* ── Player ─────────────────────────────────────────── */}
-      <StickyPlayer>
+      <StickyPlayer title={video.title}>
         {passwordGated ? (
           <PasswordGateClient videoId={video.id} title={video.title} />
         ) : (

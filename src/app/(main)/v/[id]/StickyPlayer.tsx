@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
-export function StickyPlayer({ children }: { children: React.ReactNode }) {
+export function StickyPlayer({ children, title }: { children: React.ReactNode; title: string }) {
   const sentinelRef = useRef<HTMLDivElement>(null)
   const [isStuck, setIsStuck] = useState(false)
 
@@ -24,12 +24,14 @@ export function StickyPlayer({ children }: { children: React.ReactNode }) {
       <div ref={sentinelRef} className="h-px" />
 
       <div className="bg-core-black w-full sticky top-16 z-40 transition-all duration-300">
-        <div className={cn(
-          "mx-auto transition-all duration-300",
-          isStuck ? "max-w-xs py-2" : "max-w-screen-xl"
-        )}>
-          {children}
-        </div>
+        {isStuck ? (
+          <div className="flex items-center gap-4 px-4 py-2">
+            <div className="w-48 shrink-0">{children}</div>
+            <p className="font-sans font-medium text-sm text-white/90 truncate">{title}</p>
+          </div>
+        ) : (
+          <div className="mx-auto max-w-screen-xl">{children}</div>
+        )}
       </div>
     </>
   )
