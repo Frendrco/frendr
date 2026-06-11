@@ -113,6 +113,7 @@ export function HeroSection({ children }: { children?: ReactNode }) {
             width={520}
             height={260}
             className="w-full h-auto drop-shadow-sm"
+            sizes="(max-width: 640px) 260px, (max-width: 768px) 460px, (max-width: 1024px) 560px, 640px"
             priority
           />
         </motion.div>

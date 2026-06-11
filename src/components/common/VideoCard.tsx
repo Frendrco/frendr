@@ -134,6 +134,7 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
                 alt={video.user.displayName}
                 width={24}
                 height={24}
+                sizes="24px"
                 className="h-full w-full object-cover"
               />
             ) : (
