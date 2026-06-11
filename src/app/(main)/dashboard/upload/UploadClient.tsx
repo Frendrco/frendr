@@ -1012,7 +1012,7 @@ export function UploadClient({
       {/* Title */}
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
-          <label className="font-sans text-xs font-medium text-foreground/50">Video Title</label>
+          <label className="font-sans text-xs font-medium text-foreground/50">Video Title <span className="text-red-400">*</span></label>
         </div>
         <input className={field} placeholder="Give your video a name that stands out" value={title} onChange={(e) => setTitle(e.target.value)} />
       </div>
@@ -1047,7 +1047,7 @@ export function UploadClient({
 
       {/* Title */}
       <div className="flex flex-col gap-1.5">
-        <label className="font-sans text-xs font-medium text-foreground/50">Title</label>
+        <label className="font-sans text-xs font-medium text-foreground/50">Title <span className="text-red-400">*</span></label>
         <input className={field} placeholder="Name this experiment…" value={title} onChange={(e) => setTitle(e.target.value)} />
       </div>
 

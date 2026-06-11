@@ -118,7 +118,7 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
               style={{ animation: "shimmer 1.8s ease-in-out infinite" }}
             />
           </div>
-          <p className="font-sans text-xs text-white/30">This usually takes 1–2 minutes. The page updates automatically.</p>
+          <p className="font-sans text-xs text-white/30">This takes 1–2 minutes and happens in the background — go make some frends while you wait.</p>
         </div>
       </div>
     )
