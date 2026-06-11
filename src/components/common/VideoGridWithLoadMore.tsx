@@ -17,8 +17,8 @@ export function VideoGridWithLoadMore({ initialVideos, showTimestamp }: Props) {
   return (
     <>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 md:gap-4">
-        {initialVideos.slice(0, visibleCount).map((video) => (
-          <VideoCard key={video.id} video={video} showTimestamp={showTimestamp} />
+        {initialVideos.slice(0, visibleCount).map((video, i) => (
+          <VideoCard key={video.id} video={video} showTimestamp={showTimestamp} priority={i < 4} />
         ))}
       </div>
       {initialVideos.length > visibleCount && (

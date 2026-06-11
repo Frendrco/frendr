@@ -184,8 +184,8 @@ export function DiscoverGrid({ videos }: { videos: VideoItem[] }) {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 md:gap-4">
-            {visible.map((v) => (
-              <VideoCard key={v.id} video={v} showTimestamp />
+            {visible.map((v, i) => (
+              <VideoCard key={v.id} video={v} showTimestamp priority={i < 4} />
             ))}
           </div>
 

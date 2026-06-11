@@ -115,12 +115,13 @@ export function ProfileVideoGrid({
     return (
       <>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
-          {videos.slice(0, visibleCount).map((video) => (
+          {videos.slice(0, visibleCount).map((video, i) => (
             <VideoCard
               key={video.id}
               video={{ ...video, user: { username, displayName, avatarUrl } }}
               hideCreator
               hideTags
+              priority={i < 4}
             />
           ))}
         </div>

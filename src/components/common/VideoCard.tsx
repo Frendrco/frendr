@@ -30,6 +30,7 @@ type Props = {
   roundedSize?: "xl" | "2xl"
   hideCreator?: boolean
   hideTags?: boolean
+  priority?: boolean
   actionsSlot?: React.ReactNode
   mobileActionsSlot?: React.ReactNode
 }
@@ -40,7 +41,7 @@ function cfThumb(url: string | null): string | null {
   return url + (url.includes("?") ? "&" : "?") + "width=1280"
 }
 
-export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hideCreator = false, hideTags = false, actionsSlot, mobileActionsSlot }: Props) {
+export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hideCreator = false, hideTags = false, priority = false, actionsSlot, mobileActionsSlot }: Props) {
   const initials = video.user.displayName
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
@@ -65,6 +66,7 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
               alt={video.title}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
+              priority={priority}
               className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
           )
