@@ -148,13 +148,13 @@ export function VideoModal({ video }: { video: VideoData }) {
             <h2 className="font-sans font-semibold text-sm text-white leading-snug md:text-base">
               {video.title}
             </h2>
-            <Link
+            <a
               href={fullPageHref}
               className="shrink-0 inline-flex items-center gap-1 font-sans text-xs text-white/40 transition-colors hover:text-white"
             >
               <ExternalLink size={11} />
-              Full page
-            </Link>
+              Enter
+            </a>
           </div>
 
           {/* Creator + meta */}
