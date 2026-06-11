@@ -4,7 +4,7 @@ import { useEffect, useCallback, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { X, ExternalLink, Eye } from "lucide-react"
+import { X, ExternalLink } from "lucide-react"
 import Hls from "hls.js"
 import { getVideoEmbedUrl, detectProvider } from "@/lib/videoEmbed"
 
@@ -122,84 +122,68 @@ export function VideoModal({ video }: { video: VideoData }) {
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm md:p-8"
       onClick={close}
     >
-      {/* Container */}
-      <div
-        className="relative w-full max-w-5xl overflow-hidden rounded-2xl bg-core-black shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close button */}
+      {/* Wrapper — positions the floating X above the card */}
+      <div className="relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+
+        {/* Floating close button — above the card, top-right */}
         <button
           onClick={close}
           aria-label="Close"
-          className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+          className="absolute -top-10 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
         >
           <X size={15} />
         </button>
 
-        {/* Player */}
-        <div className="relative aspect-video w-full bg-black">
-          <Player video={video} />
-        </div>
+        {/* Card */}
+        <div className="overflow-hidden rounded-2xl bg-core-black shadow-2xl">
 
-        {/* Info */}
-        <div className="flex flex-col gap-2.5 p-4 md:p-5">
-          {/* Title row */}
-          <div className="flex items-start justify-between gap-4 pr-2">
-            <h2 className="font-sans font-semibold text-sm text-white leading-snug md:text-base">
-              {video.title}
-            </h2>
-            <a
-              href={fullPageHref}
-              className="shrink-0 inline-flex items-center gap-1 font-sans text-xs text-white/40 transition-colors hover:text-white"
-            >
-              <ExternalLink size={11} />
-              Enter
-            </a>
+          {/* Player */}
+          <div className="relative aspect-video w-full bg-black">
+            <Player video={video} />
           </div>
 
-          {/* Creator + meta */}
-          <div className="flex items-center justify-between gap-3">
+          {/* Single-row info strip */}
+          <div className="flex items-center gap-3 px-4 py-3">
+
+            {/* Creator */}
             <Link
               href={`/${video.user.username}`}
-              className="inline-flex w-fit items-center gap-2 transition-opacity hover:opacity-70"
+              className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-70"
             >
-              <div className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-spring-green">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-spring-green">
                 {video.user.avatarUrl ? (
                   <Image
                     src={video.user.avatarUrl}
                     alt={video.user.displayName}
-                    width={20}
-                    height={20}
-                    sizes="20px"
+                    width={24}
+                    height={24}
+                    sizes="24px"
                     className="h-full w-full object-cover"
                   />
                 ) : (
                   <span className="font-sans font-bold text-[9px] text-core-black">{initials}</span>
                 )}
               </div>
-              <span className="font-sans text-xs text-white/60">{video.user.displayName}</span>
+              <span className="font-sans text-xs text-white/50">{video.user.displayName}</span>
             </Link>
 
-            <span className="flex items-center gap-1 font-sans text-xs text-white/30">
-              <Eye size={11} />
-              {video.viewCount.toLocaleString()}
-            </span>
+            <span className="text-white/20">·</span>
+
+            {/* Title */}
+            <p className="flex-1 truncate font-sans text-sm font-medium text-white">
+              {video.title}
+            </p>
+
+            {/* Enter pill */}
+            <a
+              href={fullPageHref}
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 font-sans text-xs text-white/50 transition-colors hover:border-white/40 hover:text-white"
+            >
+              <ExternalLink size={10} />
+              Enter
+            </a>
           </div>
 
-          {/* Tags */}
-          {video.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {video.tags.slice(0, 5).map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/search?tag=${encodeURIComponent(tag)}`}
-                  className="rounded-full border border-white/10 px-2.5 py-0.5 font-sans text-[11px] text-white/40 transition-colors hover:border-white/30 hover:text-white"
-                >
-                  {tag}
-                </Link>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </div>
