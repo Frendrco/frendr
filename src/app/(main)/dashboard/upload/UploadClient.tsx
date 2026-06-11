@@ -386,6 +386,8 @@ export function UploadClient({
     setProgress(0)
     setUploading(false)
     setDropboxUrlError(null)
+    cancelBgUpload()
+    setSavedVideo(null)
     if (next === "import") {
       setBulkItems([newBulkItem()])
     }
@@ -484,7 +486,10 @@ export function UploadClient({
       if (items.length) { setBatchFiles(items); setBatchStarted(false) }
     } else {
       const f = files[0]
-      if (f && ACCEPTED_VIDEO_TYPES.includes(f.type)) setFile(f)
+      if (f && ACCEPTED_VIDEO_TYPES.includes(f.type)) {
+        setFile(f)
+        startBgUpload(f)
+      }
     }
   }
 
@@ -495,7 +500,10 @@ export function UploadClient({
       if (items.length) { setBatchFiles(items); setBatchStarted(false) }
     } else {
       const f = files[0]
-      if (f && ACCEPTED_VIDEO_TYPES.includes(f.type)) setFile(f)
+      if (f && ACCEPTED_VIDEO_TYPES.includes(f.type)) {
+        setFile(f)
+        startBgUpload(f)
+      }
     }
   }
 
