@@ -229,6 +229,15 @@ export function UploadClient({
   const [progress, setProgress]       = useState(0)
   const [uploadError, setUploadError] = useState<string | null>(null)
 
+  // Background upload state (single-file modes only)
+  type BgUploadStatus = 'idle' | 'uploading' | 'complete' | 'error'
+  const [bgUpload, setBgUpload] = useState<{ status: BgUploadStatus; progress: number; uid: string | null; error: string | null }>({ status: 'idle', progress: 0, uid: null, error: null })
+  const tusRef = useRef<TusUpload | null>(null)
+
+  // Success screen state
+  const [savedVideo, setSavedVideo] = useState<{ id: string; slug: string | null; title: string } | null>(null)
+  const [saving, setSaving] = useState(false)
+
   // Extract frames when video file changes
   useEffect(() => {
     if (!file) { setVideoFrames([]); setSelectedFrame(null); return }
@@ -380,6 +389,51 @@ export function UploadClient({
     setThumbnail(null)
     setSelectedFrame(null)
     setTab("basics")
+  }
+
+  function cancelBgUpload() {
+    if (tusRef.current) {
+      try { tusRef.current.abort() } catch { /* ignore */ }
+      tusRef.current = null
+    }
+    setBgUpload({ status: 'idle', progress: 0, uid: null, error: null })
+  }
+
+  function startBgUpload(f: File) {
+    cancelBgUpload()
+    setBgUpload({ status: 'uploading', progress: 0, uid: null, error: null })
+    let uid = ''
+    const upload = new TusUpload(f, {
+      endpoint: "/api/videos/upload-url",
+      chunkSize: 150 * 1024 * 1024,
+      retryDelays: [0, 3000, 5000, 10000, 20000],
+      metadata: {
+        name:               title.trim() || f.name,
+        filename:           f.name,
+        filetype:           f.type,
+        maxDurationSeconds: "600",
+        allowedOrigins:     "frendr.co,www.frendr.co",
+      },
+      onAfterResponse: (_req, res) => {
+        const mediaId = res.getHeader("stream-media-id")
+        if (mediaId) uid = mediaId
+      },
+      onError: (err) => {
+        const status = (err as { originalResponse?: { getStatus: () => number } }).originalResponse?.getStatus()
+        if (status === 402) { setShowPaywall(true) }
+        setBgUpload({ status: 'error', progress: 0, uid: null, error: 'Upload failed — check your connection and try again.' })
+        tusRef.current = null
+      },
+      onProgress: (bytesUploaded, bytesTotal) => {
+        setBgUpload((prev) => ({ ...prev, progress: Math.round((bytesUploaded / bytesTotal) * 100) }))
+      },
+      onSuccess: () => {
+        setBgUpload({ status: 'complete', progress: 100, uid, error: null })
+        tusRef.current = null
+      },
+    })
+    tusRef.current = upload
+    upload.start()
   }
 
   function toggleCategory(cat: string) {
