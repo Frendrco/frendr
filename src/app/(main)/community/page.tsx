@@ -66,7 +66,7 @@ export default async function CommunityPage({ searchParams }: Props) {
         </div>
       ) : (
         <div className="flex flex-col divide-y divide-border">
-          {threads.map(thread => (
+          {threads.map((thread, i) => (
             <div key={thread.id} className="flex items-start gap-5 py-7">
               {/* Vote */}
               <div className="mt-1 shrink-0">
@@ -90,7 +90,7 @@ export default async function CommunityPage({ searchParams }: Props) {
                   <Link href={`/${thread.user.username}`} className="flex items-center gap-2 hover:opacity-70 transition-opacity">
                     <div className={`h-5 w-5 overflow-hidden rounded-full shrink-0 flex items-center justify-center ${thread.user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                       {thread.user.avatarUrl ? (
-                        <Image src={thread.user.avatarUrl} alt={thread.user.displayName} width={20} height={20} className="h-full w-full object-cover" />
+                        <Image src={thread.user.avatarUrl} alt={thread.user.displayName} width={20} height={20} sizes="20px" priority={i === 0} className="h-full w-full object-cover" />
                       ) : (
                         <span className="font-sans font-bold text-[8px] text-core-black">
                           {thread.user.displayName.charAt(0).toUpperCase()}
