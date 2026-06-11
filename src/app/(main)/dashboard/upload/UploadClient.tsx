@@ -215,7 +215,6 @@ export function UploadClient({
   const [loop, setLoop]                     = useState(false)
   const [showControls, setShowControls]     = useState(true)
   const [copied, setCopied]                 = useState(false)
-  const [linkCopied, setLinkCopied]         = useState(false)
 
   // Collaborators
   type CollabUser = { id: string; username: string; displayName: string; avatarUrl: string | null; role: string }
@@ -235,8 +234,6 @@ export function UploadClient({
   const [bgUpload, setBgUpload] = useState<{ status: BgUploadStatus; progress: number; uid: string | null; error: string | null }>({ status: 'idle', progress: 0, uid: null, error: null })
   const tusRef = useRef<TusUpload | null>(null)
 
-  // Success screen state
-  const [savedVideo, setSavedVideo] = useState<{ id: string; slug: string | null; title: string } | null>(null)
   const [saving, setSaving] = useState(false)
 
   // Extract frames when video file changes
@@ -388,7 +385,6 @@ export function UploadClient({
     setUploading(false)
     setDropboxUrlError(null)
     cancelBgUpload()
-    setSavedVideo(null)
     if (next === "import") {
       setBulkItems([newBulkItem()])
     }
@@ -478,7 +474,7 @@ export function UploadClient({
       })
       if (!res.ok) throw new Error("Could not save video")
       const video = await res.json() as { id: string; slug?: string | null }
-      setSavedVideo({ id: video.id, slug: video.slug ?? null, title: title.trim() })
+      router.push(`/v/${video.slug ?? video.id}`)
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Something went wrong")
     } finally {
@@ -1120,74 +1116,6 @@ export function UploadClient({
     <div className="bg-white">
       <div className="mx-auto max-w-3xl px-4 md:px-6 py-10">
 
-        {/* ══ SUCCESS SCREEN ══════════════════════════════════ */}
-        {savedVideo && (
-          <div className="flex flex-col items-center gap-8 py-10 text-center">
-            {thumbnail ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={thumbnail}
-                alt={savedVideo.title}
-                className="w-full max-w-md rounded-2xl object-cover aspect-video bg-foreground/5"
-              />
-            ) : (
-              <div className="flex w-full max-w-md aspect-video items-center justify-center rounded-2xl bg-foreground/5">
-                <Upload size={28} className="text-foreground/20" />
-              </div>
-            )}
-
-            <div className="flex flex-col gap-1">
-              <h1 className="font-sans font-bold text-2xl text-core-black">{savedVideo.title}</h1>
-              <p className="font-sans text-sm text-foreground/40">Still processing — the player will be ready in a moment.</p>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href={`/v/${savedVideo.slug ?? savedVideo.id}`}
-                className="inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-colors hover:bg-spring-green/90"
-              >
-                View Video
-              </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}/v/${savedVideo.slug ?? savedVideo.id}`)
-                  setLinkCopied(true)
-                  setTimeout(() => setLinkCopied(false), 2000)
-                }}
-                className="inline-flex h-11 items-center gap-2 px-8 rounded-full border border-border font-sans font-medium text-sm text-foreground/70 transition-colors hover:border-foreground/40 hover:text-foreground"
-              >
-                <Copy size={14} />
-                {linkCopied ? "Copied!" : "Copy Link"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setSavedVideo(null)
-                  setFile(null)
-                  cancelBgUpload()
-                  setTitle("")
-                  setDescription("")
-                  setCategories([])
-                  setTags([])
-                  setThumbnail(null)
-                  setSelectedFrame(null)
-                  setVideoFrames([])
-                  setTab("basics")
-                  setCollabs([])
-                  setUploadError(null)
-                }}
-                className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
-              >
-                Upload another
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!savedVideo && (
-          <>
-
         {/* Back */}
         <Link href={`/${username}`} className="mb-6 inline-flex items-center gap-1.5 font-sans text-xs text-foreground/40 hover:text-foreground/70 transition-colors">
           <ArrowLeft size={13} /> Back to My Profile
@@ -1807,11 +1735,9 @@ export function UploadClient({
             </>}
           </>
         )}
-          </>
-        )}
 
         {/* ══ IMPORT MODE ══════════════════════════════════════ */}
-        {!savedVideo && !showPaywall && videoType !== "INTERACTIVE" && mode === "import" && (() => {
+        {!showPaywall && videoType !== "INTERACTIVE" && mode === "import" && (() => {
           const isDropboxMode = bulkItems.length === 1 && bulkItems[0].provider === "dropbox"
           const dropboxItem   = bulkItems[0]
 
