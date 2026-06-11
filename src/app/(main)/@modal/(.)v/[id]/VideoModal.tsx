@@ -123,9 +123,9 @@ export function VideoModal({ video }: { video: VideoData }) {
       onClick={close}
     >
       {/* Wrapper — positions the floating X above the card */}
-      <div className="relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+      <div className="group/modal relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
 
-        {/* Floating close button — above the card, top-right */}
+        {/* Floating close button */}
         <button
           onClick={close}
           aria-label="Close"
@@ -134,54 +134,53 @@ export function VideoModal({ video }: { video: VideoData }) {
           <X size={15} />
         </button>
 
-        {/* Card */}
-        <div className="overflow-hidden rounded-2xl bg-core-black shadow-2xl">
+        {/* Card — video only, info overlaid on hover */}
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-2xl">
 
-          {/* Player */}
-          <div className="relative aspect-video w-full bg-black">
-            <Player video={video} />
-          </div>
+          <Player video={video} />
 
-          {/* Single-row info strip */}
-          <div className="flex items-center gap-3 px-4 py-3">
+          {/* Hover info overlay */}
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent px-5 pb-5 pt-16 opacity-0 transition-opacity duration-300 group-hover/modal:opacity-100">
+            <div className="flex items-center gap-3">
 
-            {/* Creator */}
-            <Link
-              href={`/${video.user.username}`}
-              className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-70"
-            >
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-spring-green">
-                {video.user.avatarUrl ? (
-                  <Image
-                    src={video.user.avatarUrl}
-                    alt={video.user.displayName}
-                    width={24}
-                    height={24}
-                    sizes="24px"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <span className="font-sans font-bold text-[9px] text-core-black">{initials}</span>
-                )}
-              </div>
-              <span className="font-sans text-xs text-white/50">{video.user.displayName}</span>
-            </Link>
+              {/* Creator */}
+              <Link
+                href={`/${video.user.username}`}
+                className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-70"
+              >
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-spring-green">
+                  {video.user.avatarUrl ? (
+                    <Image
+                      src={video.user.avatarUrl}
+                      alt={video.user.displayName}
+                      width={24}
+                      height={24}
+                      sizes="24px"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="font-sans font-bold text-[9px] text-core-black">{initials}</span>
+                  )}
+                </div>
+                <span className="font-sans text-xs text-white/70">{video.user.displayName}</span>
+              </Link>
 
-            <span className="text-white/20">·</span>
+              <span className="text-white/30">·</span>
 
-            {/* Title */}
-            <p className="flex-1 truncate font-sans text-sm font-medium text-white">
-              {video.title}
-            </p>
+              {/* Title */}
+              <p className="flex-1 truncate font-sans text-sm font-medium text-white">
+                {video.title}
+              </p>
 
-            {/* Enter pill */}
-            <a
-              href={fullPageHref}
-              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 font-sans text-xs text-white/50 transition-colors hover:border-white/40 hover:text-white"
-            >
-              <ExternalLink size={10} />
-              Enter
-            </a>
+              {/* Enter pill */}
+              <a
+                href={fullPageHref}
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-white/20 px-3 py-1 font-sans text-xs text-white/60 backdrop-blur-sm transition-colors hover:border-white/50 hover:text-white"
+              >
+                <ExternalLink size={10} />
+                Enter
+              </a>
+            </div>
           </div>
 
         </div>
