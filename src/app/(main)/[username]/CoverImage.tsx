@@ -94,6 +94,8 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
           <video
             src={coverVideoUrl}
             autoPlay loop muted playsInline
+            // @ts-expect-error — fetchpriority not yet in React types
+            fetchpriority="high"
             className="absolute inset-0 h-full w-full object-cover"
           />
         ) : coverUrl ? (
