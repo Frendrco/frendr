@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Video, MessageSquare, Users, Radio, FileText, Megaphone } from "lucide-react"
+import { LayoutDashboard, Video, MessageSquare, Users, Radio, FileText, Megaphone, ImageOff } from "lucide-react"
 
 const navItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
@@ -12,6 +12,7 @@ const navItems = [
   { href: "/admin/comments", label: "Comments", icon: MessageSquare },
   { href: "/admin/threads", label: "Threads", icon: FileText },
   { href: "/admin/broadcast", label: "Broadcast", icon: Megaphone },
+  { href: "/admin/thumbnails", label: "Thumbnails", icon: ImageOff },
 ]
 
 export function AdminNav() {
