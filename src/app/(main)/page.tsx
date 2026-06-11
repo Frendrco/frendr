@@ -61,12 +61,6 @@ export default async function HomePage({
     include: { user: { select: { username: true, displayName: true, avatarUrl: true, clerkId: true } } },
   }).catch(() => [])
 
-  // Strip base64 thumbnails — they inline into the RSC payload and bloat the HTML
-  const sanitizedVideos = videos.map(v => ({
-    ...v,
-    thumbnailUrl: v.thumbnailUrl?.startsWith("data:") ? null : v.thumbnailUrl,
-  }))
-
   // Fire-and-forget avatar backfill — don't block page render
   const missing = videos.map(v => v.user).filter(u => !u.avatarUrl)
   if (missing.length > 0) {
@@ -155,10 +149,10 @@ export default async function HomePage({
           </div>
 
           {/* Grid */}
-          {sanitizedVideos.length === 0 ? (
+          {videos.length === 0 ? (
             <PlaceholderGrid />
           ) : (
-            <VideoGridWithLoadMore initialVideos={sanitizedVideos} />
+            <VideoGridWithLoadMore initialVideos={videos} />
           )}
 
         </div>
