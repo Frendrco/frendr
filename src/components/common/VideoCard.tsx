@@ -51,13 +51,23 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
       {/* Thumbnail + overlay */}
       <div className={`relative aspect-video overflow-hidden ${rounded} bg-mist-grey`}>
         {video.thumbnailUrl ? (
-          <Image
-            src={cfThumb(video.thumbnailUrl)!}
-            alt={video.title}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-          />
+          video.thumbnailUrl.startsWith("data:") ? (
+            // Next.js <Image> can't optimize data URIs — use plain img
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={video.thumbnailUrl}
+              alt={video.title}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            />
+          ) : (
+            <Image
+              src={cfThumb(video.thumbnailUrl)!}
+              alt={video.title}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            />
+          )
         ) : (
           <div className="h-full w-full bg-mist-grey" />
         )}
