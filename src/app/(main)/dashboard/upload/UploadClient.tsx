@@ -447,6 +447,44 @@ export function UploadClient({
     upload.start()
   }
 
+  async function handleSave() {
+    if (bgUpload.status !== 'complete' || !bgUpload.uid || !title.trim()) return
+    setSaving(true)
+    setUploadError(null)
+    try {
+      const effectiveThumbnail = videoType === "RECESS" && !thumbnail && videoFrames.length > 0
+        ? videoFrames[0]
+        : thumbnail
+      const res = await fetch("/api/videos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          streamId:      bgUpload.uid,
+          title:         title.trim(),
+          description:   description || null,
+          categories,
+          tags,
+          visibility:    toApiVisibility(visibility),
+          password:      password.trim() || null,
+          hideFromFeeds,
+          allowComments,
+          allowDownloads,
+          isAiGenerated,
+          videoType,
+          thumbnailUrl:  effectiveThumbnail || null,
+          collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
+        }),
+      })
+      if (!res.ok) throw new Error("Could not save video")
+      const video = await res.json() as { id: string; slug?: string | null }
+      setSavedVideo({ id: video.id, slug: video.slug ?? null, title: title.trim() })
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Something went wrong")
+    } finally {
+      setSaving(false)
+    }
+  }
+
   function toggleCategory(cat: string) {
     setCategories((prev) =>
       prev.includes(cat) ? prev.filter((c) => c !== cat)
@@ -612,76 +650,6 @@ export function UploadClient({
     )
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
-  }
-
-  async function handleUpload() {
-    if (!file || !title.trim()) return
-    setUploading(true); setUploadError(null); setProgress(0)
-    try {
-      let uid = ""
-
-      await new Promise<void>((resolve, reject) => {
-        const upload = new TusUpload(file, {
-          endpoint: "/api/videos/upload-url",
-          chunkSize: 150 * 1024 * 1024,
-          retryDelays: [0, 3000, 5000, 10000, 20000],
-          metadata: {
-            name:               title.trim() || file.name,
-            filename:           file.name,
-            filetype:           file.type,
-            maxDurationSeconds: "600",
-            allowedOrigins:     "frendr.co,www.frendr.co",
-          },
-          onAfterResponse: (_req, res) => {
-            const mediaId = res.getHeader("stream-media-id")
-            if (mediaId) uid = mediaId
-          },
-          onError: (err) => {
-            const status = (err as { originalResponse?: { getStatus: () => number } }).originalResponse?.getStatus()
-            if (status === 402) { setShowPaywall(true); setUploading(false) }
-            reject(err)
-          },
-          onProgress: (bytesUploaded, bytesTotal) => {
-            setProgress(Math.round((bytesUploaded / bytesTotal) * 100))
-          },
-          onSuccess: () => resolve(),
-        })
-        upload.start()
-      })
-
-      if (!uid) throw new Error("Could not get video ID")
-
-      const effectiveThumbnail = videoType === "RECESS" && !thumbnail && videoFrames.length > 0
-        ? videoFrames[0]
-        : thumbnail
-      const saveRes = await fetch("/api/videos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          streamId:      uid,
-          title:         title.trim(),
-          description:   description || null,
-          categories,
-          tags,
-          visibility:    toApiVisibility(visibility),
-          password:      password.trim() || null,
-          hideFromFeeds,
-          allowComments,
-          allowDownloads,
-          isAiGenerated,
-          videoType,
-          thumbnailUrl:  effectiveThumbnail || null,
-          collaborators: collabs.map((c) => ({ userId: c.id, role: c.role.trim() || null })),
-        }),
-      })
-      if (!saveRes.ok) throw new Error("Could not save video")
-      const video = await saveRes.json() as { id: string; slug?: string | null }
-      router.push(videoType === "RECESS" ? "/recess" : `/v/${video.slug ?? video.id}`)
-    } catch (err) {
-      setUploadError(err instanceof Error ? err.message : "Something went wrong")
-      setUploading(false)
-      setProgress(0)
-    }
   }
 
   async function handleBulkImport() {
@@ -1732,11 +1700,19 @@ export function UploadClient({
               </Link>
               <button
                 type="button"
-                onClick={handleUpload}
-                disabled={!file || !title.trim() || uploading}
+                onClick={handleSave}
+                disabled={bgUpload.status !== 'complete' || !title.trim() || saving}
                 className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
               >
-                {uploading ? (progress < 100 ? "Uploading…" : "Finalising…") : videoType === "RECESS" ? "Drop into Recess" : "Upload Video"}
+                {saving
+                  ? "Saving…"
+                  : bgUpload.status === 'uploading'
+                  ? `Uploading ${bgUpload.progress}%…`
+                  : bgUpload.status === 'error'
+                  ? "Upload failed"
+                  : videoType === "RECESS"
+                  ? "Drop into Recess"
+                  : "Save Video"}
               </button>
             </div>
             </>}
