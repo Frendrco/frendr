@@ -1787,9 +1787,11 @@ export function UploadClient({
             </>}
           </>
         )}
+          </>
+        )}
 
         {/* ══ IMPORT MODE ══════════════════════════════════════ */}
-        {!showPaywall && videoType !== "INTERACTIVE" && mode === "import" && (() => {
+        {!savedVideo && !showPaywall && videoType !== "INTERACTIVE" && mode === "import" && (() => {
           const isDropboxMode = bulkItems.length === 1 && bulkItems[0].provider === "dropbox"
           const dropboxItem   = bulkItems[0]
 
@@ -1978,9 +1980,6 @@ export function UploadClient({
             </div>
           )
         })()}
-
-          </>
-        )}
 
       </div>
     </div>
