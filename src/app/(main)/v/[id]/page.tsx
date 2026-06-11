@@ -208,7 +208,7 @@ export default async function VideoPage({ params }: Props) {
       <ViewTracker videoId={id} />
 
       {/* ── Player ─────────────────────────────────────────── */}
-      <div className="bg-core-black w-full">
+      <div className="bg-core-black w-full sticky top-16 z-40">
         <div className="mx-auto max-w-screen-xl">
           {passwordGated ? (
             <PasswordGateClient videoId={video.id} title={video.title} />
