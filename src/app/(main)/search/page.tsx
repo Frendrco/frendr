@@ -125,9 +125,10 @@ export default async function SearchPage({ searchParams }: Props) {
               { displayName: { contains: query, mode: "insensitive" } },
               { username: { contains: query, mode: "insensitive" } },
               { role: { contains: query, mode: "insensitive" } },
+              { location: { contains: query, mode: "insensitive" } },
             ],
           },
-          select: { id: true, username: true, displayName: true, avatarUrl: true, role: true },
+          select: { id: true, username: true, displayName: true, avatarUrl: true, role: true, location: true },
           take: 6,
         })
       : Promise.resolve([]),
@@ -244,7 +245,12 @@ export default async function SearchPage({ searchParams }: Props) {
                       <p className="font-sans font-semibold text-sm text-core-black leading-tight">
                         {creator.displayName}
                       </p>
-                      <p className="font-sans text-xs text-foreground/40">@{creator.username}</p>
+                      <p className="font-sans text-xs text-foreground/40">
+                        {creator.role ? creator.role : `@${creator.username}`}
+                      </p>
+                      {creator.location && (
+                        <p className="font-sans text-xs text-foreground/30">{creator.location}</p>
+                      )}
                     </div>
                   </Link>
                 )
