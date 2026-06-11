@@ -20,13 +20,29 @@ export function ThumbnailRow({ video }: Props) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
+  async function resolveUrl(raw: string): Promise<string> {
+    const vimeoMatch = raw.match(/vimeo\.com\/(\d+)/)
+    if (vimeoMatch) {
+      try {
+        const res = await fetch(
+          `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${vimeoMatch[1]}`
+        )
+        const data = await res.json()
+        if (data.thumbnail_url) return data.thumbnail_url
+      } catch {}
+    }
+    return raw
+  }
+
   async function save() {
     if (!url.trim()) return
     setSaving(true)
+    const resolvedUrl = await resolveUrl(url.trim())
+    if (resolvedUrl !== url.trim()) setUrl(resolvedUrl)
     await fetch("/api/admin/set-thumbnail", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ videoId: video.id, thumbnailUrl: url.trim() }),
+      body: JSON.stringify({ videoId: video.id, thumbnailUrl: resolvedUrl }),
     })
     setSaving(false)
     setSaved(true)
