@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useClerk } from "@clerk/nextjs"
-import { Settings, Tv2, LogOut, Compass, Users, Rss, Upload, X } from "lucide-react"
+import { Settings, Tv2, LogOut, Compass, Users, Rss, Upload, X, Video } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -132,6 +132,14 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
             </button>
 
             <button
+              onClick={() => navigate("/dashboard/videos")}
+              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 transition-colors"
+            >
+              <span>My Videos</span>
+              <Video size={16} strokeWidth={1.5} className="text-foreground/40" />
+            </button>
+
+            <button
               onClick={() => navigate("/dashboard/channels")}
               className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 transition-colors"
             >
@@ -185,6 +193,14 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
           >
             <span className="font-sans text-sm">Settings</span>
             <Settings size={16} strokeWidth={1.5} className="text-foreground/40" />
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="justify-between px-3 py-1.5 cursor-pointer"
+            onClick={() => router.push("/dashboard/videos")}
+          >
+            <span className="font-sans text-sm">My Videos</span>
+            <Video size={16} strokeWidth={1.5} className="text-foreground/40" />
           </DropdownMenuItem>
 
           <DropdownMenuItem
