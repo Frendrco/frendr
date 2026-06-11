@@ -17,6 +17,7 @@ import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
 import { VideoCommentSection, type VideoCommentData } from "./VideoCommentSection"
 import { FollowButton } from "@/components/common/FollowButton"
 import { ViewTracker } from "./ViewTracker"
+import { StickyPlayer } from "./StickyPlayer"
 import type { Metadata } from "next"
 
 type StreamStatus = "ready" | "processing" | "error" | "unknown"
@@ -208,23 +209,21 @@ export default async function VideoPage({ params }: Props) {
       <ViewTracker videoId={id} />
 
       {/* ── Player ─────────────────────────────────────────── */}
-      <div className="bg-core-black w-full sticky top-16 z-40">
-        <div className="mx-auto max-w-screen-xl">
-          {passwordGated ? (
-            <PasswordGateClient videoId={video.id} title={video.title} />
-          ) : (
-            <VideoPlayer
-              streamId={video.streamId}
-              externalUrl={video.externalUrl}
-              title={video.title}
-              thumbnailUrl={video.thumbnailUrl}
-              streamStatus={streamStatus}
-              autoPlay={video.embedAutoplay || video.videoType === "RECESS"}
-              loop={video.embedLoop || video.videoType === "RECESS"}
-            />
-          )}
-        </div>
-      </div>
+      <StickyPlayer>
+        {passwordGated ? (
+          <PasswordGateClient videoId={video.id} title={video.title} />
+        ) : (
+          <VideoPlayer
+            streamId={video.streamId}
+            externalUrl={video.externalUrl}
+            title={video.title}
+            thumbnailUrl={video.thumbnailUrl}
+            streamStatus={streamStatus}
+            autoPlay={video.embedAutoplay || video.videoType === "RECESS"}
+            loop={video.embedLoop || video.videoType === "RECESS"}
+          />
+        )}
+      </StickyPlayer>
 
       {/* ── Content ────────────────────────────────────────── */}
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-8">
