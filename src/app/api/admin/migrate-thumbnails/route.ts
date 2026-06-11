@@ -36,7 +36,12 @@ export async function POST() {
   if (!user?.isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const videos = await prisma.video.findMany({
-    where: { thumbnailUrl: { startsWith: "data:" } },
+    where: {
+      OR: [
+        { thumbnailUrl: { startsWith: "data:" } },
+        { thumbnailUrl: { contains: "image.mux.com" } },
+      ],
+    },
     select: { id: true, thumbnailUrl: true, streamId: true, externalUrl: true, title: true },
   })
 
