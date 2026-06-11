@@ -64,6 +64,7 @@ export function FrendrSelectsMarquee({ videos }: { videos: Video[] }) {
                 src={video.thumbnailUrl}
                 alt={video.title}
                 fill
+                sizes="(max-width: 640px) 208px, 256px"
                 className="object-cover"
               />
             ) : (
