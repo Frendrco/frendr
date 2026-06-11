@@ -144,12 +144,15 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
                 <p className="font-sans text-sm font-medium text-white">Drop to upload</p>
               </>
             ) : (
-              <div className={`flex items-center gap-2 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 backdrop-blur transition-opacity
+              <div className={`flex flex-col items-center gap-1 rounded-xl border border-white/30 bg-black/40 px-4 py-2.5 backdrop-blur transition-opacity
                 ${hasCover ? "opacity-0 hover:opacity-100 group-hover:opacity-100" : "opacity-100"}`}>
-                <Upload size={12} className="text-white" />
-                <span className="font-sans text-xs text-white">
-                  {hasCover ? "Drag or click to change cover" : "Drag or click to add cover"}
-                </span>
+                <div className="flex items-center gap-2">
+                  <Upload size={12} className="text-white" />
+                  <span className="font-sans text-xs font-medium text-white">
+                    {hasCover ? "Drag or click to change cover" : "Drag or click to add cover"}
+                  </span>
+                </div>
+                <p className="font-sans text-[10px] text-white/50">Photo or MP4 · Max 5 MB</p>
               </div>
             )}
           </div>
