@@ -1445,28 +1445,45 @@ export function UploadClient({
             {videoType === "RECESS" && (
               <div className="flex flex-col gap-6">
                 <div>
-                  {file || uploading ? (
+                  {file ? (
                     <div
                       onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                       onDragLeave={() => setDragging(false)}
                       onDrop={handleVideoDrop}
                       className="relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 border-border transition-all duration-150"
                     >
-                      {uploading ? (
+                      {bgUpload.status === 'error' ? (
+                        <div className="flex flex-col items-center gap-3 px-8 text-center">
+                          <p className="font-sans text-sm font-medium text-red-500">Upload failed</p>
+                          <p className="font-sans text-xs text-foreground/40">{bgUpload.error}</p>
+                          <button
+                            type="button"
+                            onClick={() => startBgUpload(file)}
+                            className="inline-flex items-center gap-1.5 rounded-full bg-core-black px-4 py-1.5 font-sans text-xs font-medium text-white hover:bg-spring-green hover:text-core-black transition-colors"
+                          >
+                            Try again
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); cancelBgUpload(); setFile(null); setThumbnail(null) }}
+                            className="inline-flex items-center gap-1.5 font-sans text-xs text-foreground/40 hover:text-foreground transition-colors"
+                          >
+                            <X size={11} /> Choose a different file
+                          </button>
+                        </div>
+                      ) : bgUpload.status === 'uploading' ? (
                         <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
-                          <p className="font-sans text-sm font-medium text-core-black">
-                            {progress < 100 ? "Uploading…" : "Finalising with Cloudflare…"}
-                          </p>
+                          <p className="font-sans text-sm font-medium text-core-black">Uploading…</p>
                           <div className="w-full max-w-xs">
                             <div className="mb-2 flex items-center justify-between">
-                              <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
-                              <span className="font-sans text-xs text-foreground/50">{progress < 100 ? `${progress}%` : ""}</span>
+                              <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file.name}</span>
+                              <span className="font-sans text-xs text-foreground/50">{bgUpload.progress}%</span>
                             </div>
                             <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                              {progress === 0 || progress === 100 ? (
+                              {bgUpload.progress === 0 || bgUpload.progress === 100 ? (
                                 <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
                               ) : (
-                                <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
+                                <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${bgUpload.progress}%` }} />
                               )}
                             </div>
                           </div>
@@ -1477,10 +1494,12 @@ export function UploadClient({
                             <Upload size={20} className="text-spring-green" />
                           </div>
                           <div>
-                            <p className="font-sans font-medium text-sm text-core-black">{file!.name}</p>
-                            <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file!.size / 1024 / 1024).toFixed(1)} MB</p>
+                            <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
+                            <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
                           </div>
-                          <button type="button" onClick={(e) => { e.stopPropagation(); setFile(null); setThumbnail(null) }}
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); cancelBgUpload(); setFile(null); setThumbnail(null) }}
                             className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
                           >
                             <X size={11} /> Change file
@@ -1537,28 +1556,45 @@ export function UploadClient({
                   <div className="flex flex-col gap-6">
                     {/* Video drop zone */}
                     <div>
-                      {file || uploading ? (
+                      {file ? (
                         <div
                           onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                           onDragLeave={() => setDragging(false)}
                           onDrop={handleVideoDrop}
                           className="relative flex aspect-video w-full flex-col items-center justify-center rounded-2xl border-2 border-border transition-all duration-150"
                         >
-                          {uploading ? (
+                          {bgUpload.status === 'error' ? (
+                            <div className="flex flex-col items-center gap-3 px-8 text-center">
+                              <p className="font-sans text-sm font-medium text-red-500">Upload failed</p>
+                              <p className="font-sans text-xs text-foreground/40">{bgUpload.error}</p>
+                              <button
+                                type="button"
+                                onClick={() => startBgUpload(file)}
+                                className="inline-flex items-center gap-1.5 rounded-full bg-core-black px-4 py-1.5 font-sans text-xs font-medium text-white hover:bg-spring-green hover:text-core-black transition-colors"
+                              >
+                                Try again
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); cancelBgUpload(); setFile(null); setThumbnail(null) }}
+                                className="inline-flex items-center gap-1.5 font-sans text-xs text-foreground/40 hover:text-foreground transition-colors"
+                              >
+                                <X size={11} /> Choose a different file
+                              </button>
+                            </div>
+                          ) : bgUpload.status === 'uploading' ? (
                             <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
-                              <p className="font-sans text-sm font-medium text-core-black">
-                                {progress < 100 ? "Uploading…" : "Finalising with Cloudflare…"}
-                              </p>
+                              <p className="font-sans text-sm font-medium text-core-black">Uploading…</p>
                               <div className="w-full max-w-xs">
                                 <div className="mb-2 flex items-center justify-between">
-                                  <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file?.name}</span>
-                                  <span className="font-sans text-xs text-foreground/50">{progress < 100 ? `${progress}%` : ""}</span>
+                                  <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file.name}</span>
+                                  <span className="font-sans text-xs text-foreground/50">{bgUpload.progress}%</span>
                                 </div>
                                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                                  {progress === 0 || progress === 100 ? (
+                                  {bgUpload.progress === 0 || bgUpload.progress === 100 ? (
                                     <div className="h-full w-full animate-pulse rounded-full bg-spring-green/50" />
                                   ) : (
-                                    <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${progress}%` }} />
+                                    <div className="h-full rounded-full bg-spring-green transition-all duration-500" style={{ width: `${bgUpload.progress}%` }} />
                                   )}
                                 </div>
                               </div>
@@ -1569,10 +1605,12 @@ export function UploadClient({
                                 <Upload size={20} className="text-spring-green" />
                               </div>
                               <div>
-                                <p className="font-sans font-medium text-sm text-core-black">{file!.name}</p>
-                                <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file!.size / 1024 / 1024).toFixed(1)} MB</p>
+                                <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
+                                <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
                               </div>
-                              <button type="button" onClick={(e) => { e.stopPropagation(); setFile(null); setThumbnail(null) }}
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); cancelBgUpload(); setFile(null); setThumbnail(null) }}
                                 className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-sans text-xs text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
                               >
                                 <X size={11} /> Change file
