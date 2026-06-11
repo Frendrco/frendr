@@ -21,6 +21,13 @@ export function ThumbnailRow({ video }: Props) {
   const [saved, setSaved] = useState(false)
 
   async function resolveUrl(raw: string): Promise<string> {
+    // YouTube: youtube.com/watch?v=ID or youtu.be/ID
+    const ytMatch = raw.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+    if (ytMatch) {
+      return `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`
+    }
+
+    // Vimeo: vimeo.com/ID
     const vimeoMatch = raw.match(/vimeo\.com\/(\d+)/)
     if (vimeoMatch) {
       try {
@@ -31,6 +38,7 @@ export function ThumbnailRow({ video }: Props) {
         if (data.thumbnail_url) return data.thumbnail_url
       } catch {}
     }
+
     return raw
   }
 
