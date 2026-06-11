@@ -24,9 +24,10 @@ const ACCEPTED_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/x-msvideo",
 const DESC_MAX = 1000
 const FRAME_COUNT = 6
 
-type Mode       = "upload" | "import"
-type Tab        = "basics" | "privacy" | "embed"
-type VideoType  = "PORTFOLIO" | "RECESS" | "INTERACTIVE"
+type Mode           = "upload" | "import"
+type Tab            = "basics" | "privacy" | "embed"
+type VideoType      = "PORTFOLIO" | "RECESS" | "INTERACTIVE"
+type BgUploadStatus = 'idle' | 'uploading' | 'complete' | 'error'
 
 interface BulkItem {
   id:            string
@@ -230,7 +231,6 @@ export function UploadClient({
   const [uploadError, setUploadError] = useState<string | null>(null)
 
   // Background upload state (single-file modes only)
-  type BgUploadStatus = 'idle' | 'uploading' | 'complete' | 'error'
   const [bgUpload, setBgUpload] = useState<{ status: BgUploadStatus; progress: number; uid: string | null; error: string | null }>({ status: 'idle', progress: 0, uid: null, error: null })
   const tusRef = useRef<TusUpload | null>(null)
 
@@ -248,6 +248,15 @@ export function UploadClient({
       .then((frames) => { setVideoFrames(frames); setExtracting(false) })
       .catch(() => setExtracting(false))
   }, [file])
+
+  useEffect(() => {
+    return () => {
+      if (tusRef.current) {
+        try { tusRef.current.abort() } catch { /* ignore */ }
+        tusRef.current = null
+      }
+    }
+  }, [])
 
   // Fetch oEmbed metadata for a single bulk item
   async function fetchBulkMeta(id: string, url: string) {
@@ -421,7 +430,7 @@ export function UploadClient({
       onError: (err) => {
         const status = (err as { originalResponse?: { getStatus: () => number } }).originalResponse?.getStatus()
         if (status === 402) { setShowPaywall(true) }
-        setBgUpload({ status: 'error', progress: 0, uid: null, error: 'Upload failed — check your connection and try again.' })
+        setBgUpload((prev) => ({ ...prev, status: 'error', uid: null, error: 'Upload failed — check your connection and try again.' }))
         tusRef.current = null
       },
       onProgress: (bytesUploaded, bytesTotal) => {
