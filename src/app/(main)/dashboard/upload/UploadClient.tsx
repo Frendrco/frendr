@@ -1132,7 +1132,7 @@ export function UploadClient({
               />
             ) : (
               <div className="flex w-full max-w-md aspect-video items-center justify-center rounded-2xl bg-foreground/5">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-foreground/40" />
+                <Upload size={28} className="text-foreground/20" />
               </div>
             )}
 
