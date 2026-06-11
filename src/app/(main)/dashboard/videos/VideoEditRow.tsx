@@ -82,7 +82,6 @@ export function VideoEditRow({ video }: { video: Video }) {
     })
     setSaving(false)
     setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
   }
 
   const formatTime = useCallback((s: number) => {
