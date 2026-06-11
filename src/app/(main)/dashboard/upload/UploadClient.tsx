@@ -1525,14 +1525,14 @@ export function UploadClient({
                             </div>
                           </div>
                         </div>
-                      ) : (
+                      ) : bgUpload.status === 'complete' ? (
                         <div className="flex flex-col items-center gap-3 px-8 text-center">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
-                            <Upload size={20} className="text-spring-green" />
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green">
+                            <Check size={20} className="text-core-black" />
                           </div>
                           <div>
-                            <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
-                            <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
+                            <p className="font-sans font-medium text-sm text-core-black">Upload complete</p>
+                            <p className="font-sans text-xs text-foreground/40 mt-0.5">{file.name}</p>
                           </div>
                           <button
                             type="button"
@@ -1541,6 +1541,16 @@ export function UploadClient({
                           >
                             <X size={11} /> Change file
                           </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-3 px-8 text-center">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
+                            <Upload size={20} className="text-spring-green" />
+                          </div>
+                          <div>
+                            <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
+                            <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB · uploading in background</p>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -1636,14 +1646,14 @@ export function UploadClient({
                                 </div>
                               </div>
                             </div>
-                          ) : (
+                          ) : bgUpload.status === 'complete' ? (
                             <div className="flex flex-col items-center gap-3 px-8 text-center">
-                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
-                                <Upload size={20} className="text-spring-green" />
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green">
+                                <Check size={20} className="text-core-black" />
                               </div>
                               <div>
-                                <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
-                                <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
+                                <p className="font-sans font-medium text-sm text-core-black">Upload complete</p>
+                                <p className="font-sans text-xs text-foreground/40 mt-0.5">{file.name}</p>
                               </div>
                               <button
                                 type="button"
@@ -1652,6 +1662,16 @@ export function UploadClient({
                               >
                                 <X size={11} /> Change file
                               </button>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center gap-3 px-8 text-center">
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-spring-green/15">
+                                <Upload size={20} className="text-spring-green" />
+                              </div>
+                              <div>
+                                <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
+                                <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB · uploading in background</p>
+                              </div>
                             </div>
                           )}
                         </div>
