@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import { Suspense } from "react"
 import { Sparkles } from "lucide-react"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
@@ -200,7 +201,7 @@ export default async function SearchPage({ searchParams }: Props) {
       {/* ── Sticky tag bar ── */}
       <div className="sticky top-16 z-40 bg-white border-b border-border">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6">
-          <TagBar tags={TAGS} activeTag={activeTag} isSearching={isSearching} />
+          <Suspense fallback={null}><TagBar tags={TAGS} activeTag={activeTag} isSearching={isSearching} /></Suspense>
         </div>
       </div>
 
@@ -509,7 +510,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   </Link>
                 )}
               </div>
-              {!isSearching && <ExploreSort current={activeSort} />}
+              {!isSearching && <Suspense fallback={null}><ExploreSort current={activeSort} /></Suspense>}
             </div>
 
             {videos.length === 0 ? (
