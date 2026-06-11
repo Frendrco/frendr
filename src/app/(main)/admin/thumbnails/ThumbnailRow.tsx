@@ -39,6 +39,20 @@ export function ThumbnailRow({ video }: Props) {
       } catch {}
     }
 
+    // Generic fallback: fetch og:image from the page (server-side to avoid CORS)
+    const isImageUrl = /\.(jpg|jpeg|png|webp|gif|avif)(\?|$)/i.test(raw)
+    if (!isImageUrl && raw.startsWith("http")) {
+      try {
+        const res = await fetch("/api/admin/resolve-thumbnail", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: raw }),
+        })
+        const data = await res.json()
+        if (data.thumbnailUrl) return data.thumbnailUrl
+      } catch {}
+    }
+
     return raw
   }
 
