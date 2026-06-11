@@ -15,9 +15,11 @@ interface Props {
   streamStatus?: StreamStatus
   autoPlay?:     boolean
   loop?:         boolean
+  fill?:         boolean
 }
 
-export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, streamStatus = "unknown", autoPlay = false, loop = false }: Props) {
+export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, streamStatus = "unknown", autoPlay = false, loop = false, fill = false }: Props) {
+  const outerCls = fill ? "relative h-full w-full" : "relative aspect-video w-full"
   const router   = useRouter()
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -48,7 +50,7 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
   // ── No source ─────────────────────────────────────────────────
   if (!streamId && !externalUrl) {
     return (
-      <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
+      <div className={`flex ${outerCls} flex-col items-center justify-center gap-3 bg-core-black`}>
         <p className="font-sans text-sm text-white/40">No video source found.</p>
       </div>
     )
@@ -57,7 +59,7 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
   // ── Still processing ───────────────────────────────────────────
   if (!externalUrl && streamStatus === "processing") {
     return (
-      <div className="flex aspect-video w-full flex-col items-center justify-center gap-5 bg-core-black px-8">
+      <div className={`flex ${outerCls} flex-col items-center justify-center gap-5 bg-core-black px-8`}>
         <div className="flex w-full max-w-sm flex-col items-center gap-3 text-center">
           <p className="font-sans text-sm font-medium text-white/70">Processing your video…</p>
           <div className="relative h-1 w-full overflow-hidden rounded-full bg-white/10">
@@ -75,7 +77,7 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
   // ── Cloudflare Stream error ────────────────────────────────────
   if (!externalUrl && streamStatus === "error") {
     return (
-      <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-core-black">
+      <div className={`flex ${outerCls} flex-col items-center justify-center gap-3 bg-core-black`}>
         <p className="font-sans text-sm text-white/40">There was a problem processing this video.</p>
       </div>
     )
@@ -84,8 +86,8 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
   // ── Dropbox — direct MP4 ───────────────────────────────────────
   if (externalUrl && detectProvider(externalUrl) === "dropbox") {
     return (
-      <div className="relative aspect-video w-full bg-black">
-        <video src={externalUrl} controls className="absolute inset-0 h-full w-full" />
+      <div className={`${outerCls} bg-black`}>
+        <video src={externalUrl} controls className="absolute inset-0 h-full w-full object-contain" />
       </div>
     )
   }
@@ -94,11 +96,11 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
   if (externalUrl) {
     const provider         = detectProvider(externalUrl)
     const embedUrl         = getVideoEmbedUrl(externalUrl)
-    const showExternalLink = provider === "framerate" || provider === "vimeo"
+    const showExternalLink = (provider === "framerate" || provider === "vimeo") && !fill
 
     return (
-      <div className="flex flex-col">
-        <div className="relative aspect-video w-full">
+      <div className={fill ? outerCls : "flex flex-col"}>
+        <div className={fill ? "h-full w-full" : "relative aspect-video w-full"}>
           <iframe
             src={embedUrl}
             title={title}
@@ -125,7 +127,7 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
 
   // ── Cloudflare Stream — HLS player ────────────────────────────
   return (
-    <div className="relative aspect-video w-full">
+    <div className={outerCls}>
       <video
         ref={videoRef}
         controls
@@ -133,7 +135,7 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
         loop={loop}
         muted={autoPlay}
         poster={thumbnailUrl ?? undefined}
-        className="absolute inset-0 h-full w-full bg-black"
+        className="absolute inset-0 h-full w-full object-contain bg-black"
       />
     </div>
   )

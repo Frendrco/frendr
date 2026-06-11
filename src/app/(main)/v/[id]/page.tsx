@@ -209,7 +209,7 @@ export default async function VideoPage({ params }: Props) {
       <ViewTracker videoId={id} />
 
       {/* ── Player ─────────────────────────────────────────── */}
-      <StickyPlayer title={video.title}>
+      <StickyPlayer>
         {passwordGated ? (
           <PasswordGateClient videoId={video.id} title={video.title} />
         ) : (
@@ -221,6 +221,7 @@ export default async function VideoPage({ params }: Props) {
             streamStatus={streamStatus}
             autoPlay={video.embedAutoplay || video.videoType === "RECESS"}
             loop={video.embedLoop || video.videoType === "RECESS"}
+            fill
           />
         )}
       </StickyPlayer>
