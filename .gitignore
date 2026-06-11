@@ -45,3 +45,6 @@ next-env.d.ts
 scripts/waitlist.csv
 frendr-signups.csv
 .env*.local
+
+# clerk configuration (can include secrets)
+/.clerk/
