@@ -16,6 +16,7 @@ type Props = {
   voteCount:    number
   commentCount: number
   isOwner?:     boolean
+  priority?:    boolean
   user: {
     username:    string
     displayName: string
@@ -23,7 +24,7 @@ type Props = {
   }
 }
 
-export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCount, isOwner, user }: Props) {
+export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCount, isOwner, priority = false, user }: Props) {
   const router = useRouter()
   const [loadState, setLoadState] = useState<LoadState>("idle")
   const [deleting, setDeleting] = useState(false)
@@ -59,8 +60,9 @@ export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCou
                 src={previewUrl}
                 alt={title}
                 fill
-                className="object-cover"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={priority}
+                className="object-cover"
               />
             ) : (
               <div className="h-full w-full bg-mist-grey" />
@@ -101,7 +103,7 @@ export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCou
       >
         <div className="h-6 w-6 shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
           {user.avatarUrl ? (
-            <Image src={user.avatarUrl} alt={user.displayName} width={24} height={24} className="h-full w-full object-cover" />
+            <Image src={user.avatarUrl} alt={user.displayName} width={24} height={24} sizes="24px" className="h-full w-full object-cover" />
           ) : (
             <span className="font-sans font-bold text-[8px] text-core-black">
               {user.displayName.charAt(0).toUpperCase()}

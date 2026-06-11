@@ -51,7 +51,7 @@ export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; curren
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {sorted.map((t) => (
+          {sorted.map((t, i) => (
             <RiveCard
               key={t.id}
               id={t.id}
@@ -61,6 +61,7 @@ export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; curren
               voteCount={t.voteCount}
               commentCount={t._count.comments}
               user={t.user}
+              priority={i === 0}
               isOwner={!!currentUserId && currentUserId === t.userId}
             />
           ))}
