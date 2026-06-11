@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
       { hostname: "*.vimeocdn.com"          },
       { hostname: "*.supabase.co"          },
       { hostname: "public.rive.app"        },
+      { hostname: "image.mux.com"          },
     ],
   },
 };
