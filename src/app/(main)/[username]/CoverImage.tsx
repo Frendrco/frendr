@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import Image from "next/image"
-import { Camera, Film, Pencil } from "lucide-react"
+import { Upload, Loader2, X } from "lucide-react"
 
 interface Props {
   initialCoverUrl:      string | null
@@ -10,86 +10,95 @@ interface Props {
   isOwn:                boolean
 }
 
+const IMAGE_MAX = 10 * 1024 * 1024  // 10 MB
+const VIDEO_MAX =  5 * 1024 * 1024  //  5 MB
+
 export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Props) {
-  const [coverUrl,       setCoverUrl]       = useState(initialCoverUrl)
-  const [coverVideoUrl,  setCoverVideoUrl]  = useState(initialCoverVideoUrl)
-  const [uploading,      setUploading]      = useState(false)
-  const [uploadingVideo, setUploadingVideo] = useState(false)
-  const [menuOpen,       setMenuOpen]       = useState(false)
-  const [error,          setError]          = useState<string | null>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const [coverUrl,      setCoverUrl]      = useState(initialCoverUrl)
+  const [coverVideoUrl, setCoverVideoUrl] = useState(initialCoverVideoUrl)
+  const [uploading,     setUploading]     = useState(false)
+  const [dragOver,      setDragOver]      = useState(false)
+  const [error,         setError]         = useState<string | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const busy = uploading || uploadingVideo
+  async function upload(file: File) {
+    const isVideo = file.type.startsWith("video/")
+    setError(null)
 
-  useEffect(() => {
-    if (!menuOpen) return
-    function handleMouseDown(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false)
-      }
-    }
-    document.addEventListener("mousedown", handleMouseDown)
-    return () => document.removeEventListener("mousedown", handleMouseDown)
-  }, [menuOpen])
-
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    e.target.value = ""
-    setMenuOpen(false)
-    if (!file) return
-    setUploading(true)
-    const form = new FormData()
-    form.append("file", file)
-    fetch("/api/users/upload-cover", { method: "POST", body: form })
-      .then((r) => r.json())
-      .then(async (data: { coverUrl?: string }) => {
-        if (data.coverUrl) {
-          await fetch("/api/users", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ coverImageUrl: data.coverUrl }),
-          })
-          setCoverUrl(data.coverUrl)
-        }
-      })
-      .finally(() => setUploading(false))
-  }
-
-  function handleVideoChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    e.target.value = ""
-    setMenuOpen(false)
-    if (!file) return
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Video is too large — must be under 5 MB")
+    if (isVideo && file.size > VIDEO_MAX) {
+      setError("Video must be under 5 MB — compress it first")
       return
     }
-    setError(null)
-    setUploadingVideo(true)
-    const form = new FormData()
-    form.append("file", file)
-    fetch("/api/users/upload-cover-video", { method: "POST", body: form })
-      .then((r) => r.json())
-      .then(async (data: { coverUrl?: string; error?: string }) => {
-        if (!data.coverUrl) {
-          setError(data.error ?? "Video upload failed")
-          return
-        }
-        await fetch("/api/users", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ coverVideoUrl: data.coverUrl }),
-        })
-        setCoverVideoUrl(data.coverUrl)
+    if (!isVideo && file.size > IMAGE_MAX) {
+      setError("Image must be under 10 MB")
+      return
+    }
+
+    setUploading(true)
+    try {
+      const form = new FormData()
+      form.append("file", file)
+
+      const endpoint = isVideo ? "/api/users/upload-cover-video" : "/api/users/upload-cover"
+      const res = await fetch(endpoint, { method: "POST", body: form })
+      const data = await res.json() as { coverUrl?: string; error?: string }
+
+      if (!data.coverUrl) {
+        setError(data.error ?? "Upload failed")
+        return
+      }
+
+      await fetch("/api/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(isVideo ? { coverVideoUrl: data.coverUrl } : { coverImageUrl: data.coverUrl }),
       })
-      .catch(() => setError("Video upload failed"))
-      .finally(() => setUploadingVideo(false))
+
+      if (isVideo) {
+        setCoverVideoUrl(data.coverUrl)
+        setCoverUrl(null)
+      } else {
+        setCoverUrl(data.coverUrl)
+        setCoverVideoUrl(null)
+      }
+    } catch {
+      setError("Upload failed — try again")
+    } finally {
+      setUploading(false)
+    }
   }
+
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ""
+    if (file) upload(file)
+  }
+
+  function onDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (file) upload(file)
+  }
+
+  async function removeCover() {
+    setError(null)
+    await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ coverImageUrl: null, coverVideoUrl: null }),
+    })
+    setCoverUrl(null)
+    setCoverVideoUrl(null)
+  }
+
+  const hasCover = !!(coverVideoUrl || coverUrl)
 
   return (
     <div className="relative w-full h-[200px] bg-mist-grey">
 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Cover media */}
+      <div className="absolute inset-0 overflow-hidden">
         {coverVideoUrl ? (
           <video
             src={coverVideoUrl}
@@ -103,39 +112,66 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
         ) : null}
       </div>
 
+      {/* Owner: drag-and-drop overlay */}
       {isOwn && (
-        <div ref={menuRef} className="absolute top-3 right-3 z-20 flex flex-col items-end gap-1">
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => setMenuOpen((o) => !o)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 font-sans text-xs text-white backdrop-blur transition-colors hover:bg-black/60 disabled:opacity-50"
-            >
-              <Pencil size={12} />
-              {uploading || uploadingVideo ? "Uploading…" : "Edit cover"}
-            </button>
+        <>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm"
+            onChange={onFileChange}
+            className="hidden"
+          />
 
-            {error && (
-              <p className="rounded-lg bg-black/70 px-3 py-1.5 font-sans text-xs text-red-400 backdrop-blur">
-                {error}
-              </p>
-            )}
-
-            {menuOpen && (
-              <div className="flex flex-col overflow-hidden rounded-lg border border-white/20 bg-black/70 backdrop-blur text-xs text-white font-sans shadow-lg">
-                <label className="relative flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors">
-                  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
-                  <Camera size={13} />
-                  Photo
-                </label>
-                <label className="relative flex cursor-pointer items-center gap-2 px-4 py-2.5 hover:bg-white/10 transition-colors border-t border-white/10">
-                  <input type="file" accept="video/*" onChange={handleVideoChange} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
-                  <Film size={13} />
-                  Video
-                </label>
+          <div
+            onClick={() => !uploading && inputRef.current?.click()}
+            onDragOver={e => { e.preventDefault(); setDragOver(true) }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={onDrop}
+            className={`absolute inset-0 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-200
+              ${dragOver
+                ? "bg-black/60 ring-2 ring-inset ring-white/60"
+                : hasCover
+                  ? "bg-black/0 hover:bg-black/30"
+                  : "bg-black/10 hover:bg-black/20"
+              }`}
+          >
+            {uploading ? (
+              <Loader2 size={22} className="text-white animate-spin" />
+            ) : dragOver ? (
+              <>
+                <Upload size={22} className="text-white" />
+                <p className="font-sans text-sm font-medium text-white">Drop to upload</p>
+              </>
+            ) : (
+              <div className={`flex items-center gap-2 rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 backdrop-blur transition-opacity
+                ${hasCover ? "opacity-0 hover:opacity-100 group-hover:opacity-100" : "opacity-100"}`}>
+                <Upload size={12} className="text-white" />
+                <span className="font-sans text-xs text-white">
+                  {hasCover ? "Drag or click to change cover" : "Drag or click to add cover"}
+                </span>
               </div>
             )}
-        </div>
+          </div>
+
+          {/* Remove button */}
+          {hasCover && !uploading && (
+            <button
+              onClick={e => { e.stopPropagation(); removeCover() }}
+              className="absolute top-3 right-3 z-20 flex items-center justify-center h-7 w-7 rounded-full border border-white/30 bg-black/50 text-white backdrop-blur hover:bg-black/70 transition-colors"
+              title="Remove cover"
+            >
+              <X size={13} />
+            </button>
+          )}
+
+          {/* Error */}
+          {error && (
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 rounded-lg bg-black/80 px-4 py-2 backdrop-blur">
+              <p className="font-sans text-xs text-red-400 whitespace-nowrap">{error}</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
