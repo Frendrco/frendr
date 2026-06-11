@@ -26,6 +26,8 @@ const FADE_IN_MS  = 800
 export function HeroSection({ children }: { children?: ReactNode }) {
   const { scrollY } = useScroll()
   const [hoveredId, setHoveredId] = useState<number | null>(null)
+  const [activated, setActivated] = useState<Set<number>>(new Set())
+  const [videoReady, setVideoReady] = useState<Set<number>>(new Set())
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Blobs — larger = faster, more exaggerated movement
@@ -42,8 +44,8 @@ export function HeroSection({ children }: { children?: ReactNode }) {
 
   function handleHoverStart(id: number) {
     if (timerRef.current) clearTimeout(timerRef.current)
+    setActivated(prev => new Set([...prev, id]))
     setHoveredId(id)
-    // Auto-fade back to colour after 4.5s even while still hovering
     timerRef.current = setTimeout(() => setHoveredId(null), 4500)
   }
 
@@ -67,24 +69,24 @@ export function HeroSection({ children }: { children?: ReactNode }) {
             onHoverStart={() => clip && handleHoverStart(b.id)}
             onHoverEnd={handleHoverEnd}
           >
-            {/* Video always mounted so it's preloaded — colour on top hides it until hover */}
-            {clip && (
+            {clip && activated.has(b.id) && (
               <video
                 autoPlay
                 muted
                 loop
                 playsInline
+                onCanPlay={() => setVideoReady(prev => new Set([...prev, b.id]))}
                 className="absolute inset-0 w-full h-full object-cover"
               >
                 <source src={clip} type="video/mp4" />
               </video>
             )}
-            {/* Colour — on top; fast fade-out on hover, slow drift back on leave */}
+            {/* Colour — on top; fades out once video is ready, drifts back on leave */}
             <div
               className={`absolute inset-0 ${b.bg}`}
               style={{
-                opacity: isHovered ? 0 : 1,
-                transition: `opacity ${isHovered ? FADE_OUT_MS : FADE_IN_MS}ms ${isHovered ? 'ease-out' : 'ease-in-out'}`,
+                opacity: isHovered && videoReady.has(b.id) ? 0 : 1,
+                transition: `opacity ${isHovered && videoReady.has(b.id) ? FADE_OUT_MS : FADE_IN_MS}ms ${isHovered ? 'ease-out' : 'ease-in-out'}`,
               }}
             />
           </motion.div>

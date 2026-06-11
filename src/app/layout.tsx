@@ -13,7 +13,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://frendr.co"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://frendr.co"),
   title: {
     default: "Frendr — Real craft. Real community.",
     template: "%s | Frendr",
@@ -48,6 +48,9 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning style={{ backgroundColor: "#ffffff" }}>
         <head>
           <link rel="manifest" href="/manifest.json" />
+          <link rel="preconnect" href="https://clerk.frendr.co" />
+          <link rel="preconnect" href="https://img.clerk.com" crossOrigin="anonymous" />
+          <link rel="preconnect" href="https://videodelivery.net" crossOrigin="anonymous" />
           <link rel="preload" href="/fonts/205TF-Louize-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
           <link rel="preload" href="/fonts/205TF-Louize-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
           <link rel="preload" href="/fonts/PPNeueMontreal-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />

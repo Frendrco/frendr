@@ -96,7 +96,7 @@ export default async function HomePage({
               <h2 className="display-sm text-core-black">
                 {activeCategory ? activeCategory : "Out of the Oven"}
               </h2>
-              <p className="mt-1 font-sans text-sm text-foreground/50">
+              <p className="mt-1 font-sans text-sm text-foreground/60">
                 Motion design, animation, and film. Served with love.
               </p>
             </div>
@@ -114,7 +114,7 @@ export default async function HomePage({
                     className={
                       sort === opt
                         ? "inline-flex h-8 items-center rounded-full bg-core-black px-4 font-sans text-xs font-medium text-white"
-                        : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
+                        : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/60 hover:border-foreground/40 hover:text-foreground transition-colors"
                     }
                   >
                     {opt.charAt(0).toUpperCase() + opt.slice(1)}
@@ -139,7 +139,7 @@ export default async function HomePage({
                   className={
                     isActive
                       ? "inline-flex h-8 items-center rounded-full bg-spring-green px-4 font-sans text-xs font-medium text-core-black"
-                      : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
+                      : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/60 hover:border-foreground/40 hover:text-foreground transition-colors"
                   }
                 >
                   {pill}
