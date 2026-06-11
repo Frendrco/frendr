@@ -113,7 +113,7 @@ export default async function PlaylistsPage({ params }: Props) {
                       {pl.videos.slice(0, 4).map((pv, i) => (
                         <div key={i} className="relative overflow-hidden">
                           {pv.video.thumbnailUrl ? (
-                            <Image src={pv.video.thumbnailUrl} alt="" fill className="object-cover" />
+                            <Image src={pv.video.thumbnailUrl} alt="" fill sizes="(max-width: 640px) 25vw, 17vw" className="object-cover" />
                           ) : (
                             <div className="h-full w-full bg-mist-grey" />
                           )}

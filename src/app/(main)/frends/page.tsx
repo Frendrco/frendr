@@ -57,7 +57,7 @@ export default async function FrendsPage() {
                 <Link href={`/${member.username}`} className="group w-full">
                   <div className={`relative w-full overflow-hidden rounded-3xl aspect-square transition-opacity group-hover:opacity-90 ${member.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                     {member.avatarUrl ? (
-                      <Image src={member.avatarUrl} alt={member.displayName} fill className="object-cover" />
+                      <Image src={member.avatarUrl} alt={member.displayName} fill sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 16vw, 12vw" className="object-cover" />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
                         <span className="font-sans font-bold text-xl text-core-black">{initials}</span>

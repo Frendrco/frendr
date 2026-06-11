@@ -234,7 +234,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   >
                     <div className={`h-10 w-10 shrink-0 overflow-hidden rounded-full flex items-center justify-center ${creator.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                       {creator.avatarUrl ? (
-                        <Image src={creator.avatarUrl} alt={creator.displayName} width={40} height={40} className="h-full w-full object-cover" />
+                        <Image src={creator.avatarUrl} alt={creator.displayName} width={40} height={40} sizes="40px" className="h-full w-full object-cover" />
                       ) : (
                         <span className="font-sans font-bold text-sm text-core-black">{initials}</span>
                       )}
@@ -289,7 +289,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   >
                     <div className="relative aspect-video overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.02]">
                       {cover ? (
-                        <Image src={cover} alt={ch.name} fill className="object-cover" />
+                        <Image src={cover} alt={ch.name} fill sizes="(max-width: 640px) 176px, 240px" className="object-cover" />
                       ) : (
                         <div className={`h-full w-full ${colorClass}`} />
                       )}
@@ -411,7 +411,7 @@ export default async function SearchPage({ searchParams }: Props) {
                     <Link href={`/${member.username}`} className="group w-full">
                       <div className="relative w-full overflow-hidden rounded-3xl bg-spring-green aspect-square transition-opacity group-hover:opacity-90">
                         {member.avatarUrl ? (
-                          <Image src={member.avatarUrl} alt={member.displayName} fill className="object-cover" />
+                          <Image src={member.avatarUrl} alt={member.displayName} fill sizes="(max-width: 768px) 80px, 96px" className="object-cover" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
                             <span className="font-sans font-bold text-xl text-core-black">{initials}</span>

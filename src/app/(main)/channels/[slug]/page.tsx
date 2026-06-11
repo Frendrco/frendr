@@ -84,7 +84,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
         return (
           <div className={`relative h-48 w-full overflow-hidden md:h-64 ${!channel.coverUrl ? colorClass : ""}`}>
             {channel.coverUrl && (
-              <Image src={channel.coverUrl} alt={channel.name} fill className="object-cover" />
+              <Image src={channel.coverUrl} alt={channel.name} fill sizes="100vw" priority className="object-cover" />
             )}
             <div className="absolute inset-0 bg-black/20" />
           </div>

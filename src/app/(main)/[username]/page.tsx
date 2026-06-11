@@ -430,14 +430,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                           <div className="h-full w-full bg-mist-grey" />
                         ) : pl.videos.length === 1 ? (
                           pl.videos[0].video.thumbnailUrl ? (
-                            <Image src={pl.videos[0].video.thumbnailUrl} alt={pl.name} fill className="object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
+                            <Image src={pl.videos[0].video.thumbnailUrl} alt={pl.name} fill sizes="(max-width: 640px) 50vw, 33vw" className="object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
                           ) : <div className="h-full w-full bg-mist-grey" />
                         ) : (
                           <div className="grid grid-cols-2 h-full">
                             {pl.videos.slice(0, 4).map((pv, i) => (
                               <div key={i} className="relative overflow-hidden">
                                 {pv.video.thumbnailUrl ? (
-                                  <Image src={pv.video.thumbnailUrl} alt="" fill className="object-cover" />
+                                  <Image src={pv.video.thumbnailUrl} alt="" fill sizes="(max-width: 640px) 25vw, 17vw" className="object-cover" />
                                 ) : (
                                   <div className="h-full w-full bg-mist-grey" />
                                 )}
