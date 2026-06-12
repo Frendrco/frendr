@@ -9,6 +9,7 @@ import { Search, Upload, Menu, X } from "lucide-react"
 import { Logo } from "@/components/common/Logo"
 import { MessagesNavItem } from "@/components/messages/MessagesNavItem"
 import { NotificationsBell } from "@/components/notifications/NotificationsBell"
+import { ThemeToggle } from "@/components/common/ThemeToggle"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -59,7 +60,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
     <>
     {/* Full-screen mobile menu overlay (signed-out only) */}
     {mobileMenuOpen && (
-      <div className="fixed inset-0 z-[60] flex flex-col bg-white md:hidden">
+      <div className="fixed inset-0 z-[60] flex flex-col bg-white dark:bg-black md:hidden">
 
         {/* Top bar */}
         <div className="flex items-center justify-between px-4 h-16 shrink-0">
@@ -113,7 +114,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
       </div>
     )}
 
-    <header className={cn("sticky top-0 z-50 w-full", isHome ? "bg-transparent" : "bg-white")}>
+    <header className={cn("sticky top-0 z-50 w-full", isHome ? "bg-transparent" : "bg-background")}>
       <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between gap-4 px-4 md:px-6">
 
         {/* ── Left: Symbol pill + Nav pill ── */}
@@ -185,6 +186,9 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
               {/* Notifications */}
               <NotificationsBell />
 
+              {/* Theme toggle */}
+              <ThemeToggle />
+
               {/* Avatar / user menu */}
               {userMenu}
             </>
@@ -192,6 +196,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
             <>
               {/* Desktop auth buttons */}
               <div className="hidden md:flex items-center gap-2">
+                <ThemeToggle />
                 <Link
                   href="/sign-in"
                   className="h-9 inline-flex items-center px-4 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur font-sans font-medium text-sm text-foreground hover:border-black/20 dark:hover:border-white/20 transition-colors"
