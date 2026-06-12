@@ -30,6 +30,8 @@ type VideoData = {
 
 function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: { streamId: string; thumbnailUrl: string | null; onVideoSize?: (w: number, h: number) => void }) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const onVideoSizeRef = useRef(onVideoSize)
+  onVideoSizeRef.current = onVideoSize
 
   useEffect(() => {
     const video = videoRef.current
@@ -40,7 +42,7 @@ function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: { streamId: string; 
       hls.on(Hls.Events.MANIFEST_PARSED, (_evt, data) => {
         hls.currentLevel = data.levels.length - 1
         const level = data.levels[data.levels.length - 1]
-        if (level?.width && level?.height) onVideoSize?.(level.width, level.height)
+        if (level?.width && level?.height) onVideoSizeRef.current?.(level.width, level.height)
       })
       hls.loadSource(hlsUrl)
       hls.attachMedia(video)
@@ -48,7 +50,7 @@ function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: { streamId: string; 
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = hlsUrl
     }
-  }, [streamId, onVideoSize])
+  }, [streamId])
 
   return (
     <video
@@ -156,11 +158,11 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
       {/* Wrapper — positions the floating X above the card */}
       <div className="group/modal relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
 
-        {/* Floating close button */}
+        {/* Floating close button — desktop only */}
         <button
           onClick={close}
           aria-label="Close"
-          className="absolute -top-10 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+          className="hidden sm:flex absolute -top-10 right-0 h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
         >
           <X size={15} />
         </button>
