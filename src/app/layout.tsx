@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { ClerkProvider } from "@clerk/nextjs"
+import { ThemeProvider } from "next-themes"
 import { Analytics } from "@vercel/analytics/next"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ActivityPing } from "@/components/common/ActivityPing"
@@ -32,7 +33,10 @@ export const metadata: Metadata = {
     icon: "/images/icon-192.png",
     apple: "/images/icon-192.png",
   },
-  themeColor: "#ffffff",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)",  color: "#000000" },
+  ],
   verification: {
     google: "PugFw0pXgYQqb7D5Y9Jxl1S40YDRP0fXLSiIhHX2C3I",
   },
@@ -45,7 +49,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning style={{ backgroundColor: "#ffffff" }}>
+      <html lang="en" suppressHydrationWarning>
         <head>
           <link rel="manifest" href="/manifest.json" />
           <link rel="preconnect" href="https://clerk.frendr.co" />
@@ -56,12 +60,14 @@ export default function RootLayout({
           <link rel="preload" href="/fonts/PPNeueMontreal-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         </head>
         <body className="min-h-screen flex flex-col antialiased">
-          <TooltipProvider>
-            <ActivityPing />
-            <ServiceWorkerRegistrar />
-            {children}
-            <Analytics />
-          </TooltipProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <TooltipProvider>
+              <ActivityPing />
+              <ServiceWorkerRegistrar />
+              {children}
+              <Analytics />
+            </TooltipProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
