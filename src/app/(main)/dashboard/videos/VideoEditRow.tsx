@@ -114,7 +114,7 @@ export function VideoEditRow({ video, username }: { video: Video; username: stri
     <div className="rounded-xl border border-border bg-white p-4">
       <div className="flex gap-4">
         {/* Thumbnail preview */}
-        <div className="relative h-[90px] w-40 shrink-0 overflow-hidden rounded-lg bg-mist-grey">
+        <div className="relative h-[70px] w-24 sm:h-[90px] sm:w-40 shrink-0 overflow-hidden rounded-lg bg-mist-grey">
           {previewUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -177,7 +177,7 @@ export function VideoEditRow({ video, username }: { video: Video; username: stri
                 className="flex items-center gap-1 font-sans text-xs text-foreground/40 hover:text-foreground transition-colors"
               >
                 <ExternalLink size={11} />
-                View
+                <span className="hidden sm:inline">View</span>
               </Link>
             </div>
           </div>

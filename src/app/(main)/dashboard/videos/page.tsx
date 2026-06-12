@@ -52,7 +52,7 @@ export default async function MyVideosPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="mb-8">
+        <div className="mb-8 text-center sm:text-left">
           <h1 className="font-sans font-bold text-2xl text-foreground">My Videos</h1>
           <p className="font-sans text-sm text-foreground/40 mt-1">
             {videos.length} video{videos.length !== 1 ? "s" : ""}
