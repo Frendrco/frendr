@@ -87,13 +87,13 @@ export default async function HomePage({
         )}
       </HeroSection>
 
-      <section id="explore" className="bg-white pb-24">
+      <section id="explore" className="bg-background pb-24">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6">
 
           {/* Section header */}
           <div className="flex flex-col gap-4 py-12 md:flex-row md:items-end md:justify-between">
             <div className="text-center md:text-left">
-              <h2 className="display-sm text-core-black">
+              <h2 className="display-sm text-foreground">
                 {activeCategory ? activeCategory : "Out of the Oven"}
               </h2>
               <p className="mt-1 font-sans text-sm text-foreground/60">
@@ -113,7 +113,7 @@ export default async function HomePage({
                     href={`/${qs ? `?${qs}` : ""}`}
                     className={
                       sort === opt
-                        ? "inline-flex h-8 items-center rounded-full bg-core-black px-4 font-sans text-xs font-medium text-white"
+                        ? "inline-flex h-8 items-center rounded-full bg-core-black dark:bg-white px-4 font-sans text-xs font-medium text-white dark:text-core-black"
                         : "inline-flex h-8 items-center rounded-full border border-border px-4 font-sans text-xs font-medium text-foreground/60 hover:border-foreground/40 hover:text-foreground transition-colors"
                     }
                   >

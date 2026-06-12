@@ -96,7 +96,7 @@ export function DiscoverGrid({ videos }: { videos: VideoItem[] }) {
           placeholder="Search by title, creator, or tag…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full h-10 rounded-full border border-border pl-10 pr-4 font-sans text-sm text-core-black placeholder:text-foreground/40 bg-white focus:outline-none focus:border-foreground/30 transition-colors"
+          className="w-full h-10 rounded-full border border-border pl-10 pr-4 font-sans text-sm text-foreground placeholder:text-foreground/40 bg-background focus:outline-none focus:border-foreground/30 transition-colors"
         />
       </div>
 
@@ -109,7 +109,7 @@ export function DiscoverGrid({ videos }: { videos: VideoItem[] }) {
               onClick={() => setActiveCategory(null)}
               className={
                 activeCategory === null
-                  ? "inline-flex h-7 shrink-0 items-center rounded-full bg-core-black px-3 font-sans text-xs font-medium text-white"
+                  ? "inline-flex h-7 shrink-0 items-center rounded-full bg-core-black dark:bg-white px-3 font-sans text-xs font-medium text-white dark:text-core-black"
                   : "inline-flex h-7 shrink-0 items-center rounded-full border border-border px-3 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
               }
             >
@@ -123,7 +123,7 @@ export function DiscoverGrid({ videos }: { videos: VideoItem[] }) {
                   onClick={() => setActiveCategory(isActive ? null : cat)}
                   className={
                     isActive
-                      ? "inline-flex h-7 shrink-0 items-center rounded-full bg-core-black px-3 font-sans text-xs font-medium text-white"
+                      ? "inline-flex h-7 shrink-0 items-center rounded-full bg-core-black dark:bg-white px-3 font-sans text-xs font-medium text-white dark:text-core-black"
                       : "inline-flex h-7 shrink-0 items-center rounded-full border border-border px-3 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
                   }
                 >
@@ -145,12 +145,12 @@ export function DiscoverGrid({ videos }: { videos: VideoItem[] }) {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 top-full mt-1.5 z-20 min-w-[120px] overflow-hidden rounded-xl border border-border bg-white shadow-lg">
+            <div className="absolute right-0 top-full mt-1.5 z-20 min-w-[120px] overflow-hidden rounded-xl border border-border bg-background shadow-lg">
               {(["newest", "trending"] as Sort[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => { setSort(key); setDropdownOpen(false) }}
-                  className={`flex w-full items-center px-4 py-2.5 font-sans text-xs font-medium transition-colors hover:bg-mist-grey ${sort === key ? "text-core-black" : "text-foreground/50"}`}
+                  className={`flex w-full items-center px-4 py-2.5 font-sans text-xs font-medium transition-colors hover:bg-foreground/5 ${sort === key ? "text-foreground" : "text-foreground/50"}`}
                 >
                   {SORT_LABELS[key]}
                 </button>
@@ -170,7 +170,7 @@ export function DiscoverGrid({ videos }: { videos: VideoItem[] }) {
       {/* Grid / empty states */}
       {processedVideos.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-24 text-center">
-          <p className="font-sans font-semibold text-sm text-core-black">
+          <p className="font-sans font-semibold text-sm text-foreground">
             {query.trim()
               ? `No results for "${query.trim()}"`
               : activeCategory
@@ -193,7 +193,7 @@ export function DiscoverGrid({ videos }: { videos: VideoItem[] }) {
             <div className="mt-10 flex justify-center">
               <button
                 onClick={() => setShown((n) => n + PAGE_SIZE)}
-                className="inline-flex h-10 items-center rounded-full border border-border px-8 font-sans font-medium text-sm text-core-black transition-colors hover:border-core-black"
+                className="inline-flex h-10 items-center rounded-full border border-border px-8 font-sans font-medium text-sm text-foreground transition-colors hover:border-foreground"
               >
                 Show more
               </button>

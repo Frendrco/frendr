@@ -194,10 +194,10 @@ export default async function SearchPage({ searchParams }: Props) {
   const noResults = isSearching && videos.length === 0 && creators.length === 0
 
   return (
-    <div className="min-h-screen bg-white text-core-black">
+    <div className="min-h-screen bg-background text-foreground">
 
       {/* ── Sticky tag bar ── */}
-      <div className="sticky top-16 z-40 bg-white border-b border-border">
+      <div className="sticky top-16 z-40 bg-background border-b border-border">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6">
           <Suspense fallback={null}><TagBar tags={TAGS} activeTag={activeTag} isSearching={isSearching} /></Suspense>
         </div>
@@ -208,7 +208,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {/* ── No results ── */}
         {noResults && (
           <div className="py-24 flex flex-col items-center gap-3 text-center">
-            <p className="font-sans font-semibold text-base text-core-black">
+            <p className="font-sans font-semibold text-base text-foreground">
               No results for &ldquo;{query}&rdquo;
             </p>
             <p className="font-sans text-sm text-foreground/40">
@@ -220,7 +220,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {/* ── Creator results (search only) ── */}
         {isSearching && creators.length > 0 && (
           <section>
-            <h2 className="mb-4 font-sans font-bold text-base text-core-black">Creators</h2>
+            <h2 className="mb-4 font-sans font-bold text-base text-foreground">Creators</h2>
             <div className="flex flex-wrap gap-3">
               {creators.map(creator => {
                 const initials = creator.displayName
@@ -239,7 +239,7 @@ export default async function SearchPage({ searchParams }: Props) {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-sans font-semibold text-sm text-core-black leading-tight">
+                      <p className="font-sans font-semibold text-sm text-foreground leading-tight">
                         {creator.displayName}
                       </p>
                       <p className="font-sans text-xs text-foreground/40">
@@ -259,7 +259,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {/* ── Frendr Selects (browse only) ── */}
         {!isSearching && featuredVideos.length > 0 && (
           <section>
-            <h2 className="mb-4 font-sans font-bold text-base text-core-black">Selected by Frendr</h2>
+            <h2 className="mb-4 font-sans font-bold text-base text-foreground">Selected by Frendr</h2>
             <FrendrSelectsMarquee videos={featuredVideos} />
           </section>
         )}
@@ -268,7 +268,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {!isSearching && featuredChannels.length > 0 && (
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-sans font-bold text-base text-core-black">Featured Channels</h2>
+              <h2 className="font-sans font-bold text-base text-foreground">Featured Channels</h2>
               <Link
                 href="/channels"
                 className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
@@ -299,7 +299,7 @@ export default async function SearchPage({ searchParams }: Props) {
                       )}
                     </div>
                     <div className="mt-2">
-                      <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1">{ch.name}</p>
+                      <p className="font-sans font-medium text-sm text-foreground leading-snug line-clamp-1">{ch.name}</p>
                     </div>
                   </Link>
                 )
@@ -311,7 +311,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {/* ── Rive World banner (browse only) ── */}
         {!isSearching && (
           <section>
-            <h2 className="mb-4 font-sans font-bold text-base text-core-black">Rive World</h2>
+            <h2 className="mb-4 font-sans font-bold text-base text-foreground">Rive World</h2>
             <Link
               href="/rive"
               className="group flex items-center justify-between gap-6 rounded-2xl bg-bloom-lavender px-8 py-10 transition-all duration-300 hover:brightness-95 hover:scale-[1.005]"
@@ -327,7 +327,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {/* ── Frendr School banner (browse only) ── */}
         {!isSearching && (
           <section>
-            <h2 className="mb-4 font-sans font-bold text-base text-core-black">Frendr School</h2>
+            <h2 className="mb-4 font-sans font-bold text-base text-foreground">Frendr School</h2>
             <div className="flex flex-col gap-4 rounded-2xl bg-sunny-yellow px-8 py-10 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
               <p className="font-sans text-xl text-core-black">
                 <span className="font-bold">Tutorials, tips, and courses.</span>{" "}
@@ -345,7 +345,7 @@ export default async function SearchPage({ searchParams }: Props) {
           <section>
             <div className="mb-4 flex items-center justify-between gap-3">
               <div className="flex items-baseline gap-2 min-w-0">
-                <h2 className="font-sans font-bold text-base text-core-black shrink-0">Recess</h2>
+                <h2 className="font-sans font-bold text-base text-foreground shrink-0">Recess</h2>
                 <span className="hidden sm:inline font-sans text-sm text-foreground/40 truncate">Making things for the fun of it</span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -397,7 +397,7 @@ export default async function SearchPage({ searchParams }: Props) {
         {!isSearching && newMembers.length > 0 && (
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-sans font-bold text-base text-core-black">New Frends</h2>
+              <h2 className="font-sans font-bold text-base text-foreground">New Frends</h2>
               <Link
                 href="/frends"
                 className="font-sans text-sm text-foreground/40 hover:text-foreground transition-colors"
@@ -426,7 +426,7 @@ export default async function SearchPage({ searchParams }: Props) {
                     <div className="flex w-full flex-col items-center gap-1 text-center">
                       <Link
                         href={`/${member.username}`}
-                        className="font-sans font-semibold text-xs text-core-black hover:underline leading-tight line-clamp-1"
+                        className="font-sans font-semibold text-xs text-foreground hover:underline leading-tight line-clamp-1"
                       >
                         {member.displayName}
                       </Link>
@@ -450,21 +450,21 @@ export default async function SearchPage({ searchParams }: Props) {
           <section>
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="font-sans font-bold text-base text-core-black">Recess</h2>
+                <h2 className="font-sans font-bold text-base text-foreground">Recess</h2>
                 <p className="mt-0.5 font-sans text-sm text-foreground/40">
                   Quick explorations, loops, and tool tests from the community.
                 </p>
               </div>
               <Link
                 href="/dashboard/upload?type=recess"
-                className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-white px-4 font-sans font-medium text-sm text-core-black hover:border-core-black transition-colors"
+                className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-background px-4 font-sans font-medium text-sm text-foreground hover:border-foreground transition-colors"
               >
                 + Drop something
               </Link>
             </div>
             {videos.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-20 text-center">
-                <p className="font-sans font-semibold text-sm text-core-black">Nothing here yet</p>
+                <p className="font-sans font-semibold text-sm text-foreground">Nothing here yet</p>
                 <p className="font-sans text-sm text-foreground/40">Be the first to drop something.</p>
               </div>
             ) : (
@@ -494,7 +494,7 @@ export default async function SearchPage({ searchParams }: Props) {
           <section>
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-baseline gap-3">
-                <h2 className="font-sans font-bold text-base text-core-black">
+                <h2 className="font-sans font-bold text-base text-foreground">
                   {isSearching ? (
                     <>
                       Videos
@@ -521,7 +521,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 <p className="font-sans text-sm text-foreground/40">No videos match this search.</p>
               ) : activeSort === "following" ? (
                 <div className="flex flex-col items-center gap-3 py-20 text-center">
-                  <p className="font-sans font-semibold text-sm text-core-black">Nothing here yet</p>
+                  <p className="font-sans font-semibold text-sm text-foreground">Nothing here yet</p>
                   <p className="font-sans text-sm text-foreground/40">
                     Follow some creators to see their work here, or{" "}
                     <a href="/search" className="underline underline-offset-2">browse all videos</a>.

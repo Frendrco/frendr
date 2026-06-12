@@ -44,11 +44,11 @@ export function TagBar({ tags, activeTag, isSearching }: TagBarProps) {
     <div className="relative">
       {canScrollLeft && (
         <>
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white to-transparent z-10" />
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10" />
           <button
             onClick={() => scroll("left")}
             aria-label="Scroll left"
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white shadow-sm text-foreground/60 hover:text-foreground transition-colors"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-background shadow-sm text-foreground/60 hover:text-foreground transition-colors"
           >
             <ChevronLeft size={14} />
           </button>
@@ -77,11 +77,11 @@ export function TagBar({ tags, activeTag, isSearching }: TagBarProps) {
 
       {canScrollRight && (
         <>
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10" />
           <button
             onClick={() => scroll("right")}
             aria-label="Scroll right"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white shadow-sm text-foreground/60 hover:text-foreground transition-colors"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-background shadow-sm text-foreground/60 hover:text-foreground transition-colors"
           >
             <ChevronRight size={14} />
           </button>

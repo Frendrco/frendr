@@ -38,12 +38,12 @@ export default async function DiscoverPage() {
   }))
 
   return (
-    <div className="min-h-screen bg-white text-core-black">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-screen-xl px-4 md:px-6">
 
         {/* Header */}
         <div className="pt-8 pb-6 border-b border-border">
-          <h1 className="font-sans font-bold text-2xl text-core-black">Discover</h1>
+          <h1 className="font-sans font-bold text-2xl text-foreground">Discover</h1>
           <p className="mt-1 font-sans text-sm text-foreground/40">Browse all portfolio work from the community</p>
         </div>
 

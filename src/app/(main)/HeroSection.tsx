@@ -55,7 +55,7 @@ export function HeroSection({ children }: { children?: ReactNode }) {
   }
 
   return (
-    <section className="relative -mt-16 min-h-[80svh] md:min-h-screen flex flex-col items-center justify-center overflow-hidden bg-white pt-16">
+    <section className="relative -mt-16 min-h-[80svh] md:min-h-screen flex flex-col items-center justify-center overflow-hidden bg-background pt-16">
 
       {/* Floating blobs */}
       {BLOBS.map((b, i) => {
@@ -97,7 +97,7 @@ export function HeroSection({ children }: { children?: ReactNode }) {
       <div className="relative z-10 flex flex-col items-center text-center px-4">
 
         <motion.h1
-          className="font-display text-core-black tracking-[-0.05em]"
+          className="font-display text-core-black dark:text-white tracking-[-0.05em]"
           style={{ y: headlineY, fontSize: "2.45rem", fontWeight: 400, lineHeight: 1.06 }}
         >
           Designed for creativity.<br />Built for belonging.

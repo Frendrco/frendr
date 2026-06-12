@@ -217,7 +217,7 @@ export default function OnboardingPage() {
     <div className="flex min-h-screen">
 
       {/* ── Left: form panel ── */}
-      <div className="relative z-10 flex w-full flex-col bg-white md:w-1/2">
+      <div className="relative z-10 flex w-full flex-col bg-background md:w-1/2">
         <div className="flex flex-col px-8 py-10 md:px-14 lg:px-20">
 
           {/* Logo */}
@@ -230,7 +230,7 @@ export default function OnboardingPage() {
             {([1, 2, 3, 4, 5, 6] as const).map((n) => (
               <div key={n} className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
-                n === step ? "w-6 bg-core-black" : n < step ? "w-1.5 bg-core-black/30" : "w-1.5 bg-border"
+                n === step ? "w-6 bg-core-black dark:bg-white" : n < step ? "w-1.5 bg-core-black/30 dark:bg-white/30" : "w-1.5 bg-border"
               )} />
             ))}
           </div>
@@ -239,7 +239,7 @@ export default function OnboardingPage() {
           {step === 1 && (
             <form onSubmit={handleProfileContinue} className="flex flex-col gap-6">
               <div>
-                <h1 className="font-sans text-2xl font-bold text-core-black">
+                <h1 className="font-sans text-2xl font-bold text-foreground">
                   Tell us about yourself
                 </h1>
                 <p className="mt-1.5 font-sans text-sm text-foreground/50">
@@ -250,7 +250,7 @@ export default function OnboardingPage() {
               <div className="flex flex-col gap-4">
                 {/* Name */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans font-medium text-sm text-core-black">
+                  <label className="font-sans font-medium text-sm text-foreground">
                     Full name
                   </label>
                   <input
@@ -259,16 +259,16 @@ export default function OnboardingPage() {
                     placeholder="Your name"
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
-                    className="h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                    className="h-11 rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                   />
                 </div>
 
                 {/* Username */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans font-medium text-sm text-core-black">
+                  <label className="font-sans font-medium text-sm text-foreground">
                     Username
                   </label>
-                  <div className="flex h-11 items-center rounded-xl border border-border bg-white px-4 focus-within:ring-2 focus-within:ring-spring-green">
+                  <div className="flex h-11 items-center rounded-xl border border-border bg-background px-4 focus-within:ring-2 focus-within:ring-spring-green">
                     <span className="font-sans text-sm text-foreground/40 select-none">@</span>
                     <input
                       required
@@ -276,7 +276,7 @@ export default function OnboardingPage() {
                       placeholder="your-handle"
                       value={username}
                       onChange={(e) => handleUsernameChange(e.target.value)}
-                      className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                      className="flex-1 bg-transparent font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                     />
                   </div>
                   {usernameError && (
@@ -286,7 +286,7 @@ export default function OnboardingPage() {
 
                 {/* Location */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans font-medium text-sm text-core-black">
+                  <label className="font-sans font-medium text-sm text-foreground">
                     Location
                   </label>
                   <input
@@ -294,13 +294,13 @@ export default function OnboardingPage() {
                     placeholder="City, Country"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                    className="h-11 rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                   />
                 </div>
 
                 {/* Age */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans font-medium text-sm text-core-black">
+                  <label className="font-sans font-medium text-sm text-foreground">
                     Age
                   </label>
                   <input
@@ -310,7 +310,7 @@ export default function OnboardingPage() {
                     max={120}
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
-                    className="h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                    className="h-11 rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                   />
                 </div>
               </div>
@@ -329,7 +329,7 @@ export default function OnboardingPage() {
           {step === 2 && (
             <div className="flex flex-col gap-6 pb-28">
               <div>
-                <h1 className="font-sans text-2xl font-bold text-core-black">
+                <h1 className="font-sans text-2xl font-bold text-foreground">
                   What do you want to see?
                 </h1>
                 <p className="mt-1.5 font-sans text-sm text-foreground/50">
@@ -359,14 +359,14 @@ export default function OnboardingPage() {
                                 ? "border-spring-green bg-spring-green text-core-black"
                                 : maxed
                                 ? "border-border text-foreground/25 cursor-not-allowed"
-                                : "border-border text-core-black hover:border-foreground/30"
+                                : "border-border text-foreground hover:border-foreground/30"
                             )}
                           >
                             {tag}
                             <span className={cn(
                               "flex h-5 w-5 items-center justify-center rounded-full border text-xs font-bold transition-colors",
                               selected
-                                ? "border-core-black bg-core-black text-white"
+                                ? "border-core-black bg-core-black dark:bg-white dark:border-white text-white dark:text-core-black"
                                 : "border-foreground/30 text-foreground/40"
                             )}>
                               {selected ? "✓" : "+"}
@@ -385,7 +385,7 @@ export default function OnboardingPage() {
           {step === 3 && (
             <div className="flex flex-col gap-8">
               <div>
-                <h1 className="font-sans text-2xl font-bold text-core-black">
+                <h1 className="font-sans text-2xl font-bold text-foreground">
                   A few house rules
                 </h1>
                 <p className="mt-1.5 font-sans text-sm text-foreground/50">
@@ -398,7 +398,7 @@ export default function OnboardingPage() {
                 {RULES.map((rule) => (
                   <li key={rule} className="flex items-start gap-3">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-spring-green text-xs font-bold text-core-black">✓</span>
-                    <span className="font-sans text-sm text-core-black">{rule}</span>
+                    <span className="font-sans text-sm text-foreground">{rule}</span>
                   </li>
                 ))}
               </ul>
@@ -407,7 +407,7 @@ export default function OnboardingPage() {
               <div className="rounded-xl border border-border p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="font-sans font-medium text-sm text-core-black">Show AI-generated content</p>
+                    <p className="font-sans font-medium text-sm text-foreground">Show AI-generated content</p>
                     <p className="mt-0.5 font-sans text-xs text-foreground/50">You can change this any time in settings.</p>
                   </div>
                   <button
@@ -432,7 +432,7 @@ export default function OnboardingPage() {
 
               <button
                 onClick={handleCreateAccount}
-                className="h-11 rounded-full bg-core-black font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80"
+                className="h-11 rounded-full bg-core-black dark:bg-white font-sans font-medium text-sm text-white dark:text-core-black transition-colors hover:bg-core-black/80 dark:hover:bg-white/90"
               >
                 I agree &amp; join frendr
               </button>
@@ -443,7 +443,7 @@ export default function OnboardingPage() {
           {step === 4 && (
             <div className="flex flex-col gap-6">
               <div>
-                <h1 className="font-sans text-2xl font-bold text-core-black">
+                <h1 className="font-sans text-2xl font-bold text-foreground">
                   Add a profile picture
                 </h1>
                 <p className="mt-1.5 font-sans text-sm text-foreground/50">
@@ -516,7 +516,7 @@ export default function OnboardingPage() {
             <div className="flex flex-col gap-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h1 className="font-sans text-2xl font-bold text-core-black">Your Vibes ✨</h1>
+                  <h1 className="font-sans text-2xl font-bold text-foreground">Your Vibes ✨</h1>
                   <p className="mt-1.5 font-sans text-sm text-foreground/50">All optional — just for fun.</p>
                 </div>
                 <button
@@ -541,7 +541,7 @@ export default function OnboardingPage() {
                           className={[
                             "inline-flex h-8 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
                             on
-                              ? "border-core-black bg-core-black text-white"
+                              ? "border-core-black bg-core-black dark:bg-white dark:border-white text-white dark:text-core-black"
                               : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground",
                           ].join(" ")}
                         >
@@ -576,7 +576,7 @@ export default function OnboardingPage() {
           {step === 6 && (
             <div className="flex flex-col gap-5">
               <div>
-                <h1 className="font-sans text-2xl font-bold text-core-black">
+                <h1 className="font-sans text-2xl font-bold text-foreground">
                   Share your first video
                 </h1>
                 <p className="mt-1.5 font-sans text-sm text-foreground/50">
@@ -591,7 +591,7 @@ export default function OnboardingPage() {
                   onClick={() => setVideoSource("upload")}
                   className={cn(
                     "inline-flex h-8 items-center gap-1.5 rounded-full px-4 font-sans font-medium text-sm transition-colors",
-                    videoSource === "upload" ? "bg-core-black text-white" : "text-foreground/50 hover:text-foreground"
+                    videoSource === "upload" ? "bg-core-black dark:bg-white text-white dark:text-core-black" : "text-foreground/50 hover:text-foreground"
                   )}
                 >
                   Upload file
@@ -601,7 +601,7 @@ export default function OnboardingPage() {
                   onClick={() => setVideoSource("link")}
                   className={cn(
                     "inline-flex h-8 items-center gap-1.5 rounded-full px-4 font-sans font-medium text-sm transition-colors",
-                    videoSource === "link" ? "bg-core-black text-white" : "text-foreground/50 hover:text-foreground"
+                    videoSource === "link" ? "bg-core-black dark:bg-white text-white dark:text-core-black" : "text-foreground/50 hover:text-foreground"
                   )}
                 >
                   Share a link
@@ -620,7 +620,7 @@ export default function OnboardingPage() {
                     >
                       {videoUploading ? (
                         <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
-                          <p className="font-sans text-sm font-medium text-core-black">
+                          <p className="font-sans text-sm font-medium text-foreground">
                             {videoProgress < 100 ? "Uploading…" : "Processing…"}
                           </p>
                           <div className="w-full rounded-full bg-border" style={{ height: 6 }}>
@@ -634,7 +634,7 @@ export default function OnboardingPage() {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2 px-8 text-center">
-                          <p className="font-sans font-medium text-sm text-core-black">{videoFile!.name}</p>
+                          <p className="font-sans font-medium text-sm text-foreground">{videoFile!.name}</p>
                           <p className="font-sans text-xs text-foreground/40">{(videoFile!.size / 1024 / 1024).toFixed(1)} MB</p>
                           <button
                             type="button"
@@ -660,7 +660,7 @@ export default function OnboardingPage() {
                     >
                       <input ref={videoFileInputRef} type="file" accept="video/mp4" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoFileSelect(f) }} />
                       <div className="flex flex-col items-center gap-2 px-8 text-center">
-                        <p className="font-sans font-medium text-sm text-core-black">
+                        <p className="font-sans font-medium text-sm text-foreground">
                           {videoDragging ? "Drop to upload" : "Drop your video here"}
                         </p>
                         <p className="font-sans text-xs text-foreground/40">or click to browse</p>
@@ -679,7 +679,7 @@ export default function OnboardingPage() {
                     value={videoExternalUrl}
                     onChange={(e) => setVideoExternalUrl(e.target.value)}
                     placeholder="Vimeo, YouTube, or Framerate link…"
-                    className="h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                    className="h-11 rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                   />
                   <p className="font-sans text-[11px] text-foreground/30">
                     Paste a link from Vimeo, YouTube, or Framerate
@@ -689,13 +689,13 @@ export default function OnboardingPage() {
 
               {/* Title */}
               <div className="flex flex-col gap-1.5">
-                <label className="font-sans font-medium text-sm text-core-black">Title</label>
+                <label className="font-sans font-medium text-sm text-foreground">Title</label>
                 <input
                   type="text"
                   value={videoTitle}
                   onChange={(e) => setVideoTitle(e.target.value)}
                   placeholder="Give your video a title…"
-                  className="h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                  className="h-11 rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                 />
               </div>
 
@@ -753,7 +753,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* ── Right: billboard ── */}
-      <div className="relative sticky top-0 hidden h-screen md:flex md:w-1/2 bg-white">
+      <div className="relative sticky top-0 hidden h-screen md:flex md:w-1/2 bg-background">
         <Image src="/images/onboarding-billboard.jpg" alt="" fill className="object-cover" priority />
       </div>
 

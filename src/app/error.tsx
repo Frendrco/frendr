@@ -15,9 +15,9 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-white px-4 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-4 text-center">
       <p className="font-sans text-sm font-medium text-foreground/30 tracking-widest uppercase">Error</p>
-      <h1 className="display-md text-core-black">Something went wrong</h1>
+      <h1 className="display-md text-foreground">Something went wrong</h1>
       <p className="font-sans text-sm text-foreground/50 max-w-xs">
         An unexpected error occurred. We&apos;ve been notified.
       </p>
