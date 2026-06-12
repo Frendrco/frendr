@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)",  color: "#000000" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
   verification: {
     google: "PugFw0pXgYQqb7D5Y9Jxl1S40YDRP0fXLSiIhHX2C3I",
