@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@clerk/nextjs"
 import { Search, Upload, Menu, X } from "lucide-react"
@@ -123,13 +124,16 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
           {/* Symbol — standalone circle pill */}
           <Link
             href="/"
-            className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur hover:bg-spring-green hover:border-spring-green transition-colors duration-200"
+            className="group flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-spring-green/40 bg-white/80 dark:bg-spring-green/15 backdrop-blur hover:bg-spring-green hover:border-spring-green transition-colors duration-200"
           >
-            <Logo variant="symbol" height={22} colour="auto" priority />
+            {/* Black logo: visible in light mode + dark mode on hover */}
+            <Image src="/images/logo-symbol.svg" alt="Frendr" width={22} height={22} className="dark:hidden dark:group-hover:block" priority />
+            {/* White logo: visible in dark mode, hidden on hover */}
+            <Image src="/images/logo-symbol-white.svg" alt="Frendr" width={22} height={22} className="hidden dark:block dark:group-hover:hidden" />
           </Link>
 
           {/* Nav links pill */}
-          <nav className="hidden md:flex items-center gap-6 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur px-5 h-10">
+          <nav className="hidden md:flex items-center gap-6 rounded-full border border-black/10 dark:border-spring-green/40 bg-white/80 dark:bg-spring-green/15 backdrop-blur px-5 h-10">
             {NAV_LINKS.map((link) => {
               if (link.requiresAuth && !isSignedIn) return null
               return <NavLink key={link.href} href={link.href} label={link.label} />
@@ -141,7 +145,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
         {/* ── Center: Search pill ── */}
         <form
           onSubmit={handleSearch}
-          className="hidden md:flex relative flex-1 max-w-xs rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur h-10 hover:border-black/20 dark:hover:border-white/20 transition-colors"
+          className="hidden md:flex relative flex-1 max-w-xs rounded-full border border-black/10 dark:border-spring-green/40 bg-white/80 dark:bg-spring-green/15 backdrop-blur h-10 hover:border-black/20 dark:hover:border-spring-green/60 transition-colors"
         >
           <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 pointer-events-none" />
 
@@ -199,7 +203,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
                 <ThemeToggle />
                 <Link
                   href="/sign-in"
-                  className="h-9 inline-flex items-center px-4 rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur font-sans font-medium text-sm text-foreground hover:border-black/20 dark:hover:border-white/20 transition-colors"
+                  className="h-9 inline-flex items-center px-4 rounded-full border border-black/10 dark:border-spring-green/40 bg-white/80 dark:bg-spring-green/15 backdrop-blur font-sans font-medium text-sm text-foreground hover:border-black/20 dark:hover:border-spring-green/60 transition-colors"
                 >
                   Login
                 </Link>
