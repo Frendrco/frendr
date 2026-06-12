@@ -35,7 +35,7 @@ export function FeedGrid({ videos, showTimestamp }: FeedGridProps) {
         <div className="mt-8 flex justify-center">
           <button
             onClick={() => setVisibleCount(c => c + 12)}
-            className="h-10 px-6 rounded-full bg-core-black font-sans font-medium text-sm text-white hover:bg-spring-green hover:text-core-black transition-colors"
+            className="h-10 px-6 rounded-full bg-core-black dark:bg-spring-green font-sans font-medium text-sm text-white dark:text-core-black hover:bg-spring-green hover:text-core-black dark:hover:bg-spring-green/80 transition-colors"
           >
             Load more
           </button>
@@ -60,7 +60,7 @@ export function RecessFeedGrid({ videos }: RecessGridProps) {
         <div className="mt-8 flex justify-center">
           <button
             onClick={() => setVisibleCount(c => c + 8)}
-            className="h-10 px-6 rounded-full bg-core-black font-sans font-medium text-sm text-white hover:bg-spring-green hover:text-core-black transition-colors"
+            className="h-10 px-6 rounded-full bg-core-black dark:bg-spring-green font-sans font-medium text-sm text-white dark:text-core-black hover:bg-spring-green hover:text-core-black dark:hover:bg-spring-green/80 transition-colors"
           >
             Load more
           </button>

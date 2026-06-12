@@ -78,7 +78,7 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
   if (!externalUrl && streamStatus === "error") {
     return (
       <div className={`flex ${outerCls} flex-col items-center justify-center gap-3 bg-core-black`}>
-        <p className="font-sans text-sm text-white/40">There was a problem processing this video.</p>
+        <p className="font-sans text-sm text-white/40">This video is unavailable.</p>
       </div>
     )
   }

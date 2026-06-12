@@ -25,7 +25,7 @@ export function VideoGridWithLoadMore({ initialVideos, showTimestamp }: Props) {
         <div className="mt-10 flex justify-center">
           <button
             onClick={() => setVisibleCount(c => c + PAGE_SIZE)}
-            className="inline-flex h-10 items-center rounded-full border border-border px-8 font-sans font-medium text-sm text-core-black transition-colors hover:border-core-black"
+            className="inline-flex h-10 items-center rounded-full border border-border px-8 font-sans font-medium text-sm text-core-black dark:bg-spring-green dark:border-spring-green dark:text-core-black transition-colors hover:border-core-black dark:hover:bg-spring-green/80"
           >
             Show more
           </button>

@@ -33,7 +33,7 @@ async function getStreamInfo(streamId: string): Promise<StreamInfo> {
       `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}`,
       { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 0 } }
     )
-    if (!res.ok) return { status: "unknown", duration: null }
+    if (!res.ok) return { status: res.status === 404 ? "error" : "unknown", duration: null }
     const { result } = await res.json() as { result: { status: { state: string }; duration?: number } }
     const state = result?.status?.state
     const status: StreamStatus =
