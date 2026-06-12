@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
+import { detectProvider } from "@/lib/videoEmbed"
 import { VideoModal } from "./VideoModal"
 import { HardRedirect } from "./HardRedirect"
 
@@ -55,5 +56,20 @@ export default async function InterceptedVideoPage({ params }: Props) {
     }
   }
 
-  return <VideoModal video={video} initialUpvoted={initialUpvoted} />
+  // Fetch Vimeo dimensions server-side so portrait Vimeo videos get the right card shape
+  let initialVideoSize: { w: number; h: number } | null = null
+  if (video.externalUrl && detectProvider(video.externalUrl) === "vimeo") {
+    try {
+      const res = await fetch(
+        `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(video.externalUrl)}`,
+        { next: { revalidate: 3600 } }
+      )
+      if (res.ok) {
+        const data = await res.json() as { width?: number; height?: number }
+        if (data.width && data.height) initialVideoSize = { w: data.width, h: data.height }
+      }
+    } catch {}
+  }
+
+  return <VideoModal video={video} initialUpvoted={initialUpvoted} initialVideoSize={initialVideoSize} />
 }

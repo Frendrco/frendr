@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@clerk/nextjs"
 import Link from "next/link"
 import Image from "next/image"
-import { X, ExternalLink, Heart } from "lucide-react"
+import { X, ExternalLink, Heart, Play, Pause } from "lucide-react"
 import Hls from "hls.js"
 import { cn } from "@/lib/utils"
 import { getVideoEmbedUrl, detectProvider } from "@/lib/videoEmbed"
@@ -28,7 +28,43 @@ type VideoData = {
   }
 }
 
-function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: { streamId: string; thumbnailUrl: string | null; onVideoSize?: (w: number, h: number) => void }) {
+function TapOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | null> }) {
+  const [playing, setPlaying] = useState(true)
+  const [showIcon, setShowIcon] = useState(false)
+  const iconTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function handleTap() {
+    const v = videoRef.current
+    if (!v) return
+    if (v.paused) { v.play(); setPlaying(true) }
+    else          { v.pause(); setPlaying(false) }
+    setShowIcon(true)
+    if (iconTimer.current) clearTimeout(iconTimer.current)
+    iconTimer.current = setTimeout(() => setShowIcon(false), 800)
+  }
+
+  return (
+    <div
+      className="absolute inset-0 flex items-center justify-center cursor-pointer"
+      onClick={handleTap}
+    >
+      <div className={cn(
+        "flex h-14 w-14 items-center justify-center rounded-full bg-black/50 transition-opacity duration-300",
+        showIcon ? "opacity-100" : "opacity-0"
+      )}>
+        {playing
+          ? <Pause size={22} fill="white" className="text-white" />
+          : <Play  size={22} fill="white" className="ml-1 text-white" />}
+      </div>
+    </div>
+  )
+}
+
+function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: {
+  streamId: string
+  thumbnailUrl: string | null
+  onVideoSize?: (w: number, h: number) => void
+}) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const onVideoSizeRef = useRef(onVideoSize)
   onVideoSizeRef.current = onVideoSize
@@ -53,14 +89,33 @@ function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: { streamId: string; 
   }, [streamId])
 
   return (
-    <video
-      ref={videoRef}
-      controls
-      autoPlay
-      playsInline
-      poster={thumbnailUrl ?? undefined}
-      className="absolute inset-0 h-full w-full object-contain bg-black"
-    />
+    <div className="absolute inset-0">
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        poster={thumbnailUrl ?? undefined}
+        className="h-full w-full object-contain bg-black"
+      />
+      <TapOverlay videoRef={videoRef} />
+    </div>
+  )
+}
+
+function DirectVideoPlayer({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  return (
+    <div className="absolute inset-0">
+      <video
+        ref={videoRef}
+        src={src}
+        autoPlay
+        playsInline
+        className="h-full w-full object-contain bg-black"
+      />
+      <TapOverlay videoRef={videoRef} />
+    </div>
   )
 }
 
@@ -74,15 +129,7 @@ function Player({ video, onVideoSize }: { video: VideoData; onVideoSize?: (w: nu
   }
 
   if (video.externalUrl && detectProvider(video.externalUrl) === "dropbox") {
-    return (
-      <video
-        src={video.externalUrl}
-        controls
-        autoPlay
-        playsInline
-        className="absolute inset-0 h-full w-full object-contain bg-black"
-      />
-    )
+    return <DirectVideoPlayer src={video.externalUrl} />
   }
 
   if (video.externalUrl) {
@@ -100,7 +147,15 @@ function Player({ video, onVideoSize }: { video: VideoData; onVideoSize?: (w: nu
   return <HlsPlayer streamId={video.streamId!} thumbnailUrl={video.thumbnailUrl} onVideoSize={onVideoSize} />
 }
 
-export function VideoModal({ video, initialUpvoted }: { video: VideoData; initialUpvoted: boolean }) {
+export function VideoModal({
+  video,
+  initialUpvoted,
+  initialVideoSize = null,
+}: {
+  video: VideoData
+  initialUpvoted: boolean
+  initialVideoSize?: { w: number; h: number } | null
+}) {
   const router = useRouter()
   const { isSignedIn } = useAuth()
   const fullPageHref = `/v/${video.slug ?? video.id}`
@@ -108,7 +163,7 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
   const [liked, setLiked] = useState(initialUpvoted)
   const [likeCount, setLikeCount] = useState(video._count.likes)
   const [likeLoading, setLikeLoading] = useState(false)
-  const [videoSize, setVideoSize] = useState<{ w: number; h: number } | null>(null)
+  const [videoSize, setVideoSize] = useState<{ w: number; h: number } | null>(initialVideoSize)
   const isPortrait = videoSize ? videoSize.h > videoSize.w : false
 
   async function handleLike(e: React.MouseEvent) {
@@ -167,9 +222,9 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
       {/* Wrapper */}
       <div className="group/modal relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
 
-        {/* Card — video only, info overlaid on hover */}
+        {/* Card — mx-auto centers portrait cards; no-op for landscape */}
         <div
-          className="relative w-full overflow-hidden rounded-2xl bg-black shadow-2xl"
+          className="relative mx-auto w-full overflow-hidden rounded-2xl bg-black shadow-2xl"
           style={
             isPortrait && videoSize
               ? { aspectRatio: `${videoSize.w}/${videoSize.h}`, maxHeight: "80vh", width: `calc(80vh * ${videoSize.w} / ${videoSize.h})`, maxWidth: "100%" }
