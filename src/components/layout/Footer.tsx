@@ -85,14 +85,24 @@ export function Footer() {
       {/* At 120vw wide: letter band ≈ 19.5vw tall, starting ≈ 49.5vw from top.         */}
       {/* overflow-hidden + negative margin-top crops to just the letter region.          */}
       <div className="overflow-hidden" style={{ height: "20.5vw" }}>
+        {/* Light mode — black */}
         <Image
           src="/images/logo-logotype-new.svg"
           alt="frendr"
           width={800}
           height={800}
-          className="w-[120vw] max-w-none h-auto -ml-[10vw] dark:invert"
+          className="w-[120vw] max-w-none h-auto -ml-[10vw] dark:hidden"
           style={{ marginTop: "-48.5vw" }}
           priority
+        />
+        {/* Dark mode — spring green */}
+        <Image
+          src="/images/logo-logotype-green.svg"
+          alt="frendr"
+          width={800}
+          height={800}
+          className="w-[120vw] max-w-none h-auto -ml-[10vw] hidden dark:block"
+          style={{ marginTop: "-48.5vw" }}
         />
       </div>
 
