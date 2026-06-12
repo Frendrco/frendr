@@ -80,7 +80,7 @@ export default async function HomePage({
         {!userId && (
           <Link
             href="/sign-up"
-            className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green dark:bg-white text-core-black font-sans font-medium text-sm transition-all hover:bg-core-black hover:text-white dark:hover:bg-spring-green dark:hover:text-core-black hover:scale-105"
+            className="mt-6 inline-flex h-11 items-center px-8 rounded-full bg-spring-green text-core-black font-sans font-medium text-sm transition-all hover:bg-core-black hover:text-white dark:hover:bg-white dark:hover:text-core-black hover:scale-105"
           >
             Join Free
           </Link>

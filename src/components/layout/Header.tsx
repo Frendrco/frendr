@@ -126,10 +126,14 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
             href="/"
             className="group flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-spring-green/40 bg-white/80 dark:bg-spring-green/15 backdrop-blur hover:bg-spring-green hover:border-spring-green transition-colors duration-200"
           >
-            {/* Black logo: visible in light mode + dark mode on hover */}
-            <Image src="/images/logo-symbol.svg" alt="Frendr" width={22} height={22} className="dark:hidden dark:group-hover:block" priority />
-            {/* White logo: visible in dark mode, hidden on hover */}
-            <Image src="/images/logo-symbol-white.svg" alt="Frendr" width={22} height={22} className="hidden dark:block dark:group-hover:hidden" />
+            <Image
+              src="/images/logo-symbol.svg"
+              alt="Frendr"
+              width={22}
+              height={22}
+              className="dark:invert dark:group-hover:invert-0 transition-[filter] duration-200"
+              priority
+            />
           </Link>
 
           {/* Nav links pill */}
