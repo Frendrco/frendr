@@ -152,20 +152,20 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
   return (
     // Backdrop
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm md:p-8"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-2 sm:p-4 md:p-8 backdrop-blur-sm"
       onClick={close}
     >
-      {/* Wrapper — positions the floating X above the card */}
-      <div className="group/modal relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+      {/* Single close button — always in top-right of overlay */}
+      <button
+        onClick={(e) => { e.stopPropagation(); close() }}
+        aria-label="Close"
+        className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+      >
+        <X size={15} />
+      </button>
 
-        {/* Floating close button — desktop only */}
-        <button
-          onClick={close}
-          aria-label="Close"
-          className="hidden sm:flex absolute -top-10 right-0 h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-        >
-          <X size={15} />
-        </button>
+      {/* Wrapper */}
+      <div className="group/modal relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
 
         {/* Card — video only, info overlaid on hover */}
         <div
@@ -179,18 +179,10 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
 
           <Player video={video} onVideoSize={(w, h) => setVideoSize({ w, h })} />
 
-          {/* Mobile-only close button — always tappable inside the card */}
-          <button
-            onClick={close}
-            aria-label="Close"
-            className="sm:hidden absolute top-3 right-3 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm"
-          >
-            <X size={16} />
-          </button>
-
           {/* Info overlay — hover on desktop, always visible on touch */}
           <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent px-5 pt-4 pb-10 opacity-0 transition-opacity duration-300 group-hover/modal:opacity-100 [@media(hover:none)]:opacity-100">
-            <div className="flex items-center gap-3">
+            {/* pr-12 on mobile keeps content clear of the absolute X button */}
+            <div className="flex items-center gap-3 pr-12 sm:pr-0">
 
               {/* Creator */}
               <Link
@@ -216,10 +208,13 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
 
               <span className="text-white/30">·</span>
 
-              {/* Title */}
-              <p className="flex-1 truncate font-sans text-sm font-medium text-white">
+              {/* Title — tappable link on mobile (Enter pill is hidden there) */}
+              <a
+                href={fullPageHref}
+                className="flex-1 truncate font-sans text-sm font-medium text-white sm:pointer-events-none sm:cursor-default"
+              >
                 {video.title}
-              </p>
+              </a>
 
               {/* Like button */}
               <button
@@ -235,16 +230,18 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
                 <span>{likeCount}</span>
               </button>
 
-              {/* Channel button */}
-              <AddToChannelButton
-                videoId={video.id}
-                triggerClassName="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-white/20 px-3 py-1 font-sans text-xs text-white/60 backdrop-blur-sm transition-colors hover:border-white/50 hover:text-white"
-              />
+              {/* Channel button — hide on mobile */}
+              <div className="hidden sm:block">
+                <AddToChannelButton
+                  videoId={video.id}
+                  triggerClassName="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-white/20 px-3 py-1 font-sans text-xs text-white/60 backdrop-blur-sm transition-colors hover:border-white/50 hover:text-white"
+                />
+              </div>
 
-              {/* Enter pill */}
+              {/* Enter pill — hide on mobile */}
               <a
                 href={fullPageHref}
-                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-white/20 px-3 py-1 font-sans text-xs text-white/60 backdrop-blur-sm transition-colors hover:border-white/50 hover:text-white"
+                className="hidden sm:inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/20 px-3 py-1 font-sans text-xs text-white/60 backdrop-blur-sm transition-colors hover:border-white/50 hover:text-white"
               >
                 <ExternalLink size={10} />
                 Enter
