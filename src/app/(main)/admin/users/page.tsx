@@ -25,7 +25,7 @@ export default async function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Users</h1>
+      <h1 className="font-sans font-bold text-2xl text-foreground mb-1">Users</h1>
       <p className="font-sans text-sm text-foreground/40 mb-8">{users.length} most recent</p>
 
       <div className="rounded-2xl border border-border overflow-hidden">
@@ -51,7 +51,7 @@ export default async function AdminUsersPage() {
                     <div className="min-w-0">
                       <Link
                         href={`/${u.username}`}
-                        className="font-sans text-sm font-medium text-core-black hover:underline block"
+                        className="font-sans text-sm font-medium text-foreground hover:underline block"
                       >
                         {u.displayName}
                       </Link>

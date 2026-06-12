@@ -36,7 +36,7 @@ export function SaveThreadButton({ threadId, initialSaved, onUnsave }: Props) {
       {loading ? (
         <Loader2 size={15} className="animate-spin" />
       ) : (
-        <Bookmark size={15} className={saved ? "fill-current text-core-black" : ""} />
+        <Bookmark size={15} className={saved ? "fill-current text-foreground" : ""} />
       )}
     </button>
   )

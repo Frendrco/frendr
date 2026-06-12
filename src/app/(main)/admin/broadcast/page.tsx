@@ -41,12 +41,12 @@ export default function BroadcastPage() {
           <Megaphone size={16} className="text-core-black" />
         </div>
         <div>
-          <h1 className="font-sans font-bold text-lg text-core-black">Broadcast</h1>
+          <h1 className="font-sans font-bold text-lg text-foreground">Broadcast</h1>
           <p className="font-sans text-xs text-foreground/40">Send an announcement to all users</p>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-white p-5 flex flex-col gap-4">
+      <div className="rounded-2xl border border-border bg-background p-5 flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
             <label className="font-sans text-xs font-medium text-foreground/50">Message</label>
@@ -57,7 +57,7 @@ export default function BroadcastPage() {
           <textarea
             rows={5}
             maxLength={MAX}
-            className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+            className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
             placeholder="What's new? This will appear in every user's notification bell…"
             value={message}
             onChange={(e) => setMessage(e.target.value)}

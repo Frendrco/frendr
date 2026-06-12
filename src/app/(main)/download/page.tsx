@@ -69,7 +69,7 @@ export default async function DownloadPage() {
   const { userId } = await auth()
 
   return (
-    <div className="min-h-screen bg-white text-core-black">
+    <div className="min-h-screen bg-background text-foreground">
 
       {/* ── Hero ── */}
       <section className="border-b border-border">
@@ -85,7 +85,7 @@ export default async function DownloadPage() {
           </div>
 
           <div className="flex flex-col items-center gap-3">
-            <h1 className="display-md text-core-black">
+            <h1 className="display-md text-foreground">
               Frendr on your desktop
             </h1>
             <p className="font-sans text-lg text-foreground/60 max-w-md">
@@ -112,7 +112,7 @@ export default async function DownloadPage() {
                 className="flex flex-col gap-2 rounded-2xl border border-border p-6"
               >
                 <span className="text-2xl">{f.icon}</span>
-                <p className="font-sans font-semibold text-sm text-core-black">{f.title}</p>
+                <p className="font-sans font-semibold text-sm text-foreground">{f.title}</p>
                 <p className="font-sans text-sm text-foreground/50 leading-relaxed">{f.description}</p>
               </div>
             ))}
@@ -122,7 +122,7 @@ export default async function DownloadPage() {
         {/* ── Platform instructions ── */}
         <section id="how-to-install" className="flex flex-col gap-6">
           <div>
-            <h2 className="font-sans font-bold text-xl text-core-black">How to install</h2>
+            <h2 className="font-sans font-bold text-xl text-foreground">How to install</h2>
             <p className="mt-1 font-sans text-sm text-foreground/50">Pick your device below.</p>
           </div>
 
@@ -130,16 +130,16 @@ export default async function DownloadPage() {
             {PLATFORMS.map(p => (
               <div key={p.id} className={`rounded-2xl p-6 flex flex-col gap-4 ${p.color}`}>
                 <div>
-                  <p className="font-sans font-bold text-base text-core-black">{p.label}</p>
+                  <p className="font-sans font-bold text-base text-foreground">{p.label}</p>
                   <p className="font-sans text-xs text-foreground/50 mt-0.5">{p.subtitle}</p>
                 </div>
                 <ol className="flex flex-col gap-3">
                   {p.steps.map((step, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-core-black/10 font-sans font-bold text-xs text-core-black/60">
+                      <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-foreground/10 font-sans font-bold text-xs text-foreground/60">
                         {i + 1}
                       </span>
-                      <span className="font-sans text-sm text-core-black/70 leading-relaxed">{step}</span>
+                      <span className="font-sans text-sm text-foreground/70 leading-relaxed">{step}</span>
                     </li>
                   ))}
                 </ol>

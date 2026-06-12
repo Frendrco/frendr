@@ -16,7 +16,7 @@ function parseLine(line: string): React.ReactNode[] {
   const parts = line.split(pattern)
   return parts.map((part, i) => {
     const bold = part.match(/^\*\*([^*]+)\*\*$/)
-    if (bold) return <strong key={i} className="font-semibold text-core-black">{bold[1]}</strong>
+    if (bold) return <strong key={i} className="font-semibold text-foreground">{bold[1]}</strong>
     const italic = part.match(/^\*([^*]+)\*$/)
     if (italic) return <em key={i}>{italic[1]}</em>
     const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
@@ -154,7 +154,7 @@ export function EditThreadForm({ threadId, initial }: Props) {
     router.refresh()
   }
 
-  const inputCls = "w-full h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+  const inputCls = "w-full h-11 rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -253,7 +253,7 @@ export function EditThreadForm({ threadId, initial }: Props) {
                       if (e.key === "Enter") { e.preventDefault(); confirmLink() }
                       if (e.key === "Escape") { setLinkUrl(null); bodyRef.current?.focus() }
                     }}
-                    className="min-w-0 flex-1 bg-transparent font-sans text-xs text-core-black placeholder:text-foreground/30 focus:outline-none"
+                    className="min-w-0 flex-1 bg-transparent font-sans text-xs text-foreground placeholder:text-foreground/30 focus:outline-none"
                   />
                   <button
                     type="button"
@@ -278,7 +278,7 @@ export function EditThreadForm({ threadId, initial }: Props) {
             <textarea
               ref={bodyRef}
               rows={10}
-              className="w-full resize-none bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+              className="w-full resize-none bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
               placeholder="Share your thoughts…"
               value={body}
               onChange={e => setBody(e.target.value)}

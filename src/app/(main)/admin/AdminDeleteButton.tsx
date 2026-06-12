@@ -58,7 +58,7 @@ export function AdminDeleteButton({ endpoint, label, redirectTo }: Props) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-sans font-semibold text-core-black">Delete {label}?</DialogTitle>
+            <DialogTitle className="font-sans font-semibold text-foreground">Delete {label}?</DialogTitle>
             <DialogDescription className="font-sans text-sm text-foreground/60">
               This action is permanent and cannot be undone.
             </DialogDescription>

@@ -38,7 +38,7 @@ export function CommunityNav({ isSignedIn = false }: Props) {
             className={cn(
               "pb-4 font-sans font-medium text-base border-b-2 -mb-px transition-colors mr-5 md:mr-8 whitespace-nowrap shrink-0",
               active
-                ? "border-core-black text-core-black"
+                ? "border-foreground text-foreground"
                 : "border-transparent text-foreground/40 hover:text-foreground/70"
             )}
           >

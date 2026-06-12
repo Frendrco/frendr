@@ -6,10 +6,10 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-2xl px-6 py-20">
 
-        <h1 className="display-sm text-core-black mb-2">Terms of Service</h1>
+        <h1 className="display-sm text-foreground mb-2">Terms of Service</h1>
         <p className="font-sans text-sm text-foreground/40 mb-12">Last updated: May 2026</p>
 
         <div className="prose-frendr">
@@ -99,7 +99,7 @@ export default function TermsPage() {
             <h2>10. Contact</h2>
             <p>
               If you have any questions about these Terms, please contact us at{" "}
-              <a href="mailto:ryan@frendr.co" className="text-core-black underline hover:text-spring-green transition-colors">
+              <a href="mailto:ryan@frendr.co" className="text-foreground underline hover:text-spring-green transition-colors">
                 ryan@frendr.co
               </a>.
             </p>

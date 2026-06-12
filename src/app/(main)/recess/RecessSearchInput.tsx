@@ -30,7 +30,7 @@ export function RecessSearchInput({ defaultValue = "" }: { defaultValue?: string
         value={value}
         onChange={handleChange}
         placeholder="Search by title, creator, or tool…"
-        className="h-11 w-full rounded-full border border-border bg-white pl-9 pr-9 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+        className="h-11 w-full rounded-full border border-border bg-background pl-9 pr-9 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
       />
       {value && (
         <button

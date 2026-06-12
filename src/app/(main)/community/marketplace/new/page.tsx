@@ -18,7 +18,7 @@ export default async function NewShopPage() {
       </Link>
 
       <div className="mb-8">
-        <h2 className="font-sans font-bold text-xl text-core-black">List Your Shop</h2>
+        <h2 className="font-sans font-bold text-xl text-foreground">List Your Shop</h2>
         <p className="mt-1 font-sans text-sm text-foreground/50">Let the community discover your presets, templates, merch, and more.</p>
       </div>
 

@@ -121,13 +121,13 @@ export function RivePostActions({ threadId, initialTitle, initialUrl, initialBod
       {/* Edit modal */}
       <Dialog open={editOpen} onOpenChange={handleEditOpenChange}>
         <DialogContent className="max-w-md">
-          <DialogTitle className="font-sans font-bold text-lg text-core-black">
+          <DialogTitle className="font-sans font-bold text-lg text-foreground">
             Edit post
           </DialogTitle>
 
           <form onSubmit={handleSave} className="mt-4 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -136,12 +136,12 @@ export function RivePostActions({ threadId, initialTitle, initialUrl, initialBod
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={100}
                 required
-                className="h-11 rounded-xl border border-border bg-white px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+                className="h-11 rounded-xl border border-border bg-background px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Rive embed URL <span className="text-red-500">*</span>
               </label>
               <input
@@ -150,19 +150,19 @@ export function RivePostActions({ threadId, initialTitle, initialUrl, initialBod
                 onChange={(e) => setRiveUrl(e.target.value)}
                 placeholder="https://rive.app/s/…/embed"
                 required
-                className="h-11 rounded-xl border border-border bg-white px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+                className="h-11 rounded-xl border border-border bg-background px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Description <span className="font-normal text-foreground/40">(optional)</span>
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="resize-none rounded-xl border border-border bg-white px-3 py-2.5 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+                className="resize-none rounded-xl border border-border bg-background px-3 py-2.5 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
             </div>
 

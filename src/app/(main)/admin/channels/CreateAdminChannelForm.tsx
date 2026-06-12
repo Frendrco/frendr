@@ -39,7 +39,7 @@ export function CreateAdminChannelForm() {
   return (
     <form onSubmit={submit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
-        <label className="font-sans text-xs font-medium text-core-black">Channel Name</label>
+        <label className="font-sans text-xs font-medium text-foreground">Channel Name</label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -50,7 +50,7 @@ export function CreateAdminChannelForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="font-sans text-xs font-medium text-core-black">Description <span className="font-normal text-foreground/40">(optional)</span></label>
+        <label className="font-sans text-xs font-medium text-foreground">Description <span className="font-normal text-foreground/40">(optional)</span></label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}

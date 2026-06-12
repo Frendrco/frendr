@@ -24,7 +24,7 @@ export default async function AdminThumbnailsPage() {
 
   return (
     <div>
-      <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Broken Thumbnails</h1>
+      <h1 className="font-sans font-bold text-2xl text-foreground mb-1">Broken Thumbnails</h1>
       <p className="font-sans text-sm text-foreground/40 mb-8">
         {videos.length} video{videos.length !== 1 ? "s" : ""} with missing or legacy thumbnails
       </p>

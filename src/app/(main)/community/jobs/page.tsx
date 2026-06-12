@@ -67,7 +67,7 @@ export default async function JobsPage({ searchParams }: Props) {
 
       {jobs.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-24 text-center">
-          <p className="font-sans font-medium text-sm text-core-black">No jobs posted yet</p>
+          <p className="font-sans font-medium text-sm text-foreground">No jobs posted yet</p>
           <p className="font-sans text-sm text-foreground/40">Check back soon, or post a role for the community.</p>
         </div>
       ) : (
@@ -78,7 +78,7 @@ export default async function JobsPage({ searchParams }: Props) {
               <div key={job.id} className="rounded-2xl border border-border p-5 transition-colors hover:border-foreground/20">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-sans font-semibold text-sm text-core-black">{job.title}</p>
+                    <p className="font-sans font-semibold text-sm text-foreground">{job.title}</p>
                     <p className="mt-0.5 font-sans text-sm text-foreground/60">{job.company}</p>
 
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">

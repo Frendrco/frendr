@@ -50,7 +50,7 @@ function Avatar({ user, size }: { user: CommentUser; size: number }) {
       {user.avatarUrl ? (
         <Image src={user.avatarUrl} alt={user.displayName} width={size} height={size} className="h-full w-full object-cover" />
       ) : (
-        <span className="font-sans font-bold text-core-black" style={{ fontSize: size * 0.4 }}>
+        <span className="font-sans font-bold text-foreground" style={{ fontSize: size * 0.4 }}>
           {user.displayName.charAt(0).toUpperCase()}
         </span>
       )}
@@ -93,7 +93,7 @@ function CommentForm({ threadId, parentCommentId, onSubmit, onCancel }: {
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
       <textarea
         rows={3}
-        className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+        className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
         placeholder="Write a reply…"
         value={body}
         onChange={e => setBody(e.target.value)}
@@ -135,7 +135,7 @@ function InlineEditForm({ initialBody, onSave, onCancel }: {
       <textarea
         rows={3}
         autoFocus
-        className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+        className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
         value={body}
         onChange={e => setBody(e.target.value)}
       />
@@ -207,7 +207,7 @@ export function CommentSection({ threadId, initialComments, currentUserId }: Pro
 
   return (
     <div className="flex flex-col gap-8">
-      <h2 className="font-sans font-semibold text-sm text-core-black">
+      <h2 className="font-sans font-semibold text-sm text-foreground">
         {comments.length} {comments.length === 1 ? "comment" : "comments"}
       </h2>
 
@@ -226,7 +226,7 @@ export function CommentSection({ threadId, initialComments, currentUserId }: Pro
               <Avatar user={comment.user} size={28} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <Link href={`/${comment.user.username}`} className="font-sans font-semibold text-xs text-core-black hover:underline">
+                  <Link href={`/${comment.user.username}`} className="font-sans font-semibold text-xs text-foreground hover:underline">
                     {comment.user.displayName}
                   </Link>
                   <span className="font-sans text-xs text-foreground/30">{timeAgo(comment.createdAt)}</span>
@@ -255,7 +255,7 @@ export function CommentSection({ threadId, initialComments, currentUserId }: Pro
                       onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
                       className={cn(
                         "font-sans text-xs transition-colors",
-                        replyingTo === comment.id ? "text-core-black" : "text-foreground/40 hover:text-foreground"
+                        replyingTo === comment.id ? "text-foreground" : "text-foreground/40 hover:text-foreground"
                       )}
                     >
                       Reply
@@ -297,7 +297,7 @@ export function CommentSection({ threadId, initialComments, currentUserId }: Pro
                         <Avatar user={reply.user} size={22} />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <Link href={`/${reply.user.username}`} className="font-sans font-semibold text-xs text-core-black hover:underline">
+                            <Link href={`/${reply.user.username}`} className="font-sans font-semibold text-xs text-foreground hover:underline">
                               {reply.user.displayName}
                             </Link>
                             <span className="font-sans text-xs text-foreground/30">{timeAgo(reply.createdAt)}</span>

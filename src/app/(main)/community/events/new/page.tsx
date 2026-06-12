@@ -18,7 +18,7 @@ export default async function NewEventPage() {
       </Link>
 
       <div className="mb-8">
-        <h2 className="font-sans font-bold text-xl text-core-black">Create an Event</h2>
+        <h2 className="font-sans font-bold text-xl text-foreground">Create an Event</h2>
         <p className="mt-1 font-sans text-sm text-foreground/50">Invite the Frendr community to something great.</p>
       </div>
 

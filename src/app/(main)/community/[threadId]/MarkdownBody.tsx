@@ -24,7 +24,7 @@ function parseLine(line: string): React.ReactNode[] {
 
   return parts.map((part, i) => {
     const bold = part.match(/^\*\*([^*]+)\*\*$/)
-    if (bold) return <strong key={i} className="font-semibold text-core-black">{bold[1]}</strong>
+    if (bold) return <strong key={i} className="font-semibold text-foreground">{bold[1]}</strong>
 
     const italic = part.match(/^\*([^*]+)\*$/)
     if (italic) return <em key={i}>{italic[1]}</em>

@@ -108,7 +108,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="text-center sm:text-left">
             <div className="flex items-center justify-center gap-2.5 mb-1 sm:justify-start">
-              <h1 className="font-sans font-bold text-2xl text-core-black">{channel.name}</h1>
+              <h1 className="font-sans font-bold text-2xl text-foreground">{channel.name}</h1>
               {channel.type === "admin" && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-spring-green px-2.5 py-0.5">
                   <Sparkles size={10} className="text-core-black" />
@@ -164,7 +164,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
         {/* Videos */}
         {videos.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-24 text-center">
-            <p className="font-sans font-semibold text-base text-core-black">No videos yet</p>
+            <p className="font-sans font-semibold text-base text-foreground">No videos yet</p>
             <p className="font-sans text-sm text-foreground/40">
               {canManage ? "Use the 'Add Video' button to curate videos into this channel." : "Check back soon."}
             </p>

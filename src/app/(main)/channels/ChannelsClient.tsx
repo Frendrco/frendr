@@ -74,7 +74,7 @@ export function ChannelsClient({ adminChannels: initialAdminChannels, userChanne
         {/* Header */}
         <div className="mb-8 flex flex-col items-center gap-4 md:flex-row md:items-end md:justify-between">
           <div className="text-center md:text-left">
-            <h1 className="display-sm text-core-black">Channels</h1>
+            <h1 className="display-sm text-foreground">Channels</h1>
             <p className="mt-2 font-sans text-sm text-foreground/50">
               Curated collections of the best work on Frendr
             </p>
@@ -247,7 +247,7 @@ function ChannelCard({
       </div>
 
       <div>
-        <p className="font-sans font-semibold text-sm text-core-black leading-snug line-clamp-1">
+        <p className="font-sans font-semibold text-sm text-foreground leading-snug line-clamp-1">
           {channel.name}
         </p>
         {channel.description && (
@@ -299,7 +299,7 @@ function CreatorEmptyState({
       {/* Overlay CTA */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center">
         <div>
-          <p className="font-sans font-semibold text-base text-core-black">No creator channels yet</p>
+          <p className="font-sans font-semibold text-base text-foreground">No creator channels yet</p>
           <p className="mt-1 font-sans text-sm text-foreground/50 max-w-xs">
             Be the first to curate a channel and share your taste with the community.
           </p>
@@ -328,7 +328,7 @@ function CreatorEmptyState({
 function EmptyState({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="flex flex-col items-center gap-3 py-32 text-center">
-      <p className="font-sans font-semibold text-base text-core-black">{title}</p>
+      <p className="font-sans font-semibold text-base text-foreground">{title}</p>
       <p className="font-sans text-sm text-foreground/40 max-w-sm">{subtitle}</p>
     </div>
   )

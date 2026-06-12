@@ -85,13 +85,13 @@ export function ShareRiveButton() {
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="max-w-md">
-          <DialogTitle className="font-sans font-bold text-lg text-core-black">
+          <DialogTitle className="font-sans font-bold text-lg text-foreground">
             Share your Rive
           </DialogTitle>
 
           <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -101,12 +101,12 @@ export function ShareRiveButton() {
                 placeholder="Give your Rive a name"
                 maxLength={100}
                 required
-                className="h-11 rounded-xl border border-border bg-white px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+                className="h-11 rounded-xl border border-border bg-background px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Rive embed URL <span className="text-red-500">*</span>
               </label>
               <input
@@ -115,7 +115,7 @@ export function ShareRiveButton() {
                 onChange={(e) => setRiveUrl(e.target.value)}
                 placeholder="https://rive.app/s/…/embed"
                 required
-                className="h-11 rounded-xl border border-border bg-white px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+                className="h-11 rounded-xl border border-border bg-background px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
               <p className="font-sans text-[11px] text-foreground/40">
                 Paste the embed URL from rive.app — e.g. https://rive.app/s/YOUR_ID/embed
@@ -123,7 +123,7 @@ export function ShareRiveButton() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Description <span className="font-normal text-foreground/40">(optional)</span>
               </label>
               <textarea
@@ -131,7 +131,7 @@ export function ShareRiveButton() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Tell the community about this piece…"
                 rows={3}
-                className="resize-none rounded-xl border border-border bg-white px-3 py-2.5 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+                className="resize-none rounded-xl border border-border bg-background px-3 py-2.5 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
             </div>
 

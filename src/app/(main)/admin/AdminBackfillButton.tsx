@@ -31,7 +31,7 @@ export function AdminBackfillButton() {
       <button
         onClick={run}
         disabled={loading}
-        className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border px-4 font-sans font-medium text-sm text-foreground/70 hover:border-foreground/30 hover:text-core-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border px-4 font-sans font-medium text-sm text-foreground/70 hover:border-foreground/30 hover:text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {loading ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
         Backfill missing metadata

@@ -45,7 +45,7 @@ export function ShopForm({ initial }: { initial?: InitialValues }) {
     router.push("/community/marketplace")
   }
 
-  const field = "w-full h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+  const field = "w-full h-11 rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -85,7 +85,7 @@ export function ShopForm({ initial }: { initial?: InitialValues }) {
         <label className="font-sans text-xs font-medium text-foreground/50">Description <span className="text-foreground/30">(optional)</span></label>
         <textarea
           rows={4}
-          className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+          className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
           placeholder="What do you sell? Presets, templates, prints…"
           value={description}
           onChange={e => setDescription(e.target.value)}

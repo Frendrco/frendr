@@ -27,14 +27,14 @@ export default async function RiveWorldPage() {
   ])
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
 
       {/* Header */}
       <div className="bg-bloom-lavender">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-14 flex flex-col gap-4 items-center md:flex-row md:items-end md:justify-between">
           <div className="text-center md:text-left">
-            <h1 className="display-sm text-core-black">Rive World</h1>
-            <p className="mt-2 font-sans text-sm text-core-black/60">
+            <h1 className="display-sm text-foreground">Rive World</h1>
+            <p className="mt-2 font-sans text-sm text-foreground/60">
               Interactive work from the community. Click to play.
             </p>
           </div>

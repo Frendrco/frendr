@@ -68,7 +68,7 @@ export function VoteButtons({ threadId, commentId, initialCount, initialVote }: 
       </button>
       <span className={cn(
         "w-6 text-center font-sans text-xs font-medium tabular-nums",
-        vote !== 0 ? "text-core-black" : "text-foreground/40"
+        vote !== 0 ? "text-foreground" : "text-foreground/40"
       )}>
         {count}
       </span>

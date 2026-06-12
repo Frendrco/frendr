@@ -31,7 +31,7 @@ export default async function EditJobPage({ params }: Props) {
         <ArrowLeft size={13} /> Back to Jobs
       </Link>
 
-      <h1 className="mb-6 font-sans font-bold text-xl text-core-black">Edit Job</h1>
+      <h1 className="mb-6 font-sans font-bold text-xl text-foreground">Edit Job</h1>
 
       <EditJobForm
         jobId={job.id}

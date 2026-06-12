@@ -121,12 +121,12 @@ export function RecessGrid({ videos, followedUserIds, isAuthenticated }: Props) 
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 top-full mt-1.5 z-20 min-w-[120px] overflow-hidden rounded-xl border border-border bg-white shadow-lg">
+            <div className="absolute right-0 top-full mt-1.5 z-20 min-w-[120px] overflow-hidden rounded-xl border border-border bg-background shadow-lg dark:shadow-black/30">
               {(["newest", "trending"] as Sort[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => handleSortSelect(key)}
-                  className={`flex w-full items-center px-4 py-2.5 font-sans text-xs font-medium transition-colors hover:bg-mist-grey ${sort === key ? "text-core-black" : "text-foreground/50"}`}
+                  className={`flex w-full items-center px-4 py-2.5 font-sans text-xs font-medium transition-colors hover:bg-muted ${sort === key ? "text-foreground" : "text-foreground/50"}`}
                 >
                   {SORT_LABELS[key]}
                 </button>
@@ -134,14 +134,14 @@ export function RecessGrid({ videos, followedUserIds, isAuthenticated }: Props) 
               {isAuthenticated ? (
                 <button
                   onClick={() => handleSortSelect("following")}
-                  className={`flex w-full items-center px-4 py-2.5 font-sans text-xs font-medium transition-colors hover:bg-mist-grey ${sort === "following" ? "text-core-black" : "text-foreground/50"}`}
+                  className={`flex w-full items-center px-4 py-2.5 font-sans text-xs font-medium transition-colors hover:bg-muted ${sort === "following" ? "text-foreground" : "text-foreground/50"}`}
                 >
                   Following
                 </button>
               ) : (
                 <Link
                   href="/sign-in"
-                  className="flex w-full items-center px-4 py-2.5 font-sans text-xs font-medium text-foreground/30 hover:bg-mist-grey transition-colors"
+                  className="flex w-full items-center px-4 py-2.5 font-sans text-xs font-medium text-foreground/30 hover:bg-muted transition-colors"
                   onClick={() => setDropdownOpen(false)}
                 >
                   Following
@@ -155,7 +155,7 @@ export function RecessGrid({ videos, followedUserIds, isAuthenticated }: Props) 
       {/* Empty state for following with no follows */}
       {sort === "following" && isAuthenticated && followedUserIds.length === 0 && (
         <div className="flex flex-col items-center gap-3 py-24 text-center">
-          <p className="font-sans font-semibold text-sm text-core-black">No one to follow yet</p>
+          <p className="font-sans font-semibold text-sm text-foreground">No one to follow yet</p>
           <p className="font-sans text-sm text-foreground/40">Follow some creators to see their Recess posts here.</p>
         </div>
       )}
@@ -163,7 +163,7 @@ export function RecessGrid({ videos, followedUserIds, isAuthenticated }: Props) 
       {/* Empty state for following + tool filter combo */}
       {sort === "following" && isAuthenticated && followedUserIds.length > 0 && processedVideos.length === 0 && (
         <div className="flex flex-col items-center gap-3 py-24 text-center">
-          <p className="font-sans font-semibold text-sm text-core-black">Nothing here yet</p>
+          <p className="font-sans font-semibold text-sm text-foreground">Nothing here yet</p>
           <p className="font-sans text-sm text-foreground/40">The creators you follow haven&rsquo;t posted any Recess videos{activeTool ? ` made with ${activeTool}` : ""} yet.</p>
         </div>
       )}
@@ -173,7 +173,7 @@ export function RecessGrid({ videos, followedUserIds, isAuthenticated }: Props) 
         <>
           {processedVideos.length === 0 && activeTool ? (
             <div className="flex flex-col items-center gap-3 py-24 text-center">
-              <p className="font-sans font-semibold text-sm text-core-black">No {activeTool} posts yet</p>
+              <p className="font-sans font-semibold text-sm text-foreground">No {activeTool} posts yet</p>
               <p className="font-sans text-sm text-foreground/40">Be the first to drop something made with {activeTool}.</p>
             </div>
           ) : (
@@ -188,7 +188,7 @@ export function RecessGrid({ videos, followedUserIds, isAuthenticated }: Props) 
             <div className="mt-10 flex justify-center">
               <button
                 onClick={() => setShown((n) => n + PAGE_SIZE)}
-                className="inline-flex h-10 items-center rounded-full border border-border px-8 font-sans font-medium text-sm text-core-black transition-colors hover:border-core-black"
+                className="inline-flex h-10 items-center rounded-full border border-border px-8 font-sans font-medium text-sm text-foreground transition-colors hover:border-foreground"
               >
                 Show more
               </button>

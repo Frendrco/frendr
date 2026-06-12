@@ -61,7 +61,7 @@ export default async function CommunityPage({ searchParams }: Props) {
 
       {threads.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-24 text-center">
-          <p className="font-sans font-medium text-sm text-core-black">No threads yet</p>
+          <p className="font-sans font-medium text-sm text-foreground">No threads yet</p>
           <p className="font-sans text-sm text-foreground/40">Be the first to start a discussion.</p>
         </div>
       ) : (
@@ -80,7 +80,7 @@ export default async function CommunityPage({ searchParams }: Props) {
               {/* Content */}
               <div className="min-w-0 flex-1">
                 <Link href={`/community/${thread.id}`} className="group">
-                  <p className="font-sans font-semibold text-base text-core-black group-hover:underline leading-snug">
+                  <p className="font-sans font-semibold text-base text-foreground group-hover:underline leading-snug">
                     {thread.title}
                   </p>
                 </Link>
@@ -92,7 +92,7 @@ export default async function CommunityPage({ searchParams }: Props) {
                       {thread.user.avatarUrl ? (
                         <Image src={thread.user.avatarUrl} alt={thread.user.displayName} width={20} height={20} sizes="20px" priority={i === 0} className="h-full w-full object-cover" />
                       ) : (
-                        <span className="font-sans font-bold text-[8px] text-core-black">
+                        <span className="font-sans font-bold text-[8px] text-foreground">
                           {thread.user.displayName.charAt(0).toUpperCase()}
                         </span>
                       )}

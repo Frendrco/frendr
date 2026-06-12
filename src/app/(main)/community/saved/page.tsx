@@ -72,7 +72,7 @@ export default async function SavedPage() {
 
       {/* Saved Discussions */}
       <section>
-        <h2 className="font-sans font-semibold text-sm text-core-black mb-5">
+        <h2 className="font-sans font-semibold text-sm text-foreground mb-5">
           Saved Discussions
           {savedThreads.length > 0 && (
             <span className="ml-2 font-normal text-foreground/40">{savedThreads.length}</span>
@@ -89,7 +89,7 @@ export default async function SavedPage() {
               <div key={thread.id} className="flex items-start gap-4 py-6">
                 <div className="min-w-0 flex-1">
                   <Link href={`/community/${thread.id}`} className="group">
-                    <p className="font-sans font-semibold text-base text-core-black group-hover:underline leading-snug">
+                    <p className="font-sans font-semibold text-base text-foreground group-hover:underline leading-snug">
                       {thread.title}
                     </p>
                   </Link>
@@ -100,7 +100,7 @@ export default async function SavedPage() {
                         {thread.user.avatarUrl ? (
                           <Image src={thread.user.avatarUrl} alt={thread.user.displayName} width={20} height={20} className="h-full w-full object-cover" />
                         ) : (
-                          <span className="font-sans font-bold text-[8px] text-core-black">
+                          <span className="font-sans font-bold text-[8px] text-foreground">
                             {thread.user.displayName.charAt(0).toUpperCase()}
                           </span>
                         )}
@@ -126,7 +126,7 @@ export default async function SavedPage() {
 
       {/* Saved Jobs */}
       <section>
-        <h2 className="font-sans font-semibold text-sm text-core-black mb-5">
+        <h2 className="font-sans font-semibold text-sm text-foreground mb-5">
           Saved Jobs
           {savedJobs.length > 0 && (
             <span className="ml-2 font-normal text-foreground/40">{savedJobs.length}</span>
@@ -143,7 +143,7 @@ export default async function SavedPage() {
               <div key={job.id} className="rounded-2xl border border-border p-5 transition-colors hover:border-foreground/20">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-sans font-semibold text-sm text-core-black">{job.title}</p>
+                    <p className="font-sans font-semibold text-sm text-foreground">{job.title}</p>
                     <p className="mt-0.5 font-sans text-sm text-foreground/60">{job.company}</p>
 
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -183,7 +183,7 @@ export default async function SavedPage() {
 
       {/* Saved Events */}
       <section>
-        <h2 className="font-sans font-semibold text-sm text-core-black mb-5">
+        <h2 className="font-sans font-semibold text-sm text-foreground mb-5">
           Saved Events
           {savedEvents.length > 0 && (
             <span className="ml-2 font-normal text-foreground/40">{savedEvents.length}</span>
@@ -200,7 +200,7 @@ export default async function SavedPage() {
               <div key={event.id} className="rounded-2xl border border-border p-5 transition-colors hover:border-foreground/20">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-sans font-semibold text-sm text-core-black">{event.title}</p>
+                    <p className="font-sans font-semibold text-sm text-foreground">{event.title}</p>
                     <p className="mt-0.5 font-sans text-xs text-foreground/40">by {event.user.displayName}</p>
                     <p className="mt-2 font-sans text-xs text-foreground/50">
                       {event.date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
@@ -217,7 +217,7 @@ export default async function SavedPage() {
 
       {/* Saved Shops */}
       <section>
-        <h2 className="font-sans font-semibold text-sm text-core-black mb-5">
+        <h2 className="font-sans font-semibold text-sm text-foreground mb-5">
           Saved Shops
           {savedShops.length > 0 && (
             <span className="ml-2 font-normal text-foreground/40">{savedShops.length}</span>
@@ -234,7 +234,7 @@ export default async function SavedPage() {
               <div key={shop.id} className="rounded-2xl border border-border p-5 transition-colors hover:border-foreground/20">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-sans font-semibold text-sm text-core-black">{shop.name}</p>
+                    <p className="font-sans font-semibold text-sm text-foreground">{shop.name}</p>
                     <p className="mt-0.5 font-sans text-xs text-foreground/40">by {shop.user.displayName}</p>
                     {shop.category && (
                       <span className="mt-2 inline-flex h-5 items-center rounded-full bg-foreground/[0.06] px-2 font-sans text-[10px] font-medium text-foreground/60">

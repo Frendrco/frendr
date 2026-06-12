@@ -73,9 +73,9 @@ export function ThumbnailRow({ video }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-border bg-white p-4">
+    <div className="flex items-center gap-4 rounded-xl border border-border bg-background p-4">
       {/* Thumbnail preview */}
-      <div className="relative h-16 w-28 shrink-0 overflow-hidden rounded-lg bg-mist-grey">
+      <div className="relative h-16 w-28 shrink-0 overflow-hidden rounded-lg bg-muted">
         {url && (
           <Image src={url} alt={video.title} fill className="object-cover" unoptimized />
         )}
@@ -83,7 +83,7 @@ export function ThumbnailRow({ video }: Props) {
 
       {/* Info */}
       <div className="min-w-0 flex-1">
-        <p className="truncate font-sans font-medium text-sm text-core-black">{video.title}</p>
+        <p className="truncate font-sans font-medium text-sm text-foreground">{video.title}</p>
         <p className="font-sans text-xs text-foreground/50">@{video.user.username}</p>
         <p className="mt-0.5 font-mono text-[10px] text-foreground/30">{video.id}</p>
       </div>
@@ -95,7 +95,7 @@ export function ThumbnailRow({ video }: Props) {
           value={url}
           onChange={e => { setUrl(e.target.value); setSaved(false) }}
           placeholder="Paste thumbnail URL…"
-          className="h-9 w-full rounded-lg border border-border bg-white px-3 font-sans text-xs text-core-black placeholder:text-foreground/30 focus:outline-none focus:border-foreground/40"
+          className="h-9 w-full rounded-lg border border-border bg-background px-3 font-sans text-xs text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-foreground/40"
         />
         <button
           onClick={save}

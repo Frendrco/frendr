@@ -18,7 +18,7 @@ export default async function AdminCommentsPage() {
 
   return (
     <div>
-      <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Comments</h1>
+      <h1 className="font-sans font-bold text-2xl text-foreground mb-1">Comments</h1>
       <p className="font-sans text-sm text-foreground/40 mb-8">{comments.length} most recent</p>
 
       <div className="rounded-2xl border border-border overflow-hidden">
@@ -35,12 +35,12 @@ export default async function AdminCommentsPage() {
             {comments.map((c) => (
               <tr key={c.id} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
                 <td className="px-4 py-3 max-w-xs">
-                  <p className="font-sans text-sm text-core-black line-clamp-2">{c.body}</p>
+                  <p className="font-sans text-sm text-foreground line-clamp-2">{c.body}</p>
                 </td>
                 <td className="px-4 py-3">
                   <Link
                     href={`/${c.user.username}`}
-                    className="font-sans text-sm text-foreground/70 hover:text-core-black transition-colors whitespace-nowrap"
+                    className="font-sans text-sm text-foreground/70 hover:text-foreground transition-colors whitespace-nowrap"
                   >
                     @{c.user.username}
                   </Link>
@@ -49,7 +49,7 @@ export default async function AdminCommentsPage() {
                   {c.video ? (
                     <Link
                       href={`/v/${c.video.id}`}
-                      className="font-sans text-xs text-foreground/50 hover:text-core-black transition-colors line-clamp-1 max-w-[160px] block"
+                      className="font-sans text-xs text-foreground/50 hover:text-foreground transition-colors line-clamp-1 max-w-[160px] block"
                     >
                       Video: {c.video.title}
                     </Link>

@@ -68,15 +68,15 @@ export function ActiveConversation({ conversationId, initialMessages, currentUse
         </Link>
         {other && (
           <Link href={`/${other.username}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <div className={`h-7 w-7 shrink-0 rounded-full overflow-hidden flex items-center justify-center ${other.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
+            <div className={`h-7 w-7 shrink-0 rounded-full overflow-hidden flex items-center justify-center ${other.avatarUrl ? 'bg-muted' : 'bg-spring-green'}`}>
               {other.avatarUrl ? (
                 <Image src={other.avatarUrl} alt={other.displayName} width={28} height={28} className="h-full w-full object-cover" />
               ) : (
-                <span className="font-sans font-bold text-[10px] text-core-black">{initials}</span>
+                <span className="font-sans font-bold text-[10px] text-foreground">{initials}</span>
               )}
             </div>
             <div>
-              <p className="font-sans font-semibold text-sm text-core-black leading-tight">{other.displayName}</p>
+              <p className="font-sans font-semibold text-sm text-foreground leading-tight">{other.displayName}</p>
               <p className="font-sans text-[10px] text-foreground/40">@{other.username}</p>
             </div>
           </Link>

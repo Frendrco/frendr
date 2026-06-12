@@ -59,7 +59,7 @@ export default async function MarketplacePage() {
       {shops.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-24 text-center">
           <ShoppingBag size={32} className="text-foreground/20" />
-          <p className="font-sans font-medium text-sm text-core-black">No shops listed yet</p>
+          <p className="font-sans font-medium text-sm text-foreground">No shops listed yet</p>
           <p className="font-sans text-sm text-foreground/40">Got presets, templates, or merch? List your shop here.</p>
         </div>
       ) : (
@@ -71,13 +71,13 @@ export default async function MarketplacePage() {
                   {shop.user.avatarUrl ? (
                     <Image src={shop.user.avatarUrl} alt={shop.user.displayName} width={36} height={36} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="h-full w-full flex items-center justify-center font-sans font-bold text-xs text-core-black">
+                    <div className="h-full w-full flex items-center justify-center font-sans font-bold text-xs text-foreground">
                       {shop.user.displayName[0].toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div className="min-w-0 text-center sm:text-left">
-                  <Link href={`/${shop.user.username}`} className="font-sans font-semibold text-sm text-core-black hover:underline truncate block">
+                  <Link href={`/${shop.user.username}`} className="font-sans font-semibold text-sm text-foreground hover:underline truncate block">
                     {shop.name}
                   </Link>
                   <p className="font-sans text-xs text-foreground/40">by {shop.user.displayName}</p>

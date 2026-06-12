@@ -25,7 +25,7 @@ export default async function EditShopPage() {
       </Link>
 
       <div className="mb-8">
-        <h2 className="font-sans font-bold text-xl text-core-black">Edit Your Shop</h2>
+        <h2 className="font-sans font-bold text-xl text-foreground">Edit Your Shop</h2>
         <p className="mt-1 font-sans text-sm text-foreground/50">Update your shop details.</p>
       </div>
 

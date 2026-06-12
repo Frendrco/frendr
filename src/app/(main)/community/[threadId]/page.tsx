@@ -80,7 +80,7 @@ export default async function ThreadPage({ params }: Props) {
 
       {/* Thread */}
       <div className="mb-10">
-        <h2 className="font-sans font-bold text-xl text-core-black leading-snug">{thread.title}</h2>
+        <h2 className="font-sans font-bold text-xl text-foreground leading-snug">{thread.title}</h2>
 
         <div className="mt-3 flex items-center gap-3">
           <Link href={`/${thread.user.username}`} className="flex items-center gap-2 hover:opacity-70 transition-opacity">
@@ -88,7 +88,7 @@ export default async function ThreadPage({ params }: Props) {
               {thread.user.avatarUrl ? (
                 <Image src={thread.user.avatarUrl} alt={thread.user.displayName} width={24} height={24} className="h-full w-full object-cover" />
               ) : (
-                <span className="font-sans font-bold text-[9px] text-core-black">
+                <span className="font-sans font-bold text-[9px] text-foreground">
                   {thread.user.displayName.charAt(0).toUpperCase()}
                 </span>
               )}

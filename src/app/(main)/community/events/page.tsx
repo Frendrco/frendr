@@ -62,7 +62,7 @@ export default async function EventsPage() {
       {events.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-24 text-center">
           <CalendarDays size={32} className="text-foreground/20" />
-          <p className="font-sans font-medium text-sm text-core-black">No events yet</p>
+          <p className="font-sans font-medium text-sm text-foreground">No events yet</p>
           <p className="font-sans text-sm text-foreground/40">Be the first to create one for the community.</p>
         </div>
       ) : (
@@ -76,7 +76,7 @@ export default async function EventsPage() {
                   <div key={event.id} className={cn("rounded-2xl border p-5 transition-colors", isPast ? "border-border opacity-60" : "border-border hover:border-foreground/20")}>
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="font-sans font-semibold text-sm text-core-black">{event.title}</p>
+                        <p className="font-sans font-semibold text-sm text-foreground">{event.title}</p>
                         <p className="mt-0.5 font-sans text-xs text-foreground/40">by {event.user.displayName}</p>
 
                         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
@@ -140,7 +140,7 @@ export default async function EventsPage() {
               <div className="flex flex-col gap-3 opacity-50">
                 {past.map(event => (
                   <div key={event.id} className="rounded-2xl border border-border p-5">
-                    <p className="font-sans font-semibold text-sm text-core-black">{event.title}</p>
+                    <p className="font-sans font-semibold text-sm text-foreground">{event.title}</p>
                     <div className="mt-1 flex items-center gap-4">
                       <span className="flex items-center gap-1.5 font-sans text-xs text-foreground/50">
                         <CalendarDays size={11} /> {formatEventDate(event.date)}

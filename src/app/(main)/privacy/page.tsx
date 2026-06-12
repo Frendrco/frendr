@@ -6,10 +6,10 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-2xl px-6 py-20">
 
-        <h1 className="display-sm text-core-black mb-2">Privacy Policy</h1>
+        <h1 className="display-sm text-foreground mb-2">Privacy Policy</h1>
         <p className="font-sans text-sm text-foreground/40 mb-12">Last updated: May 2026</p>
 
         <div className="prose-frendr">
@@ -79,7 +79,7 @@ export default function PrivacyPage() {
             </ul>
             <p className="mt-4">
               To exercise any of these rights, contact us at{" "}
-              <a href="mailto:ryan@frendr.co" className="text-core-black underline hover:text-spring-green transition-colors">
+              <a href="mailto:ryan@frendr.co" className="text-foreground underline hover:text-spring-green transition-colors">
                 ryan@frendr.co
               </a>.
             </p>
@@ -110,7 +110,7 @@ export default function PrivacyPage() {
             <h2>11. Contact</h2>
             <p>
               If you have any questions or concerns about this Privacy Policy, please reach out at{" "}
-              <a href="mailto:ryan@frendr.co" className="text-core-black underline hover:text-spring-green transition-colors">
+              <a href="mailto:ryan@frendr.co" className="text-foreground underline hover:text-spring-green transition-colors">
                 ryan@frendr.co
               </a>.
             </p>

@@ -24,7 +24,7 @@ export default async function AdminOverviewPage() {
 
   return (
     <div>
-      <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Platform Overview</h1>
+      <h1 className="font-sans font-bold text-2xl text-foreground mb-1">Platform Overview</h1>
       <p className="font-sans text-sm text-foreground/40 mb-8">Monitor and moderate all content across Frendr</p>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
@@ -32,12 +32,12 @@ export default async function AdminOverviewPage() {
           <Link
             key={href}
             href={href}
-            className="group rounded-2xl border border-border bg-white p-5 hover:border-foreground/20 transition-colors"
+            className="group rounded-2xl border border-border bg-background p-5 hover:border-foreground/20 transition-colors"
           >
             <div className={`mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl ${color}`}>
               <Icon size={16} className="text-core-black" />
             </div>
-            <p className="font-sans font-bold text-3xl text-core-black">{value.toLocaleString()}</p>
+            <p className="font-sans font-bold text-3xl text-foreground">{value.toLocaleString()}</p>
             <div className="mt-1 flex items-center gap-1">
               <p className="font-sans text-sm text-foreground/50">{label}</p>
               <ArrowRight size={12} className="text-foreground/30 group-hover:text-foreground/60 transition-colors" />

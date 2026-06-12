@@ -27,7 +27,7 @@ export default async function AdminChannelsPage() {
 
   return (
     <div>
-      <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Channels</h1>
+      <h1 className="font-sans font-bold text-2xl text-foreground mb-1">Channels</h1>
       <p className="font-sans text-sm text-foreground/40 mb-8">Manage official Frendr channels and moderate user-created channels</p>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
@@ -37,7 +37,7 @@ export default async function AdminChannelsPage() {
 
           {/* User channels moderation */}
           <section>
-            <h2 className="font-sans font-semibold text-sm text-core-black mb-3">
+            <h2 className="font-sans font-semibold text-sm text-foreground mb-3">
               User Channels <span className="font-normal text-foreground/40">({userChannels.length})</span>
             </h2>
             <div className="rounded-2xl border border-border overflow-hidden">
@@ -58,7 +58,7 @@ export default async function AdminChannelsPage() {
                           {ch.isPublic ? <Globe size={11} className="text-foreground/30 shrink-0" /> : <Lock size={11} className="text-foreground/30 shrink-0" />}
                           <Link
                             href={`/channels/${ch.slug}`}
-                            className="font-sans text-sm text-core-black hover:underline line-clamp-1"
+                            className="font-sans text-sm text-foreground hover:underline line-clamp-1"
                           >
                             {ch.name}
                           </Link>
@@ -68,7 +68,7 @@ export default async function AdminChannelsPage() {
                         {ch.user && (
                           <Link
                             href={`/${ch.user.username}`}
-                            className="font-sans text-sm text-foreground/70 hover:text-core-black transition-colors"
+                            className="font-sans text-sm text-foreground/70 hover:text-foreground transition-colors"
                           >
                             @{ch.user.username}
                           </Link>
@@ -98,23 +98,23 @@ export default async function AdminChannelsPage() {
           <section>
             <div className="mb-3 flex items-center gap-2">
               <Sparkles size={12} className="text-spring-green" />
-              <h2 className="font-sans font-semibold text-sm text-core-black">
+              <h2 className="font-sans font-semibold text-sm text-foreground">
                 Frendr Channels <span className="font-normal text-foreground/40">({adminChannels.length})</span>
               </h2>
             </div>
             <div className="flex flex-col gap-3">
               {adminChannels.length === 0 ? (
                 <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-12 text-center">
-                  <p className="font-sans font-semibold text-sm text-core-black">No admin channels yet</p>
+                  <p className="font-sans font-semibold text-sm text-foreground">No admin channels yet</p>
                   <p className="font-sans text-xs text-foreground/40">Create a Frendr Picks channel using the form</p>
                 </div>
               ) : (
                 adminChannels.map((ch) => (
-                  <div key={ch.id} className="flex items-center gap-4 rounded-xl border border-border bg-white p-4">
+                  <div key={ch.id} className="flex items-center gap-4 rounded-xl border border-border bg-background p-4">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <Sparkles size={12} className="text-spring-green" />
-                        <p className="font-sans font-semibold text-sm text-core-black">{ch.name}</p>
+                        <p className="font-sans font-semibold text-sm text-foreground">{ch.name}</p>
                         {ch.isPublic ? (
                           <Globe size={11} className="text-foreground/30" />
                         ) : (
@@ -142,10 +142,10 @@ export default async function AdminChannelsPage() {
         </div>
 
         {/* Create form */}
-        <div className="rounded-2xl border border-border bg-white p-5 h-fit">
+        <div className="rounded-2xl border border-border bg-background p-5 h-fit">
           <div className="mb-4 flex items-center gap-2">
             <Sparkles size={12} className="text-spring-green" />
-            <h2 className="font-sans font-semibold text-sm text-core-black">Create Frendr Channel</h2>
+            <h2 className="font-sans font-semibold text-sm text-foreground">Create Frendr Channel</h2>
           </div>
           <CreateAdminChannelForm />
         </div>

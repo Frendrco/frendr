@@ -17,7 +17,7 @@ export default async function AdminThreadsPage() {
 
   return (
     <div>
-      <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Threads</h1>
+      <h1 className="font-sans font-bold text-2xl text-foreground mb-1">Threads</h1>
       <p className="font-sans text-sm text-foreground/40 mb-8">{threads.length} most recent</p>
 
       <div className="rounded-2xl border border-border overflow-hidden">
@@ -34,13 +34,13 @@ export default async function AdminThreadsPage() {
             {threads.map((t) => (
               <tr key={t.id} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
                 <td className="px-4 py-3 max-w-xs">
-                  <p className="font-sans text-sm font-medium text-core-black line-clamp-1">{t.title}</p>
+                  <p className="font-sans text-sm font-medium text-foreground line-clamp-1">{t.title}</p>
                   <p className="font-sans text-xs text-foreground/40 line-clamp-1 mt-0.5">{t.body}</p>
                 </td>
                 <td className="px-4 py-3">
                   <Link
                     href={`/${t.user.username}`}
-                    className="font-sans text-sm text-foreground/70 hover:text-core-black transition-colors whitespace-nowrap"
+                    className="font-sans text-sm text-foreground/70 hover:text-foreground transition-colors whitespace-nowrap"
                   >
                     @{t.user.username}
                   </Link>

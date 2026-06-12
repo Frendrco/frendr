@@ -46,7 +46,7 @@ export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; curren
 
       {sorted.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-24 text-center">
-          <p className="font-sans font-medium text-sm text-core-black">No Rive posts yet</p>
+          <p className="font-sans font-medium text-sm text-foreground">No Rive posts yet</p>
           <p className="font-sans text-sm text-foreground/40">Be the first to share interactive work.</p>
         </div>
       ) : (

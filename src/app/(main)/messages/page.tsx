@@ -46,12 +46,12 @@ export default async function MessagesPage() {
 
   return (
     <div className="mx-auto max-w-screen-lg md:px-6 md:py-8">
-      <div className="flex h-[calc(100svh-4rem)] md:h-[calc(100vh-10rem)] overflow-hidden md:rounded-2xl border border-border bg-white shadow-sm">
+      <div className="flex h-[calc(100svh-4rem)] md:h-[calc(100vh-10rem)] overflow-hidden md:rounded-2xl border border-border bg-background shadow-sm">
 
         {/* Left: conversations list */}
         <div className="flex w-full md:w-72 md:shrink-0 flex-col border-r border-border">
           <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
-            <h1 className="font-sans font-semibold text-sm text-core-black">Messages</h1>
+            <h1 className="font-sans font-semibold text-sm text-foreground">Messages</h1>
             <NewMessageButton />
           </div>
           <div className="overflow-y-auto flex-1">

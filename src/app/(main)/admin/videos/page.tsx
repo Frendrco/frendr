@@ -21,7 +21,7 @@ export default async function AdminVideosPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-sans font-bold text-2xl text-core-black mb-1">Videos</h1>
+          <h1 className="font-sans font-bold text-2xl text-foreground mb-1">Videos</h1>
           <p className="font-sans text-sm text-foreground/40">{videos.length} most recent</p>
         </div>
         <AdminBackfillButton />
@@ -50,7 +50,7 @@ export default async function AdminVideosPage() {
                     </div>
                     <Link
                       href={`/v/${v.id}`}
-                      className="font-sans text-sm text-core-black hover:underline line-clamp-1 max-w-[200px]"
+                      className="font-sans text-sm text-foreground hover:underline line-clamp-1 max-w-[200px]"
                     >
                       {v.title}
                     </Link>
@@ -59,7 +59,7 @@ export default async function AdminVideosPage() {
                 <td className="px-4 py-3">
                   <Link
                     href={`/${v.user.username}`}
-                    className="font-sans text-sm text-foreground/70 hover:text-core-black transition-colors"
+                    className="font-sans text-sm text-foreground/70 hover:text-foreground transition-colors"
                   >
                     @{v.user.username}
                   </Link>

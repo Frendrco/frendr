@@ -233,7 +233,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
         <SheetContent side="right" className="w-full sm:max-w-md flex flex-col gap-0 p-0">
 
           <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
-            <SheetTitle className="font-sans font-semibold text-base text-core-black">
+            <SheetTitle className="font-sans font-semibold text-base text-foreground">
               Edit channel
             </SheetTitle>
           </SheetHeader>
@@ -241,7 +241,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
           <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-medium text-core-black">Channel name</label>
+              <label className="font-sans text-xs font-medium text-foreground">Channel name</label>
               <input
                 autoFocus
                 value={name}
@@ -252,7 +252,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Description <span className="font-normal text-foreground/40">(optional)</span>
               </label>
               <textarea
@@ -265,7 +265,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Cover image <span className="font-normal text-foreground/40">(optional)</span>
               </label>
 
@@ -303,7 +303,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
 
             {/* Background colour */}
             <div className="flex flex-col gap-2">
-              <label className="font-sans text-xs font-medium text-core-black">
+              <label className="font-sans text-xs font-medium text-foreground">
                 Background colour
                 <span className="ml-1 font-normal text-foreground/40">— used when no cover image is set</span>
               </label>
@@ -328,7 +328,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
             {isOwner && (
               <div className="flex flex-col gap-3">
                 <div>
-                  <p className="font-sans font-medium text-sm text-core-black">Administrators</p>
+                  <p className="font-sans font-medium text-sm text-foreground">Administrators</p>
                   <p className="font-sans text-xs text-foreground/40 mt-0.5">
                     Admins can add and remove videos from this channel.
                   </p>
@@ -346,7 +346,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
                           }
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-sans text-sm text-core-black truncate">{admin.displayName ?? admin.username}</p>
+                          <p className="font-sans text-sm text-foreground truncate">{admin.displayName ?? admin.username}</p>
                           <p className="font-sans text-[11px] text-foreground/40 truncate">@{admin.username}</p>
                         </div>
                         <button
@@ -390,7 +390,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
                           }
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-sans text-sm text-core-black truncate">{user.displayName ?? user.username}</p>
+                          <p className="font-sans text-sm text-foreground truncate">{user.displayName ?? user.username}</p>
                           <p className="font-sans text-[11px] text-foreground/40 truncate">@{user.username}</p>
                         </div>
                         <button
@@ -416,7 +416,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
             {!channel.isPublic && isOwner && (
               <div className="rounded-xl border border-border p-4 flex flex-col gap-3">
                 <div>
-                  <p className="font-sans font-medium text-sm text-core-black flex items-center gap-1.5">
+                  <p className="font-sans font-medium text-sm text-foreground flex items-center gap-1.5">
                     <Link2 size={13} className="text-foreground/40" />
                     Private link
                   </p>
@@ -492,7 +492,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
             {canDelete && (
               <div className="mt-4 rounded-xl border border-red-200 p-4 flex flex-col gap-3">
                 <div>
-                  <p className="font-sans font-medium text-sm text-core-black">Delete channel</p>
+                  <p className="font-sans font-medium text-sm text-foreground">Delete channel</p>
                   <p className="font-sans text-xs text-foreground/50 mt-0.5">
                     Permanently removes the channel and all its video associations. Videos themselves are not deleted.
                   </p>

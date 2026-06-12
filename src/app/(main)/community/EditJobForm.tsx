@@ -53,7 +53,7 @@ export function EditJobForm({ jobId, initial }: Props) {
     router.refresh()
   }
 
-  const field = "w-full h-11 rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+  const field = "w-full h-11 rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -90,7 +90,7 @@ export function EditJobForm({ jobId, initial }: Props) {
         <label className="font-sans text-xs font-medium text-foreground/50">Description</label>
         <textarea
           rows={8}
-          className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+          className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
           placeholder="Describe the role, responsibilities, and requirements…"
           value={description}
           onChange={e => setDescription(e.target.value)}

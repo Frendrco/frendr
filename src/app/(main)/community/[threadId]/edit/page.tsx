@@ -31,7 +31,7 @@ export default async function EditThreadPage({ params }: Props) {
         <ArrowLeft size={13} /> Back to Thread
       </Link>
 
-      <h1 className="mb-6 font-sans font-bold text-xl text-core-black">Edit Thread</h1>
+      <h1 className="mb-6 font-sans font-bold text-xl text-foreground">Edit Thread</h1>
 
       <EditThreadForm
         threadId={thread.id}

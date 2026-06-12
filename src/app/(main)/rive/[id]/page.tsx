@@ -73,7 +73,7 @@ export default async function RiveDetailPage({ params }: Props) {
   }))
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
 
         <Link
@@ -94,7 +94,7 @@ export default async function RiveDetailPage({ params }: Props) {
 
         {/* Metadata */}
         <div className="mt-6">
-          <h1 className="font-sans font-bold text-xl text-core-black leading-snug">
+          <h1 className="font-sans font-bold text-xl text-foreground leading-snug">
             {thread.title}
           </h1>
 
@@ -114,7 +114,7 @@ export default async function RiveDetailPage({ params }: Props) {
               href={`/${thread.user.username}`}
               className="flex items-center gap-2 hover:opacity-70 transition-opacity"
             >
-              <div className={`h-6 w-6 overflow-hidden rounded-full flex items-center justify-center shrink-0 ${thread.user.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
+              <div className={`h-6 w-6 overflow-hidden rounded-full flex items-center justify-center shrink-0 ${thread.user.avatarUrl ? 'bg-muted' : 'bg-spring-green'}`}>
                 {thread.user.avatarUrl ? (
                   <Image
                     src={thread.user.avatarUrl}
@@ -124,7 +124,7 @@ export default async function RiveDetailPage({ params }: Props) {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <span className="font-sans font-bold text-[9px] text-core-black">
+                  <span className="font-sans font-bold text-[9px] text-foreground">
                     {thread.user.displayName.charAt(0).toUpperCase()}
                   </span>
                 )}

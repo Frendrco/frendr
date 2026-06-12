@@ -18,7 +18,7 @@ export default async function NewJobPage() {
       </Link>
 
       <div className="mb-8">
-        <h2 className="font-sans font-bold text-xl text-core-black">Post a Job</h2>
+        <h2 className="font-sans font-bold text-xl text-foreground">Post a Job</h2>
         <p className="mt-1 font-sans text-sm text-foreground/50">Share a role with the animation community.</p>
       </div>
 

@@ -7,7 +7,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
   const { userId } = await auth()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
 
       {/* Hero banner */}
       <div className="relative w-full h-52 md:h-72 overflow-hidden">
@@ -24,7 +24,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
 
         <div className="flex flex-col items-center gap-4 py-10 md:flex-row md:items-end md:justify-between">
           <div className="text-center md:text-left">
-            <h1 className="display-sm text-core-black">Frend Zone</h1>
+            <h1 className="display-sm text-foreground">Frend Zone</h1>
             <p className="mt-1 font-sans text-sm text-foreground/40">
               All the good stuff, none of the LinkedIn energy. Leave your ego at the door.
             </p>

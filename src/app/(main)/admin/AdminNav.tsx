@@ -29,7 +29,7 @@ export function AdminNav() {
             className={`flex items-center gap-2.5 rounded-lg px-3 py-2 font-sans text-sm transition-colors ${
               active
                 ? "bg-core-black text-white"
-                : "text-foreground/60 hover:text-core-black hover:bg-foreground/5"
+                : "text-foreground/60 hover:text-foreground hover:bg-foreground/5"
             }`}
           >
             <Icon size={14} />

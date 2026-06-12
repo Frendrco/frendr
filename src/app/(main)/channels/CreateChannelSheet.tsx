@@ -178,7 +178,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
         {/* Header */}
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
           <div className="flex items-center justify-between">
-            <SheetTitle className="font-sans font-semibold text-base text-core-black">
+            <SheetTitle className="font-sans font-semibold text-base text-foreground">
               {step === 1 && "Name your channel"}
               {step === 2 && "Who can see it?"}
               {step === 3 && "Add administrators"}
@@ -209,9 +209,9 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
                     isFrendrPick ? "border-spring-green bg-spring-green/10" : "border-border hover:border-foreground/30"
                   }`}
                 >
-                  <Sparkles size={16} className={`mt-0.5 shrink-0 ${isFrendrPick ? "text-core-black" : "text-foreground/40"}`} />
+                  <Sparkles size={16} className={`mt-0.5 shrink-0 ${isFrendrPick ? "text-foreground" : "text-foreground/40"}`} />
                   <div>
-                    <p className="font-sans font-medium text-sm text-core-black">Mark as Frendr Pick</p>
+                    <p className="font-sans font-medium text-sm text-foreground">Mark as Frendr Pick</p>
                     <p className="font-sans text-xs text-foreground/50 mt-0.5">
                       Appears in the editorial Frendr Picks tab
                     </p>
@@ -223,7 +223,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
               )}
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-sans text-xs font-medium text-core-black">Channel name</label>
+                <label className="font-sans text-xs font-medium text-foreground">Channel name</label>
                 <input
                   autoFocus
                   value={name}
@@ -235,7 +235,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="font-sans text-xs font-medium text-core-black">
+                <label className="font-sans text-xs font-medium text-foreground">
                   Description <span className="font-normal text-foreground/40">(optional)</span>
                 </label>
                 <textarea
@@ -250,7 +250,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
 
               {/* Cover image upload */}
               <div className="flex flex-col gap-2">
-                <label className="font-sans text-xs font-medium text-core-black">
+                <label className="font-sans text-xs font-medium text-foreground">
                   Cover image <span className="font-normal text-foreground/40">(optional)</span>
                 </label>
 
@@ -295,7 +295,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
 
               {/* Background colour */}
               <div className="flex flex-col gap-2">
-                <label className="font-sans text-xs font-medium text-core-black">
+                <label className="font-sans text-xs font-medium text-foreground">
                   Background colour
                   <span className="ml-1 font-normal text-foreground/40">— used when no cover image is set</span>
                 </label>
@@ -322,7 +322,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
           {step === 2 && (
             <div className="flex flex-col gap-3">
               <p className="font-sans text-sm text-foreground/60 mb-2">
-                Choose who can find and follow <span className="font-medium text-core-black">{name}</span>.
+                Choose who can find and follow <span className="font-medium text-foreground">{name}</span>.
               </p>
               <button
                 type="button"
@@ -333,7 +333,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
               >
                 <Globe size={18} className="mt-0.5 shrink-0 text-foreground/60" />
                 <div>
-                  <p className="font-sans font-medium text-sm text-core-black">Public</p>
+                  <p className="font-sans font-medium text-sm text-foreground">Public</p>
                   <p className="font-sans text-xs text-foreground/50 mt-0.5">
                     Anyone can find and follow this channel
                   </p>
@@ -348,7 +348,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
               >
                 <Lock size={18} className="mt-0.5 shrink-0 text-foreground/60" />
                 <div>
-                  <p className="font-sans font-medium text-sm text-core-black">Private</p>
+                  <p className="font-sans font-medium text-sm text-foreground">Private</p>
                   <p className="font-sans text-xs text-foreground/50 mt-0.5">
                     Only you and administrators can see this channel
                   </p>
@@ -362,7 +362,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
             <div className="flex flex-col gap-4">
               <p className="font-sans text-sm text-foreground/60">
                 Administrators can add and remove videos from{" "}
-                <span className="font-medium text-core-black">{name}</span>. Optional — you can skip and add them later.
+                <span className="font-medium text-foreground">{name}</span>. Optional — you can skip and add them later.
               </p>
 
               <div className="relative">
@@ -385,7 +385,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
                       key={user.id}
                       type="button"
                       onClick={() => addAdmin(user)}
-                      className="flex w-full items-center gap-3 px-3 py-2.5 hover:bg-mist-grey transition-colors text-left border-b border-border last:border-0"
+                      className="flex w-full items-center gap-3 px-3 py-2.5 hover:bg-muted transition-colors text-left border-b border-border last:border-0"
                     >
                       {user.avatarUrl ? (
                         <Image
@@ -399,7 +399,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
                         <div className="h-7 w-7 rounded-full bg-bloom-lavender shrink-0" />
                       )}
                       <div className="min-w-0">
-                        <p className="font-sans font-medium text-sm text-core-black truncate">{user.displayName}</p>
+                        <p className="font-sans font-medium text-sm text-foreground truncate">{user.displayName}</p>
                         <p className="font-sans text-xs text-foreground/50">@{user.username}</p>
                       </div>
                       <span className="ml-auto font-sans text-xs text-spring-green font-medium shrink-0">Add</span>
@@ -413,7 +413,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
                   <p className="font-sans text-xs font-medium text-foreground/50">Added administrators</p>
                   <div className="flex flex-col gap-1">
                     {selectedAdmins.map((user) => (
-                      <div key={user.id} className="flex items-center gap-3 rounded-lg bg-mist-grey px-3 py-2">
+                      <div key={user.id} className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2">
                         {user.avatarUrl ? (
                           <Image
                             src={user.avatarUrl}
@@ -426,7 +426,7 @@ export function CreateChannelSheet({ open, onOpenChange, isAdmin = false }: Prop
                           <div className="h-6 w-6 rounded-full bg-bloom-lavender shrink-0" />
                         )}
                         <div className="min-w-0 flex-1">
-                          <p className="font-sans font-medium text-sm text-core-black truncate">{user.displayName}</p>
+                          <p className="font-sans font-medium text-sm text-foreground truncate">{user.displayName}</p>
                         </div>
                         <button
                           type="button"

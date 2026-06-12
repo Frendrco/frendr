@@ -18,7 +18,7 @@ export default async function NewThreadPage() {
       </Link>
 
       <div className="mb-8">
-        <h2 className="font-sans font-bold text-xl text-core-black">New Thread</h2>
+        <h2 className="font-sans font-bold text-xl text-foreground">New Thread</h2>
         <p className="mt-1 font-sans text-sm text-foreground/50">Start a discussion with the community.</p>
       </div>
 

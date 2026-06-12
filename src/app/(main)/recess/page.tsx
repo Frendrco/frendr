@@ -70,14 +70,14 @@ export default async function RecessPage({ searchParams }: Props) {
   }))
 
   return (
-    <div className="min-h-screen bg-white text-core-black">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-screen-xl px-4 md:px-6">
 
         {/* Header */}
         <div className="pt-8 pb-6 border-b border-border">
           <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:justify-between sm:text-left gap-3">
             <div>
-              <h1 className="font-sans font-bold text-2xl text-core-black">Recess</h1>
+              <h1 className="font-sans font-bold text-2xl text-foreground">Recess</h1>
               <p className="mt-1 font-sans text-sm text-foreground/40">Making things for the fun of it</p>
             </div>
             <Link
@@ -98,12 +98,12 @@ export default async function RecessPage({ searchParams }: Props) {
         <div className="pb-16">
           {query && mapped.length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-24 text-center">
-              <p className="font-sans font-semibold text-sm text-core-black">No results for &ldquo;{query}&rdquo;</p>
+              <p className="font-sans font-semibold text-sm text-foreground">No results for &ldquo;{query}&rdquo;</p>
               <p className="font-sans text-sm text-foreground/40">Try a different title, creator, or tool name.</p>
             </div>
           ) : mapped.length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-24 text-center">
-              <p className="font-sans font-semibold text-sm text-core-black">Nothing here yet</p>
+              <p className="font-sans font-semibold text-sm text-foreground">Nothing here yet</p>
               <p className="font-sans text-sm text-foreground/40">Be the first to drop something.</p>
             </div>
           ) : (
