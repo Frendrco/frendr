@@ -47,23 +47,25 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
   const rounded = roundedSize === "2xl" ? "rounded-2xl" : "rounded-xl"
+  const thumbnailUrl = video.thumbnailUrl
+    ?? (video.streamId ? `https://videodelivery.net/${video.streamId}/thumbnails/thumbnail.jpg` : null)
 
   return (
     <div className="group flex flex-col gap-2">
       {/* Thumbnail + overlay */}
       <div className={`relative aspect-video overflow-hidden ${rounded} bg-mist-grey`}>
-        {video.thumbnailUrl ? (
-          video.thumbnailUrl.startsWith("data:") ? (
+        {thumbnailUrl ? (
+          thumbnailUrl.startsWith("data:") ? (
             // Next.js <Image> can't optimize data URIs — use plain img
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={video.thumbnailUrl}
+              src={thumbnailUrl}
               alt={video.title}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
           ) : (
             <Image
-              src={cfThumb(video.thumbnailUrl)!}
+              src={cfThumb(thumbnailUrl)!}
               alt={video.title}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
