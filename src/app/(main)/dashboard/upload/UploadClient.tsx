@@ -474,7 +474,7 @@ export function UploadClient({
       })
       if (!res.ok) throw new Error("Could not save video")
       const video = await res.json() as { id: string; slug?: string | null }
-      router.push(`/v/${video.slug ?? video.id}`)
+      window.location.href = `/v/${video.slug ?? video.id}`
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Something went wrong")
     } finally {
