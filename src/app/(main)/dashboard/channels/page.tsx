@@ -37,7 +37,7 @@ export default async function DashboardChannelsPage() {
 
         <div className="mb-8 flex items-center justify-between">
           <div className="text-center md:text-left w-full md:w-auto">
-            <h1 className="font-sans font-bold text-2xl text-core-black">Your Channels</h1>
+            <h1 className="font-sans font-bold text-2xl text-foreground">Your Channels</h1>
             <p className="mt-1 font-sans text-sm text-foreground/40">
               Curate videos from anywhere on Frendr into themed collections
             </p>
@@ -50,18 +50,18 @@ export default async function DashboardChannelsPage() {
           <div className="flex flex-col gap-3">
             {channels.length === 0 ? (
               <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-16 text-center">
-                <p className="font-sans font-semibold text-sm text-core-black">No channels yet</p>
+                <p className="font-sans font-semibold text-sm text-foreground">No channels yet</p>
                 <p className="font-sans text-xs text-foreground/40">Create your first channel to start curating</p>
               </div>
             ) : (
               channels.map((ch) => {
                 const accentColor = ch.color ? (COLOR_HEX[ch.color] ?? "#E5E7EB") : "#E5E7EB"
                 return (
-                <div key={ch.id} className="flex items-center gap-4 rounded-xl border border-border bg-white overflow-hidden">
+                <div key={ch.id} className="flex items-center gap-4 rounded-xl border border-border bg-background overflow-hidden">
                   <div className="w-1 self-stretch shrink-0" style={{ backgroundColor: accentColor }} />
                   <div className="min-w-0 flex-1 py-4">
                     <div className="flex items-center gap-2">
-                      <p className="font-sans font-semibold text-sm text-core-black">{ch.name}</p>
+                      <p className="font-sans font-semibold text-sm text-foreground">{ch.name}</p>
                       {ch.isPublic ? (
                         <Globe size={11} className="text-foreground/30" />
                       ) : (
@@ -87,8 +87,8 @@ export default async function DashboardChannelsPage() {
           </div>
 
           {/* Create channel form */}
-          <div className="rounded-2xl border border-border bg-white p-5">
-            <h2 className="mb-4 font-sans font-semibold text-sm text-core-black">Create a Channel</h2>
+          <div className="rounded-2xl border border-border bg-background p-5">
+            <h2 className="mb-4 font-sans font-semibold text-sm text-foreground">Create a Channel</h2>
             <CreateChannelForm />
           </div>
 

@@ -253,15 +253,15 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
     router.push("/")
   }
 
-  const field = "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+  const field = "h-11 w-full rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
-  const iconBadge = "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-foreground/40"
+  const iconBadge = "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-background text-foreground/40"
 
   return (
     <div className="flex flex-col md:flex-row md:h-[calc(100vh-4rem)] md:overflow-hidden">
 
       {/* ── Left panel ─────────────────────────────────── */}
-      <aside className="flex flex-col items-center w-full md:w-64 md:shrink-0 border-b md:border-b-0 md:border-r border-border bg-white md:overflow-y-auto">
+      <aside className="flex flex-col items-center w-full md:w-64 md:shrink-0 border-b md:border-b-0 md:border-r border-border bg-background md:overflow-y-auto">
 
         {/* Avatar */}
         <div className="flex flex-col items-center gap-3 px-6 py-6 md:py-8 w-full">
@@ -274,7 +274,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
               </div>
             )}
           </div>
-          <label className="relative inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
+          <label className="relative inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-background px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
             <Camera size={12} />
             Replace
             <input
@@ -341,7 +341,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
       </aside>
 
       {/* ── Right panel ────────────────────────────────── */}
-      <div className="flex flex-1 flex-col bg-white">
+      <div className="flex flex-1 flex-col bg-background">
         <div className="flex-1 overflow-y-auto px-5 py-6 md:px-10 md:py-8">
 
           <div className="max-w-2xl flex flex-col gap-5">
@@ -357,7 +357,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
               <div className={cn("flex items-center gap-0", field, "px-0 overflow-hidden")}>
                 <span className="flex h-full items-center px-3 font-sans text-sm text-foreground/40 bg-foreground/5 border-r border-border select-none">@</span>
                 <input
-                  className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                  className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                   placeholder="your-handle"
                   value={username}
                   onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
@@ -439,7 +439,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
                 placeholder="Tell the community about yourself…"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
               />
             </div>
 
@@ -457,7 +457,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
                 <div className={cn("flex items-center gap-0 flex-1", field, "px-0 overflow-hidden")}>
                   <span className="flex h-full items-center px-3 font-sans text-xs text-foreground/40 bg-foreground/5 border-r border-border select-none whitespace-nowrap">instagram.com/</span>
                   <input
-                    className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                    className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                     placeholder="yourhandle"
                     value={instagram}
                     onChange={(e) => setInstagram(e.target.value.replace(/^@/, "").replace(/\s/g, ""))}
@@ -480,7 +480,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
                 <div className={cn("flex items-center gap-0 flex-1", field, "px-0 overflow-hidden")}>
                   <span className="flex h-full items-center px-3 font-sans text-xs text-foreground/40 bg-foreground/5 border-r border-border select-none whitespace-nowrap">linkedin.com/in/</span>
                   <input
-                    className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                    className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                     placeholder="yourhandle"
                     value={linkedin}
                     onChange={(e) => setLinkedin(e.target.value.replace(/^@/, "").replace(/\s/g, ""))}
@@ -533,9 +533,9 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
                 { label: "Follows",    desc: "Email when someone follows you",                  value: notifyFollows,   set: setNotifyFollows,   field: "emailNotifyFollows"   },
                 { label: "Milestones", desc: "Email when your video hits a view milestone",     value: notifyTrending,  set: setNotifyTrending,  field: "emailNotifyTrending"  },
               ] as { label: string; desc: string; value: boolean; set: (v: boolean) => void; field: string }[]).map(({ label, desc, value, set, field }) => (
-                <div key={field} className="flex items-center justify-between gap-4 rounded-xl border border-border bg-white px-4 py-3">
+                <div key={field} className="flex items-center justify-between gap-4 rounded-xl border border-border bg-background px-4 py-3">
                   <div>
-                    <p className="font-sans text-sm font-medium text-core-black">{label}</p>
+                    <p className="font-sans text-sm font-medium text-foreground">{label}</p>
                     <p className="font-sans text-xs text-foreground/40">{desc}</p>
                   </div>
                   <Switch
@@ -615,9 +615,9 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
 
         <div className="px-5 pb-6 md:px-10">
           {isPro ? (
-            <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-border bg-background px-4 py-3">
               <div>
-                <p className="font-sans text-sm font-medium text-core-black">Frendr Pro</p>
+                <p className="font-sans text-sm font-medium text-foreground">Frendr Pro</p>
                 <p className="font-sans text-xs text-foreground/40">Unlimited video uploads · $8/month</p>
               </div>
               <button
@@ -630,9 +630,9 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-border bg-background px-4 py-3">
               <div>
-                <p className="font-sans text-sm font-medium text-core-black">Free plan</p>
+                <p className="font-sans text-sm font-medium text-foreground">Free plan</p>
                 <p className="font-sans text-xs text-foreground/40">20 minutes of uploads included</p>
               </div>
               <button
@@ -658,7 +658,7 @@ export function SettingsClient({ profile, isPro = false }: { profile: ProfileDat
           <button
             onClick={handleSave}
             disabled={saving}
-            className="h-10 rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-50"
+            className="h-10 rounded-full bg-core-black dark:bg-white px-6 font-sans font-medium text-sm text-white dark:text-core-black transition-colors hover:bg-core-black/80 dark:hover:bg-white/80 disabled:opacity-50"
           >
             {saving ? "Saving…" : "Save Changes"}
           </button>

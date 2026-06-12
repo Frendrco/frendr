@@ -111,7 +111,7 @@ export function VideoEditRow({ video, username }: { video: Video; username: stri
   }, [])
 
   return (
-    <div className="rounded-xl border border-border bg-white p-4">
+    <div className="rounded-xl border border-border bg-background p-4">
       <div className="flex gap-4">
         {/* Thumbnail preview */}
         <div className="relative h-[70px] w-24 sm:h-[90px] sm:w-40 shrink-0 overflow-hidden rounded-lg bg-mist-grey">
@@ -130,7 +130,7 @@ export function VideoEditRow({ video, username }: { video: Video; username: stri
           {/* Title row */}
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="font-sans font-medium text-sm text-core-black truncate">{video.title}</p>
+              <p className="font-sans font-medium text-sm text-foreground truncate">{video.title}</p>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="font-sans text-[10px] text-foreground/40 uppercase tracking-wide">
                   {video.videoType}
@@ -213,7 +213,7 @@ export function VideoEditRow({ video, username }: { video: Video; username: stri
                 value={url}
                 onChange={e => { setUrl(e.target.value); setSaved(false) }}
                 placeholder="Paste thumbnail URL or video page URL…"
-                className="h-8 flex-1 rounded-lg border border-border bg-white px-3 font-sans text-xs text-core-black placeholder:text-foreground/30 focus:outline-none focus:border-foreground/40"
+                className="h-8 flex-1 rounded-lg border border-border bg-background px-3 font-sans text-xs text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-foreground/40"
               />
               <button
                 onClick={save}

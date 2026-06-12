@@ -50,7 +50,7 @@ export function CreateChannelForm() {
   return (
     <form onSubmit={submit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
-        <label className="font-sans text-xs font-medium text-core-black">Name</label>
+        <label className="font-sans text-xs font-medium text-foreground">Name</label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -61,7 +61,7 @@ export function CreateChannelForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="font-sans text-xs font-medium text-core-black">Description <span className="font-normal text-foreground/40">(optional)</span></label>
+        <label className="font-sans text-xs font-medium text-foreground">Description <span className="font-normal text-foreground/40">(optional)</span></label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -73,7 +73,7 @@ export function CreateChannelForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="font-sans text-xs font-medium text-core-black">Colour</label>
+        <label className="font-sans text-xs font-medium text-foreground">Colour</label>
         <div className="flex gap-2">
           {COLORS.map((c) => (
             <button
@@ -106,7 +106,7 @@ export function CreateChannelForm() {
       <button
         type="submit"
         disabled={!name.trim() || loading}
-        className="h-9 rounded-full bg-core-black font-sans font-medium text-sm text-white disabled:opacity-40 transition-opacity flex items-center justify-center gap-2"
+        className="h-9 rounded-full bg-core-black dark:bg-white font-sans font-medium text-sm text-white dark:text-core-black disabled:opacity-40 transition-opacity flex items-center justify-center gap-2"
       >
         {loading && <Loader2 size={14} className="animate-spin" />}
         Create Channel

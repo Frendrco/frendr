@@ -65,10 +65,10 @@ function Toggle({ on, onToggle, label, description }: { on: boolean; onToggle: (
         className={cn("relative mt-0.5 h-5 w-9 shrink-0 rounded-full transition-colors", on ? "bg-spring-green" : "bg-border")}
         aria-pressed={on}
       >
-        <div className={cn("absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
+        <div className={cn("absolute top-0.5 h-4 w-4 rounded-full bg-white dark:bg-background shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
       </button>
       <div>
-        <p className="font-sans text-sm font-medium text-core-black">{label}</p>
+        <p className="font-sans text-sm font-medium text-foreground">{label}</p>
         {description && <p className="font-sans text-xs text-foreground/40 mt-0.5">{description}</p>}
       </div>
     </div>
@@ -730,7 +730,7 @@ export function UploadClient({
     }
   }
 
-  const field = "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+  const field = "h-11 w-full rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
   // ── Credits / categories / tags / toggles — shared between upload and import ──
   const sharedImportFields = (
@@ -741,7 +741,7 @@ export function UploadClient({
         {collabs.length > 0 && (
           <div className="flex flex-col gap-1.5">
             {collabs.map((c) => (
-              <span key={c.id} className="inline-flex items-center gap-2 rounded-full border border-border bg-foreground/[0.06] pl-1.5 pr-2.5 py-1 font-sans text-xs text-core-black self-start">
+              <span key={c.id} className="inline-flex items-center gap-2 rounded-full border border-border bg-foreground/[0.06] pl-1.5 pr-2.5 py-1 font-sans text-xs text-foreground self-start">
                 <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full overflow-hidden ${c.avatarUrl ? 'bg-mist-grey' : 'bg-spring-green'}`}>
                   {c.avatarUrl
                     // eslint-disable-next-line @next/next/no-img-element
@@ -756,7 +756,7 @@ export function UploadClient({
                   value={c.role}
                   onChange={(e) => updateCollabRole(c.id, e.target.value)}
                   placeholder="Role…"
-                  className="w-20 bg-transparent placeholder:text-foreground/35 text-core-black focus:outline-none"
+                  className="w-20 bg-transparent placeholder:text-foreground/35 text-foreground focus:outline-none"
                 />
                 <button type="button" onClick={() => removeCollab(c.id)} className="text-foreground/40 hover:text-foreground transition-colors"><X size={11} /></button>
               </span>
@@ -764,10 +764,10 @@ export function UploadClient({
           </div>
         )}
         <div className="relative">
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-white px-3 h-11">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 h-11">
             <Search size={13} className="shrink-0 text-foreground/30" />
             <input
-              className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+              className="flex-1 bg-transparent font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
               placeholder="Search by name or @handle…"
               value={collabSearch}
               onChange={(e) => setCollabSearch(e.target.value)}
@@ -775,7 +775,7 @@ export function UploadClient({
             {collabLoading && <span className="h-3.5 w-3.5 animate-spin rounded-full border border-border border-t-foreground/40 shrink-0" />}
           </div>
           {collabResults.length > 0 && (
-            <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-border bg-white shadow-lg">
+            <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-border bg-background shadow-lg">
               {collabResults
                 .filter((r) => !collabs.find((c) => c.id === r.id))
                 .map((r) => (
@@ -793,7 +793,7 @@ export function UploadClient({
                       }
                     </span>
                     <div className="text-left">
-                      <p className="font-sans text-sm font-medium text-core-black">{r.displayName}</p>
+                      <p className="font-sans text-sm font-medium text-foreground">{r.displayName}</p>
                       <p className="font-sans text-xs text-foreground/40">@{r.username}</p>
                     </div>
                   </button>
@@ -843,10 +843,10 @@ export function UploadClient({
             ))}
           </div>
         )}
-        <div className="flex flex-col gap-2 rounded-xl border border-border bg-white p-3">
+        <div className="flex flex-col gap-2 rounded-xl border border-border bg-background p-3">
           <div className="flex items-center gap-2 rounded-lg border border-border px-3 h-9">
             <Search size={13} className="shrink-0 text-foreground/30" />
-            <input className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+            <input className="flex-1 bg-transparent font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
               placeholder="Search tags…" value={tagSearch} onChange={(e) => setTagSearch(e.target.value)} />
           </div>
           <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
@@ -913,7 +913,7 @@ export function UploadClient({
                   className={cn(
                     "flex-1 py-2.5 font-sans text-xs font-medium transition-colors",
                     thumbMode === m
-                      ? "bg-white text-core-black"
+                      ? "bg-background text-foreground"
                       : disabled
                       ? "bg-foreground/[0.02] text-foreground/25 cursor-not-allowed"
                       : "bg-foreground/[0.02] text-foreground/40 hover:text-foreground/70"
@@ -1026,7 +1026,7 @@ export function UploadClient({
         <textarea rows={4} maxLength={DESC_MAX}
           placeholder="Share the story behind this video. What should viewers know before watching?"
           value={description} onChange={(e) => setDescription(e.target.value)}
-          className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+          className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
         />
       </div>
 
@@ -1065,7 +1065,7 @@ export function UploadClient({
           placeholder="What were you exploring? Tools, ideas, process…"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="resize-none rounded-xl border border-border bg-white px-3 py-2.5 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+          className="resize-none rounded-xl border border-border bg-background px-3 py-2.5 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
         />
       </div>
 
@@ -1113,7 +1113,7 @@ export function UploadClient({
   )
 
   return (
-    <div className="bg-white">
+    <div className="bg-background">
       <div className="mx-auto max-w-3xl px-4 md:px-6 py-10">
 
         {/* Back */}
@@ -1123,7 +1123,7 @@ export function UploadClient({
 
         {/* Heading */}
         <div className="mb-6">
-          <h1 className="font-sans font-bold text-2xl text-core-black">
+          <h1 className="font-sans font-bold text-2xl text-foreground">
             {videoType === "INTERACTIVE"
               ? "Share to Rive World"
               : videoType === "RECESS"
@@ -1144,7 +1144,7 @@ export function UploadClient({
         {/* Upgraded success banner */}
         {justUpgraded && !showPaywall && (
           <div className="mb-6 rounded-xl bg-spring-green/20 border border-spring-green/30 px-4 py-3">
-            <p className="font-sans font-medium text-sm text-core-black">You&apos;re now on Frendr Pro — upload as much as you like.</p>
+            <p className="font-sans font-medium text-sm text-foreground">You&apos;re now on Frendr Pro — upload as much as you like.</p>
           </div>
         )}
 
@@ -1155,7 +1155,7 @@ export function UploadClient({
               <p className="font-sans text-xs text-foreground/50">
                 {Math.floor(uploadedSeconds / 60)}m {uploadedSeconds % 60}s of {Math.floor(freeSeconds / 60)}m free used
               </p>
-              <button type="button" onClick={startCheckout} className="font-sans text-xs text-core-black hover:underline">
+              <button type="button" onClick={startCheckout} className="font-sans text-xs text-foreground hover:underline">
                 Upgrade for $8/mo
               </button>
             </div>
@@ -1171,7 +1171,7 @@ export function UploadClient({
         {/* Paywall */}
         {showPaywall && (
           <div className="rounded-2xl border border-border bg-mist-grey p-8 text-center">
-            <p className="font-sans font-bold text-lg text-core-black mb-1">You&apos;ve used your 20 free minutes</p>
+            <p className="font-sans font-bold text-lg text-foreground mb-1">You&apos;ve used your 20 free minutes</p>
             <p className="font-sans text-sm text-foreground/50 mb-6">
               Upgrade to Frendr Pro to keep uploading — unlimited storage for just $8/month.
             </p>
@@ -1205,7 +1205,7 @@ export function UploadClient({
                   : "border-border hover:border-foreground/30"
               )}
             >
-              <p className="font-sans font-medium text-sm text-core-black">{label}</p>
+              <p className="font-sans font-medium text-sm text-foreground">{label}</p>
               <p className="font-sans text-xs text-foreground/40">{desc}</p>
             </button>
           ))}
@@ -1225,7 +1225,7 @@ export function UploadClient({
                 className={cn(
                   "inline-flex h-8 items-center gap-1.5 rounded-full px-4 font-sans font-medium text-sm transition-colors",
                   mode === value
-                    ? "bg-core-black text-white"
+                    ? "bg-core-black dark:bg-white text-white dark:text-core-black"
                     : "text-foreground/50 hover:text-foreground"
                 )}
               >
@@ -1266,7 +1266,7 @@ export function UploadClient({
                 placeholder="Tell the community about this piece…"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="resize-none rounded-xl border border-border bg-white px-3 py-2.5 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+                className="resize-none rounded-xl border border-border bg-background px-3 py-2.5 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
             </div>
             {uploadError && <p className="font-sans text-xs text-red-500">{uploadError}</p>}
@@ -1278,7 +1278,7 @@ export function UploadClient({
                 type="button"
                 onClick={handleRivePost}
                 disabled={!riveUrl.trim() || !title.trim() || uploading}
-                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                className="inline-flex h-10 items-center rounded-full bg-core-black dark:bg-white px-6 font-sans font-medium text-sm text-white dark:text-core-black transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {uploading ? "Posting…" : "Post to Rive World"}
               </button>
@@ -1312,7 +1312,7 @@ export function UploadClient({
                           <Upload size={14} className="text-foreground/30" />
                         </div>
                         <input
-                          className="min-w-0 flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                          className="min-w-0 flex-1 bg-transparent font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                           value={item.title}
                           onChange={(e) => setBatchFiles((prev) => prev.map((i) => i.id === item.id ? { ...i, title: e.target.value } : i))}
                           placeholder="Video title…"
@@ -1394,7 +1394,7 @@ export function UploadClient({
                     type="button"
                     onClick={handleBatchUpload}
                     disabled={batchStarted || batchFiles.length === 0}
-                    className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                    className="inline-flex h-10 items-center rounded-full bg-core-black dark:bg-white px-6 font-sans font-medium text-sm text-white dark:text-core-black transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
                   >
                     {batchStarted
                       ? (batchFiles.every((i) => i.status === "done" || i.status === "error") ? "Done" : "Uploading…")
@@ -1424,7 +1424,7 @@ export function UploadClient({
                           <button
                             type="button"
                             onClick={() => startBgUpload(file)}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-core-black px-4 py-1.5 font-sans text-xs font-medium text-white hover:bg-spring-green hover:text-core-black transition-colors"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-core-black dark:bg-white px-4 py-1.5 font-sans text-xs font-medium text-white dark:text-core-black hover:bg-spring-green hover:text-core-black transition-colors"
                           >
                             Try again
                           </button>
@@ -1438,7 +1438,7 @@ export function UploadClient({
                         </div>
                       ) : bgUpload.status === 'uploading' ? (
                         <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
-                          <p className="font-sans text-sm font-medium text-core-black">Uploading…</p>
+                          <p className="font-sans text-sm font-medium text-foreground">Uploading…</p>
                           <div className="w-full max-w-xs">
                             <div className="mb-2 flex items-center justify-between">
                               <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file.name}</span>
@@ -1459,7 +1459,7 @@ export function UploadClient({
                             <Check size={20} className="text-core-black" />
                           </div>
                           <div>
-                            <p className="font-sans font-medium text-sm text-core-black">Upload complete</p>
+                            <p className="font-sans font-medium text-sm text-foreground">Upload complete</p>
                             <p className="font-sans text-xs text-foreground/40 mt-0.5">{file.name}</p>
                           </div>
                           <button
@@ -1476,7 +1476,7 @@ export function UploadClient({
                             <Upload size={20} className="text-spring-green" />
                           </div>
                           <div>
-                            <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
+                            <p className="font-sans font-medium text-sm text-foreground">{file.name}</p>
                             <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB · uploading in background</p>
                           </div>
                         </div>
@@ -1494,11 +1494,11 @@ export function UploadClient({
                       )}
                     >
                       <input ref={fileInputRef} type="file" multiple accept="video/mp4,video/quicktime,video/x-msvideo,video/avi,.mp4,.mov,.avi" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background shadow-sm">
                         <Upload size={20} className="text-foreground/35" />
                       </div>
                       <div className="text-center">
-                        <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
+                        <p className="font-sans font-medium text-sm text-foreground">{dragging ? "Drop to upload" : "Drop your video here"}</p>
                         <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse · upload up to 5 at once</p>
                       </div>
                     </label>
@@ -1518,7 +1518,7 @@ export function UploadClient({
                   {(["basics", "privacy", "embed"] as Tab[]).map((t) => (
                     <button key={t} onClick={() => setTab(t)}
                       className={cn("pb-3 font-sans font-medium text-sm capitalize border-b-2 -mb-px transition-colors",
-                        tab === t ? "border-core-black text-core-black" : "border-transparent text-foreground/40 hover:text-foreground/70"
+                        tab === t ? "border-core-black text-foreground" : "border-transparent text-foreground/40 hover:text-foreground/70"
                       )}
                     >
                       {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -1545,7 +1545,7 @@ export function UploadClient({
                               <button
                                 type="button"
                                 onClick={() => startBgUpload(file)}
-                                className="inline-flex items-center gap-1.5 rounded-full bg-core-black px-4 py-1.5 font-sans text-xs font-medium text-white hover:bg-spring-green hover:text-core-black transition-colors"
+                                className="inline-flex items-center gap-1.5 rounded-full bg-core-black dark:bg-white px-4 py-1.5 font-sans text-xs font-medium text-white dark:text-core-black hover:bg-spring-green hover:text-core-black transition-colors"
                               >
                                 Try again
                               </button>
@@ -1559,7 +1559,7 @@ export function UploadClient({
                             </div>
                           ) : bgUpload.status === 'uploading' ? (
                             <div className="flex w-full flex-col items-center gap-4 px-8 text-center">
-                              <p className="font-sans text-sm font-medium text-core-black">Uploading…</p>
+                              <p className="font-sans text-sm font-medium text-foreground">Uploading…</p>
                               <div className="w-full max-w-xs">
                                 <div className="mb-2 flex items-center justify-between">
                                   <span className="max-w-[180px] truncate font-sans text-xs text-foreground/50">{file.name}</span>
@@ -1580,7 +1580,7 @@ export function UploadClient({
                                 <Check size={20} className="text-core-black" />
                               </div>
                               <div>
-                                <p className="font-sans font-medium text-sm text-core-black">Upload complete</p>
+                                <p className="font-sans font-medium text-sm text-foreground">Upload complete</p>
                                 <p className="font-sans text-xs text-foreground/40 mt-0.5">{file.name}</p>
                               </div>
                               <button
@@ -1597,7 +1597,7 @@ export function UploadClient({
                                 <Upload size={20} className="text-spring-green" />
                               </div>
                               <div>
-                                <p className="font-sans font-medium text-sm text-core-black">{file.name}</p>
+                                <p className="font-sans font-medium text-sm text-foreground">{file.name}</p>
                                 <p className="font-sans text-xs text-foreground/40 mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB · uploading in background</p>
                               </div>
                             </div>
@@ -1615,11 +1615,11 @@ export function UploadClient({
                           )}
                         >
                           <input ref={fileInputRef} type="file" multiple accept="video/mp4,video/quicktime,video/x-msvideo,video/avi,.mp4,.mov,.avi" onChange={handleVideoInput} className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" />
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-white shadow-sm">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background shadow-sm">
                             <Upload size={20} className="text-foreground/35" />
                           </div>
                           <div className="text-center">
-                            <p className="font-sans font-medium text-sm text-core-black">{dragging ? "Drop to upload" : "Drop your video here"}</p>
+                            <p className="font-sans font-medium text-sm text-foreground">{dragging ? "Drop to upload" : "Drop your video here"}</p>
                             <p className="font-sans text-xs text-foreground/40 mt-0.5">or click to browse · upload up to 5 at once</p>
                           </div>
                         </label>
@@ -1652,7 +1652,7 @@ export function UploadClient({
                             {visibility === value && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                           </div>
                           <div>
-                            <p className="font-sans font-medium text-sm text-core-black">{label}</p>
+                            <p className="font-sans font-medium text-sm text-foreground">{label}</p>
                             <p className="font-sans text-xs text-foreground/40 mt-0.5">{desc}</p>
                           </div>
                         </button>
@@ -1695,7 +1695,7 @@ export function UploadClient({
   allowfullscreen
 ></iframe>`}</pre>
                         <button type="button" onClick={copyEmbed}
-                          className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
+                          className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
                         >
                           {copied ? <Check size={12} className="text-spring-green" /> : <Copy size={12} />}
                           {copied ? "Copied!" : "Copy"}
@@ -1719,7 +1719,7 @@ export function UploadClient({
                 type="button"
                 onClick={handleSave}
                 disabled={bgUpload.status !== 'complete' || !title.trim() || saving}
-                className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                className="inline-flex h-10 items-center rounded-full bg-core-black dark:bg-white px-6 font-sans font-medium text-sm text-white dark:text-core-black transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
               >
                 {saving
                   ? "Saving…"
@@ -1753,7 +1753,7 @@ export function UploadClient({
                   <div className="relative flex items-center">
                     <Link2 size={14} className="absolute left-3 text-foreground/30 pointer-events-none" />
                     <input
-                      className="h-10 w-full rounded-lg border border-border bg-foreground/[0.02] pl-9 pr-24 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                      className="h-10 w-full rounded-lg border border-border bg-foreground/[0.02] pl-9 pr-24 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                       placeholder="Paste a Dropbox share link…"
                       value={dropboxItem.url}
                       onChange={(e) => handleBulkUrlChange(dropboxItem.id, e.target.value)}
@@ -1793,7 +1793,7 @@ export function UploadClient({
                         type="button"
                         onClick={handleDropboxImport}
                         disabled={!canSubmit}
-                        className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                        className="inline-flex h-10 items-center rounded-full bg-core-black dark:bg-white px-6 font-sans font-medium text-sm text-white dark:text-core-black transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
                       >
                         {uploading ? "Importing…" : "Import from Dropbox"}
                       </button>
@@ -1815,13 +1815,13 @@ export function UploadClient({
               {/* URL rows */}
               <div className="flex flex-col gap-3">
                 {bulkItems.map((item, idx) => (
-                  <div key={item.id} className="rounded-xl border border-border bg-white p-3 flex flex-col gap-2">
+                  <div key={item.id} className="rounded-xl border border-border bg-background p-3 flex flex-col gap-2">
 
                     {/* URL input row */}
                     <div className="relative flex items-center">
                       <Link2 size={14} className="absolute left-3 text-foreground/30 pointer-events-none" />
                       <input
-                        className="h-10 w-full rounded-lg border border-border bg-foreground/[0.02] pl-9 pr-28 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                        className="h-10 w-full rounded-lg border border-border bg-foreground/[0.02] pl-9 pr-28 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                         placeholder="Paste a YouTube, Vimeo, Framerate, or Dropbox link…"
                         value={item.url}
                         onChange={(e) => handleBulkUrlChange(item.id, e.target.value)}
@@ -1859,7 +1859,7 @@ export function UploadClient({
                           />
                         )}
                         <input
-                          className="h-9 flex-1 rounded-lg border border-border bg-foreground/[0.02] px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                          className="h-9 flex-1 rounded-lg border border-border bg-foreground/[0.02] px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                           placeholder="Video title…"
                           value={item.title}
                           onChange={(e) => updateBulkTitle(item.id, e.target.value)}
@@ -1916,7 +1916,7 @@ export function UploadClient({
                       type="button"
                       onClick={handleBulkImport}
                       disabled={readyCount === 0 || uploading}
-                      className="inline-flex h-10 items-center rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
+                      className="inline-flex h-10 items-center rounded-full bg-core-black dark:bg-white px-6 font-sans font-medium text-sm text-white dark:text-core-black transition-colors hover:bg-spring-green hover:text-core-black disabled:opacity-35 disabled:cursor-not-allowed"
                     >
                       {uploading ? "Importing…" : `Import ${readyCount || ""} Video${readyCount !== 1 ? "s" : ""}`}
                     </button>
