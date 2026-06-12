@@ -32,7 +32,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
           {userId && (
             <Link
               href="/community/new"
-              className="inline-flex h-9 w-fit items-center rounded-full bg-core-black px-5 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80"
+              className="inline-flex h-9 w-fit items-center rounded-full bg-core-black px-5 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 dark:bg-white dark:text-core-black dark:hover:bg-white/90"
             >
               New Thread
             </Link>

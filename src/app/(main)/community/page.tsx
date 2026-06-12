@@ -50,7 +50,7 @@ export default async function CommunityPage({ searchParams }: Props) {
             className={[
               "inline-flex h-9 items-center rounded-full px-5 font-sans text-sm font-medium capitalize transition-colors",
               sort === s
-                ? "bg-core-black text-white"
+                ? "bg-core-black text-white dark:bg-white dark:text-core-black"
                 : "border border-border text-foreground/50 hover:border-foreground/30 hover:text-foreground",
             ].join(" ")}
           >

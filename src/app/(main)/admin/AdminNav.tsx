@@ -28,7 +28,7 @@ export function AdminNav() {
             href={href}
             className={`flex items-center gap-2.5 rounded-lg px-3 py-2 font-sans text-sm transition-colors ${
               active
-                ? "bg-core-black text-white"
+                ? "bg-core-black text-white dark:bg-white dark:text-core-black"
                 : "text-foreground/60 hover:text-foreground hover:bg-foreground/5"
             }`}
           >

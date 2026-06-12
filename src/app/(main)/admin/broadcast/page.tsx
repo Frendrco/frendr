@@ -75,7 +75,7 @@ export default function BroadcastPage() {
         <button
           onClick={handleSend}
           disabled={!message.trim() || message.length > MAX || sending}
-          className="h-10 self-end rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
+          className="h-10 self-end rounded-full bg-core-black px-6 font-sans font-medium text-sm text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed dark:bg-white dark:text-core-black dark:hover:bg-white/90"
         >
           {sending ? "Sending…" : "Send to all users"}
         </button>

@@ -107,7 +107,7 @@ function CommentForm({ threadId, parentCommentId, onSubmit, onCancel }: {
         <button
           type="submit"
           disabled={!body.trim() || submitting}
-          className="h-8 rounded-full bg-core-black px-4 font-sans font-medium text-xs text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
+          className="h-8 rounded-full bg-core-black px-4 font-sans font-medium text-xs text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed dark:bg-white dark:text-core-black dark:hover:bg-white/90"
         >
           {submitting ? "Posting…" : "Reply"}
         </button>
@@ -146,7 +146,7 @@ function InlineEditForm({ initialBody, onSave, onCancel }: {
         <button
           onClick={handleSave}
           disabled={!body.trim() || saving || body.trim() === initialBody.trim()}
-          className="h-8 rounded-full bg-core-black px-4 font-sans font-medium text-xs text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed"
+          className="h-8 rounded-full bg-core-black px-4 font-sans font-medium text-xs text-white transition-colors hover:bg-core-black/80 disabled:opacity-35 disabled:cursor-not-allowed dark:bg-white dark:text-core-black dark:hover:bg-white/90"
         >
           {saving ? "Saving…" : "Save"}
         </button>

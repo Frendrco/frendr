@@ -85,7 +85,7 @@ export function RecessGrid({ videos, followedUserIds, isAuthenticated }: Props) 
               onClick={() => setActiveTool(null)}
               className={
                 activeTool === null
-                  ? "inline-flex h-7 shrink-0 items-center rounded-full bg-core-black px-3 font-sans text-xs font-medium text-white"
+                  ? "inline-flex h-7 shrink-0 items-center rounded-full bg-core-black px-3 font-sans text-xs font-medium text-white dark:bg-white dark:text-core-black"
                   : "inline-flex h-7 shrink-0 items-center rounded-full border border-border px-3 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
               }
             >
@@ -99,7 +99,7 @@ export function RecessGrid({ videos, followedUserIds, isAuthenticated }: Props) 
                   onClick={() => setActiveTool(isActive ? null : tool)}
                   className={
                     isActive
-                      ? "inline-flex h-7 shrink-0 items-center rounded-full bg-core-black px-3 font-sans text-xs font-medium text-white"
+                      ? "inline-flex h-7 shrink-0 items-center rounded-full bg-core-black px-3 font-sans text-xs font-medium text-white dark:bg-white dark:text-core-black"
                       : "inline-flex h-7 shrink-0 items-center rounded-full border border-border px-3 font-sans text-xs font-medium text-foreground/50 hover:border-foreground/30 hover:text-foreground transition-colors"
                   }
                 >

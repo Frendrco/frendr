@@ -157,7 +157,7 @@ export default async function DownloadPage() {
             </div>
             <Link
               href="/sign-in"
-              className="shrink-0 inline-flex h-11 items-center px-8 rounded-full bg-core-black text-white font-sans font-medium text-sm transition-transform hover:scale-105"
+              className="shrink-0 inline-flex h-11 items-center px-8 rounded-full bg-core-black text-white font-sans font-medium text-sm transition-transform hover:scale-105 dark:bg-white dark:text-core-black"
             >
               Sign in
             </Link>
