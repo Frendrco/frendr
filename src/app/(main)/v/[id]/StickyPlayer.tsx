@@ -18,7 +18,7 @@ export function StickyPlayer({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="bg-core-black w-full sticky top-16 z-40 overflow-hidden transition-[height] duration-300 ease-in-out"
-      style={{ height: isStuck ? "33vh" : "60vh" }}
+      style={{ height: isStuck ? "36vh" : "66vh" }}
     >
       {children}
     </div>

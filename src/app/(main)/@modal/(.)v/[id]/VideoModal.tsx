@@ -28,7 +28,7 @@ type VideoData = {
   }
 }
 
-function HlsPlayer({ streamId, thumbnailUrl }: { streamId: string; thumbnailUrl: string | null }) {
+function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: { streamId: string; thumbnailUrl: string | null; onVideoSize?: (w: number, h: number) => void }) {
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
@@ -39,6 +39,8 @@ function HlsPlayer({ streamId, thumbnailUrl }: { streamId: string; thumbnailUrl:
       const hls = new Hls({ capLevelToPlayerSize: false })
       hls.on(Hls.Events.MANIFEST_PARSED, (_evt, data) => {
         hls.currentLevel = data.levels.length - 1
+        const level = data.levels[data.levels.length - 1]
+        if (level?.width && level?.height) onVideoSize?.(level.width, level.height)
       })
       hls.loadSource(hlsUrl)
       hls.attachMedia(video)
@@ -46,7 +48,7 @@ function HlsPlayer({ streamId, thumbnailUrl }: { streamId: string; thumbnailUrl:
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = hlsUrl
     }
-  }, [streamId])
+  }, [streamId, onVideoSize])
 
   return (
     <video
@@ -60,7 +62,7 @@ function HlsPlayer({ streamId, thumbnailUrl }: { streamId: string; thumbnailUrl:
   )
 }
 
-function Player({ video }: { video: VideoData }) {
+function Player({ video, onVideoSize }: { video: VideoData; onVideoSize?: (w: number, h: number) => void }) {
   if (!video.streamId && !video.externalUrl) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-core-black">
@@ -93,7 +95,7 @@ function Player({ video }: { video: VideoData }) {
     )
   }
 
-  return <HlsPlayer streamId={video.streamId!} thumbnailUrl={video.thumbnailUrl} />
+  return <HlsPlayer streamId={video.streamId!} thumbnailUrl={video.thumbnailUrl} onVideoSize={onVideoSize} />
 }
 
 export function VideoModal({ video, initialUpvoted }: { video: VideoData; initialUpvoted: boolean }) {
@@ -104,6 +106,8 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
   const [liked, setLiked] = useState(initialUpvoted)
   const [likeCount, setLikeCount] = useState(video._count.likes)
   const [likeLoading, setLikeLoading] = useState(false)
+  const [videoSize, setVideoSize] = useState<{ w: number; h: number } | null>(null)
+  const isPortrait = videoSize ? videoSize.h > videoSize.w : false
 
   async function handleLike(e: React.MouseEvent) {
     e.stopPropagation()
@@ -162,12 +166,28 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
         </button>
 
         {/* Card — video only, info overlaid on hover */}
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-2xl">
+        <div
+          className="relative w-full overflow-hidden rounded-2xl bg-black shadow-2xl"
+          style={
+            isPortrait && videoSize
+              ? { aspectRatio: `${videoSize.w}/${videoSize.h}`, maxHeight: "80vh", width: `calc(80vh * ${videoSize.w} / ${videoSize.h})`, maxWidth: "100%" }
+              : { aspectRatio: "16/9" }
+          }
+        >
 
-          <Player video={video} />
+          <Player video={video} onVideoSize={(w, h) => setVideoSize({ w, h })} />
 
-          {/* Hover info overlay */}
-          <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent px-5 pt-4 pb-10 opacity-0 transition-opacity duration-300 group-hover/modal:opacity-100">
+          {/* Mobile-only close button — always tappable inside the card */}
+          <button
+            onClick={close}
+            aria-label="Close"
+            className="sm:hidden absolute top-3 right-3 z-50 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm"
+          >
+            <X size={16} />
+          </button>
+
+          {/* Info overlay — hover on desktop, always visible on touch */}
+          <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent px-5 pt-4 pb-10 opacity-0 transition-opacity duration-300 group-hover/modal:opacity-100 [@media(hover:none)]:opacity-100">
             <div className="flex items-center gap-3">
 
               {/* Creator */}
