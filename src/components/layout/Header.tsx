@@ -65,7 +65,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
         {/* Top bar */}
         <div className="flex items-center justify-between px-4 h-16 shrink-0">
           <Link href="/" onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 bg-white hover:bg-spring-green hover:border-spring-green transition-colors"
+            className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-black hover:bg-spring-green hover:border-spring-green transition-colors"
           >
             <Logo variant="symbol" height={22} colour="black" />
           </Link>
@@ -85,7 +85,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="font-sans font-medium text-2xl text-core-black py-3 hover:text-spring-green transition-colors"
+              className="font-sans font-medium text-2xl text-foreground py-3 hover:text-spring-green transition-colors"
             >
               {link.label}
             </Link>
@@ -94,18 +94,18 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
 
         {/* Auth buttons — bottom */}
         <div className="px-6 pb-12 flex flex-col gap-3">
-          <div className="border-t border-black/10 mb-1" />
+          <div className="border-t border-black/10 dark:border-white/10 mb-1" />
           <Link
             href="/sign-in"
             onClick={() => setMobileMenuOpen(false)}
-            className="w-full h-11 inline-flex items-center justify-center rounded-full border border-black/20 font-sans font-medium text-sm text-foreground hover:border-black/40 transition-colors"
+            className="w-full h-11 inline-flex items-center justify-center rounded-full border border-black/20 dark:border-white/20 font-sans font-medium text-sm text-foreground hover:border-black/40 dark:hover:border-white/40 transition-colors"
           >
             Login
           </Link>
           <Link
             href="/sign-up"
             onClick={() => setMobileMenuOpen(false)}
-            className="w-full h-11 inline-flex items-center justify-center rounded-full bg-core-black font-sans font-medium text-sm text-white hover:bg-spring-green hover:text-core-black transition-colors"
+            className="w-full h-11 inline-flex items-center justify-center rounded-full bg-core-black dark:bg-white font-sans font-medium text-sm text-white dark:text-core-black hover:bg-spring-green hover:text-core-black transition-colors"
           >
             Sign up
           </Link>
@@ -219,7 +219,7 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
               {/* Mobile hamburger */}
               <button
                 onClick={() => setMobileMenuOpen((v) => !v)}
-                className="md:hidden flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/80 backdrop-blur text-foreground/60 hover:text-foreground transition-colors"
+                className="md:hidden flex h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur text-foreground/60 hover:text-foreground transition-colors"
                 aria-label="Menu"
               >
                 <Menu size={17} />
