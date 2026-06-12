@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { VideoModal } from "./VideoModal"
 import { HardRedirect } from "./HardRedirect"
@@ -41,5 +42,18 @@ export default async function InterceptedVideoPage({ params }: Props) {
     return <HardRedirect href={`/v/${video?.slug ?? id}`} />
   }
 
-  return <VideoModal video={video} />
+  // Check if the current user has liked this video
+  const { userId: clerkId } = await auth()
+  let initialUpvoted = false
+  if (clerkId) {
+    const dbUser = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
+    if (dbUser) {
+      const like = await prisma.videoLike.findUnique({
+        where: { videoId_userId: { videoId: video.id, userId: dbUser.id } },
+      })
+      initialUpvoted = !!like
+    }
+  }
+
+  return <VideoModal video={video} initialUpvoted={initialUpvoted} />
 }

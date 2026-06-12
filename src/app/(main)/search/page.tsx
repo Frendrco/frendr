@@ -178,10 +178,7 @@ export default async function SearchPage({ searchParams }: Props) {
       : Promise.resolve([]),
   ])
 
-  // Cavalry work always surfaces first in the Recess preview strip
-  const recessVideos = recessVideosRaw
-    .sort((a, b) => (b.categories.includes("Cavalry") ? 1 : 0) - (a.categories.includes("Cavalry") ? 1 : 0))
-    .slice(0, 8)
+  const recessVideos = recessVideosRaw.slice(0, 8)
 
   // New-member follow status — one quick lookup after the parallel batch
   const currentUserId = currentUser?.id ?? null

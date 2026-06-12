@@ -30,11 +30,7 @@ export function ExploreSort({ current }: { current: SortValue }) {
 
   const select = (value: SortValue) => {
     const params = new URLSearchParams(searchParams.toString())
-    if (value === "newest") {
-      params.delete("sort")
-    } else {
-      params.set("sort", value)
-    }
+    params.set("sort", value)
     router.push(`/search?${params.toString()}`, { scroll: false })
     setOpen(false)
   }

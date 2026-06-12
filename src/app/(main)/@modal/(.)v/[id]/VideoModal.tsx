@@ -1,12 +1,15 @@
 "use client"
 
-import { useEffect, useCallback, useRef } from "react"
+import { useEffect, useCallback, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@clerk/nextjs"
 import Link from "next/link"
 import Image from "next/image"
-import { X, ExternalLink } from "lucide-react"
+import { X, ExternalLink, Heart } from "lucide-react"
 import Hls from "hls.js"
+import { cn } from "@/lib/utils"
 import { getVideoEmbedUrl, detectProvider } from "@/lib/videoEmbed"
+import { AddToChannelButton } from "@/components/common/AddToChannelButton"
 
 type VideoData = {
   id: string
@@ -93,9 +96,33 @@ function Player({ video }: { video: VideoData }) {
   return <HlsPlayer streamId={video.streamId!} thumbnailUrl={video.thumbnailUrl} />
 }
 
-export function VideoModal({ video }: { video: VideoData }) {
+export function VideoModal({ video, initialUpvoted }: { video: VideoData; initialUpvoted: boolean }) {
   const router = useRouter()
+  const { isSignedIn } = useAuth()
   const fullPageHref = `/v/${video.slug ?? video.id}`
+
+  const [liked, setLiked] = useState(initialUpvoted)
+  const [likeCount, setLikeCount] = useState(video._count.likes)
+  const [likeLoading, setLikeLoading] = useState(false)
+
+  async function handleLike(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!isSignedIn) { router.push("/sign-in"); return }
+    if (likeLoading) return
+    setLikeLoading(true)
+    setLiked(v => !v)
+    setLikeCount(c => liked ? c - 1 : c + 1)
+    try {
+      const res = await fetch(`/api/videos/${video.id}/like`, { method: "POST" })
+      if (res.ok) {
+        const data = await res.json() as { liked: boolean; count: number }
+        setLiked(data.liked)
+        setLikeCount(data.count)
+      }
+    } finally {
+      setLikeLoading(false)
+    }
+  }
 
   const close = useCallback(() => router.back(), [router])
 
@@ -171,6 +198,26 @@ export function VideoModal({ video }: { video: VideoData }) {
               <p className="flex-1 truncate font-sans text-sm font-medium text-white">
                 {video.title}
               </p>
+
+              {/* Like button */}
+              <button
+                onClick={handleLike}
+                className={cn(
+                  "shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-sans text-xs backdrop-blur-sm transition-colors",
+                  liked
+                    ? "border-spring-green bg-spring-green/20 text-spring-green"
+                    : "border-white/20 text-white/60 hover:border-white/50 hover:text-white"
+                )}
+              >
+                <Heart size={11} className={liked ? "fill-current" : ""} />
+                <span>{likeCount}</span>
+              </button>
+
+              {/* Channel button */}
+              <AddToChannelButton
+                videoId={video.id}
+                triggerClassName="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-white/20 px-3 py-1 font-sans text-xs text-white/60 backdrop-blur-sm transition-colors hover:border-white/50 hover:text-white"
+              />
 
               {/* Enter pill */}
               <a

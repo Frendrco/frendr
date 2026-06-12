@@ -147,7 +147,12 @@ export function NotificationsBell() {
     }
     if (n.type === "announcement") return
     setOpen(false)
-    router.push(notifUrl(n))
+    const url = notifUrl(n)
+    if (url.startsWith("/v/")) {
+      window.location.href = url
+    } else {
+      router.push(url)
+    }
   }
 
   async function respondToCredit(n: Notification, action: "accept" | "decline") {
