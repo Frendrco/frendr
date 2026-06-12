@@ -124,12 +124,12 @@ export function Header({ userMenu, isSignedIn: serverIsSignedIn }: { userMenu?: 
           {/* Symbol — standalone circle pill */}
           <Link
             href="/"
-            className="group flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-spring-green/40 bg-white/80 dark:bg-spring-green/15 backdrop-blur hover:border-spring-green transition-colors duration-200"
+            className="group flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-spring-green/40 bg-white/80 dark:bg-spring-green/15 backdrop-blur hover:bg-spring-green hover:border-spring-green transition-colors duration-200"
           >
-            {/* Default: black in light mode, white in dark mode */}
+            {/* Default: black in light, white in dark */}
             <Image src="/images/logo-symbol.svg" alt="Frendr" width={22} height={22} className="group-hover:hidden dark:invert" priority />
-            {/* Hover: spring green in both modes */}
-            <Image src="/images/logo-symbol-green.svg" alt="" aria-hidden width={22} height={22} className="hidden group-hover:block" />
+            {/* Hover: black icon on green bg in both modes */}
+            <Image src="/images/logo-symbol.svg" alt="" aria-hidden width={22} height={22} className="hidden group-hover:block" />
           </Link>
 
           {/* Nav links pill */}
