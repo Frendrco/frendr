@@ -43,7 +43,7 @@ export function FollowButton({ username, initialIsFollowing, size = "md", classN
         isFollowing
           ? hovered
             ? "bg-red-50 text-red-500 border border-red-200 hover:bg-red-50"
-            : "bg-spring-green/15 text-core-black border border-spring-green/40"
+            : "bg-spring-green/15 text-core-black dark:text-spring-green border border-spring-green/40"
           : "bg-spring-green text-core-black hover:bg-spring-green/90",
         className
       )}

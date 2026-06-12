@@ -84,7 +84,7 @@ export function AddToChannelButton({ videoId, triggerClassName }: { videoId: str
           onClick={(e) => { e.preventDefault(); e.stopPropagation() }}
         >
           <div className="px-3 py-2.5 border-b border-border">
-            <p className="font-sans font-semibold text-xs text-core-black">Add to channel</p>
+            <p className="font-sans font-semibold text-xs text-foreground">Add to channel</p>
           </div>
 
           <div className="max-h-52 overflow-y-auto">
@@ -122,7 +122,7 @@ export function AddToChannelButton({ videoId, triggerClassName }: { videoId: str
                     >
                       {ch.inChannel && <Check size={9} className="text-core-black" strokeWidth={3} />}
                     </span>
-                    <span className="flex-1 truncate font-sans text-sm text-left text-core-black">{ch.name}</span>
+                    <span className="flex-1 truncate font-sans text-sm text-left text-foreground">{ch.name}</span>
                     {saving === ch.id && <Loader2 size={13} className="shrink-0 animate-spin text-foreground/40" />}
                   </button>
                 ))}
