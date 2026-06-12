@@ -129,7 +129,7 @@ export function ProfileVideoGrid({
           <div className="mt-8 flex justify-center">
             <button
               onClick={() => setVisibleCount(c => c + 12)}
-              className="h-10 px-6 rounded-full bg-core-black font-sans font-medium text-sm text-white hover:bg-spring-green hover:text-core-black transition-colors"
+              className="h-10 px-6 rounded-full bg-black dark:bg-white font-sans font-medium text-sm text-white dark:text-black hover:bg-spring-green hover:text-black transition-colors"
             >
               Load more
             </button>

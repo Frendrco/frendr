@@ -25,7 +25,7 @@ export function RecessProfileGrid({ videos }: Props) {
   if (videos.length === 0) {
     return (
       <div className="flex flex-col items-center gap-2 py-20 text-center">
-        <p className="font-sans font-semibold text-sm text-core-black">No Recess videos yet</p>
+        <p className="font-sans font-semibold text-sm text-foreground">No Recess videos yet</p>
         <p className="font-sans text-sm text-foreground/40">
           Short loops, tool tests, and quick explorations will live here.
         </p>
@@ -43,7 +43,7 @@ export function RecessProfileGrid({ videos }: Props) {
             className={cn(
               "h-7 rounded-full px-3 font-sans text-xs font-medium transition-colors",
               activeTool === null
-                ? "bg-core-black text-white"
+                ? "bg-black text-white dark:bg-white dark:text-black"
                 : "border border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
             )}
           >
@@ -77,7 +77,7 @@ export function RecessProfileGrid({ videos }: Props) {
         <div className="flex justify-center">
           <button
             onClick={() => setVisibleCount((c) => c + 20)}
-            className="h-10 px-6 rounded-full bg-core-black font-sans font-medium text-sm text-white hover:bg-spring-green hover:text-core-black transition-colors"
+            className="h-10 px-6 rounded-full bg-black dark:bg-white font-sans font-medium text-sm text-white dark:text-black hover:bg-spring-green hover:text-black transition-colors"
           >
             Load more
           </button>

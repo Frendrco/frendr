@@ -67,7 +67,7 @@ export default async function PlaylistsPage({ params }: Props) {
             <Link
               href={`/${username}?tab=playlists`}
               scroll={false}
-              className="pb-3 font-sans font-medium text-sm border-b-2 border-core-black text-core-black"
+              className="pb-3 font-sans font-medium text-sm border-b-2 border-foreground text-foreground"
             >
               Playlists
             </Link>
@@ -75,7 +75,7 @@ export default async function PlaylistsPage({ params }: Props) {
         </div>
 
         <div className="mb-6">
-          <h2 className="font-sans font-bold text-sm text-core-black">
+          <h2 className="font-sans font-bold text-sm text-foreground">
             Playlists
             {playlists.length > 0 && (
               <span className="ml-2 font-normal text-foreground/40">({playlists.length})</span>
@@ -85,7 +85,7 @@ export default async function PlaylistsPage({ params }: Props) {
 
         {playlists.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-24 text-center">
-            <p className="font-sans font-semibold text-base text-core-black">No playlists yet</p>
+            <p className="font-sans font-semibold text-base text-foreground">No playlists yet</p>
             <p className="font-sans text-sm text-foreground/40">
               {isOwn ? "Hover over any video and click the bookmark icon to save it to a playlist." : "This creator hasn't made any public playlists."}
             </p>
@@ -147,7 +147,7 @@ export default async function PlaylistsPage({ params }: Props) {
                 {/* Meta */}
                 <div>
                   <Link href={`/${username}/playlists/${pl.id}`}>
-                    <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1 hover:underline">{pl.name}</p>
+                    <p className="font-sans font-medium text-sm text-foreground leading-snug line-clamp-1 hover:underline">{pl.name}</p>
                   </Link>
                   <p className="font-sans text-xs text-foreground/40">
                     {pl._count.videos} {pl._count.videos === 1 ? "video" : "videos"}

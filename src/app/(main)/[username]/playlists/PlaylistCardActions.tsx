@@ -112,7 +112,7 @@ export function PlaylistCardActions({ playlist, username }: Props) {
       {/* Delete confirmation */}
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogContent className="max-w-xs">
-          <DialogTitle className="font-sans text-base font-semibold text-core-black">
+          <DialogTitle className="font-sans text-base font-semibold text-foreground">
             Delete playlist?
           </DialogTitle>
           <p className="font-sans text-sm text-foreground/50">

@@ -50,7 +50,7 @@ export default async function FollowingPage({ params }: Props) {
   const creators: Creator[] = profileUser.following.map((f: { following: Creator }) => f.following)
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
 
         <Link
@@ -61,7 +61,7 @@ export default async function FollowingPage({ params }: Props) {
         </Link>
 
         <div className="mb-8">
-          <h1 className="font-sans font-bold text-2xl text-core-black">Frends</h1>
+          <h1 className="font-sans font-bold text-2xl text-foreground">Frends</h1>
           <p className="mt-1 font-sans text-sm text-foreground/40">
             {creators.length === 0
               ? `${profileUser.displayName} isn't following anyone yet`
@@ -102,7 +102,7 @@ export default async function FollowingPage({ params }: Props) {
                   <div className="flex w-full flex-col items-center gap-1.5 text-center">
                     <Link
                       href={`/${creator.username}`}
-                      className="font-sans font-semibold text-sm text-core-black hover:underline leading-tight"
+                      className="font-sans font-semibold text-sm text-foreground hover:underline leading-tight"
                     >
                       {creator.displayName}
                     </Link>

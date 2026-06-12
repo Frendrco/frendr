@@ -69,7 +69,7 @@ export function PinnedVideo({ video, isOwn, initialUpvoted }: Props) {
       <div className="mt-3 flex items-start justify-between gap-3">
         <Link
           href={href}
-          className="font-sans font-semibold text-base text-core-black hover:underline leading-snug"
+          className="font-sans font-semibold text-base text-foreground hover:underline leading-snug"
         >
           {video.title}
         </Link>

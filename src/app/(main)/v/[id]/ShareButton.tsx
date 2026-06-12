@@ -61,7 +61,7 @@ export function ShareButton({ title = "", videoId, videoSlug }: Props) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md" showCloseButton>
         <DialogHeader>
-          <DialogTitle className="font-sans font-semibold text-base text-core-black">Share</DialogTitle>
+          <DialogTitle className="font-sans font-semibold text-base text-foreground">Share</DialogTitle>
         </DialogHeader>
 
         {/* Copy link row */}
@@ -98,7 +98,7 @@ export function ShareButton({ title = "", videoId, videoSlug }: Props) {
             <button
               type="button"
               onClick={copyEmbed}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
             >
               {copiedEmbed ? <Check size={11} className="text-spring-green" /> : <Copy size={11} />}
               {copiedEmbed ? "Copied!" : "Copy"}

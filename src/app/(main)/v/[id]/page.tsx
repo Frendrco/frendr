@@ -205,7 +205,7 @@ export default async function VideoPage({ params }: Props) {
   })
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <ViewTracker videoId={id} />
 
       {/* ── Player ─────────────────────────────────────────── */}
@@ -314,7 +314,7 @@ export default async function VideoPage({ params }: Props) {
               </div>
 
               {/* Title — second on mobile, first on desktop */}
-              <h1 className="font-sans font-bold text-xl md:text-2xl text-core-black leading-snug text-center md:text-left order-last md:order-first">
+              <h1 className="font-sans font-bold text-xl md:text-2xl text-foreground leading-snug text-center md:text-left order-last md:order-first">
                 {video.title}
               </h1>
             </div>
@@ -327,7 +327,7 @@ export default async function VideoPage({ params }: Props) {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={video.user.avatarUrl} alt={video.user.displayName} className="h-full w-full object-cover" />
                   ) : (
-                    <span className="font-sans font-bold text-[7px] text-core-black">{video.user.displayName.charAt(0).toUpperCase()}</span>
+                    <span className="font-sans font-bold text-[7px] text-foreground">{video.user.displayName.charAt(0).toUpperCase()}</span>
                   )}
                 </div>
                 <span className="font-sans text-sm text-foreground/60">{video.user.displayName}</span>
@@ -383,7 +383,7 @@ export default async function VideoPage({ params }: Props) {
                     <div key={collab.username} className="flex items-baseline gap-3">
                       <Link
                         href={`/${collab.username}`}
-                        className="font-sans text-xs font-medium text-core-black hover:underline shrink-0"
+                        className="font-sans text-xs font-medium text-foreground hover:underline shrink-0"
                       >
                         {collab.displayName}
                       </Link>

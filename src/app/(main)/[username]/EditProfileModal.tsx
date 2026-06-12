@@ -83,7 +83,7 @@ function BehanceIcon() {
   return <span className="font-sans font-bold text-[11px] tracking-tight">Be</span>
 }
 
-const field = "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+const field = "h-11 w-full rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
 export function EditProfileModal({ profile }: { profile: Profile }) {
   const router       = useRouter()
@@ -201,7 +201,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="w-full h-9 rounded-full border border-border bg-white font-sans text-sm font-medium text-core-black hover:bg-foreground/5 transition-colors"
+        className="w-full h-9 rounded-full border border-border bg-background font-sans text-sm font-medium text-foreground hover:bg-foreground/5 transition-colors"
       >
         Edit profile
       </button>
@@ -213,7 +213,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
         >
           {/* Pinned header */}
           <div className="flex shrink-0 items-center justify-between px-4 py-3 border-b border-border">
-            <DialogTitle className="font-sans text-base font-semibold text-core-black">
+            <DialogTitle className="font-sans text-base font-semibold text-foreground">
               Edit profile
             </DialogTitle>
             <DialogClose
@@ -242,7 +242,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                   )}
                 </div>
                 <div>
-                  <label className="relative inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
+                  <label className="relative inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-background px-3 font-sans text-xs font-medium text-foreground/60 hover:bg-foreground/5 transition-colors">
                     <Camera size={12} /> Change photo
                     <input type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleAvatarChange} />
                   </label>
@@ -277,7 +277,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                     <button key={p} type="button" onClick={() => setPronouns(pronouns === p ? "" : p)}
                       className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
                         pronouns === p
-                          ? "border-core-black bg-core-black text-white"
+                          ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
                           : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
                       )}
                     >{p}</button>
@@ -299,7 +299,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                     <button key={t} type="button" onClick={() => setCreatorType(creatorType === t ? "" : t)}
                       className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
                         creatorType === t
-                          ? "border-core-black bg-core-black text-white"
+                          ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
                           : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
                       )}
                     >{t}</button>
@@ -325,7 +325,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                   placeholder="Tell the community about yourself…"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+                  className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
                 />
               </div>
 
@@ -343,7 +343,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                   <div className={cn("flex items-center gap-0 flex-1", field, "px-0 overflow-hidden")}>
                     <span className="flex h-full items-center px-2 font-sans text-xs text-foreground/40 bg-foreground/5 border-r border-border select-none whitespace-nowrap">instagram.com/</span>
                     <input
-                      className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                      className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                       placeholder="yourhandle"
                       value={instagram}
                       onChange={(e) => setInstagram(e.target.value.replace(/^@/, "").replace(/\s/g, ""))}
@@ -362,7 +362,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                   <div className={cn("flex items-center gap-0 flex-1", field, "px-0 overflow-hidden")}>
                     <span className="flex h-full items-center px-2 font-sans text-xs text-foreground/40 bg-foreground/5 border-r border-border select-none whitespace-nowrap">linkedin.com/in/</span>
                     <input
-                      className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                      className="flex-1 h-full bg-transparent px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                       placeholder="yourhandle"
                       value={linkedin}
                       onChange={(e) => setLinkedin(e.target.value.replace(/^@/, "").replace(/\s/g, ""))}
@@ -418,7 +418,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                         className={cn(
                           "inline-flex h-7 items-center gap-1 rounded-full border px-3 font-sans text-xs font-medium transition-colors",
                           on
-                            ? "border-core-black bg-core-black text-white"
+                            ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
                             : maxed
                             ? "border-border text-foreground/25 cursor-not-allowed"
                             : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
@@ -447,7 +447,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
                           className={cn(
                             "inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
                             on
-                              ? "border-core-black bg-core-black text-white"
+                              ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
                               : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
                           )}
                         >

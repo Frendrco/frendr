@@ -147,7 +147,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   const gridVideos = activeTab === "recess" ? recessVideos : portfolioVideos
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
 
       {/* ── Cover image ──────────────────────────────────────── */}
       <CoverImage initialCoverUrl={user.coverImageUrl} initialCoverVideoUrl={user.coverVideoUrl} isOwn={isOwn} />
@@ -157,7 +157,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
         {/* ── Avatar — overlaps cover bottom edge ───────────── */}
         <div className="-mt-9 mb-4 flex justify-center md:justify-start relative z-10">
           {/* ring-4 on the outer element so it isn't clipped by overflow-hidden */}
-          <div className="h-[72px] w-[72px] rounded-full ring-4 ring-white">
+          <div className="h-[72px] w-[72px] rounded-full ring-4 ring-background">
             <div className="h-full w-full overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
               {avatarUrl ? (
                 <Image src={avatarUrl} alt={user.displayName} width={72} height={72} className="h-full w-full object-cover" />
@@ -176,7 +176,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             {/* Name + role */}
             <div className="mb-4 flex flex-col gap-1 items-center md:items-start text-center md:text-left">
               <div className="w-full text-center md:text-left">
-                <h1 className="inline font-sans font-bold text-base text-core-black leading-tight">{user.displayName}</h1>
+                <h1 className="inline font-sans font-bold text-base text-foreground leading-tight">{user.displayName}</h1>
                 {user.pronouns && (
                   <span className="ml-1.5 font-sans text-xs text-foreground/35">{user.pronouns}</span>
                 )}
@@ -206,7 +206,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               {stats.map(({ label, value, href }) => (
                 <div key={label} className="flex items-center justify-between border-b border-border/50 py-1.5 last:border-0">
                   <span className="font-sans text-xs text-foreground/50">{label}</span>
-                  <Link href={href} className="font-sans text-xs font-semibold text-core-black hover:underline">
+                  <Link href={href} className="font-sans text-xs font-semibold text-foreground hover:underline">
                     {value}
                   </Link>
                 </div>
@@ -227,7 +227,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   href={user.website.startsWith("http") ? user.website : `https://${user.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-sans text-xs text-core-black hover:underline truncate"
+                  className="font-sans text-xs text-foreground hover:underline truncate"
                 >
                   {user.website.replace(/^https?:\/\//, "")}
                 </a>
@@ -279,7 +279,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                 <p className="mb-2 font-sans text-[10px] font-medium uppercase tracking-widest text-foreground/30 text-center md:text-left">Vibes</p>
                 <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
                   {(user.vibes ?? []).map((v) => (
-                    <span key={v} className="rounded-full border border-border bg-white px-2.5 py-0.5 font-sans text-xs text-foreground/60">
+                    <span key={v} className="rounded-full border border-border bg-background px-2.5 py-0.5 font-sans text-xs text-foreground/60">
                       {v}
                     </span>
                   ))}
@@ -345,7 +345,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   scroll={false}
                   className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
                     activeTab === "videos"
-                      ? "border-core-black text-core-black"
+                      ? "border-foreground text-foreground"
                       : "border-transparent text-foreground/40 hover:text-foreground/70"
                   }`}
                 >
@@ -356,7 +356,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   scroll={false}
                   className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
                     activeTab === "recess"
-                      ? "border-core-black text-core-black"
+                      ? "border-foreground text-foreground"
                       : "border-transparent text-foreground/40 hover:text-foreground/70"
                   }`}
                 >
@@ -367,7 +367,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   scroll={false}
                   className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
                     activeTab === "interactive"
-                      ? "border-core-black text-core-black"
+                      ? "border-foreground text-foreground"
                       : "border-transparent text-foreground/40 hover:text-foreground/70"
                   }`}
                 >
@@ -378,7 +378,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                   scroll={false}
                   className={`pb-3 font-sans font-medium text-sm border-b-2 transition-colors ${
                     activeTab === "playlists"
-                      ? "border-core-black text-core-black"
+                      ? "border-foreground text-foreground"
                       : "border-transparent text-foreground/40 hover:text-foreground/70"
                   }`}
                 >
@@ -416,7 +416,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             {activeTab === "playlists" && (
               playlists.length === 0 ? (
                 <div className="flex flex-col items-center gap-3 py-24 text-center">
-                  <p className="font-sans font-semibold text-base text-core-black">No playlists yet</p>
+                  <p className="font-sans font-semibold text-base text-foreground">No playlists yet</p>
                   <p className="font-sans text-sm text-foreground/40">
                     {isOwn ? "Hover over any video and click the bookmark icon to save it to a playlist." : "This creator hasn't made any public playlists."}
                   </p>
@@ -460,7 +460,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                       )}
                       <div>
                         <Link href={`/${username}/playlists/${pl.id}`}>
-                          <p className="font-sans font-medium text-sm text-core-black leading-snug line-clamp-1 hover:underline">{pl.name}</p>
+                          <p className="font-sans font-medium text-sm text-foreground leading-snug line-clamp-1 hover:underline">{pl.name}</p>
                         </Link>
                         <p className="font-sans text-xs text-foreground/40">
                           {pl._count.videos} {pl._count.videos === 1 ? "video" : "videos"}
@@ -515,7 +515,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
                 {/* All videos heading */}
                 <div className="mb-4">
-                  <h2 className="font-sans font-bold text-sm text-core-black">
+                  <h2 className="font-sans font-bold text-sm text-foreground">
                     All Videos
                     {portfolioVideos.length > 0 && (
                       <span className="ml-2 font-normal text-foreground/40">({portfolioVideos.length})</span>

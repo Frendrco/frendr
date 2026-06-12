@@ -18,7 +18,7 @@ interface Props {
   onOpenChange: (open: boolean) => void
 }
 
-const field = "h-10 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+const field = "h-10 w-full rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
 export function EditPlaylistModal({ playlist, open, onOpenChange }: Props) {
   const router = useRouter()
@@ -46,7 +46,7 @@ export function EditPlaylistModal({ playlist, open, onOpenChange }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
-        <DialogTitle className="font-sans text-base font-semibold text-core-black">
+        <DialogTitle className="font-sans text-base font-semibold text-foreground">
           Edit playlist
         </DialogTitle>
 

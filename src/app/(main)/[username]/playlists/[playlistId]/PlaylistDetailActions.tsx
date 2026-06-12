@@ -26,14 +26,14 @@ export function PlaylistDetailActions({ playlist, username }: { playlist: Playli
       <div className="flex items-center gap-2">
         <button
           onClick={copyLink}
-          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans font-medium text-xs text-foreground/60 hover:border-foreground/30 hover:text-foreground transition-colors"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-background px-3 font-sans font-medium text-xs text-foreground/60 hover:border-foreground/30 hover:text-foreground transition-colors"
         >
           {copied ? <Check size={12} className="text-spring-green" /> : <Link2 size={12} />}
           {copied ? "Copied!" : "Copy link"}
         </button>
         <button
           onClick={() => setEditOpen(true)}
-          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-white px-3 font-sans font-medium text-xs text-foreground/60 hover:border-foreground/30 hover:text-foreground transition-colors"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-background px-3 font-sans font-medium text-xs text-foreground/60 hover:border-foreground/30 hover:text-foreground transition-colors"
         >
           <Pencil size={12} />
           Edit
