@@ -47,32 +47,42 @@ export function PinnedVideo({ video, isOwn, initialUpvoted }: Props) {
 
       {/* Video — full width, fixed 16/9 */}
       <div className="relative w-full overflow-hidden rounded-2xl bg-black" style={{ aspectRatio: "16/9" }}>
-        <a href={href} className="group absolute inset-0">
-          {thumb && (
-            <Image
-              src={thumb}
-              alt={video.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 75vw"
-              className="object-cover"
-            />
-          )}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors group-hover:bg-black/30">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform group-hover:scale-105">
-              <Play size={22} className="ml-1 text-core-black" fill="currentColor" />
+        {isOwn ? (
+          <a href={href} className="group absolute inset-0">
+            {thumb && (
+              <Image src={thumb} alt={video.title} fill sizes="(max-width: 768px) 100vw, 75vw" className="object-cover" />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors group-hover:bg-black/30">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform group-hover:scale-105">
+                <Play size={22} className="ml-1 text-core-black" fill="currentColor" />
+              </div>
             </div>
-          </div>
-        </a>
+          </a>
+        ) : (
+          <Link href={href} className="group absolute inset-0">
+            {thumb && (
+              <Image src={thumb} alt={video.title} fill sizes="(max-width: 768px) 100vw, 75vw" className="object-cover" />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors group-hover:bg-black/30">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform group-hover:scale-105">
+                <Play size={22} className="ml-1 text-core-black" fill="currentColor" />
+              </div>
+            </div>
+          </Link>
+        )}
       </div>
 
       {/* Title + actions row */}
       <div className="mt-3 flex items-start justify-between gap-3">
-        <a
-          href={href}
-          className="font-sans font-semibold text-base text-foreground hover:underline leading-snug"
-        >
-          {video.title}
-        </a>
+        {isOwn ? (
+          <a href={href} className="font-sans font-semibold text-base text-foreground hover:underline leading-snug">
+            {video.title}
+          </a>
+        ) : (
+          <Link href={href} className="font-sans font-semibold text-base text-foreground hover:underline leading-snug">
+            {video.title}
+          </Link>
+        )}
 
         <div className="flex shrink-0 items-center gap-1.5">
           <UpvoteButton

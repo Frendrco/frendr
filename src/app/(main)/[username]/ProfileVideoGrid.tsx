@@ -122,7 +122,6 @@ export function ProfileVideoGrid({
               video={{ ...video, user: { username, displayName, avatarUrl } }}
               hideCreator
               hideTags
-              hardNav
               priority={i < 4}
             />
           ))}
