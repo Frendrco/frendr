@@ -10,7 +10,7 @@ export default async function MyVideosPage() {
 
   const user = await prisma.user.findUnique({
     where: { clerkId },
-    select: { id: true },
+    select: { id: true, username: true },
   })
   if (!user) redirect("/sign-in")
 
@@ -18,14 +18,33 @@ export default async function MyVideosPage() {
     where: { userId: user.id },
     select: {
       id: true,
+      slug: true,
       title: true,
+      description: true,
       thumbnailUrl: true,
       streamId: true,
       externalUrl: true,
       duration: true,
       visibility: true,
       videoType: true,
-      slug: true,
+      tags: true,
+      categories: true,
+      password: true,
+      hideFromFeeds: true,
+      allowComments: true,
+      allowDownloads: true,
+      embedAutoplay: true,
+      embedLoop: true,
+      embedShowControls: true,
+      allowEmbedding: true,
+      collaborators: {
+        select: {
+          userId: true,
+          role: true,
+          status: true,
+          user: { select: { username: true, displayName: true, avatarUrl: true } },
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
   })
@@ -53,7 +72,7 @@ export default async function MyVideosPage() {
         ) : (
           <div className="flex flex-col gap-3">
             {videos.map(video => (
-              <VideoEditRow key={video.id} video={video} />
+              <VideoEditRow key={video.id} video={video} username={user.username} />
             ))}
           </div>
         )}

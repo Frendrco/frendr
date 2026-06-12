@@ -167,7 +167,7 @@ export function VideoModal({ video, initialUpvoted }: { video: VideoData; initia
           <Player video={video} />
 
           {/* Hover info overlay */}
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent px-5 pb-5 pt-16 opacity-0 transition-opacity duration-300 group-hover/modal:opacity-100">
+          <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent px-5 pt-4 pb-10 opacity-0 transition-opacity duration-300 group-hover/modal:opacity-100">
             <div className="flex items-center gap-3">
 
               {/* Creator */}

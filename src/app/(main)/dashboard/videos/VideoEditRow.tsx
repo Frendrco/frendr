@@ -4,20 +4,40 @@ import { useState, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ExternalLink, Check, Loader2 } from "lucide-react"
+import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
+
+interface Collaborator {
+  userId: string
+  role: string | null
+  status: string
+  user: { username: string; displayName: string; avatarUrl: string | null }
+}
 
 interface Video {
   id: string
+  slug: string | null
   title: string
+  description: string | null
   thumbnailUrl: string | null
   streamId: string | null
   externalUrl: string | null
   duration: number | null
   visibility: string
   videoType: string
-  slug: string | null
+  tags: string[]
+  categories: string[]
+  password: string | null
+  hideFromFeeds: boolean
+  allowComments: boolean
+  allowDownloads: boolean
+  embedAutoplay: boolean
+  embedLoop: boolean
+  embedShowControls: boolean
+  allowEmbedding: boolean
+  collaborators: Collaborator[]
 }
 
-export function VideoEditRow({ video }: { video: Video }) {
+export function VideoEditRow({ video, username }: { video: Video; username: string }) {
   const isStream = !!video.streamId
 
   const initialTime = (() => {
@@ -121,14 +141,45 @@ export function VideoEditRow({ video }: { video: Video }) {
                 </span>
               </div>
             </div>
-            <Link
-              href={videoHref}
-              target="_blank"
-              className="shrink-0 flex items-center gap-1 font-sans text-xs text-foreground/40 hover:text-foreground transition-colors"
-            >
-              <ExternalLink size={11} />
-              View
-            </Link>
+            <div className="flex items-center gap-2 shrink-0">
+              <VideoOwnerActions
+                videoId={video.id}
+                username={username}
+                streamId={video.streamId}
+                streamDuration={video.duration}
+                videoType={video.videoType}
+                initialTitle={video.title}
+                initialDescription={video.description ?? ""}
+                initialTags={video.tags}
+                initialCategories={video.categories}
+                initialThumbnailUrl={video.thumbnailUrl}
+                initialVisibility={video.visibility as "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE"}
+                initialHasPassword={!!video.password}
+                initialHideFromFeeds={video.hideFromFeeds}
+                initialAllowComments={video.allowComments}
+                initialAllowDownloads={video.allowDownloads}
+                initialCollaborators={video.collaborators.map(c => ({
+                  userId: c.userId,
+                  username: c.user.username,
+                  displayName: c.user.displayName,
+                  avatarUrl: c.user.avatarUrl,
+                  role: c.role,
+                  status: c.status,
+                }))}
+                initialEmbedAutoplay={video.embedAutoplay}
+                initialEmbedLoop={video.embedLoop}
+                initialEmbedShowControls={video.embedShowControls}
+                initialAllowEmbedding={video.allowEmbedding}
+              />
+              <Link
+                href={videoHref}
+                target="_blank"
+                className="flex items-center gap-1 font-sans text-xs text-foreground/40 hover:text-foreground transition-colors"
+              >
+                <ExternalLink size={11} />
+                View
+              </Link>
+            </div>
           </div>
 
           {/* Thumbnail editor */}

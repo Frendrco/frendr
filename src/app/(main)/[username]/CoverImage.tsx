@@ -95,7 +95,7 @@ export function CoverImage({ initialCoverUrl, initialCoverVideoUrl, isOwn }: Pro
   const hasCover = !!(coverVideoUrl || coverUrl)
 
   return (
-    <div className="relative w-full h-[200px] bg-mist-grey">
+    <div className="relative w-full h-[320px] bg-mist-grey">
 
       {/* Cover media */}
       <div className="absolute inset-0 overflow-hidden">
