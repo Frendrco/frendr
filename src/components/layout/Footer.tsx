@@ -90,7 +90,7 @@ export function Footer() {
           alt="frendr"
           width={800}
           height={800}
-          className="w-[120vw] max-w-none h-auto -ml-[10vw]"
+          className="w-[120vw] max-w-none h-auto -ml-[10vw] dark:invert"
           style={{ marginTop: "-48.5vw" }}
           priority
         />
