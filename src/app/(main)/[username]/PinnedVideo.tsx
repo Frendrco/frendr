@@ -47,7 +47,7 @@ export function PinnedVideo({ video, isOwn, initialUpvoted }: Props) {
 
       {/* Video — full width, fixed 16/9 */}
       <div className="relative w-full overflow-hidden rounded-2xl bg-black" style={{ aspectRatio: "16/9" }}>
-        <Link href={href} className="group absolute inset-0">
+        <a href={href} className="group absolute inset-0">
           {thumb && (
             <Image
               src={thumb}
@@ -62,17 +62,17 @@ export function PinnedVideo({ video, isOwn, initialUpvoted }: Props) {
               <Play size={22} className="ml-1 text-core-black" fill="currentColor" />
             </div>
           </div>
-        </Link>
+        </a>
       </div>
 
       {/* Title + actions row */}
       <div className="mt-3 flex items-start justify-between gap-3">
-        <Link
+        <a
           href={href}
           className="font-sans font-semibold text-base text-foreground hover:underline leading-snug"
         >
           {video.title}
-        </Link>
+        </a>
 
         <div className="flex shrink-0 items-center gap-1.5">
           <UpvoteButton

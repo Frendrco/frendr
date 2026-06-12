@@ -31,6 +31,7 @@ type Props = {
   hideCreator?: boolean
   hideTags?: boolean
   priority?: boolean
+  hardNav?: boolean
   actionsSlot?: React.ReactNode
   mobileActionsSlot?: React.ReactNode
 }
@@ -41,7 +42,7 @@ function cfThumb(url: string | null): string | null {
   return url + (url.includes("?") ? "&" : "?") + "width=1280"
 }
 
-export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hideCreator = false, hideTags = false, priority = false, actionsSlot, mobileActionsSlot }: Props) {
+export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hideCreator = false, hideTags = false, priority = false, hardNav = false, actionsSlot, mobileActionsSlot }: Props) {
   const initials = video.user.displayName
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
 
@@ -82,11 +83,11 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
         )}
 
         {/* Base link — covers full thumbnail for mobile taps */}
-        <Link
-          href={`/v/${video.slug ?? video.id}`}
-          className="absolute inset-0 z-10"
-          aria-label={`Play ${video.title}`}
-        />
+        {hardNav ? (
+          <a href={`/v/${video.slug ?? video.id}`} className="absolute inset-0 z-10" aria-label={`Play ${video.title}`} />
+        ) : (
+          <Link href={`/v/${video.slug ?? video.id}`} className="absolute inset-0 z-10" aria-label={`Play ${video.title}`} />
+        )}
 
         {/* Hover overlay — pointer-events-none so link stays clickable */}
         <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/40 transition-all duration-300 pointer-events-none">

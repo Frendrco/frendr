@@ -63,6 +63,7 @@ function SortableCard({ video, pinnedVideoId, username, displayName, avatarUrl }
         video={{ ...video, user: { username, displayName, avatarUrl } }}
         hideCreator
         hideTags
+        hardNav
         actionsSlot={
           <PinButton videoId={video.id} isPinned={pinnedVideoId === video.id} />
         }
@@ -121,6 +122,7 @@ export function ProfileVideoGrid({
               video={{ ...video, user: { username, displayName, avatarUrl } }}
               hideCreator
               hideTags
+              hardNav
               priority={i < 4}
             />
           ))}
