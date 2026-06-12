@@ -54,7 +54,7 @@ type Props = {
 
 export function RecessCard({ video, fixedWidth = false }: Props) {
   const toolTag = getToolTag(video.categories)
-  const tagColor = toolTag && TOOL_COLORS[toolTag] ? TOOL_COLORS[toolTag] : "bg-white/90 text-core-black"
+  const tagColor = toolTag && TOOL_COLORS[toolTag] ? TOOL_COLORS[toolTag] : "bg-white/90 dark:bg-black/80 text-core-black"
 
   const initials = video.user.displayName
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
@@ -101,7 +101,7 @@ export function RecessCard({ video, fixedWidth = false }: Props) {
           </div>
         </Link>
         <Link href={`/${video.user.username}`} className="min-w-0">
-          <p className="truncate font-sans text-xs text-core-black leading-none">{video.user.displayName}</p>
+          <p className="truncate font-sans text-xs text-foreground leading-none">{video.user.displayName}</p>
         </Link>
         {video.likeCount !== undefined && video.likeCount > 0 && (
           <div className="ml-auto flex items-center gap-0.5 shrink-0">

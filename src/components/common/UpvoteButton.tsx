@@ -59,20 +59,20 @@ export function UpvoteButton({ videoId, initialUpvoted, initialCount, initialLik
         className={cn(
           "flex h-9 items-center gap-1.5 rounded-full border px-3 font-sans text-xs font-medium transition-colors",
           liked
-            ? "border-spring-green bg-spring-green/10 text-core-black"
+            ? "border-spring-green bg-spring-green/10 text-foreground"
             : "border-border text-foreground/40 hover:border-foreground/30 hover:text-foreground"
         )}
       >
         <Heart
           size={14}
           strokeWidth={2}
-          className={cn(liked ? "fill-current text-core-black" : "")}
+          className={cn(liked ? "fill-current text-foreground" : "")}
         />
         <span>{count}</span>
       </button>
 
       {hovered && tooltipText && (
-        <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-core-black px-2.5 py-1.5 font-sans text-xs text-white shadow-lg z-50">
+        <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-core-black dark:bg-white px-2.5 py-1.5 font-sans text-xs text-white dark:text-core-black shadow-lg z-50">
           {tooltipText}
         </div>
       )}

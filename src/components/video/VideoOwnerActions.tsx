@@ -31,7 +31,7 @@ function randomFrameTimes(duration: number | null): string[] {
 }
 
 const field =
-  "h-11 w-full rounded-xl border border-border bg-white px-4 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
+  "h-11 w-full rounded-xl border border-border bg-background px-4 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green"
 
 const CATEGORIES = [
   "Motion Design", "Animation", "3D", "Motion Graphics", "VFX",
@@ -283,7 +283,7 @@ export function VideoOwnerActions({
           {/* Pinned header */}
           <div className="shrink-0 border-b border-border">
             <div className="flex items-center justify-between px-4 pt-3 pb-0">
-              <DialogTitle className="font-sans text-base font-semibold text-core-black">
+              <DialogTitle className="font-sans text-base font-semibold text-foreground">
                 Edit video
               </DialogTitle>
               <DialogClose
@@ -307,7 +307,7 @@ export function VideoOwnerActions({
                   className={cn(
                     "pb-2.5 pt-2 font-sans font-medium text-sm capitalize border-b-2 -mb-px transition-colors",
                     tab === t
-                      ? "border-core-black text-core-black"
+                      ? "border-foreground text-foreground"
                       : "border-transparent text-foreground/40 hover:text-foreground/70"
                   )}
                 >
@@ -325,15 +325,15 @@ export function VideoOwnerActions({
               <div className="flex flex-col gap-5">
                 {/* Title */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-sm font-medium text-core-black">Title</label>
+                  <label className="font-sans text-sm font-medium text-foreground">Title</label>
                   <input className={field} value={title} onChange={(e) => setTitle(e.target.value)} />
                 </div>
 
                 {/* Description */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-sm font-medium text-core-black">Description</label>
+                  <label className="font-sans text-sm font-medium text-foreground">Description</label>
                   <textarea
-                    className="w-full rounded-xl border border-border bg-white px-4 py-3 font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green resize-none"
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green resize-none"
                     rows={4}
                     placeholder="Add a description…"
                     value={description}
@@ -345,13 +345,13 @@ export function VideoOwnerActions({
                 {isRecess ? (
                   <div className="flex flex-col gap-2">
                     <div className="flex items-baseline justify-between">
-                      <label className="font-sans text-sm font-medium text-core-black">Tools used</label>
+                      <label className="font-sans text-sm font-medium text-foreground">Tools used</label>
                       <span className="font-sans text-xs text-foreground/40">{recessTools.length}/{MAX_RECESS_TOOLS}</span>
                     </div>
                     {recessTools.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {recessTools.map((tool) => (
-                          <span key={tool} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black px-3 py-0.5 font-sans text-xs font-medium text-white">
+                          <span key={tool} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black dark:bg-white dark:border-white px-3 py-0.5 font-sans text-xs font-medium text-white dark:text-core-black">
                             {tool}
                             <button type="button" onClick={() => setRecessTools((prev) => prev.filter((t) => t !== tool))} className="hover:opacity-60 transition-opacity">
                               <X size={10} />
@@ -379,13 +379,13 @@ export function VideoOwnerActions({
                 ) : (
                   <div className="flex flex-col gap-2">
                     <div className="flex items-baseline justify-between">
-                      <label className="font-sans text-sm font-medium text-core-black">Categories</label>
+                      <label className="font-sans text-sm font-medium text-foreground">Categories</label>
                       <span className="font-sans text-xs text-foreground/40">{tags.length}/{MAX_CATEGORIES}</span>
                     </div>
                     {tags.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {tags.map((cat) => (
-                          <span key={cat} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black px-3 py-0.5 font-sans text-xs font-medium text-white">
+                          <span key={cat} className="inline-flex items-center gap-1 rounded-full border border-core-black bg-core-black dark:bg-white dark:border-white px-3 py-0.5 font-sans text-xs font-medium text-white dark:text-core-black">
                             {cat}
                             <button type="button" onClick={() => setTags((prev) => prev.filter((t) => t !== cat))} className="hover:opacity-60 transition-opacity">
                               <X size={10} />
@@ -394,10 +394,10 @@ export function VideoOwnerActions({
                         ))}
                       </div>
                     )}
-                    <div className="flex flex-col gap-2 rounded-xl border border-border bg-white p-3">
+                    <div className="flex flex-col gap-2 rounded-xl border border-border bg-background p-3">
                       <div className="flex items-center gap-2 rounded-lg border border-border px-3 h-9">
                         <Search size={13} className="shrink-0 text-foreground/30" />
-                        <input className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                        <input className="flex-1 bg-transparent font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                           placeholder="Search categories…" value={categorySearch} onChange={(e) => setCategorySearch(e.target.value)} />
                       </div>
                       <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto">
@@ -409,7 +409,7 @@ export function VideoOwnerActions({
                               onClick={() => setTags((prev) => on ? prev.filter((t) => t !== cat) : maxed ? prev : [...prev, cat])}
                               disabled={maxed}
                               className={cn("inline-flex h-7 items-center rounded-full border px-3 font-sans text-xs font-medium transition-colors",
-                                on    ? "border-core-black bg-core-black text-white"
+                                on    ? "border-core-black bg-core-black dark:bg-white dark:border-white text-white dark:text-core-black"
                                   : maxed ? "border-border text-foreground/25 cursor-not-allowed"
                                   : "border-border text-foreground/60 hover:border-foreground/40 hover:text-foreground"
                               )}
@@ -423,7 +423,7 @@ export function VideoOwnerActions({
 
                 {/* Thumbnail */}
                 <div className="flex flex-col gap-2">
-                  <label className="font-sans text-sm font-medium text-core-black">Thumbnail</label>
+                  <label className="font-sans text-sm font-medium text-foreground">Thumbnail</label>
 
                   {thumbMode === "default" ? (
                     <div className="flex gap-3">
@@ -436,7 +436,7 @@ export function VideoOwnerActions({
                         )}
                       </div>
                       <div className="flex flex-1 flex-col gap-2">
-                        <label className={cn("relative flex h-10 w-full cursor-pointer items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-core-black transition-colors hover:border-foreground/30", uploadingThumb && "opacity-50 pointer-events-none")}>
+                        <label className={cn("relative flex h-10 w-full cursor-pointer items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-foreground transition-colors hover:border-foreground/30", uploadingThumb && "opacity-50 pointer-events-none")}>
                           <Upload size={14} className="shrink-0" />
                           {uploadingThumb ? "Uploading…" : "Upload image"}
                           <input type="file" accept="image/jpeg,image/png,image/webp" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleThumbFileChange} disabled={uploadingThumb} />
@@ -445,7 +445,7 @@ export function VideoOwnerActions({
                           type="button"
                           onClick={() => { setFramePercents(randomFrameTimes(streamDuration ?? null)); setThumbMode("frames") }}
                           disabled={!streamId}
-                          className="flex h-10 w-full items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-core-black transition-colors hover:border-foreground/30 disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="flex h-10 w-full items-center gap-2 rounded-xl border border-border px-4 font-sans text-sm text-foreground transition-colors hover:border-foreground/30 disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           <Play size={14} className="shrink-0" />
                           Pick a frame
@@ -487,7 +487,7 @@ export function VideoOwnerActions({
 
                 {/* Replace video */}
                 <div className="flex flex-col gap-2">
-                  <label className="font-sans text-sm font-medium text-core-black">Replace video</label>
+                  <label className="font-sans text-sm font-medium text-foreground">Replace video</label>
                   <button
                     type="button"
                     disabled
@@ -497,7 +497,7 @@ export function VideoOwnerActions({
                       <Upload size={15} className="text-foreground/40" />
                     </div>
                     <div>
-                      <p className="font-sans text-sm font-medium text-core-black">Upload a new file</p>
+                      <p className="font-sans text-sm font-medium text-foreground">Upload a new file</p>
                       <p className="font-sans text-xs text-foreground/40">Replaces the video, keeps all metadata and tags</p>
                     </div>
                   </button>
@@ -505,12 +505,12 @@ export function VideoOwnerActions({
 
                 {/* Visibility */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-sm font-medium text-core-black">Visibility</label>
+                  <label className="font-sans text-sm font-medium text-foreground">Visibility</label>
                   <div className="relative">
                     <select
                       value={visibility}
                       onChange={(e) => setVisibility(e.target.value as "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE")}
-                      className="h-11 w-full appearance-none rounded-xl border border-border bg-white pl-4 pr-10 font-sans text-sm text-core-black focus:outline-none focus:ring-2 focus:ring-spring-green"
+                      className="h-11 w-full appearance-none rounded-xl border border-border bg-background pl-4 pr-10 font-sans text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-spring-green"
                     >
                       <option value="PUBLIC">Everyone</option>
                       <option value="FOLLOWERS_ONLY">Followers only</option>
@@ -528,7 +528,7 @@ export function VideoOwnerActions({
 
                 {/* Password protection */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-sans text-sm font-medium text-core-black">Password protection</label>
+                  <label className="font-sans text-sm font-medium text-foreground">Password protection</label>
                   <input
                     type="password"
                     placeholder={initialHasPassword ? "Enter new password to change" : "Set a password (optional)"}
@@ -570,7 +570,7 @@ export function VideoOwnerActions({
                     className="flex items-center justify-between gap-4 text-left"
                   >
                     <div>
-                      <p className="font-sans text-sm font-medium text-core-black">{label}</p>
+                      <p className="font-sans text-sm font-medium text-foreground">{label}</p>
                       <p className="font-sans text-xs text-foreground/40">{desc}</p>
                     </div>
                     <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", on ? "bg-spring-green" : "bg-border")}>
@@ -587,7 +587,7 @@ export function VideoOwnerActions({
                     className="flex items-center justify-between gap-4 text-left"
                   >
                     <div>
-                      <p className="font-sans text-sm font-medium text-core-black">Allow downloads</p>
+                      <p className="font-sans text-sm font-medium text-foreground">Allow downloads</p>
                       <p className="font-sans text-xs text-foreground/40">Let viewers download your video as an MP4 file.</p>
                     </div>
                     <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowDownloads ? "bg-spring-green" : "bg-border")}>
@@ -611,7 +611,7 @@ export function VideoOwnerActions({
                       className="flex items-center justify-between gap-4 text-left"
                     >
                       <div>
-                        <p className="font-sans text-sm font-medium text-core-black">{label}</p>
+                        <p className="font-sans text-sm font-medium text-foreground">{label}</p>
                         <p className="font-sans text-xs text-foreground/40">{desc}</p>
                       </div>
                       <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", on ? "bg-spring-green" : "bg-border")}>
@@ -634,7 +634,7 @@ export function VideoOwnerActions({
                     className="flex w-full items-center justify-between gap-4 text-left"
                   >
                     <div>
-                      <p className="font-sans text-sm font-medium text-core-black">Allow embedding on other sites</p>
+                      <p className="font-sans text-sm font-medium text-foreground">Allow embedding on other sites</p>
                       <p className="font-sans text-xs text-foreground/40">Let anyone embed your video player on their website or blog.</p>
                     </div>
                     <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowEmbedding ? "bg-spring-green" : "bg-border")}>
@@ -651,7 +651,7 @@ export function VideoOwnerActions({
                     <button
                       type="button"
                       onClick={copyEmbed}
-                      className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
+                      className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 font-sans text-xs text-foreground/50 hover:text-foreground transition-colors"
                     >
                       {copied ? <Check size={12} className="text-spring-green" /> : <Copy size={12} />}
                       {copied ? "Copied!" : "Copy"}
@@ -676,7 +676,7 @@ export function VideoOwnerActions({
                       <span
                         key={c.userId}
                         className={cn(
-                          "inline-flex items-center gap-2 rounded-full border pl-1.5 pr-2.5 py-1 font-sans text-xs text-core-black self-start",
+                          "inline-flex items-center gap-2 rounded-full border pl-1.5 pr-2.5 py-1 font-sans text-xs text-foreground self-start",
                           c.status === "DECLINED"
                             ? "border-destructive/30 bg-destructive/5 opacity-60"
                             : "border-border bg-foreground/[0.06]"
@@ -696,7 +696,7 @@ export function VideoOwnerActions({
                           value={c.role ?? ""}
                           onChange={(e) => updateCollabRole(c.userId, e.target.value)}
                           placeholder="Role…"
-                          className="w-20 bg-transparent placeholder:text-foreground/35 text-core-black focus:outline-none"
+                          className="w-20 bg-transparent placeholder:text-foreground/35 text-foreground focus:outline-none"
                         />
                         {c.status === "PENDING" && (
                           <span className="rounded-full bg-amber-100 px-1.5 py-0.5 font-sans text-[10px] font-medium text-amber-700">
@@ -718,10 +718,10 @@ export function VideoOwnerActions({
 
                 {/* Search */}
                 <div className="relative">
-                  <div className="flex items-center gap-2 rounded-xl border border-border bg-white px-3 h-11">
+                  <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 h-11">
                     <Search size={13} className="shrink-0 text-foreground/30" />
                     <input
-                      className="flex-1 bg-transparent font-sans text-sm text-core-black placeholder:text-foreground/30 focus:outline-none"
+                      className="flex-1 bg-transparent font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
                       placeholder="Search by name or @handle…"
                       value={collabSearch}
                       onChange={(e) => setCollabSearch(e.target.value)}
@@ -729,7 +729,7 @@ export function VideoOwnerActions({
                     {collabLoading && <span className="h-3.5 w-3.5 animate-spin rounded-full border border-border border-t-foreground/40 shrink-0" />}
                   </div>
                   {collabResults.length > 0 && (
-                    <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-border bg-white shadow-lg">
+                    <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-border bg-background shadow-lg">
                       {collabResults
                         .filter((r) => !collabs.find((c) => c.userId === r.userId))
                         .map((r) => (
@@ -747,7 +747,7 @@ export function VideoOwnerActions({
                               }
                             </span>
                             <div className="text-left">
-                              <p className="font-sans text-sm font-medium text-core-black">{r.displayName}</p>
+                              <p className="font-sans text-sm font-medium text-foreground">{r.displayName}</p>
                               <p className="font-sans text-xs text-foreground/40">@{r.username}</p>
                             </div>
                           </button>
@@ -788,7 +788,7 @@ export function VideoOwnerActions({
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle className="font-sans text-base font-semibold text-core-black">
+            <DialogTitle className="font-sans text-base font-semibold text-foreground">
               Delete this video?
             </DialogTitle>
           </DialogHeader>

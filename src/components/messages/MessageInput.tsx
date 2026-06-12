@@ -98,7 +98,7 @@ export function MessageInput({ conversationId, onSent }: Props) {
         placeholder="Send a message…"
         rows={1}
         className={cn(
-          "flex-1 resize-none rounded-2xl border border-border bg-white px-4 py-2.5",
+          "flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-2.5",
           "font-sans text-base md:text-sm text-foreground placeholder:text-foreground/30",
           "focus:outline-none focus:border-black/20",
           "transition-colors min-h-[42px] max-h-32"
@@ -115,7 +115,7 @@ export function MessageInput({ conversationId, onSent }: Props) {
         disabled={!body.trim() || sending}
         className={cn(
           "flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full transition-colors",
-          body.trim() ? "bg-core-black text-white hover:bg-spring-green hover:text-core-black" : "bg-foreground/10 text-foreground/30"
+          body.trim() ? "bg-core-black dark:bg-white text-white dark:text-core-black hover:bg-spring-green hover:text-core-black" : "bg-foreground/10 text-foreground/30"
         )}
         aria-label="Send message"
       >

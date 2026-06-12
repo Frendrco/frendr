@@ -60,20 +60,20 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
     <>
       {/* ── Mobile full-screen overlay ── */}
       {open && (
-        <div className="fixed inset-0 z-[60] flex flex-col bg-white md:hidden">
+        <div className="fixed inset-0 z-[60] flex flex-col bg-background md:hidden">
 
           {/* Top bar */}
           <div className="flex items-center justify-between px-4 h-16 shrink-0">
             <Link
               href="/"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 bg-white hover:bg-spring-green hover:border-spring-green transition-colors"
+              className="flex items-center justify-center h-10 w-10 rounded-full border border-black/10 dark:border-white/10 bg-background hover:bg-spring-green hover:border-spring-green transition-colors"
             >
-              <Logo variant="symbol" height={22} colour="black" />
+              <Logo variant="symbol" height={22} colour="auto" />
             </Link>
             <button
               onClick={() => setOpen(false)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-foreground/60 hover:text-foreground transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 dark:border-white/10 text-foreground/60 hover:text-foreground transition-colors"
               aria-label="Close menu"
             >
               <X size={17} />
@@ -92,7 +92,7 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="font-sans font-medium text-2xl text-core-black py-3 hover:text-spring-green transition-colors"
+                className="font-sans font-medium text-2xl text-foreground py-3 hover:text-spring-green transition-colors"
               >
                 {link.label}
               </Link>
@@ -111,7 +111,7 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
               Upload
             </Link>
 
-            <div className="border-t border-black/10 mt-1" />
+            <div className="border-t border-black/10 dark:border-white/10 mt-1" />
 
             <button
               onClick={() => navigate(username ? `/${username}` : "/onboarding")}
@@ -147,7 +147,7 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
               <Tv2 size={16} strokeWidth={1.5} className="text-foreground/40" />
             </button>
 
-            <div className="border-t border-black/10 mt-1" />
+            <div className="border-t border-black/10 dark:border-white/10 mt-1" />
 
             <button
               onClick={() => signOut(() => router.push("/"))}

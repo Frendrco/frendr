@@ -46,7 +46,7 @@ export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCou
   }
 
   return (
-    <div className="rounded-2xl border border-border overflow-hidden bg-white flex flex-col">
+    <div className="rounded-2xl border border-border overflow-hidden bg-background flex flex-col">
       {/* Iframe / placeholder */}
       <div
         className="relative aspect-[4/3] bg-mist-grey cursor-crosshair"
@@ -111,7 +111,7 @@ export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCou
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-sans text-sm font-medium text-core-black truncate leading-tight">{title}</p>
+          <p className="font-sans text-sm font-medium text-foreground truncate leading-tight">{title}</p>
           <p className="font-sans text-xs text-foreground/40 leading-tight">@{user.username}</p>
         </div>
         <div className="flex items-center gap-3 shrink-0">

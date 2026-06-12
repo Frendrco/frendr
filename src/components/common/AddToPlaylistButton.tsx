@@ -114,7 +114,7 @@ export function AddToPlaylistButton({ videoId, triggerClassName, initialSaved }:
     <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger
-          className={triggerClassName ?? "flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow text-core-black hover:bg-white transition-colors"}
+          className={triggerClassName ?? "flex h-8 w-8 items-center justify-center rounded-full bg-white/90 dark:bg-black/80 shadow text-core-black hover:bg-white transition-colors"}
           title="Save to playlist"
         >
           <Bookmark size={14} className={isSaved ? "fill-current" : ""} />
@@ -125,7 +125,7 @@ export function AddToPlaylistButton({ videoId, triggerClassName, initialSaved }:
           onClick={(e) => { e.preventDefault(); e.stopPropagation() }}
         >
           <div className="px-3 py-2.5 border-b border-border">
-            <p className="font-sans font-semibold text-xs text-core-black">Save to</p>
+            <p className="font-sans font-semibold text-xs text-foreground">Save to</p>
           </div>
 
           {/* Watch Later — always first */}
@@ -135,7 +135,7 @@ export function AddToPlaylistButton({ videoId, triggerClassName, initialSaved }:
           >
             <Checkbox checked={watchLaterPlaylist?.hasVideo ?? false} className="pointer-events-none" />
             <Clock size={13} className="shrink-0 text-foreground/50" />
-            <span className="flex-1 truncate font-sans text-sm text-left text-core-black">Watch Later</span>
+            <span className="flex-1 truncate font-sans text-sm text-left text-foreground">Watch Later</span>
           </button>
 
           <div className="max-h-52 overflow-y-auto">
@@ -153,7 +153,7 @@ export function AddToPlaylistButton({ videoId, triggerClassName, initialSaved }:
                   className="flex w-full items-center gap-2.5 px-3 py-2 hover:bg-foreground/4 transition-colors"
                 >
                   <Checkbox checked={pl.hasVideo} className="pointer-events-none" />
-                  <span className="flex-1 truncate font-sans text-sm text-left text-core-black">{pl.name}</span>
+                  <span className="flex-1 truncate font-sans text-sm text-left text-foreground">{pl.name}</span>
                   {pl.isPublic ? (
                     <Globe size={11} className="shrink-0 text-foreground/30" />
                   ) : (
@@ -194,7 +194,7 @@ export function AddToPlaylistButton({ videoId, triggerClassName, initialSaved }:
                     <button
                       onClick={createPlaylist}
                       disabled={!newName.trim() || creating}
-                      className="h-7 rounded-full bg-core-black px-3 font-sans text-xs text-white disabled:opacity-40 transition-opacity"
+                      className="h-7 rounded-full bg-core-black dark:bg-white px-3 font-sans text-xs text-white dark:text-core-black disabled:opacity-40 transition-opacity"
                     >
                       {creating ? <Loader2 size={12} className="animate-spin" /> : "Create"}
                     </button>

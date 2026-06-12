@@ -122,7 +122,7 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
       {/* Meta */}
       {hideCreator ? (
         <a href={`/v/${video.slug ?? video.id}`}>
-          <p className="truncate font-sans font-medium text-sm text-core-black leading-snug">{video.title}</p>
+          <p className="truncate font-sans font-medium text-sm text-foreground leading-snug">{video.title}</p>
           {showTimestamp && (
             <p className="font-sans text-xs text-foreground/40">{timeAgo(video.createdAt)}</p>
           )}
@@ -146,7 +146,7 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
             </div>
           </Link>
           <div className="min-w-0">
-            <a href={`/v/${video.slug ?? video.id}`} className="block truncate font-sans font-medium text-sm text-core-black leading-snug hover:underline">
+            <a href={`/v/${video.slug ?? video.id}`} className="block truncate font-sans font-medium text-sm text-foreground leading-snug hover:underline">
               {video.title}
             </a>
             <Link href={`/${video.user.username}`} className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors">

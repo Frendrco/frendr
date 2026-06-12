@@ -195,11 +195,11 @@ export function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-11 z-50 w-80 rounded-2xl border border-black/10 bg-white shadow-xl overflow-hidden">
+        <div className="absolute right-0 top-11 z-50 w-80 rounded-2xl border border-black/10 dark:border-white/10 bg-background shadow-xl overflow-hidden">
 
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-black/5">
-            <span className="font-sans font-semibold text-sm text-core-black">Notifications</span>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-black/5 dark:border-white/5">
+            <span className="font-sans font-semibold text-sm text-foreground">Notifications</span>
             {notifications.length > 0 && (
               <div className="flex items-center gap-3">
                 {unreadCount > 0 && (
@@ -215,7 +215,7 @@ export function NotificationsBell() {
           </div>
 
           {/* Push permission prompt */}
-          <div className="px-3 py-2 border-b border-black/5 empty:hidden">
+          <div className="px-3 py-2 border-b border-black/5 dark:border-white/5 empty:hidden">
             <PushPermissionBanner />
           </div>
 
@@ -262,7 +262,7 @@ export function NotificationsBell() {
 
                   {/* Text + actions */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-sans text-sm text-core-black leading-snug">{notifMessage(n)}</p>
+                    <p className="font-sans text-sm text-foreground leading-snug">{notifMessage(n)}</p>
                     <p className="font-sans text-xs text-foreground/40 mt-0.5">{timeAgo(n.createdAt)}</p>
                     {n.type === "credit_request" && (
                       <div className="flex gap-2 mt-2">
@@ -290,7 +290,7 @@ export function NotificationsBell() {
           </div>
 
           {/* Footer */}
-          <div className="border-t border-black/5 px-4 py-3">
+          <div className="border-t border-black/5 dark:border-white/5 px-4 py-3">
             <Link
               href="/notifications"
               onClick={() => setOpen(false)}

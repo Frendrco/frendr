@@ -54,7 +54,7 @@ export function ProfileActions({ isOwn, openToWork: initial }: Props) {
       {/* Edit Profile */}
       <Link
         href="/dashboard/settings"
-        className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border font-sans font-medium text-sm text-core-black hover:bg-foreground/5 transition-colors"
+        className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border font-sans font-medium text-sm text-foreground hover:bg-foreground/5 transition-colors"
       >
         <Pencil size={12} />
         Edit Profile

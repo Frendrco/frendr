@@ -15,10 +15,10 @@ const LEGAL_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="bg-white overflow-hidden">
+    <footer className="bg-background overflow-hidden">
 
       {/* ── Slim nav bar ── */}
-      <div className="mx-auto max-w-screen-xl px-6 md:px-8 pt-6 pb-3 border-t border-black/10">
+      <div className="mx-auto max-w-screen-xl px-6 md:px-8 pt-6 pb-3 border-t border-black/10 dark:border-white/10">
 
         {/* Mobile: all links centred in a single row */}
         <div className="flex md:hidden items-center justify-center gap-6 flex-wrap">
@@ -60,7 +60,7 @@ export function Footer() {
 
           {/* Symbol — absolutely centred */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2 hover:scale-125 transition-transform duration-200">
-            <Logo variant="symbol" height={22} colour="black" />
+            <Logo variant="symbol" height={22} colour="auto" />
           </Link>
 
           {/* Legal links */}

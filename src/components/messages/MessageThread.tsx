@@ -169,7 +169,7 @@ export function MessageThread({ messages, currentUserId, onDelete, scrollRef }: 
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); setReactionPickerId(showReactionPicker ? null : msg.id) }}
-                        className="flex h-6 w-6 items-center justify-center rounded-full bg-white border border-border text-foreground/40 hover:text-foreground/70 shadow-sm transition-colors text-xs"
+                        className="flex h-6 w-6 items-center justify-center rounded-full bg-background border border-border text-foreground/40 hover:text-foreground/70 shadow-sm transition-colors text-xs"
                         aria-label="React to message"
                       >
                         😊
@@ -182,7 +182,7 @@ export function MessageThread({ messages, currentUserId, onDelete, scrollRef }: 
                     <div
                       onClick={(e) => e.stopPropagation()}
                       className={cn(
-                        "absolute top-1/2 -translate-y-1/2 z-20 flex items-center gap-1 rounded-full border border-border bg-white px-2 py-1.5 shadow-md",
+                        "absolute top-1/2 -translate-y-1/2 z-20 flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1.5 shadow-md",
                         isOwn ? "right-full mr-10" : "left-full ml-10"
                       )}
                     >
@@ -220,7 +220,7 @@ export function MessageThread({ messages, currentUserId, onDelete, scrollRef }: 
                             "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-sans text-xs transition-colors",
                             reacted
                               ? "border-spring-green/50 bg-spring-green/15 text-foreground"
-                              : "border-border bg-white text-foreground/60 hover:border-foreground/30"
+                              : "border-border bg-background text-foreground/60 hover:border-foreground/30"
                           )}
                         >
                           {emoji} <span>{count}</span>
