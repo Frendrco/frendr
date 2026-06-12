@@ -28,7 +28,7 @@ type VideoData = {
   }
 }
 
-function TapOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | null> }) {
+function TapOverlay({ videoRef, onTap }: { videoRef: React.RefObject<HTMLVideoElement | null>; onTap?: () => void }) {
   const [playing, setPlaying] = useState(true)
   const [showIcon, setShowIcon] = useState(false)
   const iconTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -41,6 +41,7 @@ function TapOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement |
     setShowIcon(true)
     if (iconTimer.current) clearTimeout(iconTimer.current)
     iconTimer.current = setTimeout(() => setShowIcon(false), 800)
+    onTap?.()
   }
 
   return (
@@ -60,10 +61,11 @@ function TapOverlay({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement |
   )
 }
 
-function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: {
+function HlsPlayer({ streamId, thumbnailUrl, onVideoSize, onTap }: {
   streamId: string
   thumbnailUrl: string | null
   onVideoSize?: (w: number, h: number) => void
+  onTap?: () => void
 }) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const onVideoSizeRef = useRef(onVideoSize)
@@ -97,12 +99,12 @@ function HlsPlayer({ streamId, thumbnailUrl, onVideoSize }: {
         poster={thumbnailUrl ?? undefined}
         className="h-full w-full object-contain bg-black"
       />
-      <TapOverlay videoRef={videoRef} />
+      <TapOverlay videoRef={videoRef} onTap={onTap} />
     </div>
   )
 }
 
-function DirectVideoPlayer({ src }: { src: string }) {
+function DirectVideoPlayer({ src, onTap }: { src: string; onTap?: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null)
 
   return (
@@ -114,12 +116,12 @@ function DirectVideoPlayer({ src }: { src: string }) {
         playsInline
         className="h-full w-full object-contain bg-black"
       />
-      <TapOverlay videoRef={videoRef} />
+      <TapOverlay videoRef={videoRef} onTap={onTap} />
     </div>
   )
 }
 
-function Player({ video, onVideoSize }: { video: VideoData; onVideoSize?: (w: number, h: number) => void }) {
+function Player({ video, onVideoSize, onTap }: { video: VideoData; onVideoSize?: (w: number, h: number) => void; onTap?: () => void }) {
   if (!video.streamId && !video.externalUrl) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-core-black">
@@ -129,7 +131,7 @@ function Player({ video, onVideoSize }: { video: VideoData; onVideoSize?: (w: nu
   }
 
   if (video.externalUrl && detectProvider(video.externalUrl) === "dropbox") {
-    return <DirectVideoPlayer src={video.externalUrl} />
+    return <DirectVideoPlayer src={video.externalUrl} onTap={onTap} />
   }
 
   if (video.externalUrl) {
@@ -144,7 +146,7 @@ function Player({ video, onVideoSize }: { video: VideoData; onVideoSize?: (w: nu
     )
   }
 
-  return <HlsPlayer streamId={video.streamId!} thumbnailUrl={video.thumbnailUrl} onVideoSize={onVideoSize} />
+  return <HlsPlayer streamId={video.streamId!} thumbnailUrl={video.thumbnailUrl} onVideoSize={onVideoSize} onTap={onTap} />
 }
 
 export function VideoModal({
@@ -165,6 +167,22 @@ export function VideoModal({
   const [likeLoading, setLikeLoading] = useState(false)
   const [videoSize, setVideoSize] = useState<{ w: number; h: number } | null>(initialVideoSize)
   const isPortrait = videoSize ? videoSize.h > videoSize.w : false
+
+  // Info overlay auto-hides on mobile after 3s; re-shows briefly on each tap
+  const [overlayVisible, setOverlayVisible] = useState(true)
+  const overlayTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function showOverlayBriefly() {
+    setOverlayVisible(true)
+    if (overlayTimer.current) clearTimeout(overlayTimer.current)
+    overlayTimer.current = setTimeout(() => setOverlayVisible(false), 3000)
+  }
+
+  useEffect(() => {
+    showOverlayBriefly()
+    return () => { if (overlayTimer.current) clearTimeout(overlayTimer.current) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function handleLike(e: React.MouseEvent) {
     e.stopPropagation()
@@ -232,10 +250,14 @@ export function VideoModal({
           }
         >
 
-          <Player video={video} onVideoSize={(w, h) => setVideoSize({ w, h })} />
+          <Player video={video} onVideoSize={(w, h) => setVideoSize({ w, h })} onTap={showOverlayBriefly} />
 
-          {/* Info overlay — hover on desktop, always visible on touch */}
-          <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent px-5 pt-4 pb-10 opacity-0 transition-opacity duration-300 group-hover/modal:opacity-100 [@media(hover:none)]:opacity-100">
+          {/* Info overlay — hover on desktop; auto-hides on mobile, re-shows on tap */}
+          <div className={cn(
+            "absolute inset-x-0 top-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent px-5 pt-4 pb-10 transition-opacity duration-500",
+            "opacity-0 group-hover/modal:opacity-100",
+            overlayVisible && "[@media(hover:none)]:opacity-100"
+          )}>
             {/* pr-12 on mobile keeps content clear of the absolute X button */}
             <div className="flex items-center gap-3 pr-12 sm:pr-0">
 
