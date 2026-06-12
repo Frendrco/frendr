@@ -65,7 +65,7 @@ function Toggle({ on, onToggle, label, description }: { on: boolean; onToggle: (
         className={cn("relative mt-0.5 h-5 w-9 shrink-0 rounded-full transition-colors", on ? "bg-spring-green" : "bg-border")}
         aria-pressed={on}
       >
-        <div className={cn("absolute top-0.5 h-4 w-4 rounded-full bg-white dark:bg-background shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
+        <div className={cn("absolute top-0.5 h-4 w-4 rounded-full bg-white dark:bg-zinc-200 shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
       </button>
       <div>
         <p className="font-sans text-sm font-medium text-foreground">{label}</p>
@@ -1170,7 +1170,7 @@ export function UploadClient({
 
         {/* Paywall */}
         {showPaywall && (
-          <div className="rounded-2xl border border-border bg-mist-grey p-8 text-center">
+          <div className="rounded-2xl border border-border bg-muted p-8 text-center">
             <p className="font-sans font-bold text-lg text-foreground mb-1">You&apos;ve used your 20 free minutes</p>
             <p className="font-sans text-sm text-foreground/50 mb-6">
               Upgrade to Frendr Pro to keep uploading — unlimited storage for just $8/month.
@@ -1518,7 +1518,7 @@ export function UploadClient({
                   {(["basics", "privacy", "embed"] as Tab[]).map((t) => (
                     <button key={t} onClick={() => setTab(t)}
                       className={cn("pb-3 font-sans font-medium text-sm capitalize border-b-2 -mb-px transition-colors",
-                        tab === t ? "border-core-black text-foreground" : "border-transparent text-foreground/40 hover:text-foreground/70"
+                        tab === t ? "border-core-black dark:border-foreground text-foreground" : "border-transparent text-foreground/40 hover:text-foreground/70"
                       )}
                     >
                       {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -1647,7 +1647,7 @@ export function UploadClient({
                           )}
                         >
                           <div className={cn("mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                            visibility === value ? "border-core-black bg-core-black" : "border-border"
+                            visibility === value ? "border-core-black bg-core-black dark:border-foreground dark:bg-foreground" : "border-border"
                           )}>
                             {visibility === value && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                           </div>
