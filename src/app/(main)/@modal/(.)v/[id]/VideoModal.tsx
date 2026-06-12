@@ -46,7 +46,7 @@ function TapOverlay({ videoRef, onTap }: { videoRef: React.RefObject<HTMLVideoEl
 
   return (
     <div
-      className="absolute inset-0 flex items-center justify-center cursor-pointer"
+      className="absolute inset-0 hidden [@media(hover:none)]:flex items-center justify-center cursor-pointer"
       onClick={handleTap}
     >
       <div className={cn(
@@ -96,9 +96,11 @@ function HlsPlayer({ streamId, thumbnailUrl, onVideoSize, onTap }: {
         ref={videoRef}
         autoPlay
         playsInline
+        controls
         poster={thumbnailUrl ?? undefined}
         className="h-full w-full object-contain bg-black"
       />
+      {/* Tap overlay only active on touch devices — covers native controls so they never appear on mobile */}
       <TapOverlay videoRef={videoRef} onTap={onTap} />
     </div>
   )
@@ -114,6 +116,7 @@ function DirectVideoPlayer({ src, onTap }: { src: string; onTap?: () => void }) 
         src={src}
         autoPlay
         playsInline
+        controls
         className="h-full w-full object-contain bg-black"
       />
       <TapOverlay videoRef={videoRef} onTap={onTap} />
