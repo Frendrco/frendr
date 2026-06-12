@@ -574,7 +574,7 @@ export function VideoOwnerActions({
                       <p className="font-sans text-xs text-foreground/40">{desc}</p>
                     </div>
                     <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", on ? "bg-spring-green" : "bg-border")}>
-                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white dark:bg-zinc-900 shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
                     </div>
                   </button>
                 ))}
@@ -591,7 +591,7 @@ export function VideoOwnerActions({
                       <p className="font-sans text-xs text-foreground/40">Let viewers download your video as an MP4 file.</p>
                     </div>
                     <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowDownloads ? "bg-spring-green" : "bg-border")}>
-                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", allowDownloads ? "translate-x-4" : "translate-x-0.5")} />
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white dark:bg-zinc-900 shadow transition-transform", allowDownloads ? "translate-x-4" : "translate-x-0.5")} />
                     </div>
                   </button>
                 )}
@@ -615,7 +615,7 @@ export function VideoOwnerActions({
                         <p className="font-sans text-xs text-foreground/40">{desc}</p>
                       </div>
                       <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", on ? "bg-spring-green" : "bg-border")}>
-                        <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
+                        <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white dark:bg-zinc-900 shadow transition-transform", on ? "translate-x-4" : "translate-x-0.5")} />
                       </div>
                     </button>
                   ))}
@@ -638,7 +638,7 @@ export function VideoOwnerActions({
                       <p className="font-sans text-xs text-foreground/40">Let anyone embed your video player on their website or blog.</p>
                     </div>
                     <div className={cn("relative h-6 w-10 shrink-0 rounded-full transition-colors", allowEmbedding ? "bg-spring-green" : "bg-border")}>
-                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform", allowEmbedding ? "translate-x-4" : "translate-x-0.5")} />
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white dark:bg-zinc-900 shadow transition-transform", allowEmbedding ? "translate-x-4" : "translate-x-0.5")} />
                     </div>
                   </button>
                 </div>

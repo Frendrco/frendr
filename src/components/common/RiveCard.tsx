@@ -68,8 +68,8 @@ export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCou
               <div className="h-full w-full bg-mist-grey" />
             )}
             <div className="absolute inset-0 flex items-center justify-center bg-core-black/0 group-hover/card:bg-core-black/20 transition-colors duration-200">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
-                <Play size={18} className="text-core-black translate-x-0.5" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-sm opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
+                <Play size={18} className="text-foreground translate-x-0.5" />
               </div>
             </div>
           </div>

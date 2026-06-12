@@ -114,7 +114,7 @@ export function AddToPlaylistButton({ videoId, triggerClassName, initialSaved }:
     <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger
-          className={triggerClassName ?? "flex h-8 w-8 items-center justify-center rounded-full bg-white/90 dark:bg-black/80 shadow text-core-black hover:bg-white transition-colors"}
+          className={triggerClassName ?? "flex h-8 w-8 items-center justify-center rounded-full bg-white/90 dark:bg-black/80 shadow text-foreground hover:bg-white dark:hover:bg-white/10 transition-colors"}
           title="Save to playlist"
         >
           <Bookmark size={14} className={isSaved ? "fill-current" : ""} />

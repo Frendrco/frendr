@@ -115,7 +115,7 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
 
             <button
               onClick={() => navigate(username ? `/${username}` : "/onboarding")}
-              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 transition-colors"
+              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 dark:border-white/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 dark:hover:border-white/40 transition-colors"
             >
               <span>View Profile</span>
               <div className="h-5 w-5 overflow-hidden rounded-full shrink-0">
@@ -125,7 +125,7 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
 
             <button
               onClick={() => navigate("/dashboard/settings")}
-              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 transition-colors"
+              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 dark:border-white/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 dark:hover:border-white/40 transition-colors"
             >
               <span>Settings</span>
               <Settings size={16} strokeWidth={1.5} className="text-foreground/40" />
@@ -133,7 +133,7 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
 
             <button
               onClick={() => navigate("/dashboard/videos")}
-              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 transition-colors"
+              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 dark:border-white/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 dark:hover:border-white/40 transition-colors"
             >
               <span>My Videos</span>
               <Video size={16} strokeWidth={1.5} className="text-foreground/40" />
@@ -141,7 +141,7 @@ export function UserMenuDropdown({ username, displayName, avatarUrl }: Props) {
 
             <button
               onClick={() => navigate("/dashboard/channels")}
-              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 transition-colors"
+              className="w-full h-11 inline-flex items-center justify-between rounded-full border border-black/20 dark:border-white/20 font-sans font-medium text-sm text-foreground px-5 hover:border-black/40 dark:hover:border-white/40 transition-colors"
             >
               <span>My Channels</span>
               <Tv2 size={16} strokeWidth={1.5} className="text-foreground/40" />

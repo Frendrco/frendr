@@ -54,7 +54,7 @@ type Props = {
 
 export function RecessCard({ video, fixedWidth = false }: Props) {
   const toolTag = getToolTag(video.categories)
-  const tagColor = toolTag && TOOL_COLORS[toolTag] ? TOOL_COLORS[toolTag] : "bg-white/90 dark:bg-black/80 text-core-black"
+  const tagColor = toolTag && TOOL_COLORS[toolTag] ? TOOL_COLORS[toolTag] : "bg-white/90 dark:bg-black/80 text-foreground"
 
   const initials = video.user.displayName
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
