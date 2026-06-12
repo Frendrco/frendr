@@ -121,36 +121,40 @@ export function VideoCard({ video, showTimestamp = false, roundedSize = "xl", hi
 
       {/* Meta */}
       {hideCreator ? (
-        <Link href={`/v/${video.slug ?? video.id}`}>
+        <a href={`/v/${video.slug ?? video.id}`}>
           <p className="truncate font-sans font-medium text-sm text-core-black leading-snug">{video.title}</p>
           {showTimestamp && (
             <p className="font-sans text-xs text-foreground/40">{timeAgo(video.createdAt)}</p>
           )}
-        </Link>
+        </a>
       ) : (
-        <Link href={`/v/${video.slug ?? video.id}`} className="flex items-start gap-2">
-          <div className="mt-0.5 h-6 w-6 shrink-0 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
-            {video.user.avatarUrl ? (
-              <Image
-                src={video.user.avatarUrl}
-                alt={video.user.displayName}
-                width={24}
-                height={24}
-                sizes="24px"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span className="font-sans font-bold text-[9px] text-core-black">{initials}</span>
-            )}
-          </div>
+        <div className="flex items-start gap-2">
+          <Link href={`/${video.user.username}`} className="mt-0.5 shrink-0">
+            <div className="h-6 w-6 overflow-hidden rounded-full bg-spring-green flex items-center justify-center">
+              {video.user.avatarUrl ? (
+                <Image
+                  src={video.user.avatarUrl}
+                  alt={video.user.displayName}
+                  width={24}
+                  height={24}
+                  sizes="24px"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="font-sans font-bold text-[9px] text-core-black">{initials}</span>
+              )}
+            </div>
+          </Link>
           <div className="min-w-0">
-            <p className="truncate font-sans font-medium text-sm text-core-black leading-snug">{video.title}</p>
-            <p className="font-sans text-xs text-foreground/40">
+            <a href={`/v/${video.slug ?? video.id}`} className="block truncate font-sans font-medium text-sm text-core-black leading-snug hover:underline">
+              {video.title}
+            </a>
+            <Link href={`/${video.user.username}`} className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors">
               {video.user.displayName}
               {showTimestamp && ` · ${timeAgo(video.createdAt)}`}
-            </p>
+            </Link>
           </div>
-        </Link>
+        </div>
       )}
 
       {/* Tags */}
