@@ -152,7 +152,7 @@ export default async function FollowingPage() {
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-10">
 
         <div className="mb-10 text-center md:text-left">
-          <h1 className="font-sans font-bold text-2xl text-core-black">Following</h1>
+          <h1 className="font-sans font-bold text-2xl text-foreground">Following</h1>
           <p className="mt-1 font-sans text-sm text-foreground/40">Creators and channels you follow</p>
         </div>
 
@@ -160,14 +160,14 @@ export default async function FollowingPage() {
 
             {/* ── For You ──────────────────────────────────── */}
             <section>
-              <h2 className="mb-6 font-sans font-semibold text-base text-core-black">
+              <h2 className="mb-6 font-sans font-semibold text-base text-foreground">
                 Latest
                 {feedVideos.length > 0 && (
                   <span className="ml-2 font-normal text-foreground/30">{feedVideos.length}</span>
                 )}
               </h2>
               {feedVideos.length === 0 ? (
-                <div className="rounded-xl bg-[#FAF8F6] px-6 py-8 text-center">
+                <div className="rounded-xl bg-muted px-6 py-8 text-center">
                   <p className="font-sans text-sm text-foreground/50">
                     Follow creators and channels to see their videos here
                   </p>
@@ -194,7 +194,7 @@ export default async function FollowingPage() {
             {/* ── Recess ───────────────────────────────────── */}
             {recessVideos.length > 0 && (
               <section>
-                <h2 className="mb-6 font-sans font-semibold text-base text-core-black">
+                <h2 className="mb-6 font-sans font-semibold text-base text-foreground">
                   Recess
                   <span className="ml-2 font-normal text-foreground/30">{recessVideos.length}</span>
                 </h2>
@@ -204,7 +204,7 @@ export default async function FollowingPage() {
 
             {/* ── Frends ───────────────────────────────────── */}
             <section>
-              <h2 className="mb-6 font-sans font-semibold text-base text-core-black">
+              <h2 className="mb-6 font-sans font-semibold text-base text-foreground">
                 Frends
                 <span className="ml-2 font-normal text-foreground/30">{people.length || PLACEHOLDER_FRENDS.length}</span>
               </h2>
@@ -225,7 +225,7 @@ export default async function FollowingPage() {
                       )}
                     </div>
                       <div>
-                        <p className="font-sans font-semibold text-sm text-core-black line-clamp-1">
+                        <p className="font-sans font-semibold text-sm text-foreground line-clamp-1">
                           {user.displayName}
                         </p>
                         <p className="font-sans text-xs text-foreground/40">@{user.username}</p>
@@ -243,7 +243,7 @@ export default async function FollowingPage() {
                   <div key={p.username} className="flex flex-col items-center gap-2.5 text-center opacity-40 pointer-events-none select-none">
                     <div className={`h-16 w-16 rounded-full ${p.color}`} />
                     <div>
-                      <p className="font-sans font-semibold text-sm text-core-black">{p.name}</p>
+                      <p className="font-sans font-semibold text-sm text-foreground">{p.name}</p>
                       <p className="font-sans text-xs text-foreground/40">@{p.username}</p>
                       {p.openToWork && (
                         <span className="mt-1.5 inline-flex items-center rounded-full bg-spring-green/20 px-2 py-0.5 font-sans text-[10px] font-medium text-spring-green">
@@ -260,7 +260,7 @@ export default async function FollowingPage() {
             {/* ── Channels ─────────────────────────────────── */}
             {channels.length > 0 && (
               <section>
-                <h2 className="mb-6 font-sans font-semibold text-base text-core-black">
+                <h2 className="mb-6 font-sans font-semibold text-base text-foreground">
                   Channels
                   <span className="ml-2 font-normal text-foreground/30">{channels.length}</span>
                 </h2>
@@ -296,7 +296,7 @@ export default async function FollowingPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-sans font-semibold text-sm text-core-black line-clamp-1">
+                          <p className="font-sans font-semibold text-sm text-foreground line-clamp-1">
                             {channel.name}
                           </p>
                           <p className="mt-0.5 font-sans text-xs text-foreground/40">
