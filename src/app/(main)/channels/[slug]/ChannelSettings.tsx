@@ -50,6 +50,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
 
   const [name, setName] = useState(channel.name)
   const [description, setDescription] = useState(channel.description ?? "")
+  const [isPublic, setIsPublic] = useState(channel.isPublic)
   const [coverPreview, setCoverPreview] = useState<string | null>(channel.coverUrl)
   const [coverUrl, setCoverUrl] = useState<string | null>(channel.coverUrl)
   const [color, setColor] = useState(channel.color ?? "bloom-lavender")
@@ -132,6 +133,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
   function handleOpen() {
     setName(channel.name)
     setDescription(channel.description ?? "")
+    setIsPublic(channel.isPublic)
     setColor(channel.color ?? "bloom-lavender")
     setCoverPreview(channel.coverUrl)
     setCoverUrl(channel.coverUrl)
@@ -188,6 +190,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
         body: JSON.stringify({
           name: name.trim(),
           description: description.trim() || null,
+          isPublic,
           coverUrl,
           color,
         }),
@@ -324,6 +327,25 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
               </div>
             </div>
 
+            {/* Visibility */}
+            {isOwner && (
+              <button
+                type="button"
+                onClick={() => setIsPublic((v) => !v)}
+                className="flex items-center justify-between gap-4 text-left"
+              >
+                <div>
+                  <p className="font-sans text-sm font-medium text-foreground">Public channel</p>
+                  <p className="font-sans text-xs text-foreground/40 mt-0.5">
+                    Anyone on Frendr can add videos to this channel.
+                  </p>
+                </div>
+                <div className={`relative h-6 w-10 shrink-0 rounded-full transition-colors ${isPublic ? "bg-spring-green" : "bg-border"}`}>
+                  <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${isPublic ? "translate-x-4" : "translate-x-0.5"}`} />
+                </div>
+              </button>
+            )}
+
             {/* Administrators */}
             {isOwner && (
               <div className="flex flex-col gap-3">
@@ -413,7 +435,7 @@ export function ChannelSettings({ channel, canDelete, isOwner }: Props) {
             )}
 
             {/* Private link */}
-            {!channel.isPublic && isOwner && (
+            {!isPublic && isOwner && (
               <div className="rounded-xl border border-border p-4 flex flex-col gap-3">
                 <div>
                   <p className="font-sans font-medium text-sm text-foreground flex items-center gap-1.5">
