@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server"
 import { ArrowLeft } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { timeAgo } from "@/lib/utils"
-import { VoteButtons } from "../../community/VoteButtons"
+import { ThreadLikeButton } from "@/components/common/ThreadLikeButton"
 import { CommentSection } from "../../community/[threadId]/CommentSection"
 import { RivePostActions } from "./RivePostActions"
 
@@ -30,10 +30,10 @@ export default async function RiveDetailPage({ params }: Props) {
 
   const isOwner = currentUser?.id === thread.userId
 
-  const [threadVote, comments] = await Promise.all([
+  const [threadLike, comments] = await Promise.all([
     currentUser
-      ? prisma.threadVote.findUnique({
-          where: { userId_threadId: { userId: currentUser.id, threadId: id } },
+      ? prisma.threadLike.findUnique({
+          where: { threadId_userId: { threadId: id, userId: currentUser.id } },
         })
       : null,
     prisma.comment.findMany({
@@ -41,34 +41,69 @@ export default async function RiveDetailPage({ params }: Props) {
       orderBy: { createdAt: "asc" },
       include: {
         user: { select: { username: true, displayName: true, avatarUrl: true } },
+        likes: { include: { user: { select: { username: true, displayName: true, avatarUrl: true } } } },
+        reactions: true,
         replies: {
           orderBy: { createdAt: "asc" },
-          include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+          include: {
+            user: { select: { username: true, displayName: true, avatarUrl: true } },
+            likes: { include: { user: { select: { username: true, displayName: true, avatarUrl: true } } } },
+            reactions: true,
+          },
         },
       },
     }),
   ])
 
+  const threadLikedBy = await prisma.threadLike.findMany({
+    where: { threadId: id },
+    take: 10,
+    orderBy: { createdAt: "asc" },
+    include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+  })
+
   const allCommentIds = [
     ...comments.map((c) => c.id),
     ...comments.flatMap((c) => c.replies.map((r) => r.id)),
   ]
-  const commentVotes =
+  const [commentLikeRows, commentReactionRows] = await Promise.all([
     currentUser && allCommentIds.length > 0
-      ? await prisma.commentVote.findMany({
-          where: { userId: currentUser.id, commentId: { in: allCommentIds } },
-        })
-      : []
-  const commentVoteMap = new Map(commentVotes.map((v) => [v.commentId, v.value as 1 | -1]))
+      ? prisma.commentLike.findMany({ where: { userId: currentUser.id, commentId: { in: allCommentIds } }, select: { commentId: true } })
+      : [],
+    currentUser && allCommentIds.length > 0
+      ? prisma.commentReaction.findMany({ where: { userId: currentUser.id, commentId: { in: allCommentIds } }, select: { commentId: true, emoji: true } })
+      : [],
+  ])
+  const likedCommentIds = new Set(commentLikeRows.map((r) => r.commentId))
+  const userReactionMap = new Map<string, Set<string>>()
+  for (const r of commentReactionRows) {
+    if (!userReactionMap.has(r.commentId)) userReactionMap.set(r.commentId, new Set())
+    userReactionMap.get(r.commentId)!.add(r.emoji)
+  }
+
+  function buildReactions(rawReactions: Array<{ emoji: string }>, commentId: string) {
+    const counts = new Map<string, number>()
+    for (const r of rawReactions) counts.set(r.emoji, (counts.get(r.emoji) ?? 0) + 1)
+    const userEmojis = userReactionMap.get(commentId) ?? new Set()
+    return Array.from(counts.entries()).map(([emoji, count]) => ({ emoji, count, reacted: userEmojis.has(emoji) }))
+  }
 
   const commentsWithVotes = comments.map((c) => ({
     ...c,
     createdAt: c.createdAt.toISOString(),
-    userVote: (commentVoteMap.get(c.id) ?? 0) as 1 | -1 | 0,
+    userVote: 0 as 0,
+    likeCount: c.likes.length,
+    liked: likedCommentIds.has(c.id),
+    likedBy: c.likes.map((l) => l.user),
+    reactions: buildReactions(c.reactions, c.id),
     replies: c.replies.map((r) => ({
       ...r,
       createdAt: r.createdAt.toISOString(),
-      userVote: (commentVoteMap.get(r.id) ?? 0) as 1 | -1 | 0,
+      userVote: 0 as 0,
+      likeCount: r.likes.length,
+      liked: likedCommentIds.has(r.id),
+      likedBy: r.likes.map((l) => l.user),
+      reactions: buildReactions(r.reactions, r.id),
     })),
   }))
 
@@ -143,10 +178,11 @@ export default async function RiveDetailPage({ params }: Props) {
           )}
 
           <div className="mt-5">
-            <VoteButtons
+            <ThreadLikeButton
               threadId={thread.id}
-              initialCount={thread.voteCount}
-              initialVote={(threadVote?.value ?? 0) as 1 | -1 | 0}
+              initialLiked={!!threadLike}
+              initialCount={thread.likeCount}
+              initialLikedBy={threadLikedBy.map((l) => l.user)}
             />
           </div>
         </div>

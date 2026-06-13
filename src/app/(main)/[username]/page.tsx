@@ -65,7 +65,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     where: { userId: user.id, source: "rive_world" },
     orderBy: { createdAt: "desc" },
     select: {
-      id: true, title: true, riveUrls: true, imageUrls: true, voteCount: true, userId: true,
+      id: true, title: true, riveUrls: true, imageUrls: true, likeCount: true, userId: true,
       user: { select: { username: true, displayName: true, avatarUrl: true } },
       _count: { select: { comments: true } },
     },
@@ -402,7 +402,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                       title={t.title}
                       riveUrl={t.riveUrls[0]}
                       previewUrl={t.imageUrls[0] ?? null}
-                      voteCount={t.voteCount}
+                      likeCount={t.likeCount}
                       commentCount={t._count.comments}
                       user={t.user}
                       isOwner={isOwn}

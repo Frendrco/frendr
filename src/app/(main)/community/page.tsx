@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server"
 import { MessageSquare } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { timeAgo } from "@/lib/utils"
-import { VoteButtons } from "./VoteButtons"
+import { ThreadLikeButton } from "@/components/common/ThreadLikeButton"
 import { SaveThreadButton } from "./SaveThreadButton"
 import { DeleteThreadButton } from "./DeleteThreadButton"
 
@@ -20,23 +20,28 @@ export default async function CommunityPage({ searchParams }: Props) {
 
   const threads = await prisma.thread.findMany({
     where: { source: "community" },
-    orderBy: sort === "top" ? { voteCount: "desc" } : { createdAt: "desc" },
+    orderBy: sort === "top" ? { likeCount: "desc" } : { createdAt: "desc" },
     include: {
       user: { select: { username: true, displayName: true, avatarUrl: true } },
       _count: { select: { comments: true } },
+      likes: {
+        take: 10,
+        orderBy: { createdAt: "asc" },
+        include: { user: { select: { username: true, displayName: true, avatarUrl: true } } },
+      },
     },
   })
 
   const threadIds = threads.map(t => t.id)
-  const [userVotes, savedThreads] = await Promise.all([
+  const [userLikes, savedThreads] = await Promise.all([
     currentUser
-      ? prisma.threadVote.findMany({ where: { userId: currentUser.id, threadId: { in: threadIds } } })
+      ? prisma.threadLike.findMany({ where: { userId: currentUser.id, threadId: { in: threadIds } }, select: { threadId: true } })
       : [],
     currentUser
       ? prisma.savedThread.findMany({ where: { userId: currentUser.id, threadId: { in: threadIds } }, select: { threadId: true } })
       : [],
   ])
-  const voteMap = new Map(userVotes.map(v => [v.threadId, v.value as 1 | -1]))
+  const likedSet = new Set(userLikes.map(l => l.threadId))
   const savedSet = new Set(savedThreads.map(s => s.threadId))
 
   return (
@@ -68,12 +73,13 @@ export default async function CommunityPage({ searchParams }: Props) {
         <div className="flex flex-col divide-y divide-border">
           {threads.map((thread, i) => (
             <div key={thread.id} className="flex items-start gap-5 py-7">
-              {/* Vote */}
+              {/* Like */}
               <div className="mt-1 shrink-0">
-                <VoteButtons
+                <ThreadLikeButton
                   threadId={thread.id}
-                  initialCount={thread.voteCount}
-                  initialVote={voteMap.get(thread.id) ?? 0}
+                  initialLiked={likedSet.has(thread.id)}
+                  initialCount={thread.likeCount}
+                  initialLikedBy={thread.likes.map(l => l.user)}
                 />
               </div>
 

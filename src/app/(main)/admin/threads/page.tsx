@@ -47,7 +47,7 @@ export default async function AdminThreadsPage() {
                 </td>
                 <td className="px-4 py-3 hidden md:table-cell">
                   <span className="font-sans text-xs text-foreground/50">
-                    {t.voteCount} votes · {t._count.comments} comments
+                    {t.likeCount} likes · {t._count.comments} comments
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right">

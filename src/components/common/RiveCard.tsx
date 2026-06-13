@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { Play, ChevronUp, MessageSquare, Trash2 } from "lucide-react"
+import { Play, Heart, MessageSquare, Trash2 } from "lucide-react"
 
 type LoadState = "idle" | "loading" | "ready"
 
@@ -13,7 +13,7 @@ type Props = {
   title:        string
   riveUrl:      string
   previewUrl?:  string | null
-  voteCount:    number
+  likeCount:    number
   commentCount: number
   isOwner?:     boolean
   priority?:    boolean
@@ -24,7 +24,7 @@ type Props = {
   }
 }
 
-export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCount, isOwner, priority = false, user }: Props) {
+export function RiveCard({ id, title, riveUrl, previewUrl, likeCount, commentCount, isOwner, priority = false, user }: Props) {
   const router = useRouter()
   const [loadState, setLoadState] = useState<LoadState>("idle")
   const [deleting, setDeleting] = useState(false)
@@ -116,7 +116,7 @@ export function RiveCard({ id, title, riveUrl, previewUrl, voteCount, commentCou
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <span className="flex items-center gap-0.5 font-sans text-xs text-foreground/40">
-            <ChevronUp size={12} />{voteCount}
+            <Heart size={11} />{likeCount}
           </span>
           <span className="flex items-center gap-0.5 font-sans text-xs text-foreground/40">
             <MessageSquare size={12} />{commentCount}

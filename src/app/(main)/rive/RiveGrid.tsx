@@ -8,7 +8,7 @@ type Thread = {
   title:     string
   riveUrls:  string[]
   imageUrls: string[]
-  voteCount: number
+  likeCount: number
   createdAt: Date | string
   userId:    string
   user: { username: string; displayName: string; avatarUrl: string | null }
@@ -21,7 +21,7 @@ export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; curren
   const [sort, setSort] = useState<Sort>("recent")
 
   const sorted = sort === "popular"
-    ? [...threads].sort((a, b) => b.voteCount - a.voteCount)
+    ? [...threads].sort((a, b) => b.likeCount - a.likeCount)
     : threads
 
   return (
@@ -58,7 +58,7 @@ export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; curren
               title={t.title}
               riveUrl={t.riveUrls[0]}
               previewUrl={t.imageUrls[0] ?? null}
-              voteCount={t.voteCount}
+              likeCount={t.likeCount}
               commentCount={t._count.comments}
               user={t.user}
               priority={i === 0}

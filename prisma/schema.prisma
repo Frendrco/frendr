@@ -54,6 +54,7 @@ model User {
   videoLikes          VideoLike[]
   threads             Thread[]
   threadVotes         ThreadVote[]
+  threadLikes         ThreadLike[]
   savedThreads        SavedThread[]
   comments            Comment[]
   commentVotes        CommentVote[]
@@ -158,10 +159,12 @@ model Thread {
   riveUrls   String[]
   source     String       @default("community")
   voteCount  Int          @default(0)
+  likeCount  Int          @default(0)
   userId     String
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   comments   Comment[]
   votes      ThreadVote[]
+  likes      ThreadLike[]
   saves      SavedThread[]
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
@@ -178,6 +181,18 @@ model ThreadVote {
   thread    Thread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   @@unique([userId, threadId])
+}
+
+model ThreadLike {
+  id        String   @id @default(cuid())
+  threadId  String
+  userId    String
+  createdAt DateTime @default(now())
+  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([threadId, userId])
+  @@index([threadId])
 }
 
 model Comment {

@@ -16,7 +16,7 @@ export default async function RiveWorldPage() {
         title:      true,
         riveUrls:   true,
         imageUrls:  true,
-        voteCount:  true,
+        likeCount:  true,
         createdAt:  true,
         userId:     true,
         user:       { select: { username: true, displayName: true, avatarUrl: true } },
