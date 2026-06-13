@@ -16,6 +16,7 @@ import { ShareButton } from "./ShareButton"
 import { VideoOwnerActions } from "@/components/video/VideoOwnerActions"
 import { VideoCommentSection, type VideoCommentData } from "./VideoCommentSection"
 import { FollowButton } from "@/components/common/FollowButton"
+import { BackButton } from "@/components/common/BackButton"
 import { ViewTracker } from "./ViewTracker"
 import { StickyPlayer } from "./StickyPlayer"
 import type { Metadata } from "next"
@@ -228,6 +229,7 @@ export default async function VideoPage({ params }: Props) {
 
       {/* ── Content ────────────────────────────────────────── */}
       <div className="mx-auto max-w-screen-xl px-4 md:px-6 py-8">
+        <BackButton />
         <div className="flex flex-col gap-10 lg:flex-row lg:gap-12">
 
           {/* ── Main column ── */}
