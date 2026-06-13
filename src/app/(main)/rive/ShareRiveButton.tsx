@@ -20,7 +20,9 @@ export function ShareRiveButton() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const urlValid = riveUrl.trim().startsWith("https://")
+  const urlTrimmed = riveUrl.trim()
+  const urlValid = urlTrimmed.includes("rive.app") && urlTrimmed.endsWith("/embed")
+  const urlIsRiveButNotEmbed = urlTrimmed.includes("rive.app") && urlTrimmed.length > 0 && !urlTrimmed.endsWith("/embed")
 
   function handleClick() {
     if (!isSignedIn) {
@@ -89,6 +91,10 @@ export function ShareRiveButton() {
             Share your Rive
           </DialogTitle>
 
+          <p className="mt-1 font-sans text-sm text-foreground/50 leading-relaxed">
+            Share an interactive Rive animation with the community. In Rive, open your file → click <span className="font-medium text-foreground/70">Share</span> → copy the <span className="font-medium text-foreground/70">Embed link</span>.
+          </p>
+
           <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="font-sans text-xs font-medium text-foreground">
@@ -113,13 +119,19 @@ export function ShareRiveButton() {
                 type="url"
                 value={riveUrl}
                 onChange={(e) => setRiveUrl(e.target.value)}
-                placeholder="https://rive.app/s/…/embed"
+                placeholder="https://rive.app/s/YOUR_ID/embed"
                 required
                 className="h-11 rounded-xl border border-border bg-background px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
-              <p className="font-sans text-[11px] text-foreground/40">
-                Paste the embed URL from rive.app — e.g. https://rive.app/s/YOUR_ID/embed
-              </p>
+              {urlIsRiveButNotEmbed ? (
+                <p className="font-sans text-[11px] text-amber-600 dark:text-amber-400 leading-relaxed">
+                  That looks like a regular Rive link. Click <span className="font-medium">Share</span> in Rive and copy the <span className="font-medium">Embed link</span> — it ends with <span className="font-mono">/embed</span>.
+                </p>
+              ) : (
+                <p className="font-sans text-[11px] text-foreground/40">
+                  e.g. <span className="font-mono">https://rive.app/s/YOUR_ID/embed</span>
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
