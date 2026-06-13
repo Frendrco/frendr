@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Check, Copy, Image as ImageIcon, MoreHorizontal, Play, Search, Upload, X } from "lucide-react"
+import { Check, Copy, Image as ImageIcon, MoreHorizontal, Play, Search, Upload, X, AlertCircle } from "lucide-react"
+import { detectProvider } from "@/lib/videoEmbed"
 import {
   Dialog,
   DialogClose,
@@ -77,6 +78,7 @@ interface Props {
   initialEmbedLoop?: boolean
   initialEmbedShowControls?: boolean
   initialAllowEmbedding?: boolean
+  initialExternalUrl?: string | null
   externalEditOpen?: boolean
   onExternalEditOpenChange?: (open: boolean) => void
 }
@@ -102,10 +104,12 @@ export function VideoOwnerActions({
   initialEmbedLoop = false,
   initialEmbedShowControls = true,
   initialAllowEmbedding = true,
+  initialExternalUrl = null,
   externalEditOpen,
   onExternalEditOpenChange,
 }: Props) {
   const isRecess = videoType === "RECESS"
+  const isExternalVideo = !streamId && !!initialExternalUrl
   const router = useRouter()
 
   const [editOpen,   setEditOpen]   = useState(false)
@@ -115,10 +119,12 @@ export function VideoOwnerActions({
   const [saving,     setSaving]     = useState(false)
   const [deleting,   setDeleting]   = useState(false)
   const [tab,        setTab]        = useState<EditTab>("basics")
+  const [urlError,   setUrlError]   = useState<string | null>(null)
 
   // Basics tab state
   const [title,          setTitle]         = useState(initialTitle)
   const [description,    setDescription]   = useState(initialDescription)
+  const [externalUrl,    setExternalUrl]   = useState(initialExternalUrl ?? "")
   const [tags,           setTags]          = useState<string[]>(initialTags)
   const [recessTools,    setRecessTools]   = useState<string[]>(initialCategories)
   const [categorySearch, setCategorySearch] = useState("")
@@ -211,8 +217,16 @@ export function VideoOwnerActions({
   }
 
   async function handleSave() {
+    if (isExternalVideo && externalUrl.trim()) {
+      const provider = detectProvider(externalUrl.trim())
+      if (provider === "other") {
+        setUrlError("Unsupported URL. Please use a YouTube, Vimeo, Framerate, or Dropbox link.")
+        return
+      }
+    }
+    setUrlError(null)
     setSaving(true)
-    await fetch(`/api/videos/${videoId}`, {
+    const res = await fetch(`/api/videos/${videoId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -221,6 +235,7 @@ export function VideoOwnerActions({
         tags,
         ...(isRecess && { categories: recessTools }),
         thumbnailUrl:      thumbnailUrl.trim() || null,
+        ...(isExternalVideo && { externalUrl: externalUrl.trim() || null }),
         visibility,
         ...(newPassword.trim() && { password: newPassword.trim() }),
         ...(removePassword && { password: null }),
@@ -235,6 +250,11 @@ export function VideoOwnerActions({
       }),
     })
     setSaving(false)
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({})) as { error?: string }
+      setUrlError(data.error ?? "Something went wrong. Please try again.")
+      return
+    }
     setEffectiveEditOpen(false)
     router.refresh()
   }
@@ -328,6 +348,28 @@ export function VideoOwnerActions({
                   <label className="font-sans text-sm font-medium text-foreground">Title</label>
                   <input className={field} value={title} onChange={(e) => setTitle(e.target.value)} />
                 </div>
+
+                {/* External URL — only for URL-imported videos */}
+                {isExternalVideo && (
+                  <div className="flex flex-col gap-1.5">
+                    <label className="font-sans text-sm font-medium text-foreground">Video URL</label>
+                    <input
+                      className={field}
+                      type="url"
+                      value={externalUrl}
+                      onChange={(e) => { setExternalUrl(e.target.value); setUrlError(null) }}
+                      placeholder="https://vimeo.com/… or https://youtu.be/…"
+                    />
+                    {urlError ? (
+                      <p className="flex items-center gap-1.5 font-sans text-xs text-destructive">
+                        <AlertCircle size={12} className="shrink-0" />
+                        {urlError}
+                      </p>
+                    ) : (
+                      <p className="font-sans text-xs text-foreground/40">Supported: YouTube, Vimeo, Framerate, Dropbox</p>
+                    )}
+                  </div>
+                )}
 
                 {/* Description */}
                 <div className="flex flex-col gap-1.5">

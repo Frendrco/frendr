@@ -296,6 +296,7 @@ export default async function VideoPage({ params }: Props) {
                     initialEmbedLoop={video.embedLoop}
                     initialEmbedShowControls={video.embedShowControls}
                     initialAllowEmbedding={video.allowEmbedding}
+                    initialExternalUrl={video.externalUrl}
                     initialCollaborators={video.collaborators.map((c) => ({
                       userId: c.userId,
                       username: c.user.username,

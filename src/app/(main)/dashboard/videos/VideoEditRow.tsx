@@ -170,6 +170,7 @@ export function VideoEditRow({ video, username }: { video: Video; username: stri
                 initialEmbedLoop={video.embedLoop}
                 initialEmbedShowControls={video.embedShowControls}
                 initialAllowEmbedding={video.allowEmbedding}
+                initialExternalUrl={video.externalUrl}
               />
               <Link
                 href={videoHref}

@@ -23,6 +23,7 @@ export async function PATCH(req: Request, { params }: Params) {
     tags?:              string[]
     categories?:        string[]
     thumbnailUrl?:      string | null
+    externalUrl?:       string | null
     visibility?:        "PUBLIC" | "FOLLOWERS_ONLY" | "PRIVATE"
     password?:          string | null
     hideFromFeeds?:     boolean
@@ -35,8 +36,16 @@ export async function PATCH(req: Request, { params }: Params) {
     embedShowControls?: boolean
     allowEmbedding?:    boolean
   }
-  const { title, description, tags, categories, thumbnailUrl, visibility, password, hideFromFeeds, allowComments,
+  const { title, description, tags, categories, thumbnailUrl, externalUrl, visibility, password, hideFromFeeds, allowComments,
           allowDownloads, videoType, collaborators, embedAutoplay, embedLoop, embedShowControls, allowEmbedding } = body
+
+  if (externalUrl !== undefined && externalUrl !== null) {
+    const { detectProvider } = await import("@/lib/videoEmbed")
+    const provider = detectProvider(externalUrl)
+    if (provider === "other") {
+      return NextResponse.json({ error: "Unsupported URL. Please use a YouTube, Vimeo, Framerate, or Dropbox link." }, { status: 422 })
+    }
+  }
 
   const passwordUpdate = password === undefined
     ? {}
@@ -50,6 +59,7 @@ export async function PATCH(req: Request, { params }: Params) {
       ...(tags              !== undefined && { tags }),
       ...(categories        !== undefined && { categories }),
       ...(thumbnailUrl      !== undefined && { thumbnailUrl }),
+      ...(externalUrl       !== undefined && { externalUrl }),
       ...(visibility        !== undefined && { visibility }),
       ...passwordUpdate,
       ...(hideFromFeeds     !== undefined && { hideFromFeeds }),
