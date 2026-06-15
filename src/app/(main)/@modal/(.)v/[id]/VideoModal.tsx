@@ -288,13 +288,13 @@ export function VideoModal({
 
               <span className="text-white/30">·</span>
 
-              {/* Title — tappable link on mobile (Enter pill is hidden there) */}
-              <a
+              {/* Title */}
+              <Link
                 href={fullPageHref}
-                className="flex-1 truncate font-sans text-sm font-medium text-white sm:pointer-events-none sm:cursor-default"
+                className="flex-1 truncate font-sans text-sm font-medium text-white hover:opacity-70 transition-opacity"
               >
                 {video.title}
-              </a>
+              </Link>
 
               {/* Like button */}
               <button
