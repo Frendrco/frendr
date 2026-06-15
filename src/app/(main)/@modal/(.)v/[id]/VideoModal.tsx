@@ -3,7 +3,6 @@
 import { useEffect, useCallback, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@clerk/nextjs"
-import Link from "next/link"
 import Image from "next/image"
 import { X, ExternalLink, Heart, Play, Pause } from "lucide-react"
 import Hls from "hls.js"
@@ -265,7 +264,7 @@ export function VideoModal({
             <div className="flex items-center gap-3 pr-12 sm:pr-0">
 
               {/* Creator */}
-              <Link
+              <a
                 href={`/${video.user.username}`}
                 className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-70"
               >
@@ -284,17 +283,17 @@ export function VideoModal({
                   )}
                 </div>
                 <span className="font-sans text-xs text-white/70">{video.user.displayName}</span>
-              </Link>
+              </a>
 
               <span className="text-white/30">·</span>
 
               {/* Title */}
-              <Link
+              <a
                 href={fullPageHref}
                 className="flex-1 truncate font-sans text-sm font-medium text-white hover:opacity-70 transition-opacity"
               >
                 {video.title}
-              </Link>
+              </a>
 
               {/* Like button */}
               <button
