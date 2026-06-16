@@ -217,7 +217,7 @@ export default function OnboardingPage() {
     <div className="flex min-h-screen">
 
       {/* ── Left: form panel ── */}
-      <div className="relative z-10 flex w-full flex-col bg-winter-green md:w-1/2">
+      <div className="relative z-10 flex w-full flex-col bg-background md:w-1/2">
         <div className="flex flex-col px-8 py-10 md:px-14 lg:px-20">
 
           {/* Logo */}
