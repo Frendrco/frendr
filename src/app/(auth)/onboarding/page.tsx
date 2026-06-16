@@ -754,7 +754,7 @@ export default function OnboardingPage() {
 
       {/* ── Right: billboard ── */}
       <div className="relative sticky top-0 hidden h-screen md:flex md:w-1/2 bg-background">
-        <Image src="/images/onboarding-billboard.jpg" alt="" fill className="object-cover" priority />
+        <Image src="/images/onboarding-billboard.png" alt="" fill className="object-cover" priority />
       </div>
 
     </div>
