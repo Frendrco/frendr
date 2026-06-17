@@ -847,7 +847,18 @@ export function UploadClient({
           <div className="flex items-center gap-2 rounded-lg border border-border px-3 h-9">
             <Search size={13} className="shrink-0 text-foreground/30" />
             <input className="flex-1 bg-transparent font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none"
-              placeholder="Search tags…" value={tagSearch} onChange={(e) => setTagSearch(e.target.value)} />
+              placeholder="Search or add a tag…" value={tagSearch} onChange={(e) => setTagSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  const val = tagSearch.trim()
+                  if (val && !tags.includes(val) && tags.length < MAX_TAGS) {
+                    toggleTag(val)
+                    setTagSearch("")
+                  }
+                }
+              }}
+            />
           </div>
           <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
             {VIDEO_TAGS.filter((t) => t.toLowerCase().includes(tagSearch.toLowerCase())).map((t) => {
@@ -863,6 +874,18 @@ export function UploadClient({
                 >{t}</button>
               )
             })}
+            {tagSearch.trim() &&
+              !VIDEO_TAGS.some((t) => t.toLowerCase() === tagSearch.trim().toLowerCase()) &&
+              !tags.includes(tagSearch.trim()) &&
+              tags.length < MAX_TAGS && (
+              <button
+                type="button"
+                onClick={() => { toggleTag(tagSearch.trim()); setTagSearch("") }}
+                className="inline-flex h-7 items-center gap-1 rounded-full border border-dashed border-foreground/30 px-3 font-sans text-xs font-medium text-foreground/60 hover:border-foreground/50 hover:text-foreground transition-colors"
+              >
+                + Add &ldquo;{tagSearch.trim()}&rdquo;
+              </button>
+            )}
           </div>
         </div>
       </div>
