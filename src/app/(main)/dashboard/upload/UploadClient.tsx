@@ -1683,7 +1683,7 @@ export function UploadClient({
                     </div>
                     <div className="flex flex-col gap-2">
                       <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Password protection</p>
-                      <input className={field} type="password" placeholder="Leave blank to disable" value={password} onChange={(e) => setPassword(e.target.value)} />
+                      <input className={field} type="password" autoComplete="new-password" placeholder="Leave blank to disable" value={password} onChange={(e) => setPassword(e.target.value)} />
                       <p className="font-sans text-xs text-foreground/30">Anyone with the link will need this password to watch, regardless of visibility.</p>
                     </div>
                     <div className="flex flex-col gap-5">

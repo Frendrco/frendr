@@ -154,9 +154,13 @@ export function VideoOwnerActions({
   const [showControls,   setShowControls]   = useState(initialEmbedShowControls)
   const [copied,         setCopied]         = useState(false)
 
-  // Re-sync credits when modal opens (in case initial data changed)
+  // Re-sync state when modal opens
   useEffect(() => {
-    if (effectiveEditOpen) setCollabs(initialCollaborators)
+    if (effectiveEditOpen) {
+      setCollabs(initialCollaborators)
+      setNewPassword("")
+      setRemovePassword(false)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [effectiveEditOpen])
 
@@ -573,6 +577,7 @@ export function VideoOwnerActions({
                   <label className="font-sans text-sm font-medium text-foreground">Password protection</label>
                   <input
                     type="password"
+                    autoComplete="new-password"
                     placeholder={initialHasPassword ? "Enter new password to change" : "Set a password (optional)"}
                     value={removePassword ? "" : newPassword}
                     disabled={removePassword}
