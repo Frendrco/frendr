@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { getVideoThumbnail } from "@/lib/videoEmbed"
+import { fetchExternalThumbnail } from "@/lib/videoMetadata"
 import { uniqueVideoSlug } from "@/lib/videoSlug"
 import { hashPassword } from "@/lib/videoPrivacy"
 
@@ -40,9 +41,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "streamId or externalUrl is required" }, { status: 400 })
   }
 
-  const resolvedThumbnail = thumbnailUrl
-    ?? (streamId     ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=1s&width=1280` : null)
-    ?? (externalUrl  ? getVideoThumbnail(externalUrl) : null)
+  const syncThumbnail = thumbnailUrl
+    ?? (streamId    ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=1s&width=1280` : null)
+    ?? (externalUrl ? getVideoThumbnail(externalUrl) : null)
+  const resolvedThumbnail = syncThumbnail ?? (externalUrl ? await fetchExternalThumbnail(externalUrl) : null)
 
   const slug = await uniqueVideoSlug()
 

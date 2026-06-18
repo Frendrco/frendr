@@ -62,6 +62,11 @@ async function scrapeOpenGraph(url: string): Promise<VideoMetadata> {
   }
 }
 
+export async function fetchExternalThumbnail(url: string): Promise<string | null> {
+  const meta = await fetchVideoMetadata(url)
+  return meta.thumbnailUrl
+}
+
 export async function fetchVideoMetadata(url: string): Promise<VideoMetadata> {
   if (!isAllowedUrl(url)) return { title: null, thumbnailUrl: null, description: null }
 

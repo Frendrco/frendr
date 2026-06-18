@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { detectProvider } from "@/lib/videoEmbed"
+import { fetchExternalThumbnail } from "@/lib/videoMetadata"
 import { uniqueVideoSlug } from "@/lib/videoSlug"
 
 export async function POST(req: Request) {
@@ -44,7 +45,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const slugs = await Promise.all(body.items.map(() => uniqueVideoSlug()))
+    const [slugs, resolvedThumbs] = await Promise.all([
+      Promise.all(body.items.map(() => uniqueVideoSlug())),
+      Promise.all(body.items.map((item) =>
+        item.thumbnailUrl ?? fetchExternalThumbnail(item.externalUrl.trim())
+      )),
+    ])
 
     const created = await prisma.$transaction(
       body.items.map((item, i) =>
@@ -54,7 +60,7 @@ export async function POST(req: Request) {
             externalUrl:  item.externalUrl.trim(),
             title:        item.title.trim(),
             description:  item.description?.trim() || null,
-            thumbnailUrl: item.thumbnailUrl ?? null,
+            thumbnailUrl: resolvedThumbs[i] ?? null,
             visibility:    item.visibility    ?? "PUBLIC",
             hideFromFeeds: item.hideFromFeeds ?? false,
             allowComments: item.allowComments ?? true,
