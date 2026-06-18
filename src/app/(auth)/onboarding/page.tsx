@@ -217,7 +217,7 @@ export default function OnboardingPage() {
     <div className="flex min-h-screen">
 
       {/* ── Left: form panel ── */}
-      <div className="relative z-10 flex w-full flex-col bg-background md:w-1/2">
+      <div className="relative flex w-full flex-col bg-background md:w-1/2">
         <div className="flex flex-col px-8 py-10 md:px-14 lg:px-20">
 
           {/* Logo */}
@@ -755,7 +755,7 @@ export default function OnboardingPage() {
       {/* ── Right: billboard ── */}
       <div className="relative sticky top-0 hidden h-screen md:flex md:w-1/2 bg-background">
         <Image
-          src={step === 2 ? "/images/onboarding-billboard-2.jpg" : "/images/onboarding-billboard.png"}
+          src={step === 2 ? "/images/onboarding-billboard-2.jpg" : "/images/onboarding-billboard.jpg"}
           alt=""
           fill
           className="object-cover"
