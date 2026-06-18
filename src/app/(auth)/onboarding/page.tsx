@@ -755,7 +755,7 @@ export default function OnboardingPage() {
       {/* ── Right: billboard ── */}
       <div className="relative sticky top-0 hidden h-screen md:flex md:w-1/2 bg-background">
         <Image
-          src={step === 2 ? "/images/onboarding-billboard-2.jpg" : "/images/onboarding-billboard.jpg"}
+          src={step === 2 ? "/images/onboarding-billboard-2.jpg" : "/images/onboarding-billboard-frendr01.jpg"}
           alt=""
           fill
           className="object-cover"
