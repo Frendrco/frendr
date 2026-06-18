@@ -49,8 +49,10 @@ export function getVideoEmbedUrl(url: string): string {
       if (v) return `https://www.youtube.com/embed/${v}?vq=hd1080`
     }
     if (u.hostname.includes("vimeo.com")) {
-      const v = u.pathname.split("/").filter(Boolean)[0]
-      if (v) return `https://player.vimeo.com/video/${v}?quality=1080p`
+      const parts = u.pathname.split("/").filter(Boolean)
+      const v = parts[0]
+      const h = parts[1]
+      if (v) return `https://player.vimeo.com/video/${v}${h ? `?h=${h}&quality=1080p` : "?quality=1080p"}`
     }
     if (u.hostname.includes("framerate.tv")) {
       const parts = u.pathname.split("/").filter(Boolean)
