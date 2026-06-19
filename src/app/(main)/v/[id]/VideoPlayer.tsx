@@ -134,7 +134,7 @@ export function VideoPlayer({ streamId, externalUrl, title, thumbnailUrl, stream
         autoPlay={autoPlay}
         loop={loop}
         muted={autoPlay}
-        poster={thumbnailUrl ?? undefined}
+        poster={thumbnailUrl ?? (streamId ? `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=1s&width=1280` : undefined)}
         className="absolute inset-0 h-full w-full object-contain bg-black"
       />
     </div>

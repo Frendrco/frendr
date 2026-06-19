@@ -56,7 +56,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!video || video.visibility === "PRIVATE") return {}
   const title = `${video.title} by ${video.user.displayName}`
   const description = video.description ?? `Watch ${video.title} by ${video.user.displayName} on Frendr.`
-  const image = video.thumbnailUrl ?? "/og-image.png"
+  const image = video.thumbnailUrl
+    ?? (video.streamId ? `https://videodelivery.net/${video.streamId}/thumbnails/thumbnail.jpg?time=1s&width=1280` : null)
+    ?? "/og-image.png"
   return {
     title,
     description,
