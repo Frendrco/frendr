@@ -8,6 +8,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/common/Logo"
+import billboardMain from "@/public/images/onboarding-billboard-v2.jpg"
+import billboardStep2 from "@/public/images/onboarding-billboard-2.jpg"
 
 // ── Tag categories ────────────────────────────────────────
 const TAG_GROUPS = [
@@ -755,7 +757,7 @@ export default function OnboardingPage() {
       {/* ── Right: billboard ── */}
       <div className="relative sticky top-0 hidden h-screen md:flex md:w-1/2 -ml-px">
         <Image
-          src={step === 2 ? "/images/onboarding-billboard-2.jpg" : "/images/onboarding-billboard-v2.jpg"}
+          src={step === 2 ? billboardStep2 : billboardMain}
           alt=""
           fill
           className="object-cover"
