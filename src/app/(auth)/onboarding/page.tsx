@@ -8,8 +8,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/common/Logo"
-import billboardMain from "@/public/images/onboarding-billboard-v2.jpg"
-import billboardStep2 from "@/public/images/onboarding-billboard-2.jpg"
+import billboardMain from "../../../../public/images/onboarding-billboard-v2.jpg"
+import billboardStep2 from "../../../../public/images/onboarding-billboard-2.jpg"
 
 // ── Tag categories ────────────────────────────────────────
 const TAG_GROUPS = [
