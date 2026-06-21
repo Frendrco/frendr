@@ -760,6 +760,7 @@ export default function OnboardingPage() {
           src={step === 2 ? billboardStep2 : billboardMain}
           alt=""
           fill
+          unoptimized
           className="object-cover"
           priority
         />
