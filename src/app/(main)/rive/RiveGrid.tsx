@@ -3,6 +3,12 @@
 import { useState } from "react"
 import { RiveCard } from "@/components/common/RiveCard"
 
+function riveEmbedToThumbnail(riveUrl: string): string | null {
+  const match = riveUrl.match(/\/s\/([^/?#]+)/)
+  if (!match) return null
+  return `https://public.rive.app/share-links/thumbnails/${match[1]}.png`
+}
+
 type Thread = {
   id:        string
   title:     string
@@ -57,7 +63,7 @@ export function RiveGrid({ threads, currentUserId }: { threads: Thread[]; curren
               id={t.id}
               title={t.title}
               riveUrl={t.riveUrls[0]}
-              previewUrl={t.imageUrls[0] ?? null}
+              previewUrl={t.imageUrls[0] ?? (t.riveUrls[0] ? riveEmbedToThumbnail(t.riveUrls[0]) : null)}
               likeCount={t.likeCount}
               commentCount={t._count.comments}
               user={t.user}

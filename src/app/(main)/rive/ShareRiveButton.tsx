@@ -16,6 +16,7 @@ export function ShareRiveButton() {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [riveUrl, setRiveUrl] = useState("")
+  const [previewUrl, setPreviewUrl] = useState("")
   const [description, setDescription] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -36,6 +37,7 @@ export function ShareRiveButton() {
     if (!next) {
       setTitle("")
       setRiveUrl("")
+      setPreviewUrl("")
       setDescription("")
       setError(null)
     }
@@ -56,6 +58,7 @@ export function ShareRiveButton() {
         title: title.trim(),
         body: description.trim(),
         riveUrls: [riveUrl.trim()],
+        imageUrls: previewUrl.trim() ? [previewUrl.trim()] : [],
         source: "rive_world",
       }),
     })
@@ -69,6 +72,7 @@ export function ShareRiveButton() {
 
     setTitle("")
     setRiveUrl("")
+    setPreviewUrl("")
     setDescription("")
     setError(null)
     setSubmitting(false)
@@ -132,6 +136,19 @@ export function ShareRiveButton() {
                   e.g. <span className="font-mono">https://rive.app/s/YOUR_ID/embed</span>
                 </p>
               )}
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-medium text-foreground">
+                Preview image URL <span className="font-normal text-foreground/40">(optional)</span>
+              </label>
+              <input
+                type="url"
+                value={previewUrl}
+                onChange={(e) => setPreviewUrl(e.target.value)}
+                placeholder="https://… (shown before the animation loads)"
+                className="h-11 rounded-xl border border-border bg-background px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+              />
             </div>
 
             <div className="flex flex-col gap-1.5">

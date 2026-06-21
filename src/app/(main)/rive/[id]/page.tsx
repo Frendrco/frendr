@@ -140,6 +140,7 @@ export default async function RiveDetailPage({ params }: Props) {
                 initialTitle={thread.title}
                 initialUrl={thread.riveUrls[0]}
                 initialBody={thread.body}
+                initialPreviewUrl={thread.imageUrls[0] ?? ""}
               />
             </div>
           )}

@@ -10,13 +10,14 @@ import {
 } from "@/components/ui/dialog"
 
 type Props = {
-  threadId:    string
-  initialTitle: string
-  initialUrl:   string
-  initialBody:  string
+  threadId:         string
+  initialTitle:     string
+  initialUrl:       string
+  initialBody:      string
+  initialPreviewUrl: string
 }
 
-export function RivePostActions({ threadId, initialTitle, initialUrl, initialBody }: Props) {
+export function RivePostActions({ threadId, initialTitle, initialUrl, initialBody, initialPreviewUrl }: Props) {
   const router = useRouter()
 
   // ── Delete state ──────────────────────────────────────────
@@ -31,12 +32,13 @@ export function RivePostActions({ threadId, initialTitle, initialUrl, initialBod
   }
 
   // ── Edit modal state ───────────────────────────────────────
-  const [editOpen,   setEditOpen]   = useState(false)
-  const [title,      setTitle]      = useState(initialTitle)
-  const [riveUrl,    setRiveUrl]    = useState(initialUrl)
-  const [description,setDescription]= useState(initialBody)
-  const [saving,     setSaving]     = useState(false)
-  const [editError,  setEditError]  = useState<string | null>(null)
+  const [editOpen,    setEditOpen]    = useState(false)
+  const [title,       setTitle]       = useState(initialTitle)
+  const [riveUrl,     setRiveUrl]     = useState(initialUrl)
+  const [description, setDescription] = useState(initialBody)
+  const [previewUrl,  setPreviewUrl]  = useState(initialPreviewUrl)
+  const [saving,      setSaving]      = useState(false)
+  const [editError,   setEditError]   = useState<string | null>(null)
 
   const urlValid = riveUrl.trim().startsWith("https://")
 
@@ -44,6 +46,7 @@ export function RivePostActions({ threadId, initialTitle, initialUrl, initialBod
     setTitle(initialTitle)
     setRiveUrl(initialUrl)
     setDescription(initialBody)
+    setPreviewUrl(initialPreviewUrl)
     setEditError(null)
     setEditOpen(true)
   }
@@ -67,6 +70,7 @@ export function RivePostActions({ threadId, initialTitle, initialUrl, initialBod
         title: title.trim(),
         body: description.trim(),
         riveUrls: [riveUrl.trim()],
+        imageUrls: previewUrl.trim() ? [previewUrl.trim()] : [],
       }),
     })
 
@@ -150,6 +154,19 @@ export function RivePostActions({ threadId, initialTitle, initialUrl, initialBod
                 onChange={(e) => setRiveUrl(e.target.value)}
                 placeholder="https://rive.app/s/…/embed"
                 required
+                className="h-11 rounded-xl border border-border bg-background px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="font-sans text-xs font-medium text-foreground">
+                Preview image URL <span className="font-normal text-foreground/40">(optional)</span>
+              </label>
+              <input
+                type="url"
+                value={previewUrl}
+                onChange={(e) => setPreviewUrl(e.target.value)}
+                placeholder="https://… (shown before the animation loads)"
                 className="h-11 rounded-xl border border-border bg-background px-3 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-spring-green/50"
               />
             </div>
