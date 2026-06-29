@@ -45,13 +45,13 @@ type Props = { searchParams: Promise<{ q?: string; tag?: string; sort?: string; 
 export default async function SearchPage({ searchParams }: Props) {
   const { userId: clerkId } = await auth()
 
-  const { q = "", tag = "", sort = "trending", type = "" } = await searchParams
+  const { q = "", tag = "", sort = "newest", type = "" } = await searchParams
   const query = q.trim()
   const activeTag = tag || "All"
   const isCategoryTag = CONTENT_TAGS.includes(activeTag)
   const isSearching = query.length > 0
   const isRecessView = type === "recess"
-  const activeSort = (["newest", "trending", "following"].includes(sort) ? sort : "trending") as SortValue
+  const activeSort = (["newest", "trending", "following"].includes(sort) ? sort : "newest") as SortValue
 
   // "following" sort has an unavoidable dependency chain: user → followingIds → video query.
   // Resolve it up front only for that case; every other sort skips this entirely.

@@ -109,8 +109,7 @@ export default async function HomePage({
                 return (
                   <Link
                     key={opt}
-                    scroll={false}
-                    href={`/${qs ? `?${qs}` : ""}`}
+                    href={`/${qs ? `?${qs}` : ""}#explore`}
                     className={
                       sort === opt
                         ? "inline-flex h-8 items-center rounded-full bg-core-black dark:bg-white px-4 font-sans text-xs font-medium text-white dark:text-core-black"
