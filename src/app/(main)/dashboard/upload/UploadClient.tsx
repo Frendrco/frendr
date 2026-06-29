@@ -407,25 +407,34 @@ export function UploadClient({
     setBgUpload({ status: 'idle', progress: 0, uid: null, error: null })
   }
 
-  function startBgUpload(f: File) {
+  async function startBgUpload(f: File) {
     cancelBgUpload()
     setBgUpload({ status: 'uploading', progress: 0, uid: null, error: null })
+
+    // Pre-create the Cloudflare upload URL server-side so file size travels in
+    // the JSON body — antivirus software strips TUS headers like Upload-Length.
+    let uploadUrl = ''
     let uid = ''
+    try {
+      const res = await fetch('/api/videos/upload-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileSize: f.size, name: title.trim() || f.name, filename: f.name, filetype: f.type }),
+      })
+      if (res.status === 402) { setShowPaywall(true); setBgUpload({ status: 'idle', progress: 0, uid: null, error: null }); return }
+      if (!res.ok) throw new Error(`${res.status}`)
+      const data = await res.json()
+      uploadUrl = data.uploadUrl
+      uid = data.uid
+    } catch {
+      setBgUpload((prev) => ({ ...prev, status: 'error', uid: null, error: 'Upload failed — check your connection and try again.' }))
+      return
+    }
+
     const upload = new TusUpload(f, {
-      endpoint: "/api/videos/upload-url",
+      uploadUrl,
       chunkSize: 150 * 1024 * 1024,
       retryDelays: [0, 3000, 5000, 10000, 20000],
-      metadata: {
-        name:               title.trim() || f.name,
-        filename:           f.name,
-        filetype:           f.type,
-        maxDurationSeconds: "600",
-        allowedOrigins:     "frendr.co,www.frendr.co",
-      },
-      onAfterResponse: (_req, res) => {
-        const mediaId = res.getHeader("stream-media-id")
-        if (mediaId) uid = mediaId
-      },
       onError: (err) => {
         const status = (err as { originalResponse?: { getStatus: () => number } }).originalResponse?.getStatus()
         if (status === 402) { setShowPaywall(true) }
@@ -553,27 +562,23 @@ export function UploadClient({
         updateBatchItem(item.id, { status: "uploading" })
 
         let uid = ""
-        let paywalled = false
+
+        const urlRes = await fetch('/api/videos/upload-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileSize: item.file.size, name: item.title.trim() || item.file.name, filename: item.file.name, filetype: item.file.type }),
+        })
+        if (urlRes.status === 402) { setShowPaywall(true); setUploading(false); setBatchStarted(false); return null }
+        if (!urlRes.ok) throw new Error('Upload failed')
+        const urlData = await urlRes.json()
+        uid = urlData.uid
 
         await new Promise<void>((resolve, reject) => {
           const upload = new TusUpload(item.file, {
-            endpoint: "/api/videos/upload-url",
+            uploadUrl: urlData.uploadUrl,
             chunkSize: 150 * 1024 * 1024,
             retryDelays: [0, 3000, 5000, 10000, 20000],
-            metadata: {
-              name:               item.title.trim() || item.file.name,
-              filename:           item.file.name,
-              filetype:           item.file.type,
-              maxDurationSeconds: "600",
-              allowedOrigins:     "frendr.co,www.frendr.co",
-            },
-            onAfterResponse: (_req, res) => {
-              const mediaId = res.getHeader("stream-media-id")
-              if (mediaId) uid = mediaId
-            },
             onError: (err) => {
-              const status = (err as { originalResponse?: { getStatus: () => number } }).originalResponse?.getStatus()
-              if (status === 402) paywalled = true
               reject(err)
             },
             onProgress: (bytesUploaded, bytesTotal) => {
@@ -583,8 +588,6 @@ export function UploadClient({
           })
           upload.start()
         })
-
-        if (paywalled) { setShowPaywall(true); setUploading(false); setBatchStarted(false); return null }
 
         updateBatchItem(item.id, { status: "saving", progress: 100 })
         const saveRes = await fetch("/api/videos", {
