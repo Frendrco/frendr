@@ -42,12 +42,13 @@ export async function POST(req: Request) {
 
   // Encode metadata server-side so antivirus on the client can't strip TUS headers
   const enc = (v: string) => Buffer.from(v).toString("base64")
+  // No allowedOrigins → Cloudflare allows the player to be embedded on any
+  // domain, matching the "Allow embedding on other sites" feature.
   const uploadMetadata = [
     `name ${enc(String(name || filename || "upload"))}`,
     `filename ${enc(String(filename || "upload"))}`,
     `filetype ${enc(String(filetype || "video/mp4"))}`,
     `maxDurationSeconds ${enc("600")}`,
-    `allowedOrigins ${enc("frendr.co,www.frendr.co")}`,
   ].join(",")
 
   const res = await fetch(
