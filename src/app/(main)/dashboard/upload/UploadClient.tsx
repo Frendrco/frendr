@@ -75,7 +75,7 @@ function Toggle({ on, onToggle, label, description }: { on: boolean; onToggle: (
   )
 }
 
-async function extractVideoFrames(videoFile: File): Promise<string[]> {
+async function extractVideoFrames(videoFile: File): Promise<{ frames: string[]; times: number[] }> {
   return new Promise((resolve, reject) => {
     const video = document.createElement("video")
     const url = URL.createObjectURL(videoFile)
@@ -93,7 +93,7 @@ async function extractVideoFrames(videoFile: File): Promise<string[]> {
 
     video.addEventListener("loadedmetadata", () => {
       const d = video.duration
-      if (!d || !isFinite(d)) { cleanup(); resolve([]); return }
+      if (!d || !isFinite(d)) { cleanup(); resolve({ frames: [], times: [] }); return }
       timestamps = Array.from({ length: FRAME_COUNT }, (_, i) => (d * (i + 0.5)) / FRAME_COUNT)
       seekNext()
     })
@@ -101,7 +101,7 @@ async function extractVideoFrames(videoFile: File): Promise<string[]> {
     function seekNext() {
       if (index >= timestamps.length) {
         cleanup()
-        resolve(frames)
+        resolve({ frames, times: timestamps })
         return
       }
       video.currentTime = timestamps[index]
@@ -177,6 +177,7 @@ export function UploadClient({
   const [thumbnail, setThumbnail]         = useState<string | null>(null)
   const [thumbDragging, setThumbDragging] = useState(false)
   const [videoFrames, setVideoFrames]     = useState<string[]>([])
+  const [frameTimes, setFrameTimes]       = useState<number[]>([])
   const [selectedFrame, setSelectedFrame] = useState<number | null>(null)
   const [extracting, setExtracting]       = useState(false)
   const thumbInputRef                     = useRef<HTMLInputElement>(null)
@@ -238,12 +239,13 @@ export function UploadClient({
 
   // Extract frames when video file changes
   useEffect(() => {
-    if (!file) { setVideoFrames([]); setSelectedFrame(null); return }
+    if (!file) { setVideoFrames([]); setFrameTimes([]); setSelectedFrame(null); return }
     setExtracting(true)
     setVideoFrames([])
+    setFrameTimes([])
     setSelectedFrame(null)
     extractVideoFrames(file)
-      .then((frames) => { setVideoFrames(frames); setExtracting(false) })
+      .then(({ frames, times }) => { setVideoFrames(frames); setFrameTimes(times); setExtracting(false) })
       .catch(() => setExtracting(false))
   }, [file])
 
@@ -458,9 +460,17 @@ export function UploadClient({
     setSaving(true)
     setUploadError(null)
     try {
-      const effectiveThumbnail = videoType === "RECESS" && !thumbnail && videoFrames.length > 0
-        ? videoFrames[0]
-        : thumbnail
+      // Prefer Cloudflare's high-res server thumbnail at the chosen frame's
+      // timestamp over the low-res client canvas capture (which is only used
+      // for the picker preview). RECESS videos default to the first frame.
+      const cfThumb = (t: number) =>
+        `https://videodelivery.net/${bgUpload.uid}/thumbnails/thumbnail.jpg?time=${Math.round(t)}s&width=1280`
+      let effectiveThumbnail = thumbnail
+      if (selectedFrame !== null && frameTimes[selectedFrame] != null) {
+        effectiveThumbnail = cfThumb(frameTimes[selectedFrame])
+      } else if (!thumbnail && videoType === "RECESS" && frameTimes[0] != null) {
+        effectiveThumbnail = cfThumb(frameTimes[0])
+      }
       const res = await fetch("/api/videos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -625,6 +635,7 @@ export function UploadClient({
     e.preventDefault(); setThumbDragging(false)
     const f = e.dataTransfer.files[0]
     if (f?.type.startsWith("image/")) {
+      setSelectedFrame(null)
       const reader = new FileReader()
       reader.onload = (ev) => setThumbnail(ev.target?.result as string)
       reader.readAsDataURL(f)
@@ -634,6 +645,7 @@ export function UploadClient({
   function handleThumbInput(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
     if (!f) return
+    setSelectedFrame(null)
     const reader = new FileReader()
     reader.onload = (ev) => setThumbnail(ev.target?.result as string)
     reader.readAsDataURL(f)
