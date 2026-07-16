@@ -176,6 +176,7 @@ export function UploadClient({
   const [thumbMode, setThumbMode]         = useState<ThumbMode>("upload")
   const [thumbnail, setThumbnail]         = useState<string | null>(null)
   const [thumbDragging, setThumbDragging] = useState(false)
+  const [uploadingThumb, setUploadingThumb] = useState(false)
   const [videoFrames, setVideoFrames]     = useState<string[]>([])
   const [frameTimes, setFrameTimes]       = useState<number[]>([])
   const [selectedFrame, setSelectedFrame] = useState<number | null>(null)
@@ -631,24 +632,34 @@ export function UploadClient({
     }
   }
 
+  async function uploadThumbFile(f: File) {
+    setSelectedFrame(null)
+    setUploadingThumb(true)
+    try {
+      const form = new FormData()
+      form.append("file", f)
+      const res = await fetch("/api/videos/upload-thumbnail", { method: "POST", body: form })
+      const data = await res.json() as { thumbnailUrl?: string; error?: string }
+      if (data.thumbnailUrl) setThumbnail(data.thumbnailUrl)
+      else alert(data.error ?? "Thumbnail upload failed")
+    } catch {
+      alert("Thumbnail upload failed")
+    } finally {
+      setUploadingThumb(false)
+    }
+  }
+
   function handleThumbDrop(e: React.DragEvent) {
     e.preventDefault(); setThumbDragging(false)
     const f = e.dataTransfer.files[0]
-    if (f?.type.startsWith("image/")) {
-      setSelectedFrame(null)
-      const reader = new FileReader()
-      reader.onload = (ev) => setThumbnail(ev.target?.result as string)
-      reader.readAsDataURL(f)
-    }
+    if (f?.type.startsWith("image/")) uploadThumbFile(f)
   }
 
   function handleThumbInput(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
     if (!f) return
-    setSelectedFrame(null)
-    const reader = new FileReader()
-    reader.onload = (ev) => setThumbnail(ev.target?.result as string)
-    reader.readAsDataURL(f)
+    uploadThumbFile(f)
+    e.target.value = ""
   }
 
   function selectFrame(i: number) {
@@ -701,7 +712,7 @@ export function UploadClient({
 
   async function handleDropboxImport() {
     const rawUrl = bulkItems[0]?.url
-    if (!rawUrl || !title.trim() || !thumbnail) return
+    if (!rawUrl || !title.trim() || !thumbnail || uploadingThumb) return
     setUploading(true); setUploadError(null)
     try {
       const res = await fetch("/api/videos/bulk-import", {
@@ -987,9 +998,9 @@ export function UploadClient({
                     thumbDragging ? "border-spring-green bg-spring-green/5" : "border-border hover:border-foreground/25"
                   )}
                 >
-                  <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" onChange={handleThumbInput} />
+                  <input ref={thumbInputRef} type="file" accept="image/*" className="absolute opacity-0 inset-0 w-full h-full cursor-pointer z-10" disabled={uploadingThumb} onChange={handleThumbInput} />
                   <ImageIcon size={20} className="text-foreground/25" />
-                  <p className="font-sans text-xs text-foreground/40">Drop an image or click to browse</p>
+                  <p className="font-sans text-xs text-foreground/40">{uploadingThumb ? "Uploading…" : "Drop an image or click to browse"}</p>
                   <p className="font-sans text-[11px] text-foreground/25">JPG, PNG, WebP · any aspect ratio</p>
                 </label>
               )}
@@ -1781,7 +1792,7 @@ export function UploadClient({
 
           // ── Dropbox expanded form ──────────────────────────────
           if (isDropboxMode) {
-            const canSubmit = !!thumbnail && title.trim().length > 0 && !uploading
+            const canSubmit = !!thumbnail && title.trim().length > 0 && !uploading && !uploadingThumb
             return (
               <div className="flex flex-col gap-6">
 

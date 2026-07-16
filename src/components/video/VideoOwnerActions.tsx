@@ -348,8 +348,11 @@ export function VideoOwnerActions({
   if (embedAutoplay) { embedParams.set("autoplay", "true"); embedParams.set("muted", "true") }
   if (embedLoop)      embedParams.set("loop", "true")
   if (!showControls)  embedParams.set("controls", "false")
-  // Carry the Frendr cover into Cloudflare's player (URLSearchParams encodes the value).
-  if (thumbnailUrl.trim()) embedParams.set("poster", thumbnailUrl.trim())
+  // Carry the Frendr cover into Cloudflare's player. Only http(s) URLs — a base64
+  // data: URI would bloat the embed to tens of thousands of chars and Cloudflare
+  // can't use it as a poster anyway.
+  const posterUrl = thumbnailUrl.trim()
+  if (/^https?:\/\//.test(posterUrl)) embedParams.set("poster", posterUrl)
   const embedParamStr = embedParams.toString()
   const embedSrc = streamId
     ? `https://iframe.videodelivery.net/${streamId}${embedParamStr ? `?${embedParamStr}` : ""}`
