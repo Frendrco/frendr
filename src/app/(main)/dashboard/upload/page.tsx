@@ -19,6 +19,7 @@ export default async function UploadPage({ searchParams }: Props) {
       select: {
         username: true,
         isPro: true,
+        isAdmin: true,
         videos: { where: { duration: { not: null } }, select: { duration: true } },
       },
     }),
@@ -27,8 +28,10 @@ export default async function UploadPage({ searchParams }: Props) {
 
   if (!user) redirect("/onboarding")
 
+  // Admins get unlimited uploads, same as the upload-url endpoint exemption.
+  const unlimited = user.isPro || user.isAdmin
   const uploadedSeconds = user.videos.reduce((sum, v) => sum + (v.duration ?? 0), 0)
-  const isAtLimit = !user.isPro && uploadedSeconds >= FREE_UPLOAD_SECONDS
+  const isAtLimit = !unlimited && uploadedSeconds >= FREE_UPLOAD_SECONDS
   const initialType = type === "recess" ? "RECESS" : "PORTFOLIO"
   const justUpgraded = upgraded === "1"
 
@@ -36,7 +39,7 @@ export default async function UploadPage({ searchParams }: Props) {
     <UploadClient
       username={user.username}
       initialType={initialType}
-      isPro={user.isPro}
+      isPro={unlimited}
       uploadedSeconds={uploadedSeconds}
       freeSeconds={FREE_UPLOAD_SECONDS}
       isAtLimit={isAtLimit}
