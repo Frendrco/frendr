@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Check, Copy, Image as ImageIcon, MoreHorizontal, Play, Search, Upload, X, AlertCircle } from "lucide-react"
+import { Upload as TusUpload } from "tus-js-client"
 import { detectProvider } from "@/lib/videoEmbed"
 import {
   Dialog,
@@ -139,6 +140,12 @@ export function VideoOwnerActions({
   const [uploadingThumb, setUploadingThumb] = useState(false)
   const [selectedFrame,  setSelectedFrame] = useState<number | null>(null)
 
+  // Replace-video state
+  const [replaceConfirmOpen, setReplaceConfirmOpen] = useState(false)
+  const pendingReplaceFile = useRef<File | null>(null)
+  const replaceTusRef = useRef<TusUpload | null>(null)
+  const [replaceUpload, setReplaceUpload] = useState<{ status: "idle" | "uploading" | "complete" | "error"; progress: number; uid: string | null; error: string | null }>({ status: "idle", progress: 0, uid: null, error: null })
+
   // Credits tab state
   const [collabs, setCollabs]             = useState<CollabEntry[]>(initialCollaborators)
   const [collabSearch, setCollabSearch]   = useState("")
@@ -160,6 +167,7 @@ export function VideoOwnerActions({
       setCollabs(initialCollaborators)
       setNewPassword("")
       setRemovePassword(false)
+      cancelReplaceUpload()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [effectiveEditOpen])
@@ -220,7 +228,73 @@ export function VideoOwnerActions({
     setThumbMode("default")
   }
 
+  function onReplaceFilePick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ""
+    if (!file) return
+    pendingReplaceFile.current = file
+    setReplaceConfirmOpen(true)
+  }
+
+  function cancelReplaceUpload() {
+    if (replaceTusRef.current) {
+      try { replaceTusRef.current.abort() } catch { /* ignore */ }
+      replaceTusRef.current = null
+    }
+    setReplaceUpload({ status: "idle", progress: 0, uid: null, error: null })
+  }
+
+  async function startReplaceUpload(f: File) {
+    cancelReplaceUpload()
+    setReplaceUpload({ status: "uploading", progress: 0, uid: null, error: null })
+
+    let uploadUrl = ""
+    let uid = ""
+    try {
+      const res = await fetch("/api/videos/upload-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileSize: f.size, name: title.trim() || f.name, filename: f.name, filetype: f.type }),
+      })
+      if (res.status === 402) { setReplaceUpload({ status: "error", progress: 0, uid: null, error: "You've reached your upload limit." }); return }
+      if (!res.ok) throw new Error(`${res.status}`)
+      const data = await res.json()
+      uploadUrl = data.uploadUrl
+      uid = data.uid
+    } catch {
+      setReplaceUpload({ status: "error", progress: 0, uid: null, error: "Upload failed — check your connection and try again." })
+      return
+    }
+
+    const upload = new TusUpload(f, {
+      uploadUrl,
+      chunkSize: 150 * 1024 * 1024,
+      retryDelays: [0, 3000, 5000, 10000, 20000],
+      onError: () => {
+        setReplaceUpload({ status: "error", progress: 0, uid: null, error: "Upload failed — check your connection and try again." })
+        replaceTusRef.current = null
+      },
+      onProgress: (bytesUploaded, bytesTotal) => {
+        setReplaceUpload((prev) => ({ ...prev, progress: Math.round((bytesUploaded / bytesTotal) * 100) }))
+      },
+      onSuccess: () => {
+        setReplaceUpload({ status: "complete", progress: 100, uid, error: null })
+        replaceTusRef.current = null
+      },
+    })
+    replaceTusRef.current = upload
+    upload.start()
+  }
+
+  function confirmReplace() {
+    setReplaceConfirmOpen(false)
+    const f = pendingReplaceFile.current
+    pendingReplaceFile.current = null
+    if (f) startReplaceUpload(f)
+  }
+
   async function handleSave() {
+    if (replaceUpload.status === "uploading") return
     if (isExternalVideo && externalUrl.trim()) {
       const provider = detectProvider(externalUrl.trim())
       if (provider === "other") {
@@ -238,6 +312,7 @@ export function VideoOwnerActions({
         description:       description.trim() || null,
         tags,
         ...(isRecess && { categories: recessTools }),
+        ...(replaceUpload.status === "complete" && replaceUpload.uid && { streamId: replaceUpload.uid }),
         thumbnailUrl:      thumbnailUrl.trim() || null,
         ...(isExternalVideo && { externalUrl: externalUrl.trim() || null }),
         visibility,
@@ -532,22 +607,54 @@ export function VideoOwnerActions({
                 </div>
 
                 {/* Replace video */}
-                <div className="flex flex-col gap-2">
-                  <label className="font-sans text-sm font-medium text-foreground">Replace video</label>
-                  <button
-                    type="button"
-                    disabled
-                    className="flex items-center gap-3 rounded-xl border border-dashed border-border px-4 py-3 text-left opacity-50 cursor-not-allowed"
-                  >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-mist-grey">
-                      <Upload size={15} className="text-foreground/40" />
-                    </div>
-                    <div>
-                      <p className="font-sans text-sm font-medium text-foreground">Upload a new file</p>
-                      <p className="font-sans text-xs text-foreground/40">Replaces the video, keeps all metadata and tags</p>
-                    </div>
-                  </button>
-                </div>
+                {streamId && (
+                  <div className="flex flex-col gap-2">
+                    <label className="font-sans text-sm font-medium text-foreground">Replace video</label>
+
+                    {replaceUpload.status === "complete" ? (
+                      <div className="flex items-center gap-3 rounded-xl border border-spring-green bg-spring-green/10 px-4 py-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-spring-green/20">
+                          <Check size={16} className="text-foreground" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-sans text-sm font-medium text-foreground">New video ready</p>
+                          <p className="font-sans text-xs text-foreground/50">Save changes to apply. This replaces the current file.</p>
+                        </div>
+                        <button type="button" onClick={cancelReplaceUpload} className="font-sans text-xs text-foreground/40 hover:text-foreground transition-colors">
+                          Undo
+                        </button>
+                      </div>
+                    ) : replaceUpload.status === "uploading" ? (
+                      <div className="flex flex-col gap-2 rounded-xl border border-border px-4 py-3">
+                        <div className="flex items-center justify-between">
+                          <p className="font-sans text-sm font-medium text-foreground">Uploading new file…</p>
+                          <span className="font-sans text-xs text-foreground/50">{replaceUpload.progress}%</span>
+                        </div>
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+                          <div className="h-full rounded-full bg-spring-green transition-all" style={{ width: `${replaceUpload.progress}%` }} />
+                        </div>
+                      </div>
+                    ) : (
+                      <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border px-4 py-3 text-left transition-colors hover:border-foreground/30">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-mist-grey">
+                          <Upload size={15} className="text-foreground/40" />
+                        </div>
+                        <div>
+                          <p className="font-sans text-sm font-medium text-foreground">Upload a new file</p>
+                          <p className="font-sans text-xs text-foreground/40">Replaces the video, keeps all metadata and tags</p>
+                        </div>
+                        <input type="file" accept="video/*" className="hidden" onChange={onReplaceFilePick} />
+                      </label>
+                    )}
+
+                    {replaceUpload.status === "error" && (
+                      <p className="flex items-center gap-1.5 font-sans text-xs text-destructive">
+                        <AlertCircle size={12} className="shrink-0" />
+                        {replaceUpload.error}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {/* Visibility */}
                 <div className="flex flex-col gap-1.5">
@@ -822,10 +929,10 @@ export function VideoOwnerActions({
             <button
               type="button"
               onClick={handleSave}
-              disabled={saving || !title.trim()}
+              disabled={saving || !title.trim() || replaceUpload.status === "uploading"}
               className="inline-flex h-10 items-center rounded-xl bg-spring-green px-5 font-sans text-sm font-medium text-core-black transition-colors hover:bg-spring-green/90 disabled:opacity-50"
             >
-              {saving ? "Saving…" : "Save changes"}
+              {saving ? "Saving…" : replaceUpload.status === "uploading" ? "Video uploading…" : "Save changes"}
             </button>
           </div>
         </DialogContent>
@@ -847,6 +954,24 @@ export function VideoOwnerActions({
             <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
               {deleting ? "Deleting…" : "Delete video"}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Replace confirm dialog ────────────────────────────── */}
+      <Dialog open={replaceConfirmOpen} onOpenChange={(o) => { setReplaceConfirmOpen(o); if (!o) pendingReplaceFile.current = null }}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="font-sans text-base font-semibold text-foreground">
+              Replace the video file?
+            </DialogTitle>
+          </DialogHeader>
+          <p className="font-sans text-sm text-foreground/60">
+            The current file will be permanently deleted when you save. Views, likes, comments, and the link stay the same.
+          </p>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+            <Button onClick={confirmReplace}>Replace</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

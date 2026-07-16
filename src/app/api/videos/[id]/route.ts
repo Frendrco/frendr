@@ -13,11 +13,12 @@ export async function PATCH(req: Request, { params }: Params) {
   const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } })
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
-  const video = await prisma.video.findUnique({ where: { id }, select: { userId: true, streamId: true } })
+  const video = await prisma.video.findUnique({ where: { id }, select: { userId: true, streamId: true, thumbnailUrl: true } })
   if (!video) return NextResponse.json({ error: "Not found" }, { status: 404 })
   if (video.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const body = await req.json() as {
+    streamId?:          string | null
     title?:             string
     description?:       string | null
     tags?:              string[]
@@ -36,8 +37,25 @@ export async function PATCH(req: Request, { params }: Params) {
     embedShowControls?: boolean
     allowEmbedding?:    boolean
   }
-  const { title, description, tags, categories, thumbnailUrl, externalUrl, visibility, password, hideFromFeeds, allowComments,
+  const { streamId, title, description, tags, categories, thumbnailUrl, externalUrl, visibility, password, hideFromFeeds, allowComments,
           allowDownloads, videoType, collaborators, embedAutoplay, embedLoop, embedShowControls, allowEmbedding } = body
+
+  // Replace the underlying video file: swap streamId, keep the rest of the record.
+  const oldStreamId = video.streamId
+  const isReplacingStream = streamId !== undefined && streamId !== null && streamId !== oldStreamId
+  const effectiveStreamId = isReplacingStream ? streamId : oldStreamId
+
+  // When swapping the file, an auto-derived thumbnail points at the old (now
+  // deleted) stream — regenerate it from the new one. A custom uploaded
+  // thumbnail (not a videodelivery URL for the old stream) is left as-is.
+  let thumbnailOverride: string | null | undefined = undefined
+  if (isReplacingStream && oldStreamId) {
+    const currentThumb = thumbnailUrl !== undefined ? thumbnailUrl : video.thumbnailUrl
+    if (!currentThumb || currentThumb.includes(oldStreamId)) {
+      thumbnailOverride = `https://videodelivery.net/${streamId}/thumbnails/thumbnail.jpg?time=1s&width=1280`
+    }
+  }
+  const finalThumbnail = thumbnailOverride !== undefined ? thumbnailOverride : thumbnailUrl
 
   if (externalUrl !== undefined && externalUrl !== null) {
     const { detectProvider } = await import("@/lib/videoEmbed")
@@ -58,7 +76,8 @@ export async function PATCH(req: Request, { params }: Params) {
       ...(description       !== undefined && { description }),
       ...(tags              !== undefined && { tags }),
       ...(categories        !== undefined && { categories }),
-      ...(thumbnailUrl      !== undefined && { thumbnailUrl }),
+      ...(finalThumbnail    !== undefined && { thumbnailUrl: finalThumbnail }),
+      ...(isReplacingStream && { streamId, duration: null }),
       ...(externalUrl       !== undefined && { externalUrl }),
       ...(visibility        !== undefined && { visibility }),
       ...passwordUpdate,
@@ -73,15 +92,40 @@ export async function PATCH(req: Request, { params }: Params) {
     },
   })
 
-  if (allowDownloads !== undefined && video.streamId) {
+  if (allowDownloads !== undefined && effectiveStreamId) {
     const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
     const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
     if (accountId && token) {
-      const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${video.streamId}/downloads`
+      const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${effectiveStreamId}/downloads`
       fetch(url, {
         method:  allowDownloads ? "POST" : "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       }).catch(() => {})
+    }
+  }
+
+  if (isReplacingStream) {
+    const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
+    const token     = process.env.CLOUDFLARE_STREAM_API_TOKEN
+    if (accountId && token) {
+      // Delete the old Cloudflare asset — best-effort; the DB already points at the new stream.
+      if (oldStreamId) {
+        fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${oldStreamId}`,
+          { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
+        ).catch(() => {})
+      }
+      // Repopulate duration from the new stream.
+      fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/${streamId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+        .then((r) => r.json())
+        .then((data) => {
+          const secs = Math.ceil(data?.result?.duration ?? 0)
+          if (secs > 0) prisma.video.update({ where: { id }, data: { duration: secs } }).catch(() => {})
+        })
+        .catch(() => {})
     }
   }
 
