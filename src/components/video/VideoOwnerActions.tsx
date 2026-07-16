@@ -348,6 +348,8 @@ export function VideoOwnerActions({
   if (embedAutoplay) { embedParams.set("autoplay", "true"); embedParams.set("muted", "true") }
   if (embedLoop)      embedParams.set("loop", "true")
   if (!showControls)  embedParams.set("controls", "false")
+  // Carry the Frendr cover into Cloudflare's player (URLSearchParams encodes the value).
+  if (thumbnailUrl.trim()) embedParams.set("poster", thumbnailUrl.trim())
   const embedParamStr = embedParams.toString()
   const embedSrc = streamId
     ? `https://iframe.videodelivery.net/${streamId}${embedParamStr ? `?${embedParamStr}` : ""}`
