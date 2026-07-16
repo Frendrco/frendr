@@ -355,10 +355,18 @@ export function VideoOwnerActions({
     ? `https://iframe.videodelivery.net/${streamId}${embedParamStr ? `?${embedParamStr}` : ""}`
     : `https://frendr.com/embed/${videoId}`
 
+  // Responsive 16:9 wrapper so the player fills its container on any screen.
+  const embedCode = `<div style="position:relative;padding-top:56.25%;">
+  <iframe
+    src="${embedSrc}"
+    style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+    allowfullscreen
+  ></iframe>
+</div>`
+
   function copyEmbed() {
-    navigator.clipboard.writeText(
-      `<iframe src="${embedSrc}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`
-    ).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
+    navigator.clipboard.writeText(embedCode)
+      .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
   }
 
   const currentThumb = thumbnailUrl.trim() || null
@@ -803,7 +811,7 @@ export function VideoOwnerActions({
                 <div className={cn("flex flex-col gap-2 transition-opacity duration-200", !allowEmbedding && "pointer-events-none opacity-30")}>
                   <p className="font-sans text-xs font-medium uppercase tracking-widest text-foreground/50">Embed code</p>
                   <div className="relative">
-                    <pre className="w-full overflow-x-auto rounded-xl border border-border bg-foreground/[0.02] px-4 py-4 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre">{`<iframe\n  src="${embedSrc}"\n  width="640" height="360"\n  frameborder="0"\n  allowfullscreen\n></iframe>`}</pre>
+                    <pre className="w-full overflow-x-auto rounded-xl border border-border bg-foreground/[0.02] px-4 py-4 font-mono text-xs text-foreground/50 leading-relaxed whitespace-pre">{embedCode}</pre>
                     <button
                       type="button"
                       onClick={copyEmbed}
