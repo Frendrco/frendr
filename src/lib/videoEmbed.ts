@@ -56,12 +56,41 @@ export function getVideoEmbedUrl(url: string): string {
     }
     if (u.hostname.includes("framerate.tv")) {
       const parts = u.pathname.split("/").filter(Boolean)
-      const id = parts[parts.length - 1]
-      if (id) return `https://framerate.tv/embed/${id}`
+      // Only /watch/<id> and /embed/<id> are real videos — profile/other pages aren't embeddable
+      if ((parts[0] === "watch" || parts[0] === "embed") && parts[1]) {
+        return `https://framerate.tv/embed/${parts[1]}`
+      }
     }
     return url
   } catch {
     return url
+  }
+}
+
+// Whether a URL points to an actual embeddable video (not a profile/channel/home page).
+// Use this to validate on submit so we never store a link that renders a blank player.
+export function isEmbeddableVideoUrl(url: string): boolean {
+  const provider = detectProvider(url)
+  try {
+    const u = new URL(url)
+    switch (provider) {
+      case "youtube":
+        return u.hostname === "youtu.be"
+          ? u.pathname.slice(1).split("?")[0].length > 0
+          : !!u.searchParams.get("v")
+      case "vimeo":
+        return u.pathname.split("/").filter(Boolean).length > 0
+      case "framerate": {
+        const parts = u.pathname.split("/").filter(Boolean)
+        return (parts[0] === "watch" || parts[0] === "embed") && !!parts[1]
+      }
+      case "dropbox":
+        return url.toLowerCase().includes(".mp4")
+      default:
+        return false
+    }
+  } catch {
+    return false
   }
 }
 

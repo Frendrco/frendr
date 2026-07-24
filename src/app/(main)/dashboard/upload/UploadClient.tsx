@@ -8,6 +8,7 @@ import { Upload, X, Search, Copy, Check, ArrowLeft, ImageIcon, Link2 } from "luc
 import { cn } from "@/lib/utils"
 import {
   detectProvider,
+  isEmbeddableVideoUrl,
   getDropboxRawUrl,
   getProviderLabel,
   getVideoEmbedUrl,
@@ -302,6 +303,16 @@ export function UploadClient({
         item.id === id ? { ...item, url: rawUrl!, provider, status: "ready", title: item.title || filename } : item
       ))
       setDropboxUrlError(null)
+      return
+    }
+
+    // Reject profile/channel/home pages before hitting oEmbed — they'd save a link that renders a blank player
+    if (!isEmbeddableVideoUrl(url)) {
+      setBulkItems((prev) => prev.map((item) =>
+        item.id === id
+          ? { ...item, provider, status: "error", errorMessage: "That link isn't a video — it looks like a profile or channel page. Paste the direct link to a single video." }
+          : item
+      ))
       return
     }
 

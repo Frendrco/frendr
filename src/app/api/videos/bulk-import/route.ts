@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { detectProvider } from "@/lib/videoEmbed"
+import { detectProvider, isEmbeddableVideoUrl } from "@/lib/videoEmbed"
 import { fetchExternalThumbnail } from "@/lib/videoMetadata"
 import { uniqueVideoSlug } from "@/lib/videoSlug"
 
@@ -41,6 +41,9 @@ export async function POST(req: Request) {
     }
     if (detectProvider(item.externalUrl.trim()) === "other") {
       return NextResponse.json({ error: "Unsupported video source. Use YouTube, Vimeo, Framerate, or Dropbox." }, { status: 400 })
+    }
+    if (!isEmbeddableVideoUrl(item.externalUrl.trim())) {
+      return NextResponse.json({ error: "One of the links isn't a video — it looks like a profile or channel page. Paste the direct link to a single video." }, { status: 400 })
     }
   }
 

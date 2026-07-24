@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
-import { getVideoThumbnail } from "@/lib/videoEmbed"
+import { getVideoThumbnail, detectProvider, isEmbeddableVideoUrl } from "@/lib/videoEmbed"
 import { fetchExternalThumbnail } from "@/lib/videoMetadata"
 import { uniqueVideoSlug } from "@/lib/videoSlug"
 import { hashPassword } from "@/lib/videoPrivacy"
@@ -39,6 +39,9 @@ export async function POST(req: Request) {
   if (description && description.length > 5000) return NextResponse.json({ error: "description too long (max 5000 chars)" }, { status: 400 })
   if (!streamId && !externalUrl) {
     return NextResponse.json({ error: "streamId or externalUrl is required" }, { status: 400 })
+  }
+  if (externalUrl && detectProvider(externalUrl) !== "other" && !isEmbeddableVideoUrl(externalUrl)) {
+    return NextResponse.json({ error: "That link isn't a video — it looks like a profile or channel page. Paste the direct link to a single video." }, { status: 400 })
   }
 
   const syncThumbnail = thumbnailUrl

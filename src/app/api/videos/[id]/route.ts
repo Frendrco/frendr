@@ -58,10 +58,13 @@ export async function PATCH(req: Request, { params }: Params) {
   const finalThumbnail = thumbnailOverride !== undefined ? thumbnailOverride : thumbnailUrl
 
   if (externalUrl !== undefined && externalUrl !== null) {
-    const { detectProvider } = await import("@/lib/videoEmbed")
+    const { detectProvider, isEmbeddableVideoUrl } = await import("@/lib/videoEmbed")
     const provider = detectProvider(externalUrl)
     if (provider === "other") {
       return NextResponse.json({ error: "Unsupported URL. Please use a YouTube, Vimeo, Framerate, or Dropbox link." }, { status: 422 })
+    }
+    if (!isEmbeddableVideoUrl(externalUrl)) {
+      return NextResponse.json({ error: "That link isn't a video — it looks like a profile or channel page. Paste the direct link to a single video." }, { status: 422 })
     }
   }
 
