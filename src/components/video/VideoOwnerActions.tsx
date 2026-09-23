@@ -82,6 +82,7 @@ interface Props {
   initialExternalUrl?: string | null
   externalEditOpen?: boolean
   onExternalEditOpenChange?: (open: boolean) => void
+  autoOpenEdit?: boolean
 }
 
 export function VideoOwnerActions({
@@ -108,12 +109,15 @@ export function VideoOwnerActions({
   initialExternalUrl = null,
   externalEditOpen,
   onExternalEditOpenChange,
+  autoOpenEdit = false,
 }: Props) {
   const isRecess = videoType === "RECESS"
   const isExternalVideo = !streamId && !!initialExternalUrl
   const router = useRouter()
 
-  const [editOpen,   setEditOpen]   = useState(false)
+  // Seeded (not controlled) so arriving from upload with ?edit=1 opens the
+  // sheet while still letting the user close it normally.
+  const [editOpen,   setEditOpen]   = useState(autoOpenEdit)
   const effectiveEditOpen    = externalEditOpen    ?? editOpen
   const setEffectiveEditOpen = onExternalEditOpenChange ?? setEditOpen
   const [deleteOpen, setDeleteOpen] = useState(false)

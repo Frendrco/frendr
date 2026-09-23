@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
-import { FREE_UPLOAD_SECONDS } from "@/lib/stripe"
+import { FREE_UPLOAD_SECONDS, MAX_VIDEO_SECONDS } from "@/lib/stripe"
 
 export async function POST(req: Request) {
   const { userId: clerkId } = await auth()
@@ -14,12 +14,15 @@ export async function POST(req: Request) {
 
   if (!user.isPro && !user.isAdmin) {
     const agg = await prisma.video.aggregate({
-      where: { userId: user.id, duration: { not: null } },
+      where: { userId: user.id, streamId: { not: null } },
       _sum: { duration: true },
     })
     const totalSeconds = agg._sum.duration ?? 0
     if (totalSeconds >= FREE_UPLOAD_SECONDS) {
-      return new Response(null, { status: 402 })
+      return Response.json(
+        { reason: "seconds", usage: totalSeconds, limit: FREE_UPLOAD_SECONDS },
+        { status: 402 }
+      )
     }
   }
 
@@ -48,7 +51,7 @@ export async function POST(req: Request) {
     `name ${enc(String(name || filename || "upload"))}`,
     `filename ${enc(String(filename || "upload"))}`,
     `filetype ${enc(String(filetype || "video/mp4"))}`,
-    `maxDurationSeconds ${enc("600")}`,
+    `maxDurationSeconds ${enc(String(MAX_VIDEO_SECONDS))}`,
   ].join(",")
 
   const res = await fetch(

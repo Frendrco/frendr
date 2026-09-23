@@ -45,7 +45,10 @@ async function getStreamInfo(streamId: string): Promise<StreamInfo> {
   }
 }
 
-type Props = { params: Promise<{ id: string }> }
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ edit?: string }>
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
@@ -77,8 +80,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function VideoPage({ params }: Props) {
+export default async function VideoPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { edit } = await searchParams
   const { userId: clerkId } = await auth()
 
   const [video, currentUser] = await Promise.all([
@@ -279,6 +283,7 @@ export default async function VideoPage({ params }: Props) {
                 )}
                 {isOwner ? (
                   <VideoOwnerActions
+                    autoOpenEdit={edit === "1"}
                     videoId={video.id}
                     username={video.user.username}
                     streamId={video.streamId}
