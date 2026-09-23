@@ -1,8 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { stripe } from "@/lib/stripe"
-import { FREE_UPLOAD_SECONDS } from "@/lib/stripe"
+import { getStripe, FREE_UPLOAD_SECONDS } from "@/lib/stripe"
 
 export async function GET() {
   const { userId: clerkId } = await auth()
@@ -15,7 +14,7 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })
 
   const agg = await prisma.video.aggregate({
-    where: { userId: user.id, duration: { not: null } },
+    where: { userId: user.id, streamId: { not: null } },
     _sum: { duration: true },
   })
   const uploadedSeconds = agg._sum.duration ?? 0
@@ -23,7 +22,7 @@ export async function GET() {
   let renewsAt: string | null = null
   if (user.stripeSubscriptionId) {
     try {
-      const sub = await stripe.subscriptions.retrieve(user.stripeSubscriptionId)
+      const sub = await getStripe().subscriptions.retrieve(user.stripeSubscriptionId)
       const periodEnd = (sub as unknown as { current_period_end: number }).current_period_end
       if (periodEnd) renewsAt = new Date(periodEnd * 1000).toISOString()
     } catch {

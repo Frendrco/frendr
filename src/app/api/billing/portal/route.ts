@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { stripe } from "@/lib/stripe"
+import { getStripe } from "@/lib/stripe"
 
 export async function POST() {
   const { userId: clerkId } = await auth()
@@ -17,7 +17,7 @@ export async function POST() {
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://frendr.co"
 
-  const session = await stripe.billingPortal.sessions.create({
+  const session = await getStripe().billingPortal.sessions.create({
     customer:   user.stripeCustomerId,
     return_url: `${baseUrl}/dashboard/settings?tab=billing`,
   })
