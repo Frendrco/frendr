@@ -18,12 +18,6 @@ const COLOR_MAP: Record<string, string> = {
 }
 const FALLBACK_COLORS = Object.values(COLOR_MAP)
 
-const PLACEHOLDER_FRENDS = [
-  { name: "Jamie Larson",    username: "jamielarson",    color: "bg-bloom-lavender",  openToWork: true  },
-  { name: "Mika Okonkwo",   username: "mikaokonkwo",    color: "bg-sky-blue",         openToWork: false },
-  { name: "Teo Brandeis",   username: "teobrandeis",    color: "bg-sunny-yellow",     openToWork: true  },
-  { name: "Rena Castillo",  username: "renacastillo",   color: "bg-winter-green",     openToWork: false },
-]
 
 export default async function FollowingPage() {
   const { userId: clerkId } = await auth()
@@ -206,7 +200,7 @@ export default async function FollowingPage() {
             <section>
               <h2 className="mb-6 font-sans font-semibold text-base text-foreground">
                 Frends
-                <span className="ml-2 font-normal text-foreground/30">{people.length || PLACEHOLDER_FRENDS.length}</span>
+                <span className="ml-2 font-normal text-foreground/30">{people.length}</span>
               </h2>
               <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
 
@@ -237,22 +231,19 @@ export default async function FollowingPage() {
                       </div>
                     </Link>
                   ))}
-
-                {/* Placeholder frends (design preview) */}
-                {people.length === 0 && PLACEHOLDER_FRENDS.map(p => (
-                  <div key={p.username} className="flex flex-col items-center gap-2.5 text-center opacity-40 pointer-events-none select-none">
-                    <div className={`h-16 w-16 rounded-full ${p.color}`} />
-                    <div>
-                      <p className="font-sans font-semibold text-sm text-foreground">{p.name}</p>
-                      <p className="font-sans text-xs text-foreground/40">@{p.username}</p>
-                      {p.openToWork && (
-                        <span className="mt-1.5 inline-flex items-center rounded-full bg-spring-green/20 px-2 py-0.5 font-sans text-[10px] font-medium text-spring-green">
-                          Open to work
-                        </span>
-                      )}
-                    </div>
+                {people.length === 0 && (
+                  <div className="col-span-full flex flex-col items-start gap-3 rounded-2xl border border-border bg-foreground/[0.02] px-6 py-8">
+                    <p className="font-sans text-sm text-foreground/60">
+                      You&rsquo;re not following anyone yet.
+                    </p>
+                    <Link
+                      href="/frends"
+                      className="inline-flex h-9 items-center rounded-full bg-spring-green px-5 font-sans text-sm font-medium text-core-black transition-colors hover:bg-spring-green/90"
+                    >
+                      Find people to follow
+                    </Link>
                   </div>
-                ))}
+                )}
 
               </div>
             </section>

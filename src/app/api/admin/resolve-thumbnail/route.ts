@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
+import { fetchExternalThumbnail } from "@/lib/videoMetadata"
 
 export async function POST(req: Request) {
   const { userId } = await auth()
@@ -8,16 +9,8 @@ export async function POST(req: Request) {
   const { url } = await req.json()
   if (!url) return NextResponse.json({ error: "url required" }, { status: 400 })
 
-  try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; frendr-bot/1.0)" },
-      signal: AbortSignal.timeout(8000),
-    })
-    const html = await res.text()
-    const match = html.match(/<meta[^>]+(?:property="og:image"|name="og:image")[^>]+content="([^"]+)"/)
-      ?? html.match(/<meta[^>]+content="([^"]+)"[^>]+(?:property="og:image"|name="og:image")/)
-    if (match?.[1]) return NextResponse.json({ thumbnailUrl: match[1] })
-  } catch {}
-
-  return NextResponse.json({ thumbnailUrl: null })
+  // fetchExternalThumbnail gates on ALLOWED_HOSTS and blocks private IP ranges.
+  // Without it this handler is an SSRF: any signed-in user could make the
+  // server fetch arbitrary internal URLs.
+  return NextResponse.json({ thumbnailUrl: await fetchExternalThumbnail(url) })
 }
