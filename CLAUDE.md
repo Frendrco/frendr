@@ -18,9 +18,9 @@ Creative video platform. Think Dribbble meets Vimeo — for motion designers, an
 
 ### Type classes (use these, don't invent new ones)
 - `.display-lg` — Louize 96px, weight 400, leading 95%, tracking -5%
-- `.display-lg-bold` — Louize 96px, weight 700
-- `.display-md` — Louize 64px, weight 700
-- `.display-sm` — Louize 40px, weight 700
+- `.display-md` — Louize 64px, weight 400
+- `.display-sm` — Louize 40px, weight 400
+- Louize Bold is not used — Regular (400) only
 
 ### Brand colours
 | Token | Hex | Usage |

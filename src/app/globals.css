@@ -31,20 +31,6 @@
   font-style: italic;
   font-display: swap;
 }
-@font-face {
-  font-family: "Louize";
-  src: url("/fonts/205TF-Louize-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Louize";
-  src: url("/fonts/205TF-Louize-BoldItalic.woff2") format("woff2");
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
 
 /* PP Neue Montreal — Body / UI (Pangram Pangram) */
 @font-face {
@@ -99,9 +85,8 @@
 
   /* ── Type scale (from brand guide) ── */
   /* Display Large  — Louize Regular,  96px, leading 95%, tracking -5% */
-  /* Display Poster — Louize Bold,     96px, leading 57%, tracking -5% */
-  /* Display Medium — Louize Bold,     64px, leading 95%, tracking -5% */
-  /* Display Small  — Louize Bold,     40px, leading 95%, tracking -2% */
+  /* Display Medium — Louize Regular,  64px, leading 95%, tracking -5% */
+  /* Display Small  — Louize Regular,  40px, leading 95%, tracking -2% */
   /* Body           — PP Neue Montreal Medium, sentence case            */
   --font-size-display-lg:  6rem;        /* 96px */
   --font-size-display-md:  4rem;        /* 64px */
@@ -311,24 +296,17 @@
     line-height: 0.95;
     letter-spacing: -0.05em;
   }
-  .display-lg-bold {
-    font-family: "Louize", ui-serif, serif;
-    font-size: 6rem;          /* 96px — poster/social */
-    font-weight: 700;
-    line-height: 0.57;
-    letter-spacing: -0.05em;
-  }
   .display-md {
     font-family: "Louize", ui-serif, serif;
     font-size: 4rem;          /* 64px */
-    font-weight: 700;
+    font-weight: 400;
     line-height: 0.95;
     letter-spacing: -0.05em;
   }
   .display-sm {
     font-family: "Louize", ui-serif, serif;
     font-size: 2.5rem;        /* 40px */
-    font-weight: 700;
+    font-weight: 400;
     line-height: 0.95;
     letter-spacing: -0.02em;
   }

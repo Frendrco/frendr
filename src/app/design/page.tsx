@@ -43,7 +43,6 @@ export default function DesignPage() {
       <Section title="Typography">
         <div className="flex flex-col gap-4">
           <p className="display-lg">Display LG</p>
-          <p className="display-lg-bold">Display LG Bold</p>
           <p className="display-md">Display MD</p>
           <p className="display-sm">Display SM</p>
           <p className="font-sans font-medium text-lg text-foreground/60">
